@@ -1,0 +1,240 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>cz.miroslavbartyzal</groupId>
+    <artifactId>psdiagram</artifactId>
+    <version>1.0.5.1</version>
+    <packaging>jar</packaging>
+    <name>PS Diagram</name>
+    <url>http://psdiagram.cz</url>
+
+    <developers>
+        <developer>
+            <name>Miroslav Bartyzal</name>
+            <email>miroslavbartyzal@gmail.com</email>
+        </developer>
+    </developers>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <shade.finalname>with_dependencies</shade.finalname>
+
+        <freehep.version>2.2.1</freehep.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.freehep</groupId>
+            <artifactId>freehep-graphics2d</artifactId>
+            <version>${freehep.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.freehep</groupId>
+            <artifactId>freehep-graphicsio-pdf</artifactId>
+            <version>${freehep.version}</version>
+        </dependency>
+    </dependencies>
+
+    <scm>
+        <connection>scm:svn:http://127.0.0.1/dummy</connection>
+        <developerConnection>scm:svn:https://127.0.0.1/dummy</developerConnection>
+        <tag>HEAD</tag>
+        <url>http://127.0.0.1/dummy</url>
+    </scm>
+
+    <build>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>version.properties</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>version.properties</exclude>
+                </excludes>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>1.2</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <doCheck>false</doCheck>
+                    <doUpdate>false</doUpdate>
+                    <revisionOnScmFailure>n/a</revisionOnScmFailure>
+                    <format>{0,number} ({1,date,yyyy.MM.dd})</format>
+                    <items>
+                        <item>buildNumber</item>
+                        <item>timestamp</item>
+                    </items>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <Main-Class>cz.miroslavbartyzal.psdiagram.app.diagram.Main</Main-Class>
+                        </manifest>
+                        <manifestEntries>
+                            <Built-By>Miroslav Bartyzal</Built-By>
+                            <Build-Number>${buildNumber}</Build-Number>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <!--            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <shadedClassifierName>${shade.finalname}</shadedClassifierName>
+                            <relocations>
+                                <relocation>
+                                    <pattern>org</pattern>
+                                    <shadedPattern>shaded.org</shadedPattern>
+                                </relocation>
+                            </relocations>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <Main-Class>cz.miroslavbartyzal.psdiagram.app.diagram.Main</Main-Class>
+                                    <manifestEntries>
+                                        <Built-By>Miroslav Bartyzal</Built-By>
+                                        <Build-Number>${buildNumber}</Build-Number>
+                                    </manifestEntries>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>-->
+
+            <plugin>
+                <groupId>com.github.wvengen</groupId>
+                <artifactId>proguard-maven-plugin</artifactId>
+                <version>2.0.6</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>net.sf.proguard</groupId>
+                        <artifactId>proguard-base</artifactId>
+                        <version>4.10</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>proguard</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <Main-Class>cz.miroslavbartyzal.psdiagram.app.diagram.Main</Main-Class>
+                        </manifest>
+                        <manifestEntries>
+                            <Built-By>Miroslav Bartyzal</Built-By>
+                            <Build-Number>${buildNumber}</Build-Number>
+                        </manifestEntries>
+                    </archive>
+                    <obfuscate>true</obfuscate>
+                    <includeDependency>false</includeDependency>
+                    <assembly>
+                        <inclusions>
+                            <inclusion>
+                                <groupId>org.freehep</groupId>
+                                <artifactId>freehep-graphics2d</artifactId>
+                                <library>true</library>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>org.freehep</groupId>
+                                <artifactId>freehep-graphicsio-pdf</artifactId>
+                                <library>true</library>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>org.freehep</groupId>
+                                <artifactId>freehep-graphicsbase</artifactId>
+                                <library>true</library>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>org.freehep</groupId>
+                                <artifactId>freehep-graphicsio</artifactId>
+                                <library>true</library>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>org.freehep</groupId>
+                                <artifactId>freehep-graphicsio-tests</artifactId>
+                                <library>true</library>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>org.freehep</groupId>
+                                <artifactId>freehep-io</artifactId>
+                                <library>true</library>
+                            </inclusion>
+                        </inclusions>
+                    </assembly>
+                    <!--                    <options>
+                        <option>-keep class org.freehep.** {*** *(...);}</option>
+                    </options>-->
+                    <inFilter>!main/java/cz/miroslavbartyzal/psdiagram/app/diagram/changelog.txt</inFilter>
+                    <injar>${project.build.finalName}.jar</injar>
+                    <outjar>${project.build.finalName}-obfuscated.jar</outjar>
+                    <outputDirectory>${project.build.directory}</outputDirectory>
+                    <proguardInclude>${basedir}/proguard.conf</proguardInclude>
+                    <!--                    <libs>
+                        <lib>c:\Users\Miroslav\.m2\repository\junit\junit\4.11\junit-4.11.jar</lib>
+                    </libs>-->
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+</project>

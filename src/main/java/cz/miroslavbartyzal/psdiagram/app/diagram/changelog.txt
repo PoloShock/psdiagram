@@ -1,0 +1,71 @@
+2013.09.04
+    - ADDED: ProGuard now outputs into single jar, dependencies are included
+    - CHANGED: build.properties to version.properties
+    - ADDED: version property into version.properties
+
+2013.09.03
+    - CHANGED: dependencies and building is now handled through Maven
+        - project is now Maven Project
+        - no more ./lib/*, everything is included in single .jar file
+        - resources moved to proper Maven's resources directory
+    - CHANGED: upgrade from ProGuard 4.8 to 4.10
+    - ADDED: date of build in About form
+    - CHANGED: package prefix from none to cz.miroslavbartyzal.psdiagram.app
+
+2013.08.30 -----1.0.5.1-----------------------------------------------------------------------------
+    - CHANGED: trial date to 2013.9.9
+    - CHANGED: version number
+    - ADDED: link to web page in About form
+
+2013.06.23
+    - CHANGED: trial date to 2013.9.1
+    - ADDED: link to future web in expiration dialog
+
+2013.06.19
+    - IMPROVED: color of symbols in animation mode is brighter
+    - IMPROVED: symbol text in animation mode is bold and brighter
+    - CHANGED: beginning symbol's text is now set to "Začátek" instead of "Start"
+
+2013.05.23
+    - CHANGED: color of select-rectangle is now brighter so it doesn't disturb so much
+
+2013.02.18
+    - ADDED: example of modulo to process examples
+    - IMPROVED: left part of main split pane is now larger so putting text into textboxes is more comfortable
+    - ADDED: information about build in About-Form
+
+2013.02.14
+    - FIXED: wrong number recognition by input dialog - number with leading zero is now no longer saved as number
+
+2013.01.28
+    - ADDED: PS Diagram now establishes connection to 92.62.226.175:33789 on every startup (in order to monitor its spread)
+    - IMPROVED: NTP was blocked by school firewall, now time is retrieved from http header
+    - ADDED: possibility of setting proxy server in settings file
+    - ADDED: version info in about frame
+    - IMPROVED: settings file is now created as soon as application starts
+
+2013.01.27
+    - ADDED: online trial date check
+
+2012.11.17
+    - FIXED: now it is possible to initialise For cycle from already existing cycle-named variable - for (a=a; a <= 10; a++)
+    - IMPROVED: variables in overview-list are now bolded even if they remained the same value after script execution
+    - FIXED: a between-calculation containing array wasn't translated and displayed properly ("a <- pole[j+1]" -> "pole <- [1+1]")
+
+2012.10.31
+    - FIXED: error while loading saved diagram didn't erased actualFile variable
+
+2012.10.14
+    - ADDED: examples to resource folder
+    - ADDED: ability to obfuscate the code
+
+2012.10.12
+    - IMPROVED: added fixed names to xmlElements, xmlAttributes and xmlRootElements (backward save&load compatibility if variable name was changed)
+    - IMPROVED: basic trial support
+
+2012.10.11
+    - ADDED: basic trial support
+    - FIXED: javascript's unicode presentation (\uXXXX and \xXX) is now displayed in readable form
+
+2012.10.10
+    - FIXED: flowchart marshaling into .xml file - LinkedHashMap is now mapped using attributes properly

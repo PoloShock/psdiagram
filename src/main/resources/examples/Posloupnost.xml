@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<flowchart>
+    <mainSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="layoutSegment" xmlID="0">
+        <element xsi:type="layoutElement" xmlID="13" parentSegment="0">
+            <comment>
+                <borderColor>0,0,0,255</borderColor>
+                <shapeDownColor>230,230,230,255</shapeDownColor>
+                <hasShadow>true</hasShadow>
+                <customValue>Algoritmus, který určí nejmenší prvek a počet
+jeho výskytů v posloupnosti čísel ukončené
+nulou, která do posloupnosti nepatří.</customValue>
+                <value>Algoritmus, který určí nejmenší prvek a počet
+jeho výskytů v posloupnosti čísel ukončené
+nulou, která do posloupnosti nepatří.</value>
+                <alwaysLeftAlign>false</alwaysLeftAlign>
+                <relativeX>77.0</relativeX>
+                <relativeY>34.0</relativeY>
+                <paired>true</paired>
+            </comment>
+        </element>
+        <element xsi:type="layoutElement" xmlID="1" parentSegment="0">
+            <startEnd>
+                <borderColor>0,0,0,255</borderColor>
+                <shapeUpColor>255,255,255,255</shapeUpColor>
+                <shapeDownColor>230,230,230,255</shapeDownColor>
+                <hasShadow>true</hasShadow>
+                <value>Start</value>
+            </startEnd>
+        </element>
+        <element xsi:type="layoutElement" xmlID="21" parentSegment="0">
+            <process>
+                <borderColor>0,0,0,255</borderColor>
+                <shapeUpColor>255,255,255,255</shapeUpColor>
+                <shapeDownColor>230,230,230,255</shapeDownColor>
+                <hasShadow>true</hasShadow>
+                <defaultValue>min ← 0</defaultValue>
+                <commands>
+                    <entry key="var">min</entry>
+                    <entry key="value">0</entry>
+                </commands>
+                <value>min ← 0</value>
+            </process>
+        </element>
+        <element xsi:type="layoutElement" xmlID="30" parentSegment="0">
+            <process>
+                <borderColor>0,0,0,255</borderColor>
+                <shapeUpColor>255,255,255,255</shapeUpColor>
+                <shapeDownColor>230,230,230,255</shapeDownColor>
+                <hasShadow>true</hasShadow>
+                <defaultValue>pmin ← 0</defaultValue>
+                <commands>
+                    <entry key="var">pmin</entry>
+                    <entry key="value">0</entry>
+                </commands>
+                <value>pmin ← 0</value>
+            </process>
+        </element>
+        <element xsi:type="layoutElement" xmlID="3" parentSegment="0">
+            <process>
+                <borderColor>0,0,0,255</borderColor>
+                <shapeUpColor>255,255,255,255</shapeUpColor>
+                <shapeDownColor>230,230,230,255</shapeDownColor>
+                <hasShadow>true</hasShadow>
+                <defaultValue>pocet ← 0</defaultValue>
+                <commands>
+                    <entry key="var">pocet</entry>
+                    <entry key="value">0</entry>
+                </commands>
+                <value>pocet ← 0</value>
+            </process>
+        </element>
+        <element xsi:type="layoutElement" xmlID="4" parentSegment="0">
+            <io>
+                <borderColor>0,0,0,255</borderColor>
+                <shapeUpColor>255,255,255,255</shapeUpColor>
+                <shapeDownColor>230,230,230,255</shapeDownColor>
+                <hasShadow>true</hasShadow>
+                <defaultValue>c ←</defaultValue>
+                <commands>
+                    <entry key="var">c</entry>
+                </commands>
+                <value>c ←</value>
+            </io>
+        </element>
+        <element xsi:type="layoutElement" xmlID="5" parentSegment="0">
+            <loopStart>
+                <borderColor>0,0,0,255</borderColor>
+                <shapeUpColor>255,255,255,255</shapeUpColor>
+                <shapeDownColor>230,230,230,255</shapeDownColor>
+                <hasShadow>true</hasShadow>
+                <defaultValue>c ≠ 0</defaultValue>
+                <commands>
+                    <entry key="condition">c != 0</entry>
+                </commands>
+                <value>c ≠ 0</value>
+                <overHanged>true</overHanged>
+            </loopStart>
+            <segment xsi:nil="true"/>
+            <segment xsi:type="layoutSegment" xmlID="6" parentElement="5">
+                <element xsi:type="layoutElement" xmlID="29" parentSegment="6">
+                    <process>
+                        <borderColor>0,0,0,255</borderColor>
+                        <shapeUpColor>255,255,255,255</shapeUpColor>
+                        <shapeDownColor>230,230,230,255</shapeDownColor>
+                        <hasShadow>true</hasShadow>
+                        <defaultValue>pocet ← pocet + 1</defaultValue>
+                        <commands>
+                            <entry key="var">pocet</entry>
+                            <entry key="value">pocet + 1</entry>
+                        </commands>
+                        <value>pocet ← pocet + 1</value>
+                    </process>
+                </element>
+                <element xsi:type="layoutElement" xmlID="8" parentSegment="6">
+                    <decision>
+                        <borderColor>0,0,0,255</borderColor>
+                        <shapeUpColor>255,255,255,255</shapeUpColor>
+                        <shapeDownColor>230,230,230,255</shapeDownColor>
+                        <hasShadow>true</hasShadow>
+                        <defaultValue>pocet=1 | c&lt;min</defaultValue>
+                        <commands>
+                            <entry key="condition">pocet==1 || c&lt;min</entry>
+                        </commands>
+                        <value>pocet=1 | c&lt;min</value>
+                    </decision>
+                    <segment xsi:type="layoutSegment" xmlID="9" parentElement="8">
+                        <element xsi:type="layoutElement" xmlID="18" parentSegment="9">
+                            <decision>
+<borderColor>0,0,0,255</borderColor>
+<shapeUpColor>255,255,255,255</shapeUpColor>
+<shapeDownColor>230,230,230,255</shapeDownColor>
+<hasShadow>true</hasShadow>
+<defaultValue>c = min</defaultValue>
+<commands>
+    <entry key="condition">c == min</entry>
+</commands>
+<value>c = min</value>
+                            </decision>
+                            <segment xsi:type="layoutSegment" xmlID="19" parentElement="18">
+<description>Ne</description>
+                            </segment>
+                            <segment xsi:type="layoutSegment" xmlID="20" parentElement="18">
+<element xsi:type="layoutElement" xmlID="7" parentSegment="20">
+    <process>
+        <borderColor>0,0,0,255</borderColor>
+        <shapeUpColor>255,255,255,255</shapeUpColor>
+        <shapeDownColor>230,230,230,255</shapeDownColor>
+        <hasShadow>true</hasShadow>
+        <defaultValue>pmin ← pmin + 1</defaultValue>
+        <commands>
+            <entry key="var">pmin</entry>
+            <entry key="value">pmin + 1</entry>
+        </commands>
+        <value>pmin ← pmin + 1</value>
+    </process>
+</element>
+<description>Ano</description>
+                            </segment>
+                        </element>
+                        <description>Ne</description>
+                    </segment>
+                    <segment xsi:type="layoutSegment" xmlID="10" parentElement="8">
+                        <element xsi:type="layoutElement" xmlID="11" parentSegment="10">
+                            <process>
+<borderColor>0,0,0,255</borderColor>
+<shapeUpColor>255,255,255,255</shapeUpColor>
+<shapeDownColor>230,230,230,255</shapeDownColor>
+<hasShadow>true</hasShadow>
+<defaultValue>min ← c</defaultValue>
+<commands>
+    <entry key="var">min</entry>
+    <entry key="value">c</entry>
+</commands>
+<value>min ← c</value>
+                            </process>
+                        </element>
+                        <element xsi:type="layoutElement" xmlID="12" parentSegment="10">
+                            <process>
+<borderColor>0,0,0,255</borderColor>
+<shapeUpColor>255,255,255,255</shapeUpColor>
+<shapeDownColor>230,230,230,255</shapeDownColor>
+<hasShadow>true</hasShadow>
+<defaultValue>pmin ← 1</defaultValue>
+<commands>
+    <entry key="var">pmin</entry>
+    <entry key="value">1</entry>
+</commands>
+<value>pmin ← 1</value>
+                            </process>
+                        </element>
+                        <description>Ano</description>
+                    </segment>
+                </element>
+                <element xsi:type="layoutElement" xmlID="22" parentSegment="6">
+                    <io>
+                        <borderColor>0,0,0,255</borderColor>
+                        <shapeUpColor>255,255,255,255</shapeUpColor>
+                        <shapeDownColor>230,230,230,255</shapeDownColor>
+                        <hasShadow>true</hasShadow>
+                        <defaultValue>c ←</defaultValue>
+                        <commands>
+                            <entry key="var">c</entry>
+                        </commands>
+                        <value>c ←</value>
+                    </io>
+                </element>
+            </segment>
+        </element>
+        <element xsi:type="layoutElement" xmlID="23" parentSegment="0">
+            <loopEnd>
+                <borderColor>0,0,0,255</borderColor>
+                <shapeUpColor>255,255,255,255</shapeUpColor>
+                <shapeDownColor>230,230,230,255</shapeDownColor>
+                <hasShadow>true</hasShadow>
+                <value></value>
+            </loopEnd>
+        </element>
+        <element xsi:type="layoutElement" xmlID="24" parentSegment="0">
+            <decision>
+                <borderColor>0,0,0,255</borderColor>
+                <shapeUpColor>255,255,255,255</shapeUpColor>
+                <shapeDownColor>230,230,230,255</shapeDownColor>
+                <hasShadow>true</hasShadow>
+                <defaultValue>pocet &gt; 0</defaultValue>
+                <commands>
+                    <entry key="condition">pocet &gt; 0</entry>
+                </commands>
+                <value>pocet &gt; 0</value>
+            </decision>
+            <segment xsi:type="layoutSegment" xmlID="25" parentElement="24">
+                <element xsi:type="layoutElement" xmlID="28" parentSegment="25">
+                    <io>
+                        <borderColor>0,0,0,255</borderColor>
+                        <shapeUpColor>255,255,255,255</shapeUpColor>
+                        <shapeDownColor>230,230,230,255</shapeDownColor>
+                        <hasShadow>true</hasShadow>
+                        <customValue>&quot;Prazdna
+posloupnost&quot; →</customValue>
+                        <defaultValue>&quot;Prazdna posloupnost&quot; →</defaultValue>
+                        <commands>
+                            <entry key="value">&quot;Prazdna posloupnost&quot;</entry>
+                        </commands>
+                        <value>&quot;Prazdna
+posloupnost&quot; →</value>
+                    </io>
+                </element>
+                <description>Ne</description>
+            </segment>
+            <segment xsi:type="layoutSegment" xmlID="26" parentElement="24">
+                <element xsi:type="layoutElement" xmlID="27" parentSegment="26">
+                    <io>
+                        <borderColor>0,0,0,255</borderColor>
+                        <shapeUpColor>255,255,255,255</shapeUpColor>
+                        <shapeDownColor>230,230,230,255</shapeDownColor>
+                        <hasShadow>true</hasShadow>
+                        <customValue>&quot;Minimum: &quot;
++min+
+&quot;, vyskytuje se &quot;
++pmin+
+&quot;x z celkoveho poctu &quot;
++pocet+&quot; cisel&quot; →</customValue>
+                        <defaultValue>&quot;Minimum: &quot;+min+&quot;, vyskytuje se &quot;+pmin+&quot;x z celkoveho poctu &quot;+pocet+&quot; cisel&quot; →</defaultValue>
+                        <commands>
+                            <entry key="value">&quot;Minimum: &quot;+min+&quot;, vyskytuje se &quot;+pmin+&quot;x z celkoveho poctu &quot;+pocet+&quot; cisel&quot;</entry>
+                        </commands>
+                        <value>&quot;Minimum: &quot;
++min+
+&quot;, vyskytuje se &quot;
++pmin+
+&quot;x z celkoveho poctu &quot;
++pocet+&quot; cisel&quot; →</value>
+                    </io>
+                </element>
+                <description>Ano</description>
+            </segment>
+        </element>
+        <element xsi:type="layoutElement" xmlID="2" parentSegment="0">
+            <startEnd>
+                <borderColor>0,0,0,255</borderColor>
+                <shapeUpColor>255,255,255,255</shapeUpColor>
+                <shapeDownColor>230,230,230,255</shapeDownColor>
+                <hasShadow>true</hasShadow>
+                <value>Konec</value>
+            </startEnd>
+        </element>
+    </mainSegment>
+</flowchart>

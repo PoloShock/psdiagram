@@ -22,6 +22,7 @@ import cz.miroslavbartyzal.psdiagram.app.diagram.gui.managers.FlowchartEditUndoM
 import cz.miroslavbartyzal.psdiagram.app.diagram.gui.managers.FlowchartOverlookManager;
 import cz.miroslavbartyzal.psdiagram.app.global.GlobalFunctions;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
+import cz.miroslavbartyzal.psdiagram.app.update.Updater;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -50,6 +51,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.util.ResourceBundle;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.TransferHandler.TransferSupport;
@@ -90,6 +92,7 @@ public final class MainWindow extends javax.swing.JFrame
     private JFrameCodeImport jFrameCodeImport;
     private JFrameCodeExport jFrameCodeExport;
     private JFrameAbout jFrameAbout;
+    private JFrameUpdate jFrameUpdate;
     private static JAXBContext jAXBcontext;
     private String windowTitle = "PS Diagram";
     private static Timer statusTimer = new Timer(0, new ActionListener()
@@ -107,6 +110,20 @@ public final class MainWindow extends javax.swing.JFrame
     /** Creates new form MainWindow */
     private MainWindow()
     {
+        String buildProfile = ResourceBundle.getBundle("appliaction").getString("buildProfile");
+        if (!buildProfile.equals("deployment") && !buildProfile.equals("development-run")) {
+            if (System.getenv("COMPUTERNAME").equals("POLOSHOCK-NB")) {
+                JOptionPane.showMessageDialog(null, buildProfile, "", JOptionPane.WARNING_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(null,
+                        "<html>Tato verze PS Diagramu je určena pouze pro vývoj.<br />"
+                        + "Pro obdržení správné verze navštivte www.psdiagram.cz nebo mne kontaktujte<br />"
+                        + "na emailu miroslavbartyzal@gmail.com.</html>", "Chyba verze",
+                        JOptionPane.ERROR_MESSAGE);
+                System.exit(0);
+            }
+        }
+
         System.setProperty("java.net.useSystemProxies", "true");
         initComponents();
         addWindowListener(new WindowAdapter()
@@ -155,6 +172,24 @@ public final class MainWindow extends javax.swing.JFrame
         jFrameCodeImport = new JFrameCodeImport(this);
         jFrameCodeExport = new JFrameCodeExport(this);
         jFrameAbout = new JFrameAbout();
+        Updater updater = new Updater();
+        jFrameUpdate = new JFrameUpdate(updater, new Updater.BeforeExitListener()
+        {
+            @Override
+            public void onBeforeExit()
+            {
+                if (!checkIfSaved(false)) {
+                    try {
+                        Marshaller jAXBmarshaller = getJAXBcontext().createMarshaller();
+                        jAXBmarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+                        jAXBmarshaller.marshal(layout.getFlowchart(), new File(
+                                SettingsHolder.WORKING_DIR, "tmp.xml"));
+                    } catch (JAXBException ex) {
+                        ex.printStackTrace(System.err);
+                    }
+                }
+            }
+        });
 
         jPanelVariables.setVisible(false);
 
@@ -166,16 +201,21 @@ public final class MainWindow extends javax.swing.JFrame
         if (super.getHeight() + 20 > screenSize.height) {
             super.setSize(super.getWidth(), screenSize.height - 20);
         }
-        super.setLocation(screenSize.width / 2 - super.getWidth() / 2,
-                screenSize.height / 2 - super.getHeight() / 2);
-        jFrameSettings.setLocation(screenSize.width / 2 - jFrameSettings.getWidth() / 2,
-                screenSize.height / 2 - jFrameSettings.getHeight() / 2);
-        jFrameCodeImport.setLocation(screenSize.width / 2 - jFrameCodeImport.getWidth() / 2,
-                screenSize.height / 2 - jFrameCodeImport.getHeight() / 2);
-        jFrameCodeExport.setLocation(screenSize.width / 2 - jFrameCodeExport.getWidth() / 2,
-                screenSize.height / 2 - jFrameCodeExport.getHeight() / 2);
-        jFrameAbout.setLocation(screenSize.width / 2 - jFrameAbout.getWidth() / 2,
-                screenSize.height / 2 - jFrameAbout.getHeight() / 2);
+
+//        super.setLocationRelativeTo(null); // same as below
+//        super.setLocation(screenSize.width / 2 - super.getWidth() / 2,
+//                screenSize.height / 2 - super.getHeight() / 2);
+//        jFrameSettings.setLocation(screenSize.width / 2 - jFrameSettings.getWidth() / 2,
+//                screenSize.height / 2 - jFrameSettings.getHeight() / 2);
+//        jFrameCodeImport.setLocation(screenSize.width / 2 - jFrameCodeImport.getWidth() / 2,
+//                screenSize.height / 2 - jFrameCodeImport.getHeight() / 2);
+//        jFrameCodeExport.setLocation(screenSize.width / 2 - jFrameCodeExport.getWidth() / 2,
+//                screenSize.height / 2 - jFrameCodeExport.getHeight() / 2);
+//        jFrameAbout.setLocation(screenSize.width / 2 - jFrameAbout.getWidth() / 2,
+//                screenSize.height / 2 - jFrameAbout.getHeight() / 2);
+//        jFrameUpdate.setLocation(screenSize.width / 2 - jFrameUpdate.getWidth() / 2,
+//                screenSize.height / 2 - jFrameUpdate.getHeight() / 2);
+        // (I'm using platform default location after all)
 
         jPnlDiagram = (JPanelDiagram) jPanelDiagram;
 
@@ -196,6 +236,9 @@ public final class MainWindow extends javax.swing.JFrame
         jScrollPaneFunction.getHorizontalScrollBar().setUnitIncrement(10);
         jScrollPaneText.getVerticalScrollBar().setUnitIncrement(10);
         jScrollPaneText.getHorizontalScrollBar().setUnitIncrement(10);
+        jScrollPane1.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE); // prevents glitches (http://andrewtill.blogspot.cz/2012/06/jscrollpane-repainting-problems.html)
+        jScrollPaneFunction.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE); // prevents glitches (http://andrewtill.blogspot.cz/2012/06/jscrollpane-repainting-problems.html)
+        jScrollPaneText.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE); // prevents glitches (http://andrewtill.blogspot.cz/2012/06/jscrollpane-repainting-problems.html)
 
         flowchartEditUndoManager = new FlowchartEditUndoManager(jMenuItemUndo, jMenuItemRedo,
                 jButtonToolUndo, jButtonToolRedo);
@@ -268,7 +311,26 @@ public final class MainWindow extends javax.swing.JFrame
 
         if (SettingsHolder.settings.getActualFlowchartFile() != null) {
             openDiagram(SettingsHolder.settings.getActualFlowchartFile());
+        } else {
+            File tmp = new File(SettingsHolder.WORKING_DIR, "tmp.xml");
+            if (tmp.exists()) {
+                openDiagram(tmp);
+                SettingsHolder.settings.setActualFlowchartFile(null);
+                tmp.delete();
+            }
         }
+
+        updater.loadInfo(null, new Updater.InfoLoadListener()
+        {
+            @Override
+            public void onInfoLoaded(boolean newVersionAvailable)
+            {
+                if (newVersionAvailable) {
+                    jMenuItemUpdateActionPerformed(null);
+                }
+            }
+        });
+
         getJAXBcontext(); // TODO: did in hurry - I am not for lazy loading in the end
     }
 
@@ -362,11 +424,14 @@ public final class MainWindow extends javax.swing.JFrame
         jMenuConfiguration = new javax.swing.JMenu();
         jMenuItemSettings = new javax.swing.JMenuItem();
         jMenuHelp = new javax.swing.JMenu();
+        jMenuItemUpdate = new javax.swing.JMenuItem();
+        jSeparator15 = new javax.swing.JPopupMenu.Separator();
         jMenuItemAbout = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle(windowTitle);
         setIconImage(java.awt.Toolkit.getDefaultToolkit().createImage(getClass().getResource("/img/icon.png")));
+        setLocationByPlatform(true);
         setMinimumSize(new java.awt.Dimension(712, 550));
 
         jToolBarMenu.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(147, 152, 161)));
@@ -986,6 +1051,17 @@ public final class MainWindow extends javax.swing.JFrame
         jMenuHelp.setText("Nápověda");
         jMenuHelp.setActionCommand("help");
 
+        jMenuItemUpdate.setText("Kontrola aktualizací");
+        jMenuItemUpdate.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                jMenuItemUpdateActionPerformed(evt);
+            }
+        });
+        jMenuHelp.add(jMenuItemUpdate);
+        jMenuHelp.add(jSeparator15);
+
         jMenuItemAbout.setText("O aplikaci");
         jMenuItemAbout.addActionListener(new java.awt.event.ActionListener()
         {
@@ -1022,6 +1098,7 @@ public final class MainWindow extends javax.swing.JFrame
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMenuItemSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemSettingsActionPerformed
+        jFrameSettings.setLocationRelativeTo(this);
         jFrameSettings.setVisible(true);
     }//GEN-LAST:event_jMenuItemSettingsActionPerformed
 
@@ -1036,7 +1113,7 @@ public final class MainWindow extends javax.swing.JFrame
 //            try {
 //                writer = PdfWriter.getInstance(document, new FileOutputStream(file));
 //            } catch (DocumentException | FileNotFoundException ex) {
-//                System.err.print(ex);
+//                ex.printStackTrace(System.err);
 //                JOptionPane.showMessageDialog(this, "Při vytváření PDF souboru nastala chyba!", "Chyba", JOptionPane.ERROR_MESSAGE);
 //                return;
 //            }
@@ -1058,7 +1135,7 @@ public final class MainWindow extends javax.swing.JFrame
                 graphics = new PDFGraphics2D(file, new Dimension((int) layout.getWidth(),
                         (int) layout.getHeight()));
             } catch (FileNotFoundException ex) {
-                System.err.print(ex);
+                ex.printStackTrace(System.err);
                 JOptionPane.showMessageDialog(this, "Při vytváření PDF souboru nastala chyba!",
                         "Chyba", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -1124,7 +1201,7 @@ public final class MainWindow extends javax.swing.JFrame
                             JOptionPane.ERROR_MESSAGE);
                 }
             } catch (IOException ex) {
-                System.err.print(ex);
+                ex.printStackTrace(System.err);
                 JOptionPane.showMessageDialog(this, "Při vytváření souboru obrázku nastala chyba!",
                         "Chyba", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -1153,7 +1230,7 @@ public final class MainWindow extends javax.swing.JFrame
                         "Diagram byl úspěšně uložen do " + SettingsHolder.settings.getActualFlowchartFile().getPath(),
                         3500);
             } catch (JAXBException ex) {
-                System.err.print(ex);
+                ex.printStackTrace(System.err);
                 JOptionPane.showMessageDialog(this, "Při ukládání diagramu nastala chyba!",
                         "Diagram se nepodařilo uložit", JOptionPane.ERROR_MESSAGE);
             }
@@ -1161,7 +1238,7 @@ public final class MainWindow extends javax.swing.JFrame
     }//GEN-LAST:event_jMenuItemSaveActionPerformed
 
     private void jMenuItemNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemNewActionPerformed
-        if (!checkIfSaved()) {
+        if (!checkIfSaved(true)) {
             return;
         }
         if (!editMode) {
@@ -1200,7 +1277,7 @@ public final class MainWindow extends javax.swing.JFrame
                         "Diagram byl úspěšně uložen do " + SettingsHolder.settings.getActualFlowchartFile().getPath(),
                         3500);
             } catch (JAXBException ex) {
-                System.err.print(ex);
+                ex.printStackTrace(System.err);
                 JOptionPane.showMessageDialog(this, "Při ukládání diagramu nastala chyba!",
                         "Diagram se nepodařilo uložit", JOptionPane.ERROR_MESSAGE);
             }
@@ -1226,17 +1303,37 @@ public final class MainWindow extends javax.swing.JFrame
     }//GEN-LAST:event_jMenuItemRedoActionPerformed
 
     private void jMenuItemCodeImportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemCodeImportActionPerformed
+        jFrameCodeImport.setLocationRelativeTo(this);
         jFrameCodeImport.setVisible(true);
     }//GEN-LAST:event_jMenuItemCodeImportActionPerformed
 
     private void jMenuItemCodeExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemCodeExportActionPerformed
+        jFrameCodeExport.setLocationRelativeTo(this);
         jFrameCodeExport.setVisible(true);
     }//GEN-LAST:event_jMenuItemCodeExportActionPerformed
 
     private void jMenuItemAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAboutActionPerformed
+        jFrameAbout.setLocationRelativeTo(this);
         jFrameAbout.setVisible(true);
     }//GEN-LAST:event_jMenuItemAboutActionPerformed
 
+    private void jMenuItemUpdateActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jMenuItemUpdateActionPerformed
+    {//GEN-HEADEREND:event_jMenuItemUpdateActionPerformed
+        jFrameUpdate.setLocationRelativeTo(this);
+        jFrameUpdate.setVisible(true);
+    }//GEN-LAST:event_jMenuItemUpdateActionPerformed
+
+//    /**
+//     * Positions component by given percentages relatively to middle of main window.
+//     * If component's size would overlap screen, measures are taken against it.
+//     * <p/>
+//     * @param component component to be positioned
+//     * @param widthPercent if set to 0 the component's middle is placed on left border of main window, 100 means right border
+//     * @param heightPercent if set to 0 the component's middle is placed on top border of main window, 100 means bottom border
+//     */
+//    private void positionComponent(Component component, int widthPercent, int heightPercent)
+//    {
+//    }
     /**
      * Metoda pro spuštění hlavního okna aplikace. Nejsou přijímány žádné
      * paramtery.
@@ -1320,6 +1417,7 @@ public final class MainWindow extends javax.swing.JFrame
     private javax.swing.JMenuItem jMenuItemSaveAs;
     private javax.swing.JMenuItem jMenuItemSettings;
     private javax.swing.JMenuItem jMenuItemUndo;
+    private javax.swing.JMenuItem jMenuItemUpdate;
     private javax.swing.JMenu jMenuLayoutSetting;
     private javax.swing.JMenu jMenuLayouts;
     private javax.swing.JPanel jPanelDetails;
@@ -1343,6 +1441,7 @@ public final class MainWindow extends javax.swing.JFrame
     private javax.swing.JPopupMenu.Separator jSeparator12;
     private javax.swing.JToolBar.Separator jSeparator13;
     private javax.swing.JPopupMenu.Separator jSeparator14;
+    private javax.swing.JPopupMenu.Separator jSeparator15;
     private javax.swing.JToolBar.Separator jSeparator2;
     private javax.swing.JToolBar.Separator jSeparator3;
     private javax.swing.JToolBar.Separator jSeparator4;
@@ -1864,8 +1963,8 @@ public final class MainWindow extends javax.swing.JFrame
             socket.connect(new InetSocketAddress(InetAddress.getByName("92.62.226.175"), 33789),
                     2000);
         } catch (Exception ex) {
-            System.err.println("5: " + ex);
-            ex.printStackTrace(System.err);
+//            System.err.println("5: " + ex);
+//            ex.printStackTrace(System.err);
         } finally {
             try {
                 socket.close();
@@ -1877,7 +1976,7 @@ public final class MainWindow extends javax.swing.JFrame
 //        JOptionPane.showMessageDialog(null, "Analýza probéhla, log chyb viz příkazový řádek. Nyní se program ukončí.", "Analýza proběhla", JOptionPane.INFORMATION_MESSAGE);
 //        System.exit(0);
 
-        if (currentTime > 1378677600000l || currentTime < SettingsHolder.settings.getLastTrialLaunchedTime()) { // 2013.9.9. 00:00:00 = 1377986400000 (new GregorianCalendar(2013, 8, 9).getTimeInMillis()) - month is zero-based
+        if (currentTime > 1383260400000l || currentTime < SettingsHolder.settings.getLastTrialLaunchedTime()) { // 2013.11.1. 00:00:00 = 1383260400000 (new GregorianCalendar(2013, 10, 1).getTimeInMillis()) - month is zero-based
             // html content
             JEditorPane ep = new JEditorPane("text/html", new String(new char[]{'<', 'h', 't', 'm',
                 'l', '>', 'P', 'l', 'a', 't', 'n', 'o', 's', 't', ' ', 't', 'é', 't', 'o', ' ', 'z',
@@ -1969,16 +2068,20 @@ public final class MainWindow extends javax.swing.JFrame
                     StartEnd.class, SubRoutine.class,
                     Switch.class);
         } catch (JAXBException ex) {
-            System.err.print(ex);
+            ex.printStackTrace(System.err);
         }
         return null;
     }
 
-    private boolean checkIfSaved()
+    private boolean checkIfSaved(boolean askAboutIt)
     {
         if (layout.getFlowchart().getMainSegment().size() > 2) { // diagram je prazdny, nema cenu ho ukladat.. even if it was not empty before
             if (SettingsHolder.settings.getActualFlowchartFile() == null) {
-                return askAboutSaving();
+                if (askAboutIt) {
+                    return askAboutSaving();
+                } else {
+                    return false;
+                }
             } else {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 try {
@@ -1987,10 +2090,14 @@ public final class MainWindow extends javax.swing.JFrame
                     jAXBmarshaller.marshal(layout.getFlowchart(), baos);
                     if (!Arrays.equals(baos.toByteArray(), Files.readAllBytes(
                             SettingsHolder.settings.getActualFlowchartFile().toPath()))) {
-                        return askAboutSaving();
+                        if (askAboutIt) {
+                            return askAboutSaving();
+                        } else {
+                            return false;
+                        }
                     }
                 } catch (JAXBException | IOException ex) {
-                    System.err.println(ex);
+                    ex.printStackTrace(System.err);
                 }
             }
         }
@@ -2021,7 +2128,7 @@ public final class MainWindow extends javax.swing.JFrame
      */
     public boolean openGeneratedDiagram(Flowchart<LayoutSegment, LayoutElement> flowchart)
     {
-        if (!checkIfSaved()) {
+        if (!checkIfSaved(true)) {
             return false;
         }
         // prepnu do editacniho modu
@@ -2046,7 +2153,7 @@ public final class MainWindow extends javax.swing.JFrame
 
     private void openDiagram(File file)
     {
-        if (!checkIfSaved()) {
+        if (!checkIfSaved(true)) {
             return;
         }
         try {
@@ -2076,7 +2183,7 @@ public final class MainWindow extends javax.swing.JFrame
                     "Diagram " + SettingsHolder.settings.getActualFlowchartFile().getPath() + " byl úspěšně otevřen.",
                     5000);
         } catch (JAXBException ex) {
-            System.err.print(ex);
+            ex.printStackTrace(System.err);
             JOptionPane.showMessageDialog(this, "Při načítání diagramu nastala chyba!",
                     "Diagram se nepodařilo otevřít", JOptionPane.ERROR_MESSAGE);
             if (SettingsHolder.settings.getActualFlowchartFile() != null
@@ -2131,7 +2238,7 @@ public final class MainWindow extends javax.swing.JFrame
 
     private void exit()
     {
-        if (!checkIfSaved()) {
+        if (!checkIfSaved(true)) {
             return;
         }
         System.exit(0);

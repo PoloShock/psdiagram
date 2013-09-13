@@ -228,7 +228,7 @@ public final class UniversalEdit extends AbstractUndoableEdit
             futureFlowchart = GlobalFunctions.unsafeCast(
                     MainWindow.getJAXBcontext().createUnmarshaller().unmarshal(bais));
         } catch (JAXBException | IndexOutOfBoundsException ex) {
-            System.err.println(ex);
+            ex.printStackTrace(System.err);
             flowchartEditManager.resetUndoManager();
         }
         return futureFlowchart;

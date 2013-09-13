@@ -74,7 +74,7 @@ public final class ElementFunctionBed
 //
 //            //System.out.println(JSENGINE.getFactory().getEngineVersion());
 //        } catch (ScriptException ex) {
-//            System.err.println(ex.getMessage());
+//            ex.printStackTrace(System.err);
 //            return null;
 //        }
 //    }
@@ -275,7 +275,7 @@ public final class ElementFunctionBed
             Invocable invocableEngine = (Invocable) jsEngine;
             invocableEngine.invokeFunction("script", variables, updatedVariables, extraReturn);
         } catch (NoSuchMethodException ex) {
-            System.err.println(ex.getMessage());
+            ex.printStackTrace(System.err);
         } catch (ScriptException ex) {
             if (!silently) {
                 JOptionPane.showMessageDialog(null, ex.getCause().getMessage(), "Chyba!",
@@ -336,7 +336,7 @@ public final class ElementFunctionBed
                                     "Math.random\\([^\\)]*\\)", getJavaScriptEngine().eval(
                                     "Math.random();").toString());
                         } catch (ScriptException ex) {
-                            System.err.println(ex.getMessage());
+                            ex.printStackTrace(System.err);
                             commandSplit[i] = commandSplit[i].replaceFirst(
                                     "Math.random\\([^\\)]*\\)", Double.toString(Math.random()));
                         }

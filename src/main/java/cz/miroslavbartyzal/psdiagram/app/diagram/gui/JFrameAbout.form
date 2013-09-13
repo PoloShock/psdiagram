@@ -33,9 +33,10 @@
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
+          <Group type="102" alignment="1" attributes="0">
+              <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
               <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="0" pref="33" max="32767" attributes="0"/>
+              <EmptySpace pref="15" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -69,14 +70,13 @@
                       <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace pref="85" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace max="32767" attributes="0"/>
                   <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
                   <Component id="jLabelTitle" min="-2" max="-2" attributes="0"/>
@@ -93,9 +93,8 @@
                   <Component id="jLabel6" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
-                  <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
+                  <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -157,19 +156,24 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jLabel5" alignment="0" pref="339" max="32767" attributes="0"/>
+                  <Component id="jTextPane1" alignment="0" pref="0" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
+                  <Component id="jTextPane1" min="-2" max="-2" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Component class="javax.swing.JLabel" name="jLabel5">
+            <Component class="javax.swing.JTextPane" name="jTextPane1">
               <Properties>
-                <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;Aplikace vznikla jako bakal&#xe1;&#x159;sk&#xe1; pr&#xe1;ce v roce 2011-2012.&lt;br /&gt;&lt;br /&gt;&#xa;M&#xe1;te-li jak&#xe9;koliv dotazy, p&#x159;ipom&#xed;nky nebo n&#xe1;pady na vylep&#x161;en&#xed;, nev&#xe1;hejte mne pros&#xed;m kontaktovat na v&#xfd;&#x161;e uveden&#xe9;m emailu.&#xa;&lt;/html&gt;"/>
+                <Property name="editable" type="boolean" value="false"/>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="null"/>
+                </Property>
+                <Property name="contentType" type="java.lang.String" value="text/html" noResource="true"/>
+                <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;&lt;head&gt;&#xa;&lt;style type=&quot;text/css&quot;&gt;&#xa;body { background-color:D6D9DF; }&#xa;&lt;/style&gt;&#xa;&lt;/head&gt;&#xa;&lt;body&gt;&#xa;Aplikace vznikla jako bakal&#xe1;&#x159;sk&#xe1; pr&#xe1;ce v roce 2011-2012.&lt;br /&gt;&lt;br /&gt;&#xa;M&#xe1;te-li jak&#xe9;koliv dotazy, p&#x159;ipom&#xed;nky nebo n&#xe1;pady na vylep&#x161;en&#xed;, nev&#xe1;hejte mne pros&#xed;m kontaktovat na v&#xfd;&#x161;e uveden&#xe9;m emailu.&#xa;&lt;/body&gt;&#xa;&lt;/html&gt;"/>
               </Properties>
             </Component>
           </SubComponents>

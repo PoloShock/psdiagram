@@ -66,7 +66,7 @@ public final class FlowchartEditUndoManager extends UndoManager
         try {
             MainWindow.getJAXBcontext().createMarshaller().marshal(layout.getFlowchart(), before);
         } catch (JAXBException ex) {
-            System.err.println(ex);
+            ex.printStackTrace(System.err);
         }
     }
 
@@ -78,7 +78,7 @@ public final class FlowchartEditUndoManager extends UndoManager
             try {
                 MainWindow.getJAXBcontext().createMarshaller().marshal(layout.getFlowchart(), after);
             } catch (JAXBException ex) {
-                System.err.println(ex);
+                ex.printStackTrace(System.err);
             }
             if (!Arrays.equals(before.toByteArray(), after.toByteArray())) {
                 addEdit(new UniversalEdit(flowchartEditManager, before, after, beforeFocusedPath,

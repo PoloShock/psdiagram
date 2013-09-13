@@ -9,6 +9,7 @@ import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JRadioButton;
+import javax.swing.JViewport;
 
 /**
  * Tato třída představuje formulář pro export vývojového diagramu do zdrojového
@@ -44,6 +45,7 @@ public class JFrameCodeExport extends javax.swing.JFrame
             buttonGroup.add(jRadioButton);
             jPanelCodes.add(jRadioButton);
         }
+        jScrollPane1.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE); // prevents glitches (http://andrewtill.blogspot.cz/2012/06/jscrollpane-repainting-problems.html)
 
         super.setMinimumSize(super.getPreferredSize());
     }
@@ -72,7 +74,8 @@ public class JFrameCodeExport extends javax.swing.JFrame
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    private void initComponents()
+    {
 
         buttonGroup = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
@@ -88,6 +91,7 @@ public class JFrameCodeExport extends javax.swing.JFrame
 
         setTitle("Export do zdrojového kódu");
         setAlwaysOnTop(true);
+        setPreferredSize(new java.awt.Dimension(577, 480));
         setType(java.awt.Window.Type.UTILITY);
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Výstupní zdrojový kód"));
@@ -106,15 +110,17 @@ public class JFrameCodeExport extends javax.swing.JFrame
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
         );
 
         jPanel5.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 0));
 
         jButtonGenerate.setText("Generuj kód");
         jButtonGenerate.setEnabled(false);
-        jButtonGenerate.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jButtonGenerate.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jButtonGenerateActionPerformed(evt);
             }
         });
@@ -155,7 +161,7 @@ public class JFrameCodeExport extends javax.swing.JFrame
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanelDescription, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanelDescription, javax.swing.GroupLayout.PREFERRED_SIZE, 90, Short.MAX_VALUE)
                     .addComponent(jPanelCodes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 

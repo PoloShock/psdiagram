@@ -9,7 +9,11 @@
             <properties>
                 <exec.args>-classpath %classpath cz.miroslavbartyzal.psdiagram.app.diagram.Main</exec.args>
                 <exec.executable>java</exec.executable>
+                
             </properties>
+            <activatedProfiles>
+                <activatedProfile>development-run</activatedProfile>
+            </activatedProfiles>
         </action>
         <action>
             <actionName>debug</actionName>
@@ -22,6 +26,9 @@
                 <exec.executable>java</exec.executable>
                 <jpda.listen>true</jpda.listen>
             </properties>
+            <activatedProfiles>
+                <activatedProfile>development-run</activatedProfile>
+            </activatedProfiles>
         </action>
         <action>
             <actionName>profile</actionName>

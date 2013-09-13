@@ -6,8 +6,6 @@ package cz.miroslavbartyzal.psdiagram.app.diagram.gui;
 
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -44,7 +42,7 @@ public class JFrameAbout extends javax.swing.JFrame
                     try {
                         Desktop.getDesktop().browse(uri);
                     } catch (IOException ex) {
-                        System.err.println(ex);
+                        ex.printStackTrace(System.err);
                     }
                 } else {
                     // TODO: error handling
@@ -54,6 +52,10 @@ public class JFrameAbout extends javax.swing.JFrame
 
         jLabel6.setText(jLabel6.getText() + getVersion());
         jLabel7.setText(jLabel7.getText() + getBuild());
+
+//        jPanel2.revalidate();
+//        jPanel1.revalidate();
+//        super.revalidate();
     }
 
     /**
@@ -76,7 +78,7 @@ public class JFrameAbout extends javax.swing.JFrame
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
-        jLabel5 = new javax.swing.JLabel();
+        jTextPane1 = new javax.swing.JTextPane();
         jButtonWeb = new javax.swing.JButton();
 
         setTitle("O apikaci PS Diagram");
@@ -107,17 +109,20 @@ public class JFrameAbout extends javax.swing.JFrame
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Další informace"));
 
-        jLabel5.setText("<html>\nAplikace vznikla jako bakalářská práce v roce 2011-2012.<br /><br />\nMáte-li jakékoliv dotazy, připomínky nebo nápady na vylepšení, neváhejte mne prosím kontaktovat na výše uvedeném emailu.\n</html>");
+        jTextPane1.setEditable(false);
+        jTextPane1.setBorder(null);
+        jTextPane1.setContentType("text/html"); // NOI18N
+        jTextPane1.setText("<html>\n<head>\n<style type=\"text/css\">\nbody { background-color:D6D9DF; }\n</style>\n</head>\n<body>\nAplikace vznikla jako bakalářská práce v roce 2011-2012.<br /><br />\nMáte-li jakékoliv dotazy, připomínky nebo nápady na vylepšení, neváhejte mne prosím kontaktovat na výše uvedeném emailu.\n</body>\n</html>");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
+            .addComponent(jTextPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jTextPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         jButtonWeb.setText("<html>\n<FONT color=\\\"#000099\\\"><U>www.psdiagram.cz</U></FONT>\n</html>");
@@ -145,12 +150,11 @@ public class JFrameAbout extends javax.swing.JFrame
                         .addComponent(jButtonWeb, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel3)
                     .addComponent(jLabel2))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(85, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addGap(0, 0, 0)
                 .addComponent(jLabelTitle)
@@ -166,9 +170,8 @@ public class JFrameAbout extends javax.swing.JFrame
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel7)
-                .addGap(10, 10, 10)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -179,9 +182,10 @@ public class JFrameAbout extends javax.swing.JFrame
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(1, 1, 1)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 33, Short.MAX_VALUE))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         pack();
@@ -192,19 +196,19 @@ public class JFrameAbout extends javax.swing.JFrame
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabelTitle;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JTextPane jTextPane1;
     // End of variables declaration//GEN-END:variables
 
     public static String getVersion()
     {
         String msg = "";
         try {
-            msg = ResourceBundle.getBundle("version").getString("version");
+            msg = ResourceBundle.getBundle("appliaction").getString("version");
         } catch (MissingResourceException e) {
             System.err.println(e);
         }
@@ -215,7 +219,7 @@ public class JFrameAbout extends javax.swing.JFrame
     {
         String msg = "";
         try {
-            msg = ResourceBundle.getBundle("version").getString("buildInfo");
+            msg = ResourceBundle.getBundle("appliaction").getString("buildInfo");
         } catch (MissingResourceException e) {
             System.err.println(e);
         }

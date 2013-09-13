@@ -10,6 +10,7 @@ import cz.miroslavbartyzal.psdiagram.app.diagram.flowchart.layouts.LayoutElement
 import cz.miroslavbartyzal.psdiagram.app.diagram.flowchart.layouts.LayoutSegment;
 import java.awt.event.*;
 import javax.swing.JRadioButton;
+import javax.swing.JViewport;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -52,6 +53,7 @@ public class JFrameCodeImport extends javax.swing.JFrame
             buttonGroup.add(jRadioButton);
             jPanelCodes.add(jRadioButton);
         }
+        jScrollPane1.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE); // prevents glitches (http://andrewtill.blogspot.cz/2012/06/jscrollpane-repainting-problems.html)
 
         super.setMinimumSize(super.getPreferredSize());
         jTextAreaCode.getDocument().addDocumentListener(new DocumentListener()
@@ -115,7 +117,8 @@ public class JFrameCodeImport extends javax.swing.JFrame
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    private void initComponents()
+    {
 
         buttonGroup = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
@@ -131,6 +134,7 @@ public class JFrameCodeImport extends javax.swing.JFrame
 
         setTitle("Import ze zdrojového kódu");
         setAlwaysOnTop(true);
+        setPreferredSize(new java.awt.Dimension(565, 410));
         setType(java.awt.Window.Type.UTILITY);
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Vstupní zdrojový kód"));
@@ -149,15 +153,17 @@ public class JFrameCodeImport extends javax.swing.JFrame
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 178, Short.MAX_VALUE)
         );
 
         jPanel5.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 0));
 
         jButtonGenerate.setText("Generuj diagram");
         jButtonGenerate.setEnabled(false);
-        jButtonGenerate.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jButtonGenerate.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jButtonGenerateActionPerformed(evt);
             }
         });

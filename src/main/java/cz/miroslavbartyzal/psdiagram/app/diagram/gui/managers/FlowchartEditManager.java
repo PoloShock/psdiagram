@@ -424,7 +424,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
                                             element.getSymbol().hasPairSymbol() && element.getSymbol() instanceof Comment);
                                 }
                             } catch (JAXBException ex) {
-                                System.err.println(ex);
+                                ex.printStackTrace(System.err);
                                 elementsToPaste = null;
                                 break;
                             }
@@ -454,7 +454,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
                                     elementsToAdd.add(newElement);
                                 }
                             } catch (JAXBException ex) {
-                                System.err.println(ex);
+                                ex.printStackTrace(System.err);
                                 break;
                             }
 

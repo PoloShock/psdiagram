@@ -8,6 +8,7 @@ import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import javax.swing.JSpinner;
+import javax.swing.JViewport;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -51,6 +52,10 @@ public final class JFrameSettings extends javax.swing.JFrame
         jScrollPane2.getVerticalScrollBar().setUnitIncrement(10);
         jScrollPane2.getHorizontalScrollBar().setUnitIncrement(10);
         setPreferedSizes();
+        jScrollPane1.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE); // prevents glitches (http://andrewtill.blogspot.cz/2012/06/jscrollpane-repainting-problems.html)
+        jScrollPane2.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE); // prevents glitches (http://andrewtill.blogspot.cz/2012/06/jscrollpane-repainting-problems.html)
+        jScrollPane3.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE); // prevents glitches (http://andrewtill.blogspot.cz/2012/06/jscrollpane-repainting-problems.html)
+        jScrollPane4.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE); // prevents glitches (http://andrewtill.blogspot.cz/2012/06/jscrollpane-repainting-problems.html)
 
 
         ((AbstractDocument) jTextFieldPadding.getDocument()).setDocumentFilter(new DocumentFilter()
@@ -138,7 +143,8 @@ public final class JFrameSettings extends javax.swing.JFrame
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    private void initComponents()
+    {
 
         buttonGroupScopes = new javax.swing.ButtonGroup();
         jTabbedPaneSettings = new javax.swing.JTabbedPane();
@@ -193,8 +199,10 @@ public final class JFrameSettings extends javax.swing.JFrame
         jPanel10.setBorder(javax.swing.BorderFactory.createTitledBorder("Při spuštění"));
 
         jCheckBoxLoadLast.setText("Načítat předchozí uložený diagram");
-        jCheckBoxLoadLast.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jCheckBoxLoadLast.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jCheckBoxLoadLastActionPerformed(evt);
             }
         });
@@ -259,8 +267,10 @@ public final class JFrameSettings extends javax.swing.JFrame
 
         jCheckBoxFunctionFilters.setText("Používat syntaktické filtry");
         jCheckBoxFunctionFilters.setToolTipText("<html>\nSyntaktické filtry jsou aplikovány v textových polích pro vkládání funkcí symbolu.<br />\nZabraňují nechtěnným syntaktickým chybám, jako například čárka místo desetinné tečky,<br />\nnevalidním názvům proměnných apod.\n</html>");
-        jCheckBoxFunctionFilters.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jCheckBoxFunctionFilters.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jCheckBoxFunctionFiltersActionPerformed(evt);
             }
         });
@@ -325,16 +335,20 @@ public final class JFrameSettings extends javax.swing.JFrame
 
         buttonGroupScopes.add(jRadioButtonGlobalScope);
         jRadioButtonGlobalScope.setText("Globální přístup");
-        jRadioButtonGlobalScope.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jRadioButtonGlobalScope.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jRadioButtonBlockScopeActionPerformed(evt);
             }
         });
 
         buttonGroupScopes.add(jRadioButtonBlockScope);
         jRadioButtonBlockScope.setText("Blokový přístup");
-        jRadioButtonBlockScope.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jRadioButtonBlockScope.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jRadioButtonBlockScopeActionPerformed(evt);
             }
         });
@@ -368,15 +382,17 @@ public final class JFrameSettings extends javax.swing.JFrame
                     .addComponent(jRadioButtonBlockScope))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 16, Short.MAX_VALUE)))
         );
 
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Animace"));
 
         jCheckBoxBallShine.setText("Záře průchozí kuličky");
-        jCheckBoxBallShine.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jCheckBoxBallShine.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jCheckBoxBallShineActionPerformed(evt);
             }
         });
@@ -386,8 +402,10 @@ public final class JFrameSettings extends javax.swing.JFrame
         jSliderRadius.setToolTipText("");
         jSliderRadius.setValue(200);
         jSliderRadius.setEnabled(false);
-        jSliderRadius.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+        jSliderRadius.addChangeListener(new javax.swing.event.ChangeListener()
+        {
+            public void stateChanged(javax.swing.event.ChangeEvent evt)
+            {
                 jSliderRadiusStateChanged(evt);
             }
         });
@@ -399,8 +417,10 @@ public final class JFrameSettings extends javax.swing.JFrame
         jLabel10.setText("<html>\nUrčuje FPS (počet snímků za sekundu) animace. Snížením této hodnoty docílíte nižší náročnosti na výpočetní výkon.\n</html>");
 
         jSpinnerFPS.setModel(new javax.swing.SpinnerNumberModel(10, 10, 40, 1));
-        jSpinnerFPS.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+        jSpinnerFPS.addChangeListener(new javax.swing.event.ChangeListener()
+        {
+            public void stateChanged(javax.swing.event.ChangeEvent evt)
+            {
                 jSpinnerFPSStateChanged(evt);
             }
         });
@@ -440,7 +460,7 @@ public final class JFrameSettings extends javax.swing.JFrame
                         .addComponent(jLabelRadius)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jSliderRadius, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap(92, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -486,8 +506,10 @@ public final class JFrameSettings extends javax.swing.JFrame
         jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder("Export do obrázku"));
 
         jCheckBoxExportTransparency.setText("Používat transparentní pozadí");
-        jCheckBoxExportTransparency.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jCheckBoxExportTransparency.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jCheckBoxExportTransparencyActionPerformed(evt);
             }
         });

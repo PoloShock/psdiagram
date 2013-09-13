@@ -54,6 +54,17 @@ public final class Main
     // TODO vynechat package diagram?
     // RODO zkontrolovat obfuskaci po upgradu proguardu
     // TODO check these: http://sourceforge.net/projects/flowcharts/?source=recommended, http://sourceforge.net/projects/simpeflowd/?source=recommended, http://sourceforge.net/projects/devflowcharter/?source=recommended, http://sourceforge.net/projects/javablock/
+    // TODO sjednotit jazyk na EN (dokumentace)
+    // TODO brat cas z meho serveru a az kdyz to selze tak ze seznamu
+    // TODO bubblesort nefungoval s cisly 10,20,100
+    // TODO inspiruj se, koukni na Scratch
+    // TODO pamatovat si velikost oken (http://stackoverflow.com/questions/7777640/best-practice-for-setting-jframe-locations)
+    // TODO pri vyprseni zkusebky umoznit stahnout pripadnou aktualizaci
+    // TODO co je vsechno v jaru? chci tam pom?
+    // TODO otestovat kdyz chybi consolas
+    // TODO aktualizovat iconu
+    // TODO .exe soubor?
+    // TODO Pascal podpora vice vstupu naraz - prikaz read[ln](x,y,z)
 
     /**
      * Metoda pro spuštění hlavního okna aplikace. Nejsou přijímány žádné

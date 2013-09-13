@@ -6,6 +6,7 @@ package cz.miroslavbartyzal.psdiagram.app.diagram.gui;
 
 import cz.miroslavbartyzal.psdiagram.app.diagram.animation.function.variables.VariableModel;
 import cz.miroslavbartyzal.psdiagram.app.diagram.gui.treeTable.JTreeTable;
+import javax.swing.JViewport;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellRenderer;
 
@@ -40,6 +41,7 @@ public final class JPanelVariables extends javax.swing.JPanel
             dtcr.setClosedIcon(new javax.swing.ImageIcon(getClass().getResource(
                     "/img/variables/16-Array.png")));
         }
+        jScrollPaneVariables.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE); // prevents glitches (http://andrewtill.blogspot.cz/2012/06/jscrollpane-repainting-problems.html)
     }
 
     /**

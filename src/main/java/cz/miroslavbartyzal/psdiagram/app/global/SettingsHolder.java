@@ -13,6 +13,7 @@ import java.awt.RenderingHints;
 import java.awt.font.FontRenderContext;
 import java.io.File;
 import java.io.IOException;
+import java.util.ResourceBundle;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -40,8 +41,8 @@ public final class SettingsHolder
     public static final Settings settings;
     private static final JAXBContext jAXBcontext;
     private static final Marshaller jAXBmarshaller; // Marshaller se bude vyuzivat frekventovane
-    private static final File settingsDir = new File(System.getProperty("user.home"), ".psdiagram");
-    private static final File settingsFile = new File(settingsDir, "settings.xml");
+    public static final File WORKING_DIR = new File(System.getProperty("user.home"), ".psdiagram");
+    private static final File settingsFile = new File(WORKING_DIR, "settings.xml");
 
     // automaticke loadovani nastaveni
     static {
@@ -52,7 +53,7 @@ public final class SettingsHolder
             marshaller = context.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         } catch (JAXBException ex) {
-            System.err.print(ex);
+            ex.printStackTrace(System.err);
         }
         jAXBcontext = context;
         jAXBmarshaller = marshaller;
@@ -63,7 +64,7 @@ public final class SettingsHolder
                     settings.actualFlowchartFile = null;
                 }
             } catch (JAXBException ex) {
-                System.err.print(ex);
+                ex.printStackTrace(System.err);
             }
         } else {
             settings = new Settings();
@@ -102,6 +103,8 @@ public final class SettingsHolder
      * čas.
      */
     public static final String TIMESERVER = "http://seznam.cz";
+    public static final String PSDIAGRAM_SERVER = ResourceBundle.getBundle("appliaction").getString(
+            "psdiagramWebUrl");
 
     /**
      * Uloží aktuální nastavení do souboru (user.home)/.psdiagram/settings.xml.
@@ -111,15 +114,15 @@ public final class SettingsHolder
         if (jAXBcontext == null || jAXBmarshaller == null) {
             return; // nelze vytvořit xml :(
         }
-        if (!settingsDir.exists()) {
-            if (!settingsDir.mkdir()) {
+        if (!WORKING_DIR.exists()) {
+            if (!WORKING_DIR.mkdir()) {
                 return; // nelze vytvořit složku :(
             }
         }
         try {
             jAXBmarshaller.marshal(settings, settingsFile);
         } catch (JAXBException ex) {
-            System.err.print(ex);
+            ex.printStackTrace(System.err);
         }
     }
 

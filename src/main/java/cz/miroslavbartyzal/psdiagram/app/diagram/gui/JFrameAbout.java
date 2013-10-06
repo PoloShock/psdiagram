@@ -102,10 +102,8 @@ public class JFrameAbout extends javax.swing.JFrame
         jLabel4.setText("Web: ");
 
         jLabel6.setText("Verze: ");
-        jLabel6.setToolTipText("");
 
         jLabel7.setText("Build: ");
-        jLabel7.setToolTipText("");
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Další informace"));
 

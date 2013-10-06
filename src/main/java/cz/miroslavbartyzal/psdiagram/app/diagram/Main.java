@@ -56,7 +56,6 @@ public final class Main
     // TODO check these: http://sourceforge.net/projects/flowcharts/?source=recommended, http://sourceforge.net/projects/simpeflowd/?source=recommended, http://sourceforge.net/projects/devflowcharter/?source=recommended, http://sourceforge.net/projects/javablock/
     // TODO sjednotit jazyk na EN (dokumentace)
     // TODO brat cas z meho serveru a az kdyz to selze tak ze seznamu
-    // TODO bubblesort nefungoval s cisly 10,20,100
     // TODO inspiruj se, koukni na Scratch
     // TODO pamatovat si velikost oken (http://stackoverflow.com/questions/7777640/best-practice-for-setting-jframe-locations)
     // TODO pri vyprseni zkusebky umoznit stahnout pripadnou aktualizaci
@@ -66,7 +65,6 @@ public final class Main
     // TODO .exe soubor?
     // TODO Pascal podpora vice vstupu naraz - prikaz read[ln](x,y,z)
     // TODO prodlouzit timeout (nebo checknout pozdrzeni firewallem) pro firewally
-    // TODO chyba ve spojce - GOTO. V optionboxu je vybran goto, ale ve skutecnosti je zobrazeny vyber vrchni funkcionality
 
     /**
      * Metoda pro spuštění hlavního okna aplikace. Nejsou přijímány žádné

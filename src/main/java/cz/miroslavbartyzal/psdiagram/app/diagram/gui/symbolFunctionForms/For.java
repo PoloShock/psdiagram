@@ -301,7 +301,6 @@ public final class For extends AbstractSymbolFunctionForm
         jLabelExamples1.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
         jLabel4.setText("Inkrement:");
-        jLabel4.setToolTipText("");
 
         jTextFieldIncrement.setText("1");
         jTextFieldIncrement.setToolTipText("<html>\nNejčastěji se používá inkrement 1. Pro dekrementaci použijte zápornou hodnotu.\n</html>");

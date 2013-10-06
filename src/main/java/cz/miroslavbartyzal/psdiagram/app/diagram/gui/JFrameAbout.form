@@ -135,13 +135,11 @@
         <Component class="javax.swing.JLabel" name="jLabel6">
           <Properties>
             <Property name="text" type="java.lang.String" value="Verze: "/>
-            <Property name="toolTipText" type="java.lang.String" value=""/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel7">
           <Properties>
             <Property name="text" type="java.lang.String" value="Build: "/>
-            <Property name="toolTipText" type="java.lang.String" value=""/>
           </Properties>
         </Component>
         <Container class="javax.swing.JPanel" name="jPanel2">

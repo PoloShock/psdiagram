@@ -34,6 +34,7 @@ public final class Goto extends AbstractSymbol
         super(25, 25);
         if (value == null || value.equals("")) {
             value = "__\nBR\n__";
+            super.setDefaultValue(value);
             LinkedHashMap<String, String> commands = new LinkedHashMap<>();
             commands.put("mode", "break");
             super.setCommands(commands);

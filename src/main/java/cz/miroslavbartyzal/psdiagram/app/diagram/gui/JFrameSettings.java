@@ -399,7 +399,6 @@ public final class JFrameSettings extends javax.swing.JFrame
 
         jSliderRadius.setMaximum(400);
         jSliderRadius.setMinimum(50);
-        jSliderRadius.setToolTipText("");
         jSliderRadius.setValue(200);
         jSliderRadius.setEnabled(false);
         jSliderRadius.addChangeListener(new javax.swing.event.ChangeListener()

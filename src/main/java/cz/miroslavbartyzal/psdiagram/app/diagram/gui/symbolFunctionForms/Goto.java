@@ -190,7 +190,6 @@ public final class Goto extends AbstractSymbolFunctionForm
 
         buttonGroup.add(jRadioButtonGoto);
         jRadioButtonGoto.setText("Goto");
-        jRadioButtonGoto.setToolTipText("");
         jRadioButtonGoto.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)

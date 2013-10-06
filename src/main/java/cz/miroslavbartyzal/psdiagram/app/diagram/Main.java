@@ -52,7 +52,7 @@ public final class Main
     // TODO Timer jako procedura (interrupt či vlákno)
     // TODO mrkni na http://jelastic.com/ a na jejich barvy, maji to cool :)
     // TODO vynechat package diagram?
-    // RODO zkontrolovat obfuskaci po upgradu proguardu
+    // TODO zkontrolovat obfuskaci po upgradu proguardu
     // TODO check these: http://sourceforge.net/projects/flowcharts/?source=recommended, http://sourceforge.net/projects/simpeflowd/?source=recommended, http://sourceforge.net/projects/devflowcharter/?source=recommended, http://sourceforge.net/projects/javablock/
     // TODO sjednotit jazyk na EN (dokumentace)
     // TODO brat cas z meho serveru a az kdyz to selze tak ze seznamu
@@ -65,6 +65,8 @@ public final class Main
     // TODO aktualizovat iconu
     // TODO .exe soubor?
     // TODO Pascal podpora vice vstupu naraz - prikaz read[ln](x,y,z)
+    // TODO prodlouzit timeout (nebo checknout pozdrzeni firewallem) pro firewally
+    // TODO chyba ve spojce - GOTO. V optionboxu je vybran goto, ale ve skutecnosti je zobrazeny vyber vrchni funkcionality
 
     /**
      * Metoda pro spuštění hlavního okna aplikace. Nejsou přijímány žádné

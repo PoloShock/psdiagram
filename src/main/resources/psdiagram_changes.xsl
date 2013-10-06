@@ -42,7 +42,7 @@
             </xsl:for-each>
         </ul>
     </xsl:template>
-    <xsl:template match="/versionsinfo/improvements/version[entry]">
+    <xsl:template match="/versionsinfo/enhancements/version[entry]">
         <h2>
             Vylepšení
         </h2>

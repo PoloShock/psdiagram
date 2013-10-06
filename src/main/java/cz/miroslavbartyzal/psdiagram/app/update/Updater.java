@@ -172,12 +172,21 @@ public final class Updater
 
         // launch it
         try {
-            Runtime.getRuntime().exec(new String[]{"cmd", "/s", "/c", "\"start", "\"updater\"",
-                "/d", "\"" + updaterFile.getParentFile() + "\"",
-                "\"" + updaterFile.getAbsolutePath() + "\"",
-                "-psdir", "\"" + new File(
-                Main.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParent() + "\""});
-            // there can't be double quotes on end -> i produses last parameter with quote on its end
+            if (SettingsHolder.JAVAW == null) {
+                Runtime.getRuntime().exec(new String[]{"cmd", "/s", "/c", "\"start", "\"updater\"",
+                    "/d", "\"" + updaterFile.getParentFile() + "\"",
+                    "\"" + updaterFile.getAbsolutePath() + "\"",
+                    "-psdir", "\"" + new File(
+                    Main.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParent() + "\"\""});
+            } else {
+                Runtime.getRuntime().exec(new String[]{"cmd", "/s", "/c", "\"start", "\"updater\"",
+                    "/d", "\"" + updaterFile.getParentFile() + "\"",
+                    "\"" + SettingsHolder.JAVAW.getAbsolutePath() + "\"", "-jar",
+                    "\"" + updaterFile.getAbsolutePath() + "\"",
+                    "-psdir", "\"" + new File(
+                    Main.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParent() + "\"\""});
+            }
+
         } catch (URISyntaxException | IOException ex) {
             ex.printStackTrace(System.err);
             statusListener.propertyChange(new PropertyChangeEvent(this, "error", null,

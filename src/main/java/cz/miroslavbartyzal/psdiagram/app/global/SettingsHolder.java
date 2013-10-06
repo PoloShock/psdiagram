@@ -105,6 +105,7 @@ public final class SettingsHolder
     public static final String TIMESERVER = "http://seznam.cz";
     public static final String PSDIAGRAM_SERVER = ResourceBundle.getBundle("appliaction").getString(
             "psdiagramWebUrl");
+    public static final File JAVAW = getJavaw();
 
     /**
      * Uloží aktuální nastavení do souboru (user.home)/.psdiagram/settings.xml.
@@ -174,6 +175,26 @@ public final class SettingsHolder
              * }
              */
         }
+    }
+
+    private static File getJavaw()
+    {
+        File file = new File(System.getProperty("java.home"), "bin");
+        if (isWindows()) {
+            file = new File(file, "javaw.exe");
+        } else {
+            file = new File(file, "javaw");
+        }
+        if (file.exists()) {
+            return file;
+        } else {
+            return null;
+        }
+    }
+
+    private static boolean isWindows()
+    {
+        return System.getProperty("os.name").toLowerCase().contains("windows");
     }
 
     /**

@@ -35,7 +35,7 @@ public class FileChecksum
             return null;
         }
 
-        byte[] buffer = new byte[8192];
+        byte[] buffer = new byte[131072];
         int numOfBytesRead;
         try {
             while ((numOfBytesRead = fs.read(buffer)) > 0) {

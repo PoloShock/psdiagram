@@ -94,7 +94,7 @@ public final class MainWindow extends javax.swing.JFrame
     private JFrameAbout jFrameAbout;
     private JFrameUpdate jFrameUpdate;
     private static JAXBContext jAXBcontext;
-    private String windowTitle = "PS Diagram";
+    private String windowTitle = "PS Diagram"; // BEWARE OF CHANGE - updater using it for process identification
     private static Timer statusTimer = new Timer(0, new ActionListener()
     {
         @Override

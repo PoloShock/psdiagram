@@ -82,7 +82,7 @@ public class ChangesCondenserTest
         Assert.assertTrue(condenser2.getFixes().isEmpty());
         Assert.assertTrue(condenser2.getExtensions() == null);
         Assert.assertTrue(condenser2.getChanges() == null);
-        Assert.assertTrue(condenser2.getImprovements() == null);
+        Assert.assertTrue(condenser2.getEnhancements() == null);
         Assert.assertTrue(condenser2.getOther() == null);
         Assert.assertTrue(condenser2.getHeadlines() == null);
         Assert.assertTrue(condenser2.getReleaseURLs() == null);

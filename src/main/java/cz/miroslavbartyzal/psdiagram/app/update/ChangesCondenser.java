@@ -11,6 +11,7 @@ import cz.miroslavbartyzal.psdiagram.app.global.xmlAdapters.MapListChangesAdapte
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -52,9 +53,9 @@ public class ChangesCondenser
     @XmlElement(name = "features")
     @XmlJavaTypeAdapter(MapListChangesAdapter.class)
     private Map<String, List<String>> features;
-    @XmlElement(name = "improvements")
+    @XmlElement(name = "enhancements")
     @XmlJavaTypeAdapter(MapListChangesAdapter.class)
-    private Map<String, List<String>> improvements;
+    private Map<String, List<String>> enhancements;
     @XmlElement(name = "extensions")
     @XmlJavaTypeAdapter(MapListChangesAdapter.class)
     private Map<String, List<String>> extensions;
@@ -80,7 +81,7 @@ public class ChangesCondenser
             Map<String, String> headlines,
             Map<String, String> descriptions,
             Map<String, List<String>> features,
-            Map<String, List<String>> improvements,
+            Map<String, List<String>> enhancements,
             Map<String, List<String>> extensions,
             Map<String, List<String>> changes,
             Map<String, List<String>> fixes,
@@ -92,7 +93,7 @@ public class ChangesCondenser
         this.headlines = headlines;
         this.descriptions = descriptions;
         this.features = features;
-        this.improvements = improvements;
+        this.enhancements = enhancements;
         this.extensions = extensions;
         this.changes = changes;
         this.fixes = fixes;
@@ -129,9 +130,9 @@ public class ChangesCondenser
         return features;
     }
 
-    public Map<String, List<String>> getImprovements()
+    public Map<String, List<String>> getEnhancements()
     {
-        return improvements;
+        return enhancements;
     }
 
     public Map<String, List<String>> getExtensions()
@@ -185,16 +186,20 @@ public class ChangesCondenser
                 fv,
                 releaseURLs),
                 getFractionMap(fv, headlines), getFractionMap(fv, descriptions), getFractionMap(fv,
-                features), getFractionMap(fv, improvements), getFractionMap(fv, extensions),
+                features), getFractionMap(fv, enhancements), getFractionMap(fv, extensions),
                 getFractionMap(fv, changes), getFractionMap(fv, fixes), getFractionMap(fv, other));
     }
 
     private <E> Map<String, E> getFractionMap(float fromVersion, Map<String, E> map)
     {
+        if (map == null) {
+            return null;
+        }
         HashMap<String, E> retMAP = new HashMap<>(map);
-        for (String version : retMAP.keySet()) {
-            if (parseVersion(version) < fromVersion) {
-                retMAP.remove(version);
+        for (Iterator<Map.Entry<String, E>> it = retMAP.entrySet().iterator(); it.hasNext();) {
+            Map.Entry<String, E> entry = it.next();
+            if (parseVersion(entry.getKey()) < fromVersion) {
+                it.remove();
             }
         }
         return retMAP;
@@ -227,8 +232,8 @@ public class ChangesCondenser
         if (features != null) {
             versions.addAll(features.keySet());
         }
-        if (improvements != null) {
-            versions.addAll(improvements.keySet());
+        if (enhancements != null) {
+            versions.addAll(enhancements.keySet());
         }
         if (extensions != null) {
             versions.addAll(extensions.keySet());

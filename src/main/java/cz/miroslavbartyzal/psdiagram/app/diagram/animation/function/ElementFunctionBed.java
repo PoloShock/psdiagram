@@ -582,7 +582,7 @@ public final class ElementFunctionBed
                     JOptionPane.QUESTION_MESSAGE);
             if (input == null) {
                 input = "null";
-            } else if (!input.matches("((\\-|\\+)?[1-9][0-9]*(\\.[0-9]+)?)+")) {
+            } else if (!input.matches("^(\\-|\\+)?([1-9]|0(?=\\.|$))[0-9]*(\\.[0-9]+)?$")) {
                 input = "\"" + input.replaceAll("\"", "").replaceAll("\'", "") + "\"";
             }
 

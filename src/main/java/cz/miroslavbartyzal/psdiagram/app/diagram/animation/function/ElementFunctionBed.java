@@ -373,8 +373,8 @@ public final class ElementFunctionBed
             for (int j = 0; j < methodsSplit.length; j++) {
                 if (j % 2 == 1) {
                     String[] extraRet = new String[1];
-                    doSymbolScript(variables, "_extraRet_[0] = " + methodsSplit[j] + ";", extraRet,
-                            true);
+                    doSymbolScript(variables, "_extraRet_[0] = myUneval(" + methodsSplit[j] + ");",
+                            extraRet, true);
                     methodsSplit[j] = extraRet[0];
                 }
                 commandsWithoutQ[i] += methodsSplit[j];
@@ -387,7 +387,7 @@ public final class ElementFunctionBed
 
         // sude indexy jsou promenne
         String[] commandSplit = RegexFunctions.splitStringIgnoreQuotesInsides(command,
-                "[^a-zA-Z0-9\\_\\.\\s]+|[a-zA-Z\\_\\$][\\w\\$]+\\[");
+                "[^a-zA-Z0-9\\_\\.]+|[a-zA-Z\\_\\$][\\w\\$]*\\[");
         for (int i = 0; i < commandSplit.length; i++) {
             if (i % 2 == 1) {
                 if (SettingsHolder.settings.isFunctionFilters()) {

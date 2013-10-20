@@ -4,8 +4,6 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.diagram.gui;
 
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
 import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -50,8 +48,10 @@ public class JFrameAbout extends javax.swing.JFrame
             }
         });
 
-        jLabel6.setText(jLabel6.getText() + getVersion());
-        jLabel7.setText(jLabel7.getText() + getBuild());
+        jLabel6.setText(
+                jLabel6.getText() + cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder.PSDIAGRAM_VERSION);
+        jLabel7.setText(
+                jLabel7.getText() + cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder.PSDIAGRAM_BUILD);
 
 //        jPanel2.revalidate();
 //        jPanel1.revalidate();
@@ -201,27 +201,5 @@ public class JFrameAbout extends javax.swing.JFrame
     private javax.swing.JPanel jPanel2;
     private javax.swing.JTextPane jTextPane1;
     // End of variables declaration//GEN-END:variables
-
-    public static String getVersion()
-    {
-        String msg = "";
-        try {
-            msg = ResourceBundle.getBundle("appliaction").getString("version");
-        } catch (MissingResourceException e) {
-            System.err.println(e);
-        }
-        return msg;
-    }
-
-    public static String getBuild()
-    {
-        String msg = "";
-        try {
-            msg = ResourceBundle.getBundle("appliaction").getString("buildInfo");
-        } catch (MissingResourceException e) {
-            System.err.println(e);
-        }
-        return msg;
-    }
 
 }

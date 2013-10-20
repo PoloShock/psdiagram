@@ -15,15 +15,38 @@ import cz.miroslavbartyzal.psdiagram.app.diagram.flowchart.layouts.EnumLayout;
 import cz.miroslavbartyzal.psdiagram.app.diagram.flowchart.layouts.Layout;
 import cz.miroslavbartyzal.psdiagram.app.diagram.flowchart.layouts.LayoutElement;
 import cz.miroslavbartyzal.psdiagram.app.diagram.flowchart.layouts.LayoutSegment;
-import cz.miroslavbartyzal.psdiagram.app.diagram.flowchart.symbols.*;
+import cz.miroslavbartyzal.psdiagram.app.diagram.flowchart.symbols.Comment;
+import cz.miroslavbartyzal.psdiagram.app.diagram.flowchart.symbols.Decision;
+import cz.miroslavbartyzal.psdiagram.app.diagram.flowchart.symbols.Ellipsis;
+import cz.miroslavbartyzal.psdiagram.app.diagram.flowchart.symbols.EnumSymbol;
+import cz.miroslavbartyzal.psdiagram.app.diagram.flowchart.symbols.For;
+import cz.miroslavbartyzal.psdiagram.app.diagram.flowchart.symbols.Goto;
+import cz.miroslavbartyzal.psdiagram.app.diagram.flowchart.symbols.GotoLabel;
+import cz.miroslavbartyzal.psdiagram.app.diagram.flowchart.symbols.IO;
+import cz.miroslavbartyzal.psdiagram.app.diagram.flowchart.symbols.LoopEnd;
+import cz.miroslavbartyzal.psdiagram.app.diagram.flowchart.symbols.LoopStart;
+import cz.miroslavbartyzal.psdiagram.app.diagram.flowchart.symbols.StartEnd;
+import cz.miroslavbartyzal.psdiagram.app.diagram.flowchart.symbols.SubRoutine;
+import cz.miroslavbartyzal.psdiagram.app.diagram.flowchart.symbols.Switch;
 import cz.miroslavbartyzal.psdiagram.app.diagram.gui.managers.FlowchartAnimationManager;
 import cz.miroslavbartyzal.psdiagram.app.diagram.gui.managers.FlowchartEditManager;
 import cz.miroslavbartyzal.psdiagram.app.diagram.gui.managers.FlowchartEditUndoManager;
 import cz.miroslavbartyzal.psdiagram.app.diagram.gui.managers.FlowchartOverlookManager;
 import cz.miroslavbartyzal.psdiagram.app.global.GlobalFunctions;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
+import cz.miroslavbartyzal.psdiagram.app.network.TimeCollector;
 import cz.miroslavbartyzal.psdiagram.app.update.Updater;
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Desktop;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.InvalidDnDOperationException;
@@ -38,22 +61,29 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.nio.file.Files;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.GregorianCalendar;
-import java.util.Locale;
+import java.util.Date;
 import java.util.ResourceBundle;
 import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.ButtonGroup;
+import javax.swing.GroupLayout;
+import javax.swing.JButton;
+import javax.swing.JEditorPane;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JScrollBar;
+import javax.swing.JSeparator;
+import javax.swing.JTabbedPane;
+import javax.swing.JViewport;
+import javax.swing.SwingUtilities;
+import javax.swing.Timer;
+import javax.swing.TransferHandler;
 import javax.swing.TransferHandler.TransferSupport;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
@@ -79,22 +109,22 @@ public final class MainWindow extends javax.swing.JFrame
     private Layout layout;
     private boolean editMode = true;
     private boolean animationMode = false;
-    private FlowchartEditManager flowchartEditManager;
-    private FlowchartEditUndoManager flowchartEditUndoManager;
-    private FlowchartOverlookManager flowchartOverlookManager;
-    private FlowchartAnimationManager flowchartAnimationManager;
-    private JPanelDiagram jPnlDiagram;
+    private final FlowchartEditManager flowchartEditManager;
+    private final FlowchartEditUndoManager flowchartEditUndoManager;
+    private final FlowchartOverlookManager flowchartOverlookManager;
+    private final FlowchartAnimationManager flowchartAnimationManager;
+    private final JPanelDiagram jPnlDiagram;
     private AffineTransform affineTransform;
     private boolean graphicsXTransformedByScrollbar = false;
     private boolean graphicsYTransformedByScrollbar = false;
-    private JPanelVariables jPanelVariables = new JPanelVariables();
-    private JFrameSettings jFrameSettings;
-    private JFrameCodeImport jFrameCodeImport;
-    private JFrameCodeExport jFrameCodeExport;
-    private JFrameAbout jFrameAbout;
-    private JFrameUpdate jFrameUpdate;
+    private final JPanelVariables jPanelVariables = new JPanelVariables();
+    private final JFrameSettings jFrameSettings;
+    private final JFrameCodeImport jFrameCodeImport;
+    private final JFrameCodeExport jFrameCodeExport;
+    private final JFrameAbout jFrameAbout;
+    private final JFrameUpdate jFrameUpdate;
     private static JAXBContext jAXBcontext;
-    private String windowTitle = "PS Diagram"; // BEWARE OF CHANGE - updater using it for process identification
+    private final String windowTitle = "PS Diagram"; // BEWARE OF CHANGE - updater using it for process identification
     private static Timer statusTimer = new Timer(0, new ActionListener()
     {
         @Override
@@ -216,7 +246,6 @@ public final class MainWindow extends javax.swing.JFrame
 //        jFrameUpdate.setLocation(screenSize.width / 2 - jFrameUpdate.getWidth() / 2,
 //                screenSize.height / 2 - jFrameUpdate.getHeight() / 2);
         // (I'm using platform default location after all)
-
         jPnlDiagram = (JPanelDiagram) jPanelDiagram;
 
         /*
@@ -224,7 +253,6 @@ public final class MainWindow extends javax.swing.JFrame
          * affineTransform.setToTranslation(getTranslateX(), getTranslateY());
          * affineTransform.scale(getScale(), getScale());
          */
-
         jTextAreaTextSymbol.setFont(SettingsHolder.CODEFONT);
         jTextFieldTextSegment.setFont(SettingsHolder.SMALL_CODEFONT.deriveFont(13f));
         jPanelDiagram.setFocusable(true);
@@ -1129,7 +1157,6 @@ public final class MainWindow extends javax.swing.JFrame
 //
 //            //TODO add metadata?
 //            document.close();
-
             VectorGraphics graphics;
             try {
                 graphics = new PDFGraphics2D(file, new Dimension((int) layout.getWidth(),
@@ -1337,6 +1364,8 @@ public final class MainWindow extends javax.swing.JFrame
     /**
      * Metoda pro spuštění hlavního okna aplikace. Nejsou přijímány žádné
      * paramtery.
+     * <p>
+     * @param args
      */
     public static void main(String args[])
     {
@@ -1366,7 +1395,7 @@ public final class MainWindow extends javax.swing.JFrame
         /*
          * Create and display the form
          */
-        java.awt.EventQueue.invokeLater(new Runnable()
+        SwingUtilities.invokeLater(new Runnable()
         {
             @Override
             public void run()
@@ -1901,8 +1930,7 @@ public final class MainWindow extends javax.swing.JFrame
      */
     private TransferHandler createTransferHandler()
     {
-        // TODO: give it it's own class
-        long currentTime = System.currentTimeMillis();
+        long currentTime; //= System.currentTimeMillis();
 
 //        Proxy proxyHTTP = Proxy.NO_PROXY;
 //        Proxy proxySOCKS = Proxy.NO_PROXY;
@@ -1925,57 +1953,48 @@ public final class MainWindow extends javax.swing.JFrame
 //            System.setProperty("socksProxyHost", global.SettingsHolder.settings.getProxyHost());
 //            System.setProperty("socksProxyPort", String.valueOf(global.SettingsHolder.settings.getProxyPort()));
 //        }
-
-        try {
-            URL url = new URL(cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder.TIMESERVER);
-            URLConnection urlConn = url.openConnection();
-            urlConn.setConnectTimeout(6000);
-            urlConn.setReadTimeout(6000);
-            urlConn.setRequestProperty("User-agent", "spider");
-            urlConn.connect();
-            SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z",
-                    Locale.ENGLISH);
-            currentTime = sdf.parse(urlConn.getHeaderField("Date")).getTime();
-        } catch (IOException ex) {
-            System.err.println("1: " + ex);
-            JOptionPane.showMessageDialog(null, new String(new char[]{'<', 'h', 't', 'm', 'l', '>',
-                'T', 'a', 't', 'o', ' ', 'z', 'k', 'u', 'š', 'e', 'b', 'n', 'í', ' ', 'v', 'e', 'r',
-                'z', 'e', ' ', 'a', 'p', 'l', 'i', 'k', 'a', 'c', 'e', ' ', 'p', 'o', 't', 'ř', 'e',
-                'b', 'u', 'j', 'e', ' ', 'p', 'r', 'o', ' ', 's', 'v', 'ů', 'j', ' ', 'b', 'ě', 'h',
-                ' ', 'p', 'ř', 'i', 'p', 'o', 'j', 'e', 'n', 'í', ' ', 'k', ' ', 'i', 'n', 't', 'e',
-                'r', 'n', 'e', 't', 'u', '.', '<', 'b', 'r', ' ', '/', '>', 'M', 'á', 't', 'e', '-',
-                'l', 'i', ' ', 'p', 'o', 't', 'í', 'ž', 'e', ',', ' ', 'k', 'o', 'n', 't', 'a', 'k',
-                't', 'u', 'j', 't', 'e', ' ', 'm', 'n', 'e', ' ', 'n', 'a', ' ', 'm', 'i', 'r', 'o',
-                's', 'l', 'a', 'v', 'b', 'a', 'r', 't', 'y', 'z', 'a', 'l', '@', 'g', 'm', 'a', 'i',
-                'l', '.', 'c', 'o', 'm', '.', '<', 'b', 'r', ' ', '/', '>', 'N', 'y', 'n', 'í', ' ',
-                's', 'e', ' ', 'P', 'S', ' ', 'D', 'i', 'a', 'g', 'r', 'a', 'm', ' ', 'u', 'k', 'o',
-                'n', 'č', 'í', '.', '.', '.', '<', '/', 'h', 't', 'm', 'l', '>'}), new String(
-                    new char[]{'N', 'e', 'p', 'o', 'd', 'a', 'ř', 'i', 'l', 'o', ' ', 's', 'e', ' ',
-                'n', 'a', 'v', 'á', 'z', 'a', 't', ' ', 's', 'p', 'o', 'j', 'e', 'n', 'í', ' ', 's',
-                'e', ' ', 's', 'e', 'r', 'v', 'e', 'r', 'e', 'm'}), JOptionPane.WARNING_MESSAGE); //<html>Nepodařilo se navázat spojení se serverem; Tato zkušební verze aplikace potřebuje pro svůj běh připojení k internetu.<br />Máte-li potíže, kontaktujte mne na miroslavbartyzal@gmail.com.<br /> Nyní se PS Diagram ukončí...</html>
-            System.exit(0);
-        } catch (ParseException ex) {
-            System.err.println("2: " + ex);
-        }
-
-        Socket socket = new Socket();
-        try {
-            socket.connect(new InetSocketAddress(InetAddress.getByName("92.62.226.175"), 33789),
-                    2000);
-        } catch (Exception ex) {
-//            System.err.println("5: " + ex);
-//            ex.printStackTrace(System.err);
-        } finally {
-            try {
-                socket.close();
-            } catch (IOException ex) {
-                System.err.println("6: " + ex);
-                ex.printStackTrace(System.err);
+        Date currentDate = TimeCollector.getTimeAndDate(
+                cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder.PSDIAGRAM_SERVER);
+        if (currentDate == null) {
+            currentDate = TimeCollector.getTimeAndDate(
+                    cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder.TIMESERVER);
+            if (currentDate == null) {
+                JOptionPane.showMessageDialog(null, new String(new char[]{'<', 'h', 't', 'm', 'l',
+                    '>', 'T', 'a', 't', 'o', ' ', 'z', 'k', 'u', 'š', 'e', 'b', 'n', 'í', ' ', 'v',
+                    'e', 'r', 'z', 'e', ' ', 'a', 'p', 'l', 'i', 'k', 'a', 'c', 'e', ' ', 'p', 'o',
+                    't', 'ř', 'e', 'b', 'u', 'j', 'e', ' ', 'p', 'r', 'o', ' ', 's', 'v', 'ů', 'j',
+                    ' ', 'b', 'ě', 'h', ' ', 'p', 'ř', 'i', 'p', 'o', 'j', 'e', 'n', 'í', ' ', 'k',
+                    ' ', 'i', 'n', 't', 'e', 'r', 'n', 'e', 't', 'u', '.', '<', 'b', 'r', ' ', '/',
+                    '>', 'M', 'á', 't', 'e', '-', 'l', 'i', ' ', 'p', 'o', 't', 'í', 'ž', 'e', ',',
+                    ' ', 'k', 'o', 'n', 't', 'a', 'k', 't', 'u', 'j', 't', 'e', ' ', 'm', 'n', 'e',
+                    ' ', 'n', 'a', ' ', 'm', 'i', 'r', 'o', 's', 'l', 'a', 'v', 'b', 'a', 'r', 't',
+                    'y', 'z', 'a', 'l', '@', 'g', 'm', 'a', 'i', 'l', '.', 'c', 'o', 'm', '.', '<',
+                    'b', 'r', ' ', '/', '>', 'N', 'y', 'n', 'í', ' ', 's', 'e', ' ', 'P', 'S', ' ',
+                    'D', 'i', 'a', 'g', 'r', 'a', 'm', ' ', 'u', 'k', 'o', 'n', 'č', 'í', '.', '.',
+                    '.', '<', '/', 'h', 't', 'm', 'l', '>'}), new String(new char[]{'N', 'e', 'p',
+                    'o', 'd', 'a', 'ř', 'i', 'l', 'o', ' ', 's', 'e', ' ', 'n', 'a', 'v', 'á', 'z',
+                    'a', 't', ' ', 's', 'p', 'o', 'j', 'e', 'n', 'í', ' ', 's', 'e', ' ', 's', 'e',
+                    'r', 'v', 'e', 'r', 'e', 'm'}), JOptionPane.WARNING_MESSAGE); //<html>Nepodařilo se navázat spojení se serverem; Tato zkušební verze aplikace potřebuje pro svůj běh připojení k internetu.<br />Máte-li potíže, kontaktujte mne na miroslavbartyzal@gmail.com.<br /> Nyní se PS Diagram ukončí...</html>
+                System.exit(0);
             }
         }
-//        JOptionPane.showMessageDialog(null, "Analýza probéhla, log chyb viz příkazový řádek. Nyní se program ukončí.", "Analýza proběhla", JOptionPane.INFORMATION_MESSAGE);
-//        System.exit(0);
+        currentTime = currentDate.getTime();
 
+//        Socket socket = new Socket();
+//        try {
+//            socket.connect(new InetSocketAddress(InetAddress.getByName("92.62.226.175"), 33789),
+//                    2000);
+//        } catch (IOException ex) {
+////            System.err.println("5: " + ex);
+////            ex.printStackTrace(System.err);
+//        } finally {
+//            try {
+//                socket.close();
+//            } catch (IOException ex) {
+//                System.err.println("6: " + ex);
+//                ex.printStackTrace(System.err);
+//            }
+//        }
         if (currentTime > 1383260400000l || currentTime < SettingsHolder.settings.getLastTrialLaunchedTime()) { // 2013.11.1. 00:00:00 = 1383260400000 (new GregorianCalendar(2013, 10, 1).getTimeInMillis()) - month is zero-based
             // html content
             JEditorPane ep = new JEditorPane("text/html", new String(new char[]{'<', 'h', 't', 'm',

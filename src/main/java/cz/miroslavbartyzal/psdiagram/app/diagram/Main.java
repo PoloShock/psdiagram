@@ -19,7 +19,6 @@ public final class Main
     // TODO zakomponovat priklady do vyuky primo jako soucast aplikace
     // TODO zoom k mysi
     // TODO odkazy na weby obrazku
-    // TODO splash screen
     // TODO exception handling: http://stackoverflow.com/questions/4590295/catch-exception-high-in-the-call-stack-when-dealing-with-n-tiers
     // TODO logovani
     // TODO pridat info o verzi a licenci
@@ -62,13 +61,12 @@ public final class Main
     // TODO zahrnout do instalacky JRE, aby nemusela byt na cilovce java - updater pak musi fungovat jako synchronizator, aby balik nebyl zbytecne moc velky
     // TODO .exe soubor?
     // TODO Pascal podpora vice vstupu naraz - prikaz read[ln](x,y,z)
-    // TODO prodlouzit timeout (nebo checknout pozdrzeni firewallem) pro firewally
-    // TODO pingovat se na web server -> nema cenu to davat ke me na disk
-    // TODO brat cas z meho serveru a az kdyz to selze tak ze seznamu
 
     /**
      * Metoda pro spuštění hlavního okna aplikace. Nejsou přijímány žádné
      * parametry.
+     * <p>
+     * @param args
      */
     public static void main(String[] args)
     {

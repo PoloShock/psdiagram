@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.miroslavbartyzal.psdiagram.app.update.network;
+package cz.miroslavbartyzal.psdiagram.app.network;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

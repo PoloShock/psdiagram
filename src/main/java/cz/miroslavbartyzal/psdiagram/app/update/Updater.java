@@ -5,10 +5,9 @@
 package cz.miroslavbartyzal.psdiagram.app.update;
 
 import cz.miroslavbartyzal.psdiagram.app.diagram.Main;
-import cz.miroslavbartyzal.psdiagram.app.diagram.gui.JFrameAbout;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
-import cz.miroslavbartyzal.psdiagram.app.update.network.URLFileDownloader;
-import cz.miroslavbartyzal.psdiagram.app.update.network.URLStringDownloader;
+import cz.miroslavbartyzal.psdiagram.app.network.URLFileDownloader;
+import cz.miroslavbartyzal.psdiagram.app.network.URLStringDownloader;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.ByteArrayInputStream;
@@ -33,41 +32,39 @@ public final class Updater
     private ChangesCondenser changesCondenser;
     private URLFileDownloader uRLFileDownloader;
 
-    /**
-     *
-     * @return true if there is new version available
-     */
     public void loadInfo(final PropertyChangeListener statusListener,
             final InfoLoadListener infoLoadListener)
     {
         cleanAfterSelf();
         HashMap<String, String> vars = new HashMap<>();
-        vars.put("since", JFrameAbout.getVersion());
+        vars.put("since", cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder.PSDIAGRAM_VERSION);
         URLStringDownloader uRLStringDownloader = new URLStringDownloader();
         uRLStringDownloader.addPropertyChangeListener(statusListener);
         uRLStringDownloader.sendRequest(SettingsHolder.PSDIAGRAM_SERVER + "/versioninfo", vars,
                 new URLStringDownloader.DownloadFinishListener()
-        {
-            @Override
-            public void onDownloadFinished(String result, Charset charset)
-            {
-                if (result != null && !result.equals("")) {
-                    try {
-                        changesCondenser = (ChangesCondenser) JAXBUpdateContext.getUnmarshaller().unmarshal(
-                                new ByteArrayInputStream(result.getBytes(charset)));
-                    } catch (JAXBException ex) {
-                        ex.printStackTrace(System.err);
-                        statusListener.propertyChange(new PropertyChangeEvent(this, "error", null,
-                                "chyba při konverzi xml"));
+                {
+                    @Override
+                    public void onDownloadFinished(String result, Charset charset)
+                    {
+                        if (result != null && !result.equals("")) {
+                            try {
+                                changesCondenser = (ChangesCondenser) JAXBUpdateContext.getUnmarshaller().unmarshal(
+                                        new ByteArrayInputStream(result.getBytes(charset)));
+                            } catch (JAXBException ex) {
+                                ex.printStackTrace(System.err);
+                                statusListener.propertyChange(new PropertyChangeEvent(this, "error",
+                                                null,
+                                                "chyba při konverzi xml"));
+                            }
+                            if (changesCondenser != null) {
+                                changesHTML = CondenserToHTMLConverter.convertToHTML(
+                                        changesCondenser,
+                                        charset);
+                            }
+                        }
+                        infoLoadListener.onInfoLoaded(hasNewerVersion());
                     }
-                    if (changesCondenser != null) {
-                        changesHTML = CondenserToHTMLConverter.convertToHTML(changesCondenser,
-                                charset);
-                    }
-                }
-                infoLoadListener.onInfoLoaded(hasNewerVersion());
-            }
-        });
+                });
     }
 
     public void downloadAndInstallUdate(final PropertyChangeListener statusListener,
@@ -84,23 +81,25 @@ public final class Updater
         uRLFileDownloader.sendRequest(SettingsHolder.PSDIAGRAM_SERVER + "/download", vars,
                 SettingsHolder.WORKING_DIR, ARCHIVE_NAME,
                 new URLFileDownloader.DownloadFinishListener()
-        {
-            @Override
-            public void onDownloadFinished(File downloadedFile)
-            {
-                if (downloadedFile != null) {
-                    statusListener.propertyChange(new PropertyChangeEvent(this, "status", null,
-                            "ověřuji kontrolní součet"));
-                    HashMap<String, String> vars = new HashMap<>();
-                    vars.put("checksum", getVersionAvailable());
-                    vars.put("alg", "MD5");
-                    URLStringDownloader uRLStringDownloader = new URLStringDownloader();
-                    uRLStringDownloader.sendRequest(SettingsHolder.PSDIAGRAM_SERVER + "/download",
-                            vars, new ChecksumCheck(downloadedFile, statusListener,
-                            beforeExitListener)); // let the rest of it on ChecksumCheck
-                }
-            }
-        });
+                {
+                    @Override
+                    public void onDownloadFinished(File downloadedFile)
+                    {
+                        if (downloadedFile != null) {
+                            statusListener.propertyChange(new PropertyChangeEvent(this, "status",
+                                            null,
+                                            "ověřuji kontrolní součet"));
+                            HashMap<String, String> vars = new HashMap<>();
+                            vars.put("checksum", getVersionAvailable());
+                            vars.put("alg", "MD5");
+                            URLStringDownloader uRLStringDownloader = new URLStringDownloader();
+                            uRLStringDownloader.sendRequest(
+                                    SettingsHolder.PSDIAGRAM_SERVER + "/download",
+                                    vars, new ChecksumCheck(downloadedFile, statusListener,
+                                            beforeExitListener)); // let the rest of it on ChecksumCheck
+                        }
+                    }
+                });
     }
 
     public void cancelDownloadAndInstallUdate()
@@ -125,7 +124,7 @@ public final class Updater
     {
         // changesCondenser is downloaded only if there is a new version, but let's not trust server... :)
         return changesCondenser != null && ChangesCondenser.parseVersion(getVersionAvailable()) > ChangesCondenser.parseVersion(
-                JFrameAbout.getVersion());
+                cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder.PSDIAGRAM_VERSION);
     }
 
     public ChangesCondenser getChangesCondenser()
@@ -215,9 +214,9 @@ public final class Updater
     private class ChecksumCheck implements URLStringDownloader.DownloadFinishListener
     {
 
-        private File downloadedFile;
-        private PropertyChangeListener statusListener;
-        private BeforeExitListener beforeExitListener;
+        private final File downloadedFile;
+        private final PropertyChangeListener statusListener;
+        private final BeforeExitListener beforeExitListener;
 
         public ChecksumCheck(File downloadedFile, PropertyChangeListener statusListener,
                 BeforeExitListener beforeExitListener)

@@ -23,8 +23,10 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * <p>Tato třída nese globální nastavení aplikace.</p>
- * <p>Nastavení je po jeho změně automaticky ihned ukládáno na pevný disk do
+ * <p>
+ * Tato třída nese globální nastavení aplikace.</p>
+ * <p>
+ * Nastavení je po jeho změně automaticky ihned ukládáno na pevný disk do
  * složky (user.home)/.psdiagram/settings.xml. Z tohoto umístění je také po
  * spuštění aplikace automaticky načteno. Není-li nastavení k dispozici,
  * aktivuje se nastavení defaultní.</p>
@@ -103,8 +105,13 @@ public final class SettingsHolder
      * čas.
      */
     public static final String TIMESERVER = "http://seznam.cz";
+//    public static final String PSDIAGRAM_SERVER = "http://www.psdiagram.cz";
     public static final String PSDIAGRAM_SERVER = ResourceBundle.getBundle("appliaction").getString(
             "psdiagramWebUrl");
+    public static final String PSDIAGRAM_VERSION = ResourceBundle.getBundle("appliaction").getString(
+            "version");
+    public static final String PSDIAGRAM_BUILD = ResourceBundle.getBundle("appliaction").getString(
+            "buildInfo");
     public static final File JAVAW = getJavaw();
 
     /**

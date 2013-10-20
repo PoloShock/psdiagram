@@ -256,6 +256,7 @@
                         <manifestEntries>
                             <Built-By>Miroslav Bartyzal</Built-By>
                             <Build-Number>${buildNumber}</Build-Number>
+                            <SplashScreen-Image>img/splash.png</SplashScreen-Image>
                         </manifestEntries>
                     </archive>
                 </configuration>
@@ -296,6 +297,7 @@
                                     <manifestEntries>
                                         <Built-By>Miroslav Bartyzal</Built-By>
                                         <Build-Number>${buildNumber}</Build-Number>
+                                        <SplashScreen-Image>img/splash.png</SplashScreen-Image>
                                     </manifestEntries>
                                 </transformer>
                             </transformers>
@@ -332,6 +334,7 @@
                         <manifestEntries>
                             <Built-By>Miroslav Bartyzal</Built-By>
                             <Build-Number>${buildNumber}</Build-Number>
+                            <SplashScreen-Image>img/splash.png</SplashScreen-Image>
                         </manifestEntries>
                     </archive>
                     <obfuscate>true</obfuscate>

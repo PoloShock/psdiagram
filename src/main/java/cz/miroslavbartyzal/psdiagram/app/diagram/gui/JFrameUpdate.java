@@ -27,10 +27,10 @@ import javax.swing.SwingUtilities;
 public class JFrameUpdate extends javax.swing.JFrame implements PropertyChangeListener
 {
 
-    private Updater updater;
+    private final Updater updater;
     private String fileSize;
     private boolean downloadInProgress;
-    private Updater.BeforeExitListener beforeExitListener;
+    private final Updater.BeforeExitListener beforeExitListener;
 
     public JFrameUpdate(Updater updater, Updater.BeforeExitListener beforeExitListener)
     {
@@ -78,7 +78,7 @@ public class JFrameUpdate extends javax.swing.JFrame implements PropertyChangeLi
     private void setInfo(ChangesCondenser condenser)
     {
         String newVersion = condenser.getTopVersion();
-        String ov = JFrameAbout.getVersion();
+        String ov = cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder.PSDIAGRAM_VERSION;
         String nv = newVersion;
         if (condenser.getReleaseDates() != null) {
             if (condenser.getReleaseDates().get(ov) != null) {

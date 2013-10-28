@@ -104,7 +104,7 @@ public final class SettingsHolder
      * Konstanta udržuje URL serveru, kterého se bude aplikace dotazovat na aktuální
      * čas.
      */
-    public static final String TIMESERVER = "http://seznam.cz";
+    public static final String TIMESERVER = "http://www.seznam.cz";
 //    public static final String PSDIAGRAM_SERVER = "http://www.psdiagram.cz";
     public static final String PSDIAGRAM_SERVER = ResourceBundle.getBundle("appliaction").getString(
             "psdiagramWebUrl");

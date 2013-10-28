@@ -45,7 +45,7 @@ public final class TimeCollector
             SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z",
                     Locale.ENGLISH);
             return sdf.parse(urlConn.getHeaderField("Date"));
-        } catch (IOException | ParseException ex) {
+        } catch (NullPointerException | IOException | ParseException ex) {
             ex.printStackTrace(System.err);
         }
         return null;

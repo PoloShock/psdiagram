@@ -6,6 +6,7 @@ package cz.miroslavbartyzal.psdiagram.app.update;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -28,6 +29,48 @@ public class ChangesCondenserTest
 
     JAXBContext jAXBContext;
 
+//    @Test
+//    public void onetime()
+//    {
+//
+//        HashMap<String, List<String>> features = new HashMap<>();
+//        ArrayList<String> fs = new ArrayList<>();
+//        HashMap<String, String> descriptions = new HashMap<>();
+//        HashMap<String, Calendar> dates = new HashMap<>();
+//
+//        fs.add("marshalovani ChangesCondenseru");
+//        fs.add("podpora jUnit");
+//        features.put("1.0.5.1", fs);
+//
+//        fs = new ArrayList<>();
+//        fs.add("budouci feature");
+//        features.put("1.0.5.2", fs);
+//
+//        descriptions.put("1.0.5.1", "extra hustej text");
+//        descriptions.put("1.0.5.2", "vysla dalsi verze!");
+//
+//        Calendar calendar1 = new GregorianCalendar(2013, 0, 10);
+//        dates.put("1.0.5.1", calendar1);
+//
+//        HashMap<String, String> releaseURLs = new HashMap<>();
+//        releaseURLs.put("1.0.5.1", "http://some.url?fg=325");
+//
+//        HashMap<String, String> headlines = new HashMap<>();
+//        headlines.put("1.0.5.1", "HEADING!");
+//
+//        ChangesCondenser condenser = new ChangesCondenser("http://some.url", dates, releaseURLs,
+//                headlines,
+//                descriptions, features, features, features, null,
+//                new HashMap<String, List<String>>(), features);
+//
+//        Marshaller marshaller = JAXBUpdateContext.getMarshaller();
+//        try {
+//            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+//            marshaller.marshal(condenser, new File("C:/Zk/vzor.xml"));
+//        } catch (JAXBException ex) {
+//            ex.printStackTrace(System.err);
+//        }
+//    }
     @Test
     public void JAXBCondenserTest()
     {

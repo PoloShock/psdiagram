@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import javax.xml.bind.JAXBException;
 
@@ -27,7 +28,8 @@ public final class Updater
 
     private static final String ARCHIVE_NAME = "update.zip";
     private static final String UPDATER_FILENAME = "updater.jar";
-    private static final String UPDATER_FILENAME2 = "updater.bat";
+    private static final String[] UPDATER_FILES_TO_REMOVE = new String[]{"updater.bat",
+        "dirfootprint.xml"};
     private String changesHTML;
     private ChangesCondenser changesCondenser;
     private URLFileDownloader uRLFileDownloader;
@@ -149,7 +151,7 @@ public final class Updater
         } catch (IllegalArgumentException ex) { // let's try it once more with UTF-8
             try {
                 extractedDir = ArchiveExtractor.extractZIP(downloadedFile, true,
-                        Charset.forName("UTF-8"));
+                        StandardCharsets.UTF_8);
             } catch (IOException | IllegalArgumentException ex2) {
                 ex.printStackTrace(System.err);
                 statusListener.propertyChange(new PropertyChangeEvent(this, "error", null,
@@ -199,11 +201,13 @@ public final class Updater
     private void cleanAfterSelf()
     {
         try {
-            ArchiveExtractor.delete(new File(SettingsHolder.WORKING_DIR, ARCHIVE_NAME.substring(
-                    0, ARCHIVE_NAME.length() - 4)));
             new File(SettingsHolder.WORKING_DIR, ARCHIVE_NAME).delete();
             new File(SettingsHolder.WORKING_DIR, UPDATER_FILENAME).delete();
-            new File(SettingsHolder.WORKING_DIR, UPDATER_FILENAME2).delete();
+            for (String str : UPDATER_FILES_TO_REMOVE) {
+                new File(SettingsHolder.WORKING_DIR, str).delete();
+            }
+            ArchiveExtractor.delete(new File(SettingsHolder.WORKING_DIR, ARCHIVE_NAME.substring(
+                    0, ARCHIVE_NAME.length() - 4)));
         } catch (IOException ex) {
         }
     }

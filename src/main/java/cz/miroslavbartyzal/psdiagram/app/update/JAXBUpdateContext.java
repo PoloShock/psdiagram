@@ -37,7 +37,7 @@ public class JAXBUpdateContext
     {
         try {
             return getJAXBContext().createMarshaller();
-        } catch (Exception ex) {
+        } catch (JAXBException ex) {
             ex.printStackTrace(System.err);
             return null;
         }
@@ -47,7 +47,7 @@ public class JAXBUpdateContext
     {
         try {
             return getJAXBContext().createUnmarshaller();
-        } catch (Exception ex) {
+        } catch (JAXBException ex) {
             ex.printStackTrace(System.err);
             return null;
         }

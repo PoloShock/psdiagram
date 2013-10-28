@@ -14,6 +14,7 @@ import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
 /**
@@ -56,7 +57,7 @@ public class URLStringDownloader extends SwingWorker<String, Void>
         this.serverURL = serverURL;
         this.parameters = parameters;
         this.downloadFinishedListener = downloadFinishedListener;
-        this.execute();
+        super.execute();
     }
 
     @Override
@@ -127,12 +128,21 @@ public class URLStringDownloader extends SwingWorker<String, Void>
     protected void done()
     {
         if (downloadFinishedListener != null && !super.isCancelled()) {
-            try {
-                downloadFinishedListener.onDownloadFinished(super.get(), charset);
-            } catch (InterruptedException | ExecutionException ex) {
-                ex.printStackTrace(System.err);
-                super.firePropertyChange("error", null, "interní chyba");
-            }
+            SwingUtilities.invokeLater(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    try {
+                        downloadFinishedListener.onDownloadFinished(URLStringDownloader.super.get(),
+                                charset);
+                    } catch (InterruptedException | ExecutionException ex) {
+                        ex.printStackTrace(System.err);
+                        URLStringDownloader.super.firePropertyChange("error", null, "interní chyba");
+                    }
+                }
+            });
+
         }
     }
 

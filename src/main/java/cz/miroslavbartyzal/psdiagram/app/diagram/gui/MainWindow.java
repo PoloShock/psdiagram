@@ -66,6 +66,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.ResourceBundle;
 import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
@@ -106,6 +107,7 @@ public final class MainWindow extends javax.swing.JFrame
     // TODO mozna pridat komentar do XML a exportu PDF, kodu.. o PS Diagramu
     // TODO do budoucna podprogram moznst expandovat/collapsovat :)
 
+    private static boolean forceUpdate = false;
     private Layout layout;
     private boolean editMode = true;
     private boolean animationMode = false;
@@ -355,6 +357,8 @@ public final class MainWindow extends javax.swing.JFrame
             {
                 if (newVersionAvailable) {
                     jMenuItemUpdateActionPerformed(null);
+                } else if (forceUpdate) {
+                    System.exit(0);
                 }
             }
         });
@@ -1347,7 +1351,7 @@ public final class MainWindow extends javax.swing.JFrame
     private void jMenuItemUpdateActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jMenuItemUpdateActionPerformed
     {//GEN-HEADEREND:event_jMenuItemUpdateActionPerformed
         jFrameUpdate.setLocationRelativeTo(this);
-        jFrameUpdate.setVisible(true);
+        jFrameUpdate.setVisible(true, forceUpdate);
     }//GEN-LAST:event_jMenuItemUpdateActionPerformed
 
 //    /**
@@ -1367,7 +1371,7 @@ public final class MainWindow extends javax.swing.JFrame
      * <p>
      * @param args
      */
-    public static void main(String args[])
+    public static void main(final String args[])
     {
         /*
          * Set the Nimbus look and feel
@@ -1400,7 +1404,13 @@ public final class MainWindow extends javax.swing.JFrame
             @Override
             public void run()
             {
-                new MainWindow().setVisible(true);
+                new MainWindow().setVisible(!forceUpdate);
+                if (args.length > 0 && args[0].equals("-updated")) {
+                    JOptionPane.showMessageDialog(null,
+                            "PS Diagram byl úspěšně aktualizován na verzi " + SettingsHolder.PSDIAGRAM_VERSION + "-" + SettingsHolder.PSDIAGRAM_BUILD + ".",
+                            "Aktualizace proběhla v pořádku",
+                            JOptionPane.INFORMATION_MESSAGE);
+                }
             }
         });
     }
@@ -1995,7 +2005,7 @@ public final class MainWindow extends javax.swing.JFrame
 //                ex.printStackTrace(System.err);
 //            }
 //        }
-        if (currentTime > 1383260400000l || currentTime < SettingsHolder.settings.getLastTrialLaunchedTime()) { // 2013.11.1. 00:00:00 = 1383260400000 (new GregorianCalendar(2013, 10, 1).getTimeInMillis()) - month is zero-based
+        if (currentTime > 1388530800000l || currentTime < SettingsHolder.settings.getLastTrialLaunchedTime()) { // 2014.1.1. 00:00:00 = 1388530800000 (System.out.println(new GregorianCalendar(2014, 0, 1).getTimeInMillis());) - month is zero-based
             // html content
             JEditorPane ep = new JEditorPane("text/html", new String(new char[]{'<', 'h', 't', 'm',
                 'l', '>', 'P', 'l', 'a', 't', 'n', 'o', 's', 't', ' ', 't', 'é', 't', 'o', ' ', 'z',
@@ -2034,7 +2044,8 @@ public final class MainWindow extends javax.swing.JFrame
             JOptionPane.showMessageDialog(null, ep, new String(new char[]{'K', 'o', 'n', 'e', 'c',
                 ' ', 'p', 'l', 'a', 't', 'n', 'o', 's', 't', 'i', ' ', 'z', 'k', 'u', 'š', 'e', 'b',
                 'n', 'í', ' ', 'v', 'e', 'r', 'z', 'e'}), JOptionPane.WARNING_MESSAGE);
-            System.exit(0);
+//            System.exit(0); <- let's let the user download newer version of PS Diagram
+            forceUpdate = true;
         } else {
             SettingsHolder.settings.setLastTrialLaunchedTime(currentTime);
         }

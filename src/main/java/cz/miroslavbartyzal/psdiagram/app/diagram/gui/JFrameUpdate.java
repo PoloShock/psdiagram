@@ -17,6 +17,7 @@ import java.net.URI;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Calendar;
+import javax.swing.JFrame;
 import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 
@@ -39,6 +40,16 @@ public class JFrameUpdate extends javax.swing.JFrame implements PropertyChangeLi
         initComponents();
         jScrollPane2.getVerticalScrollBar().setUnitIncrement(10);
         jScrollPane2.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE); // prevents glitches (http://andrewtill.blogspot.cz/2012/06/jscrollpane-repainting-problems.html)
+    }
+
+    public void setVisible(boolean visibility, boolean forceUpdate)
+    {
+        if (forceUpdate) {
+            super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        } else {
+            super.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        }
+        setVisible(visibility);
     }
 
     @Override
@@ -83,13 +94,13 @@ public class JFrameUpdate extends javax.swing.JFrame implements PropertyChangeLi
         if (condenser.getReleaseDates() != null) {
             if (condenser.getReleaseDates().get(ov) != null) {
                 ov += " (" + condenser.getReleaseDates().get(ov).get(Calendar.DAY_OF_MONTH)
-                        + "." + condenser.getReleaseDates().get(ov).get(Calendar.MONTH)
+                        + "." + condenser.getReleaseDates().get(ov).get(Calendar.MONTH) + 1 // Months are 0-based
                         + "." + condenser.getReleaseDates().get(ov).get(Calendar.YEAR)
                         + ")";
             }
             if (condenser.getReleaseDates().get(nv) != null) {
                 nv += " (" + condenser.getReleaseDates().get(nv).get(Calendar.DAY_OF_MONTH)
-                        + "." + condenser.getReleaseDates().get(nv).get(Calendar.MONTH)
+                        + "." + condenser.getReleaseDates().get(nv).get(Calendar.MONTH) + 1 // Months are 0-based
                         + "." + condenser.getReleaseDates().get(nv).get(Calendar.YEAR)
                         + ")";
             }
@@ -215,7 +226,7 @@ public class JFrameUpdate extends javax.swing.JFrame implements PropertyChangeLi
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel3.setText("Verze k dispozici:");
 
-        jLabelOldVersion.setFont(new java.awt.Font("sansserif", 2, 12)); // NOI18N
+        jLabelOldVersion.setFont(new java.awt.Font("sansserif", 0, 11)); // NOI18N
         jLabelOldVersion.setText("1.0.2.5 (25.6.2013)");
 
         jLabelNewVersion.setText("1.1.0.3 (10.9.2013)");
@@ -474,7 +485,6 @@ public class JFrameUpdate extends javax.swing.JFrame implements PropertyChangeLi
                     break;
                 case "filesize":
                     fileSize = getProperFileSize((long) evt.getNewValue());
-                    jLabelStatus.setText(fileSize);
                     break;
                 case "error":
                     message = (String) evt.getNewValue();

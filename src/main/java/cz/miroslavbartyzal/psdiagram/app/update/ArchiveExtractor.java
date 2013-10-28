@@ -23,12 +23,13 @@ import java.util.zip.ZipFile;
 public class ArchiveExtractor
 {
 
-    private static final int BUFFER = 4096;
+    private static final int BUFFER = 1024 * 1024; // 1MB
 
     /**
      *
      * @param zipFile
      * @param extractHere if true files are extracted into parent folder<br />if false files are extacted into archive name's folder
+     * @param charset
      * @return
      * @throws ZipException
      * @throws IOException
@@ -85,7 +86,7 @@ public class ArchiveExtractor
                                 BUFFER);
 
                         // read and write until last byte is encountered
-                        while ((currentByte = is.read(data, 0, BUFFER)) != -1) {
+                        while ((currentByte = is.read(data)) != -1) {
                             dest.write(data, 0, currentByte);
                         }
                         dest.flush();

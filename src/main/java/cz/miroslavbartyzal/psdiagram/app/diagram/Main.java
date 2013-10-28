@@ -61,6 +61,7 @@ public final class Main
     // TODO zahrnout do instalacky JRE, aby nemusela byt na cilovce java - updater pak musi fungovat jako synchronizator, aby balik nebyl zbytecne moc velky
     // TODO .exe soubor?
     // TODO Pascal podpora vice vstupu naraz - prikaz read[ln](x,y,z)
+    // TODO po includovani JRE upravit manual
 
     /**
      * Metoda pro spuštění hlavního okna aplikace. Nejsou přijímány žádné

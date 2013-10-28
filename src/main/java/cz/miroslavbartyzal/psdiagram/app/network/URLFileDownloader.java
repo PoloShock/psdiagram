@@ -17,6 +17,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.Timer;
 
@@ -55,8 +56,8 @@ public class URLFileDownloader extends SwingWorker<File, Void>
     private File downloadFolder;
     private String fileName;
     private DownloadFinishListener downloadFinishedListener;
-    private Timer tmrSpeed;
-    private int timerData = 0;
+    private final Timer tmrSpeed;
+    private long timerData = 0;
     private long downloadedDataSize;
 
     public URLFileDownloader()
@@ -66,11 +67,17 @@ public class URLFileDownloader extends SwingWorker<File, Void>
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                firePropertyChange("speed", null, timerData);
-                timerData = 0;
-                firePropertyChange("currentsize", null, downloadedDataSize);
+                riseBandwithInfo();
             }
         });
+    }
+
+    private void riseBandwithInfo()
+    {
+        long currentData = downloadedDataSize;
+        firePropertyChange("speed", null, (int) (currentData - timerData));
+        timerData = currentData;
+        firePropertyChange("currentsize", null, currentData);
     }
 
     public void sendRequest(String serverURL, Map<String, String> parameters, File downloadFolder,
@@ -81,7 +88,7 @@ public class URLFileDownloader extends SwingWorker<File, Void>
         this.downloadFolder = downloadFolder;
         this.fileName = fileName;
         this.downloadFinishedListener = downloadFinishedListener;
-        this.execute();
+        super.execute();
     }
 
     @Override
@@ -162,12 +169,12 @@ public class URLFileDownloader extends SwingWorker<File, Void>
                 } catch (IOException ex) {
                     ex.printStackTrace(System.err);
                     tmrSpeed.stop();
+                    riseBandwithInfo();
                     super.firePropertyChange("error", null, "chyba při stahování souboru");
                     return null;
                 }
 
                 downloadedDataSize += chunkSize;
-                timerData += chunkSize;
                 int progress = (int) (downloadedDataSize * 100 / filesize);
                 if (super.getProgress() != progress) {
                     super.setProgress(progress);
@@ -187,13 +194,14 @@ public class URLFileDownloader extends SwingWorker<File, Void>
             } catch (IOException ex) {
                 ex.printStackTrace(System.err);
                 tmrSpeed.stop();
+                riseBandwithInfo();
                 super.firePropertyChange("error", null, "chyba při uzavírání streamu");
                 return null;
             }
         }
 
-
         tmrSpeed.stop();
+        riseBandwithInfo();
         if (super.isCancelled()) {
             file.delete();
             fireStatusChanged("stahování zrušeno");
@@ -207,12 +215,20 @@ public class URLFileDownloader extends SwingWorker<File, Void>
     protected void done()
     {
         if (downloadFinishedListener != null && !super.isCancelled()) {
-            try {
-                downloadFinishedListener.onDownloadFinished(super.get());
-            } catch (InterruptedException | ExecutionException ex) {
-                ex.printStackTrace(System.err);
-                super.firePropertyChange("error", null, "interní chyba");
-            }
+            SwingUtilities.invokeLater(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    try {
+                        downloadFinishedListener.onDownloadFinished(URLFileDownloader.super.get());
+                    } catch (InterruptedException | ExecutionException ex) {
+                        ex.printStackTrace(System.err);
+                        URLFileDownloader.super.firePropertyChange("error", null, "interní chyba");
+                    }
+                }
+            });
+
         }
     }
 

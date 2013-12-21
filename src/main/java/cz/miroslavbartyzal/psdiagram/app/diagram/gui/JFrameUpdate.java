@@ -94,13 +94,15 @@ public class JFrameUpdate extends javax.swing.JFrame implements PropertyChangeLi
         if (condenser.getReleaseDates() != null) {
             if (condenser.getReleaseDates().get(ov) != null) {
                 ov += " (" + condenser.getReleaseDates().get(ov).get(Calendar.DAY_OF_MONTH)
-                        + "." + condenser.getReleaseDates().get(ov).get(Calendar.MONTH) + 1 // Months are 0-based
+                        + "." + (condenser.getReleaseDates().get(ov).get(Calendar.MONTH) + 1) // Months are 0-based
                         + "." + condenser.getReleaseDates().get(ov).get(Calendar.YEAR)
                         + ")";
+            } else {
+                ov += " (" + cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder.PSDIAGRAM_BUILD_DATE + ")";
             }
             if (condenser.getReleaseDates().get(nv) != null) {
                 nv += " (" + condenser.getReleaseDates().get(nv).get(Calendar.DAY_OF_MONTH)
-                        + "." + condenser.getReleaseDates().get(nv).get(Calendar.MONTH) + 1 // Months are 0-based
+                        + "." + (condenser.getReleaseDates().get(nv).get(Calendar.MONTH) + 1) // Months are 0-based
                         + "." + condenser.getReleaseDates().get(nv).get(Calendar.YEAR)
                         + ")";
             }

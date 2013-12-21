@@ -174,21 +174,21 @@ public final class Updater
         // launch it
         try {
             if (SettingsHolder.JAVAW == null) {
-                Runtime.getRuntime().exec(new String[]{"cmd", "/s", "/c", "\"start", "\"updater\"",
-                    "/d", "\"" + updaterFile.getParentFile() + "\"",
-                    "\"" + updaterFile.getAbsolutePath() + "\"",
-                    "-psdir", "\"" + new File(
-                    Main.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParent() + "\"\""});
+                String command = "start \"updater\" /d \"" + updaterFile.getParentFile() + "\""
+                        + " \"" + updaterFile.getAbsolutePath() + "\""
+                        + " -psdir \"" + SettingsHolder.MY_DIR.getAbsolutePath() + "\"";
+
+                Runtime.getRuntime().exec(new String[]{"cmd", "/s", "/c", "\"" + command + "\""});
             } else {
-                Runtime.getRuntime().exec(new String[]{"cmd", "/s", "/c", "\"start", "\"updater\"",
-                    "/d", "\"" + updaterFile.getParentFile() + "\"",
-                    "\"" + SettingsHolder.JAVAW.getAbsolutePath() + "\"", "-jar",
-                    "\"" + updaterFile.getAbsolutePath() + "\"",
-                    "-psdir", "\"" + new File(
-                    Main.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParent() + "\"\""});
+                String command = "start \"updater\" /d \"" + updaterFile.getParentFile() + "\""
+                        + " \"" + SettingsHolder.JAVAW.getAbsolutePath() + "\""
+                        + " -jar \"" + updaterFile.getAbsolutePath() + "\""
+                        + " -psdir \"" + SettingsHolder.MY_DIR.getAbsolutePath() + "\"";
+
+                Runtime.getRuntime().exec(new String[]{"cmd", "/s", "/c", "\"" + command + "\""});
             }
 
-        } catch (URISyntaxException | IOException ex) {
+        } catch (IOException ex) {
             ex.printStackTrace(System.err);
             statusListener.propertyChange(new PropertyChangeEvent(this, "error", null,
                     "chyba při spouštění instalátoru"));

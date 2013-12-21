@@ -38,9 +38,10 @@ public final class TimeCollector
             urlConn.setConnectTimeout(15000);
             urlConn.setReadTimeout(15000);
             urlConn.setRequestProperty("accept", "Date");
-            urlConn.setRequestProperty("User-agent",
-                    "psdiagram-" + cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder.PSDIAGRAM_VERSION + "(" + cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder.PSDIAGRAM_BUILD.replaceAll(
-                            "\\s.*$", "") + ")");
+            urlConn.setRequestProperty("user-agent",
+                    "psdiagram-" + cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder.PSDIAGRAM_VERSION + "(" + cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder.PSDIAGRAM_BUILD_NUMBER + ")");
+            urlConn.setRequestProperty("psdiagram-version",
+                    cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder.PSDIAGRAM_VERSION + "(" + cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder.PSDIAGRAM_BUILD_NUMBER + ")");
             urlConn.connect();
             SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z",
                     Locale.ENGLISH);

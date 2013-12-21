@@ -5,6 +5,8 @@
 package cz.miroslavbartyzal.psdiagram.app.diagram;
 
 import cz.miroslavbartyzal.psdiagram.app.diagram.gui.MainWindow;
+import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
+import java.io.File;
 import javax.swing.ToolTipManager;
 
 /**
@@ -15,6 +17,11 @@ import javax.swing.ToolTipManager;
  */
 public final class Main
 {
+    // TODO kdyz se pomalinku posouva diagram doleva nahoru, posouvani se v miste objeveni scrollbaru seka (uprava ulozene pozice kurzoru v zavislosti na zmene velikosti platna pri zobrazenych scrollbrech? nebo podminka s elseif misto dvou?)
+    // TODO az budu dynamicky menit layout, budu muset prepsat odkazy na layout ve vsech tridach jako by reference: AtomicReference<Object> ref = new AtomicReference<Object>("Hello");
+    // TODO je-li v else vetvi jen podminka, je to pri exportu elseif!
+    // TODO mozna pridat komentar do XML a exportu PDF, kodu.. o PS Diagramu
+    // TODO do budoucna podprogram moznst expandovat/collapsovat :)
     // TODO nastaveni zarovnavani komentarovych textu
     // TODO zakomponovat priklady do vyuky primo jako soucast aplikace
     // TODO zoom k mysi
@@ -62,6 +69,9 @@ public final class Main
     // TODO .exe soubor?
     // TODO Pascal podpora vice vstupu naraz - prikaz read[ln](x,y,z)
     // TODO po includovani JRE upravit manual
+    // TODO zjemnit progressbary (urcite lze postupovat jemneji nez po 1/100)
+    // TODO umoznit vkladani i kdyz je oznaceny symbol a ne bod (povodne jen bod kvuli textu, ale tak nedopustime aby v clipboardu text byl.. (pripadne vlozime text))
+    // TODO co to rucni propojovani sipek, kdyz bych je oznacil jinou barvou jako neoptimalni?
 
     /**
      * Metoda pro spuštění hlavního okna aplikace. Nejsou přijímány žádné

@@ -24,9 +24,9 @@ public class URLParser
         }
         if (parameters != null && !parameters.isEmpty()) {
             String separator = "?";
-            if (!url.endsWith("/")) {
-                url += "/";
-            }
+//            if (!url.endsWith("/")) {
+//                url += "/";
+//            }
             for (String var : parameters.keySet()) {
                 url += separator + URLEncoder.encode(var, "UTF-8") + "=" + URLEncoder.encode(
                         parameters.get(var), "UTF-8");

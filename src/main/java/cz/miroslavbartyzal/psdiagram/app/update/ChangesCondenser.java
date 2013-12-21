@@ -179,18 +179,18 @@ public class ChangesCondenser
         return bottomVersion;
     }
 
-    public ChangesCondenser getFractionCondenser(String fromVersion)
+    public ChangesCondenser getFractionCondenser(String afterVersion)
     {
-        float fv = parseVersion(fromVersion);
+        float fv = parseVersion(afterVersion);
         return new ChangesCondenser(changlelogURL, getFractionMap(fv, releaseDates), getFractionMap(
                 fv,
                 releaseURLs),
                 getFractionMap(fv, headlines), getFractionMap(fv, descriptions), getFractionMap(fv,
-                features), getFractionMap(fv, enhancements), getFractionMap(fv, extensions),
+                        features), getFractionMap(fv, enhancements), getFractionMap(fv, extensions),
                 getFractionMap(fv, changes), getFractionMap(fv, fixes), getFractionMap(fv, other));
     }
 
-    private <E> Map<String, E> getFractionMap(float fromVersion, Map<String, E> map)
+    private <E> Map<String, E> getFractionMap(float afterVersion, Map<String, E> map)
     {
         if (map == null) {
             return null;
@@ -198,7 +198,7 @@ public class ChangesCondenser
         HashMap<String, E> retMAP = new HashMap<>(map);
         for (Iterator<Map.Entry<String, E>> it = retMAP.entrySet().iterator(); it.hasNext();) {
             Map.Entry<String, E> entry = it.next();
-            if (parseVersion(entry.getKey()) < fromVersion) {
+            if (parseVersion(entry.getKey()) <= afterVersion) {
                 it.remove();
             }
         }

@@ -28,13 +28,12 @@
         </html>
     </xsl:template>
 
-    <!--match for version that have entry children -->
-    <xsl:template match="/versionsinfo/features/version[entry]">
+    <xsl:template match="/versionsinfo/features[version[entry]]"><!--match for 'features' that have version children that have entry children -->
         <h2>
             Nové funkce
         </h2>
         <ul>
-            <xsl:for-each select="entry">
+            <xsl:for-each select="version/entry">
                 <li>
                     <xsl:value-of select="normalize-space(.)" disable-output-escaping="yes" />
                     <!--<xsl:copy-of select="child::node()"/>-->
@@ -42,67 +41,67 @@
             </xsl:for-each>
         </ul>
     </xsl:template>
-    <xsl:template match="/versionsinfo/enhancements/version[entry]">
+
+    <xsl:template match="/versionsinfo/enhancements[version[entry]]">
         <h2>
             Vylepšení
         </h2>
         <ul>
-            <xsl:for-each select="entry">
+            <xsl:for-each select="version/entry">
                 <li>
                     <xsl:value-of select="normalize-space(.)" disable-output-escaping="yes" />
-                    <!--<xsl:copy-of select="child::node()"/>-->
                 </li>
             </xsl:for-each>
         </ul>
     </xsl:template>
-    <xsl:template match="/versionsinfo/extensions/version[entry]">
+
+    <xsl:template match="/versionsinfo/extensions[version[entry]]">
         <h2>
             Rozšíření
         </h2>
         <ul>
-            <xsl:for-each select="entry">
+            <xsl:for-each select="version/entry">
                 <li>
                     <xsl:value-of select="normalize-space(.)" disable-output-escaping="yes" />
-                    <!--<xsl:copy-of select="child::node()"/>-->
                 </li>
             </xsl:for-each>
         </ul>
     </xsl:template>
-    <xsl:template match="/versionsinfo/changes/version[entry]">
+
+    <xsl:template match="/versionsinfo/changes[version[entry]]">
         <h2>
             Změny
         </h2>
         <ul>
-            <xsl:for-each select="entry">
+            <xsl:for-each select="version/entry">
                 <li>
                     <xsl:value-of select="normalize-space(.)" disable-output-escaping="yes" />
-                    <!--<xsl:copy-of select="child::node()"/>-->
                 </li>
             </xsl:for-each>
         </ul>
     </xsl:template>
-    <xsl:template match="/versionsinfo/fixes/version[entry]">
+
+    <xsl:template match="/versionsinfo/fixes[version[entry]]">
         <h2>
             Opravy
         </h2>
         <ul>
-            <xsl:for-each select="entry">
+            <xsl:for-each select="version/entry">
                 <li>
                     <xsl:value-of select="normalize-space(.)" disable-output-escaping="yes" />
-                    <!--<xsl:copy-of select="child::node()"/>-->
                 </li>
             </xsl:for-each>
         </ul>
     </xsl:template>
-    <xsl:template match="/versionsinfo/others/version[entry]">
+
+    <xsl:template match="/versionsinfo/others[version[entry]]">
         <h2>
             Ostatní
         </h2>
         <ul>
-            <xsl:for-each select="entry">
+            <xsl:for-each select="version/entry">
                 <li>
                     <xsl:value-of select="normalize-space(.)" disable-output-escaping="yes" />
-                    <!--<xsl:copy-of select="child::node()"/>-->
                 </li>
             </xsl:for-each>
         </ul>

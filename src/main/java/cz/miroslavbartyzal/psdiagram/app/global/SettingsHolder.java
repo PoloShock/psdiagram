@@ -4,6 +4,7 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.global;
 
+import cz.miroslavbartyzal.psdiagram.app.diagram.Main;
 import cz.miroslavbartyzal.psdiagram.app.diagram.flowchart.layouts.AbstractLayout;
 import cz.miroslavbartyzal.psdiagram.app.diagram.flowchart.layouts.EnumLayout;
 import java.awt.Font;
@@ -13,6 +14,7 @@ import java.awt.RenderingHints;
 import java.awt.font.FontRenderContext;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ResourceBundle;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -44,6 +46,7 @@ public final class SettingsHolder
     private static final JAXBContext jAXBcontext;
     private static final Marshaller jAXBmarshaller; // Marshaller se bude vyuzivat frekventovane
     public static final File WORKING_DIR = new File(System.getProperty("user.home"), ".psdiagram");
+    public static final File MY_DIR;
     private static final File settingsFile = new File(WORKING_DIR, "settings.xml");
 
     // automaticke loadovani nastaveni
@@ -71,6 +74,14 @@ public final class SettingsHolder
         } else {
             settings = new Settings();
             saveSettings();
+        }
+
+        // resolve self location
+        try {
+            MY_DIR = new File(
+                    Main.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParentFile();
+        } catch (URISyntaxException ex) {
+            ex.printStackTrace(System.err);
         }
     }
 
@@ -112,6 +123,9 @@ public final class SettingsHolder
             "version");
     public static final String PSDIAGRAM_BUILD = ResourceBundle.getBundle("appliaction").getString(
             "buildInfo");
+    public static final String PSDIAGRAM_BUILD_NUMBER = PSDIAGRAM_BUILD.replaceAll("\\s.*$", "");
+    public static final String PSDIAGRAM_BUILD_DATE = PSDIAGRAM_BUILD.replaceAll("^[\\d\\s]+\\(", "").replaceAll(
+            "\\)$", "");
     public static final File JAVAW = getJavaw();
 
     /**
@@ -186,7 +200,10 @@ public final class SettingsHolder
 
     private static File getJavaw()
     {
-        File file = new File(System.getProperty("java.home"), "bin");
+        File file = new File(MY_DIR, "jre/bin");
+        if (!file.exists()) {
+            file = new File(System.getProperty("java.home"), "bin");
+        }
         if (isWindows()) {
             file = new File(file, "javaw.exe");
         } else {

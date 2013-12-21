@@ -101,11 +101,6 @@ import org.freehep.graphicsio.pdf.PDFGraphics2D;
  */
 public final class MainWindow extends javax.swing.JFrame
 {
-    // TODO kdyz se pomalinku posouva diagram doleva nahoru, posouvani se v miste objeveni scrollbaru seka (uprava ulozene pozice kurzoru v zavislosti na zmene velikosti platna pri zobrazenych scrollbrech? nebo podminka s elseif misto dvou?)
-    // TODO az budu dynamicky menit layout, budu muset prepsat odkazy na layout ve vsech tridach jako by reference: AtomicReference<Object> ref = new AtomicReference<Object>("Hello");
-    // TODO je-li v else vetvi jen podminka, je to pri exportu elseif!
-    // TODO mozna pridat komentar do XML a exportu PDF, kodu.. o PS Diagramu
-    // TODO do budoucna podprogram moznst expandovat/collapsovat :)
 
     private static boolean forceUpdate = false;
     private Layout layout;

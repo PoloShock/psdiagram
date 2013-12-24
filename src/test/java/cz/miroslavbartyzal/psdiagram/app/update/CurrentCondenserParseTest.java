@@ -19,12 +19,25 @@ public class CurrentCondenserParseTest
 {
 
     @Test
-    public void currentChangesXMLTest() throws UnsupportedEncodingException
+    public void currentChangesXMLGlobalTest() throws UnsupportedEncodingException
     {
         ChangesCondenser condenser = null;
         try {
             condenser = ChangesCondenserTest.JAXBCondenserUnmarshal(new FileInputStream(
                     System.getenv("OPENSHIFT_DATA_DIR") + "versioninfo.xml"));
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace(System.err);
+        }
+        Assert.assertNotNull(condenser);
+    }
+
+    @Test
+    public void currentChangesXMLBuildTest() throws UnsupportedEncodingException
+    {
+        ChangesCondenser condenser = null;
+        try {
+            condenser = ChangesCondenserTest.JAXBCondenserUnmarshal(new FileInputStream(
+                    System.getProperty("build.versioninfo") + "versioninfo.xml"));
         } catch (FileNotFoundException ex) {
             ex.printStackTrace(System.err);
         }

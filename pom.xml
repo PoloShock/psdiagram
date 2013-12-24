@@ -4,13 +4,13 @@
 
     <groupId>cz.miroslavbartyzal</groupId>
     <artifactId>psdiagram</artifactId>
-    <version>1.1.9-SNAPSHOT</version>
+    <version>1.2</version>
     <packaging>jar</packaging>
     <name>PS Diagram</name>
     <url>http://www.psdiagram.cz</url>
 
     <prerequisites>
-        <maven>3.0.5</maven>
+        <maven>3.0</maven>
     </prerequisites>
 
     <developers>
@@ -71,11 +71,82 @@
             <build>
                 <plugins>
                     <plugin>
+                        <groupId>cz.miroslavbartyzal</groupId>
+                        <artifactId>versioninfo-maven-plugin</artifactId>
+                        <version>1.0</version>
+                        <executions>
+                            <execution>
+                                <phase>generate-test-resources</phase> <!-- in order to test it in unit test -->
+                                <goals>
+                                    <goal>versioninfo</goal>
+                                </goals>
+                                <configuration>
+                                    <inputFileToMerge>${env.OPENSHIFT_DATA_DIR}versioninfo.xml</inputFileToMerge>
+                                    <outputFile>${project.build.directory}/OPENSHIFT_DATA/versioninfo.xml</outputFile>
+
+                                    <version>${project.version}</version>
+                                    <changelogurl></changelogurl>
+                                    <releaseurl></releaseurl>
+
+                                    <headline>Veselé Vánoce! :)</headline>
+                                    <description>
+                                        <![CDATA[
+                                        <html>
+                                        Přestože jsou Vánoce v plném proudu (nebo možná právě proto),
+                                        přináším Vám pod stromeček novou verzi PS Diagramu. :) Hlavní vylepšení, které s sebou nová verze nese je možnost
+                                        spuštění aplikace přes '.exe' soubor. Není již tedy nutné mít na Vašem počítači nainstalovanou Javu.<br />
+                                        Krásné prožití vánočních svátků a šťastný nový rok Vám přeje Míra Bartyzal, autor PS Diagramu. :)
+                                        </html>
+                                        ]]>
+                                    </description>
+
+                                    <features></features>
+                                    <enhancements>
+                                        <enhancement>od teď již není nutné mít v počítači nainstalovanou Javu</enhancement>
+                                        <enhancement>PS Diagram je nyní spustitelný přes vlastní .exe soubor</enhancement>
+                                        <enhancement>nová ikonka okna PS Diagramu</enhancement>
+                                    </enhancements>
+                                    <extensions></extensions>
+                                    <changes></changes>
+                                    <fixes>
+                                        <fix>měsíc vydání jednotlivých verzí v aktualizačním formuláři se již zobrazuje tak, jak má</fix>
+                                    </fixes>
+                                    <others></others>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.16</version>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <build.versioninfo>${project.build.directory}/OPENSHIFT_DATA/</build.versioninfo>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+
+                    <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-antrun-plugin</artifactId>
                         <version>1.7</version>
                         <executions>
                             <execution>
+                                <id>mktemp-OPENSHIFTdir</id>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target name="mktemp-OPENSHIFTdir">
+                                        <mkdir dir="${project.build.directory}/OPENSHIFT_DATA"/>
+                                    </target>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>delete-signature</id>
                                 <phase>package</phase>
                                 <goals>
                                     <goal>run</goal>
@@ -83,7 +154,7 @@
                                 <configuration>
                                     <target name="delete-signature">
                                         <jar destfile="${project.build.directory}/${psdiagramfinalname}" filesetmanifest="merge">
-                                            <zipfileset src="${project.build.directory}/${project.build.finalName}-obfuscated-with_dependencies.jar" excludes="META-INF/*.DSA,META-INF/*.RSA,META-INF/*.SF" />
+                                            <zipfileset src="${project.build.directory}/${project.build.finalName}-obfuscated-with_dependencies.jar" excludes="META-INF/*.DSA,META-INF/*.RSA,META-INF/*.SF,META-INF\eclipse.inf,about.html,license.html,readme.html" />
                                         </jar>
                                     </target>
                                 </configuration>
@@ -106,7 +177,6 @@
                                             <fileset dir="c:/Program Files (x86)/Java/jre7"/>
                                         </copy>
                                         <copy file="c:/Zaloha/Programovani/Moje/Visual Studio 2013/PS Diagram Launcher/PS Diagram Launcher/bin/Release/PS Diagram.exe" todir="${project.build.directory}/zip/PS Diagram"/>
-                                        <mkdir dir="${project.build.directory}/OPENSHIFT_DATA"/>
                                         <zip encoding="UTF-8" destfile="${project.build.directory}/OPENSHIFT_DATA/PS_Diagram_${project.version}.zip"
                                              basedir="${project.build.directory}/zip"
                                              update="true"
@@ -153,59 +223,6 @@
                                     <inputDirectory>${project.build.directory}/OPENSHIFT_DATA/PS_Diagram_${project.version}</inputDirectory>
                                     <version>${project.version}</version>
                                     <outputFile>${project.build.directory}/zip/dirfootprint.xml</outputFile>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>cz.miroslavbartyzal</groupId>
-                        <artifactId>versioninfo-maven-plugin</artifactId>
-                        <version>1.0</version>
-                        <executions>
-                            <execution>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>versioninfo</goal>
-                                </goals>
-                                <configuration>
-                                    <inputFileToMerge>${env.OPENSHIFT_DATA_DIR}versioninfo.xml</inputFileToMerge>
-                                    <outputFile>${project.build.directory}/OPENSHIFT_DATA/versioninfo.xml</outputFile>
-
-                                    <version>${project.version}</version>
-                                    <changelogurl></changelogurl>
-                                    <releaseurl></releaseurl>
-
-                                    <headline>Hello world aktualizace!</headline>
-                                    <description>
-                                        <![CDATA[
-                                        <html>
-                                        Hurá, první automatická aktualizace je na světě! :)<br />
-                                        Pokud vše proběhne vpořádku, přinese s sebou mnoho drobných oprav
-                                        včetně několika vylepšění. Jedno z řečených vylepšení je např. nový splash-screen.
-                                        Ten se zobrazí při spouštění PS Diagramu a konečně tak bude jasné, že se PS Diagram opravdu spouští.<br />
-                                        Více infa naleznete ve výpisu novinek níže.
-                                        </html>
-                                        ]]>
-                                    </description>
-
-                                    <features></features>
-                                    <enhancements>
-                                        <enhancement>při spouštění PS Diagramu se nyní zobrazuje splash-screen</enhancement>
-                                        <enhancement>aktualizaci lze provést i po vypršení zkušební verze aplikace (a tím zkušebku prodloužit)</enhancement>
-                                        <enhancement>mezivýpočty nyní zachovávají mezery mezi proměnnými tak, jak jsou zadány v symbolu diagramu</enhancement>
-                                    </enhancements>
-                                    <extensions></extensions>
-                                    <changes></changes>
-                                    <fixes>
-                                        <fix>jednopísmenná proměnná pole se nyní v mezivýsledcích zobrazuje tak, jak by měla</fix>
-                                        <fix>výstup funkce vracející řetězec je nyní v mezivýpočtech korektně zobrazován v uvozovkách</fix>
-                                        <fix>vstupní dialog špatně rozeznával čísla od řetězců</fix>
-                                        <fix>podivné chování při přepínání režimů symbolu spojky je nyní opraveno</fix>
-                                        <fix>odstraněny prázdné tooltipy</fix>
-                                        <fix>měsíc vydání jednotlivých verzí v aktualizačním formuláři se již nezobrazuje o 1 nižší</fix>
-                                    </fixes>
-                                    <others></others>
                                 </configuration>
                             </execution>
                         </executions>
@@ -364,6 +381,10 @@
                                         <exclude>META-INF/*.SF</exclude>
                                         <exclude>META-INF/*.DSA</exclude>
                                         <exclude>META-INF/*.RSA</exclude>
+                                        <exclude>META-INF\eclipse.inf</exclude>
+                                        <exclude>about.html</exclude>
+                                        <exclude>license.html</exclude>
+                                        <exclude>readme.html</exclude>
                                     </excludes>
                                 </filter>
                             </filters>
@@ -500,6 +521,7 @@
                 <version>1.7</version>
                 <executions>
                     <execution>
+                        <id>delete-signature</id>
                         <phase>package</phase>
                         <goals>
                             <goal>run</goal>
@@ -507,7 +529,7 @@
                         <configuration>
                             <target name="delete-signature">
                                 <jar destfile="${project.build.directory}/${project.build.finalName}-obfuscated-with_dependencies_UNSIGNED.jar" filesetmanifest="merge">
-                                    <zipfileset src="${project.build.directory}/${project.build.finalName}-obfuscated-with_dependencies.jar" excludes="META-INF/*.DSA,META-INF/*.RSA,META-INF/*.SF" />
+                                    <zipfileset src="${project.build.directory}/${project.build.finalName}-obfuscated-with_dependencies.jar" excludes="META-INF/*.DSA,META-INF/*.RSA,META-INF/*.SF,META-INF\eclipse.inf,about.html,license.html,readme.html" />
                                 </jar>
                             </target>
                         </configuration>

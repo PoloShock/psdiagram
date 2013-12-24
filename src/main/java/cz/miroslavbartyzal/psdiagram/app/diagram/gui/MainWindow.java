@@ -457,671 +457,678 @@ public final class MainWindow extends javax.swing.JFrame
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle(windowTitle);
-        setIconImage(java.awt.Toolkit.getDefaultToolkit().createImage(getClass().getResource("/img/icon.png")));
-        setLocationByPlatform(true);
-        setMinimumSize(new java.awt.Dimension(712, 550));
+        setIconImages(Arrays.asList(
+            java.awt.Toolkit.getDefaultToolkit().createImage(getClass().getResource("/img/icon_16.png")),
+            java.awt.Toolkit.getDefaultToolkit().createImage(getClass().getResource("/img/icon_32.png")),
+            java.awt.Toolkit.getDefaultToolkit().createImage(getClass().getResource("/img/icon_48.png")),
+            java.awt.Toolkit.getDefaultToolkit().createImage(getClass().getResource("/img/icon_64.png")),
+            java.awt.Toolkit.getDefaultToolkit().createImage(getClass().getResource("/img/icon_128.png")),
+            java.awt.Toolkit.getDefaultToolkit().createImage(getClass().getResource("/img/icon_256.png")))
+    );
+    setLocationByPlatform(true);
+    setMinimumSize(new java.awt.Dimension(712, 550));
 
-        jToolBarMenu.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(147, 152, 161)));
-        jToolBarMenu.setFloatable(false);
-        jToolBarMenu.setRollover(true);
-        jToolBarMenu.setName(""); // NOI18N
+    jToolBarMenu.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(147, 152, 161)));
+    jToolBarMenu.setFloatable(false);
+    jToolBarMenu.setRollover(true);
+    jToolBarMenu.setName(""); // NOI18N
 
-        jButtonToolNew.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/toolBar/24-New.png"))); // NOI18N
-        jButtonToolNew.setToolTipText("<html>\nNový diagram<br />\n(Ctrl + N)\n</html>");
-        jButtonToolNew.setFocusable(false);
-        jButtonToolNew.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButtonToolNew.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButtonToolNew.addActionListener(new java.awt.event.ActionListener()
+    jButtonToolNew.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/toolBar/24-New.png"))); // NOI18N
+    jButtonToolNew.setToolTipText("<html>\nNový diagram<br />\n(Ctrl + N)\n</html>");
+    jButtonToolNew.setFocusable(false);
+    jButtonToolNew.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+    jButtonToolNew.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+    jButtonToolNew.addActionListener(new java.awt.event.ActionListener()
+    {
+        public void actionPerformed(java.awt.event.ActionEvent evt)
         {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                jMenuItemNewActionPerformed(evt);
-            }
-        });
-        jToolBarMenu.add(jButtonToolNew);
+            jMenuItemNewActionPerformed(evt);
+        }
+    });
+    jToolBarMenu.add(jButtonToolNew);
 
-        jButtonToolOpen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/toolBar/24-Open.png"))); // NOI18N
-        jButtonToolOpen.setToolTipText("<html>\nOtevřít diagram<br />\n(Ctrl + O)\n</html>");
-        jButtonToolOpen.setFocusable(false);
-        jButtonToolOpen.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButtonToolOpen.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButtonToolOpen.addActionListener(new java.awt.event.ActionListener()
+    jButtonToolOpen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/toolBar/24-Open.png"))); // NOI18N
+    jButtonToolOpen.setToolTipText("<html>\nOtevřít diagram<br />\n(Ctrl + O)\n</html>");
+    jButtonToolOpen.setFocusable(false);
+    jButtonToolOpen.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+    jButtonToolOpen.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+    jButtonToolOpen.addActionListener(new java.awt.event.ActionListener()
+    {
+        public void actionPerformed(java.awt.event.ActionEvent evt)
         {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                jMenuItemOpenActionPerformed(evt);
-            }
-        });
-        jToolBarMenu.add(jButtonToolOpen);
+            jMenuItemOpenActionPerformed(evt);
+        }
+    });
+    jToolBarMenu.add(jButtonToolOpen);
 
-        jButtonToolSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/toolBar/24-Save.png"))); // NOI18N
-        jButtonToolSave.setToolTipText("<html>\nUložit diagram<br />\n(Ctrl + S)\n</html>");
-        jButtonToolSave.setFocusable(false);
-        jButtonToolSave.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButtonToolSave.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButtonToolSave.addActionListener(new java.awt.event.ActionListener()
+    jButtonToolSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/toolBar/24-Save.png"))); // NOI18N
+    jButtonToolSave.setToolTipText("<html>\nUložit diagram<br />\n(Ctrl + S)\n</html>");
+    jButtonToolSave.setFocusable(false);
+    jButtonToolSave.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+    jButtonToolSave.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+    jButtonToolSave.addActionListener(new java.awt.event.ActionListener()
+    {
+        public void actionPerformed(java.awt.event.ActionEvent evt)
         {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                jMenuItemSaveActionPerformed(evt);
-            }
-        });
-        jToolBarMenu.add(jButtonToolSave);
-        jToolBarMenu.add(jSeparator1);
+            jMenuItemSaveActionPerformed(evt);
+        }
+    });
+    jToolBarMenu.add(jButtonToolSave);
+    jToolBarMenu.add(jSeparator1);
 
-        jButtonToolUndo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/toolBar/24-Undo.png"))); // NOI18N
-        jButtonToolUndo.setToolTipText("<html>Zpět<br />(Ctrl + Z)</html>");
-        jButtonToolUndo.setEnabled(false);
-        jButtonToolUndo.setFocusable(false);
-        jButtonToolUndo.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButtonToolUndo.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButtonToolUndo.addActionListener(new java.awt.event.ActionListener()
+    jButtonToolUndo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/toolBar/24-Undo.png"))); // NOI18N
+    jButtonToolUndo.setToolTipText("<html>Zpět<br />(Ctrl + Z)</html>");
+    jButtonToolUndo.setEnabled(false);
+    jButtonToolUndo.setFocusable(false);
+    jButtonToolUndo.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+    jButtonToolUndo.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+    jButtonToolUndo.addActionListener(new java.awt.event.ActionListener()
+    {
+        public void actionPerformed(java.awt.event.ActionEvent evt)
         {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                jMenuItemUndoActionPerformed(evt);
-            }
-        });
-        jToolBarMenu.add(jButtonToolUndo);
+            jMenuItemUndoActionPerformed(evt);
+        }
+    });
+    jToolBarMenu.add(jButtonToolUndo);
 
-        jButtonToolRedo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/toolBar/24-Redo.png"))); // NOI18N
-        jButtonToolRedo.setToolTipText("<html>Znovu<br />(Ctrl + Y)</html>");
-        jButtonToolRedo.setEnabled(false);
-        jButtonToolRedo.setFocusable(false);
-        jButtonToolRedo.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButtonToolRedo.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButtonToolRedo.addActionListener(new java.awt.event.ActionListener()
+    jButtonToolRedo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/toolBar/24-Redo.png"))); // NOI18N
+    jButtonToolRedo.setToolTipText("<html>Znovu<br />(Ctrl + Y)</html>");
+    jButtonToolRedo.setEnabled(false);
+    jButtonToolRedo.setFocusable(false);
+    jButtonToolRedo.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+    jButtonToolRedo.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+    jButtonToolRedo.addActionListener(new java.awt.event.ActionListener()
+    {
+        public void actionPerformed(java.awt.event.ActionEvent evt)
         {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                jMenuItemRedoActionPerformed(evt);
-            }
-        });
-        jToolBarMenu.add(jButtonToolRedo);
+            jMenuItemRedoActionPerformed(evt);
+        }
+    });
+    jToolBarMenu.add(jButtonToolRedo);
 
-        jSeparator2.setEnabled(false);
-        jSeparator2.setSeparatorSize(new java.awt.Dimension(14, 10));
-        jToolBarMenu.add(jSeparator2);
-        jToolBarMenu.add(jSeparator9);
+    jSeparator2.setEnabled(false);
+    jSeparator2.setSeparatorSize(new java.awt.Dimension(14, 10));
+    jToolBarMenu.add(jSeparator2);
+    jToolBarMenu.add(jSeparator9);
 
-        jButtonToolZoomIn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/toolBar/24-ZoomIn.png"))); // NOI18N
-        jButtonToolZoomIn.setToolTipText("<html>\nPřiblížit<br />\n(Ctrl + kolečko myši)\n</html>");
-        jButtonToolZoomIn.setActionCommand("overlook/zoomIn");
-        jButtonToolZoomIn.setFocusable(false);
-        jButtonToolZoomIn.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButtonToolZoomIn.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBarMenu.add(jButtonToolZoomIn);
+    jButtonToolZoomIn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/toolBar/24-ZoomIn.png"))); // NOI18N
+    jButtonToolZoomIn.setToolTipText("<html>\nPřiblížit<br />\n(Ctrl + kolečko myši)\n</html>");
+    jButtonToolZoomIn.setActionCommand("overlook/zoomIn");
+    jButtonToolZoomIn.setFocusable(false);
+    jButtonToolZoomIn.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+    jButtonToolZoomIn.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+    jToolBarMenu.add(jButtonToolZoomIn);
 
-        jButtonToolZoomOut.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/toolBar/24-ZoomOut.png"))); // NOI18N
-        jButtonToolZoomOut.setToolTipText("<html>\nOddálit<br />\n(Ctrl + kolečko myši)\n</html>");
-        jButtonToolZoomOut.setActionCommand("overlook/zoomOut");
-        jButtonToolZoomOut.setFocusable(false);
-        jButtonToolZoomOut.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButtonToolZoomOut.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBarMenu.add(jButtonToolZoomOut);
-        jToolBarMenu.add(jSeparator4);
+    jButtonToolZoomOut.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/toolBar/24-ZoomOut.png"))); // NOI18N
+    jButtonToolZoomOut.setToolTipText("<html>\nOddálit<br />\n(Ctrl + kolečko myši)\n</html>");
+    jButtonToolZoomOut.setActionCommand("overlook/zoomOut");
+    jButtonToolZoomOut.setFocusable(false);
+    jButtonToolZoomOut.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+    jButtonToolZoomOut.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+    jToolBarMenu.add(jButtonToolZoomOut);
+    jToolBarMenu.add(jSeparator4);
 
-        jButtonToolEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/toolBar/24-Unlock.png"))); // NOI18N
-        jButtonToolEdit.setSelected(true);
-        jButtonToolEdit.setToolTipText("Editační režim");
-        jButtonToolEdit.setActionCommand("mode/editMode");
-        jButtonToolEdit.setFocusable(false);
-        jButtonToolEdit.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButtonToolEdit.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBarMenu.add(jButtonToolEdit);
-        jToolBarMenu.add(jSeparator3);
+    jButtonToolEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/toolBar/24-Unlock.png"))); // NOI18N
+    jButtonToolEdit.setSelected(true);
+    jButtonToolEdit.setToolTipText("Editační režim");
+    jButtonToolEdit.setActionCommand("mode/editMode");
+    jButtonToolEdit.setFocusable(false);
+    jButtonToolEdit.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+    jButtonToolEdit.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+    jToolBarMenu.add(jButtonToolEdit);
+    jToolBarMenu.add(jSeparator3);
 
-        jButtonToolAnimation.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/toolBar/24-MagicWand.png"))); // NOI18N
-        jButtonToolAnimation.setToolTipText("Animační režim");
-        jButtonToolAnimation.setActionCommand("mode/animationMode");
-        jButtonToolAnimation.setFocusable(false);
-        jButtonToolAnimation.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButtonToolAnimation.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBarMenu.add(jButtonToolAnimation);
+    jButtonToolAnimation.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/toolBar/24-MagicWand.png"))); // NOI18N
+    jButtonToolAnimation.setToolTipText("Animační režim");
+    jButtonToolAnimation.setActionCommand("mode/animationMode");
+    jButtonToolAnimation.setFocusable(false);
+    jButtonToolAnimation.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+    jButtonToolAnimation.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+    jToolBarMenu.add(jButtonToolAnimation);
 
-        jButtonToolPlayPause.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/toolBar/24-Play.png"))); // NOI18N
-        jButtonToolPlayPause.setToolTipText("<html>\nSpustit animaci<br />\n(Mezerník)\n</html>");
-        jButtonToolPlayPause.setActionCommand("animation/play");
-        jButtonToolPlayPause.setEnabled(false);
-        jButtonToolPlayPause.setFocusable(false);
-        jButtonToolPlayPause.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButtonToolPlayPause.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBarMenu.add(jButtonToolPlayPause);
+    jButtonToolPlayPause.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/toolBar/24-Play.png"))); // NOI18N
+    jButtonToolPlayPause.setToolTipText("<html>\nSpustit animaci<br />\n(Mezerník)\n</html>");
+    jButtonToolPlayPause.setActionCommand("animation/play");
+    jButtonToolPlayPause.setEnabled(false);
+    jButtonToolPlayPause.setFocusable(false);
+    jButtonToolPlayPause.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+    jButtonToolPlayPause.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+    jToolBarMenu.add(jButtonToolPlayPause);
 
-        jButtonToolPrevious.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/toolBar/24-Previous.png"))); // NOI18N
-        jButtonToolPrevious.setToolTipText("<html>\nKrok zpět<br />\n(Ctrl+šipka doleva, nebo nahoru)\n</html>");
-        jButtonToolPrevious.setActionCommand("animation/previous");
-        jButtonToolPrevious.setEnabled(false);
-        jButtonToolPrevious.setFocusable(false);
-        jButtonToolPrevious.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButtonToolPrevious.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBarMenu.add(jButtonToolPrevious);
+    jButtonToolPrevious.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/toolBar/24-Previous.png"))); // NOI18N
+    jButtonToolPrevious.setToolTipText("<html>\nKrok zpět<br />\n(Ctrl+šipka doleva, nebo nahoru)\n</html>");
+    jButtonToolPrevious.setActionCommand("animation/previous");
+    jButtonToolPrevious.setEnabled(false);
+    jButtonToolPrevious.setFocusable(false);
+    jButtonToolPrevious.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+    jButtonToolPrevious.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+    jToolBarMenu.add(jButtonToolPrevious);
 
-        jButtonToolNext.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/toolBar/24-Next.png"))); // NOI18N
-        jButtonToolNext.setToolTipText("<html>\nKrok vpřed<br />\n(Ctrl+šipka doprava, nebo dolu)\n</html>");
-        jButtonToolNext.setActionCommand("animation/next");
-        jButtonToolNext.setEnabled(false);
-        jButtonToolNext.setFocusable(false);
-        jButtonToolNext.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButtonToolNext.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBarMenu.add(jButtonToolNext);
+    jButtonToolNext.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/toolBar/24-Next.png"))); // NOI18N
+    jButtonToolNext.setToolTipText("<html>\nKrok vpřed<br />\n(Ctrl+šipka doprava, nebo dolu)\n</html>");
+    jButtonToolNext.setActionCommand("animation/next");
+    jButtonToolNext.setEnabled(false);
+    jButtonToolNext.setFocusable(false);
+    jButtonToolNext.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+    jButtonToolNext.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+    jToolBarMenu.add(jButtonToolNext);
 
-        jButtonToolStop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/toolBar/24-Stop.png"))); // NOI18N
-        jButtonToolStop.setToolTipText("Reset");
-        jButtonToolStop.setActionCommand("animation/stop");
-        jButtonToolStop.setEnabled(false);
-        jButtonToolStop.setFocusable(false);
-        jButtonToolStop.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButtonToolStop.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBarMenu.add(jButtonToolStop);
-        jToolBarMenu.add(jSeparator8);
+    jButtonToolStop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/toolBar/24-Stop.png"))); // NOI18N
+    jButtonToolStop.setToolTipText("Reset");
+    jButtonToolStop.setActionCommand("animation/stop");
+    jButtonToolStop.setEnabled(false);
+    jButtonToolStop.setFocusable(false);
+    jButtonToolStop.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+    jButtonToolStop.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+    jToolBarMenu.add(jButtonToolStop);
+    jToolBarMenu.add(jSeparator8);
 
-        jButtonLaunch.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/toolBar/24-Launch.png"))); // NOI18N
-        jButtonLaunch.setToolTipText("<html>\nSpustit rychle<br />\n(zastaví na umístěném breakpointu)\n</html>");
-        jButtonLaunch.setActionCommand("animation/launch");
-        jButtonLaunch.setEnabled(false);
-        jButtonLaunch.setFocusable(false);
-        jButtonLaunch.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButtonLaunch.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBarMenu.add(jButtonLaunch);
+    jButtonLaunch.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/toolBar/24-Launch.png"))); // NOI18N
+    jButtonLaunch.setToolTipText("<html>\nSpustit rychle<br />\n(zastaví na umístěném breakpointu)\n</html>");
+    jButtonLaunch.setActionCommand("animation/launch");
+    jButtonLaunch.setEnabled(false);
+    jButtonLaunch.setFocusable(false);
+    jButtonLaunch.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+    jButtonLaunch.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+    jToolBarMenu.add(jButtonLaunch);
 
-        jSeparator13.setEnabled(false);
-        jToolBarMenu.add(jSeparator13);
+    jSeparator13.setEnabled(false);
+    jToolBarMenu.add(jSeparator13);
 
-        jSliderSpeed.setMaximum(20);
-        jSliderSpeed.setToolTipText("Rychlost animace");
-        jSliderSpeed.setValue(10);
-        jSliderSpeed.setEnabled(false);
-        jSliderSpeed.setInverted(true);
-        jSliderSpeed.setPreferredSize(new java.awt.Dimension(150, 21));
-        jToolBarMenu.add(jSliderSpeed);
+    jSliderSpeed.setMaximum(20);
+    jSliderSpeed.setToolTipText("Rychlost animace");
+    jSliderSpeed.setValue(10);
+    jSliderSpeed.setEnabled(false);
+    jSliderSpeed.setInverted(true);
+    jSliderSpeed.setPreferredSize(new java.awt.Dimension(150, 21));
+    jToolBarMenu.add(jSliderSpeed);
 
-        jPanelStatus.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, new java.awt.Color(147, 152, 161)));
-        jPanelStatus.setPreferredSize(new java.awt.Dimension(200, 25));
+    jPanelStatus.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, new java.awt.Color(147, 152, 161)));
+    jPanelStatus.setPreferredSize(new java.awt.Dimension(200, 25));
 
-        jSliderZoom.setMaximum(50);
-        jSliderZoom.setMinimum(1);
-        jSliderZoom.setToolTipText("Přiblížení");
-        jSliderZoom.setValue(10);
-        jSliderZoom.setPreferredSize(new java.awt.Dimension(150, 21));
+    jSliderZoom.setMaximum(50);
+    jSliderZoom.setMinimum(1);
+    jSliderZoom.setToolTipText("Přiblížení");
+    jSliderZoom.setValue(10);
+    jSliderZoom.setPreferredSize(new java.awt.Dimension(150, 21));
 
-        jLabelZoom.setText("100%");
-        jLabelZoom.setPreferredSize(new java.awt.Dimension(32, 21));
+    jLabelZoom.setText("100%");
+    jLabelZoom.setPreferredSize(new java.awt.Dimension(32, 21));
 
-        javax.swing.GroupLayout jPanelStatusLayout = new javax.swing.GroupLayout(jPanelStatus);
-        jPanelStatus.setLayout(jPanelStatusLayout);
-        jPanelStatusLayout.setHorizontalGroup(
-            jPanelStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelStatusLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabelStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabelZoom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSliderZoom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        jPanelStatusLayout.setVerticalGroup(
-            jPanelStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelStatusLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addGroup(jPanelStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(jPanelStatusLayout.createSequentialGroup()
-                        .addGap(2, 2, 2)
-                        .addComponent(jLabelStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jSliderZoom, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabelZoom, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(13, 13, 13))
-        );
+    javax.swing.GroupLayout jPanelStatusLayout = new javax.swing.GroupLayout(jPanelStatus);
+    jPanelStatus.setLayout(jPanelStatusLayout);
+    jPanelStatusLayout.setHorizontalGroup(
+        jPanelStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelStatusLayout.createSequentialGroup()
+            .addContainerGap()
+            .addComponent(jLabelStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(jLabelZoom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(jSliderZoom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addContainerGap())
+    );
+    jPanelStatusLayout.setVerticalGroup(
+        jPanelStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelStatusLayout.createSequentialGroup()
+            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(jPanelStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addGroup(jPanelStatusLayout.createSequentialGroup()
+                    .addGap(2, 2, 2)
+                    .addComponent(jLabelStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jSliderZoom, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabelZoom, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGap(13, 13, 13))
+    );
 
-        jSplitPane.setDividerLocation(306);
+    jSplitPane.setDividerLocation(306);
 
-        jPanelLeftSplit.setMinimumSize(new java.awt.Dimension(231, 0));
+    jPanelLeftSplit.setMinimumSize(new java.awt.Dimension(231, 0));
 
-        jPanelDetails.setBorder(null);
-        jPanelDetails.setPreferredSize(new java.awt.Dimension(188, 517));
+    jPanelDetails.setBorder(null);
+    jPanelDetails.setPreferredSize(new java.awt.Dimension(188, 517));
 
-        jPanelInnerFunction.setPreferredSize(new java.awt.Dimension(0, 0));
+    jPanelInnerFunction.setPreferredSize(new java.awt.Dimension(0, 0));
 
-        jLabelFunction.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabelFunction.setText("<html>\n<p style=\"text-align: center;\">\nTento symbol nemá možnost nastavení funkce.\n</p>\n</html>");
+    jLabelFunction.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+    jLabelFunction.setText("<html>\n<p style=\"text-align: center;\">\nTento symbol nemá možnost nastavení funkce.\n</p>\n</html>");
 
-        javax.swing.GroupLayout jPanelInnerFunctionLayout = new javax.swing.GroupLayout(jPanelInnerFunction);
-        jPanelInnerFunction.setLayout(jPanelInnerFunctionLayout);
-        jPanelInnerFunctionLayout.setHorizontalGroup(
-            jPanelInnerFunctionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelInnerFunctionLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabelFunction, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanelInnerFunctionLayout.setVerticalGroup(
-            jPanelInnerFunctionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelInnerFunctionLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabelFunction, javax.swing.GroupLayout.DEFAULT_SIZE, 567, Short.MAX_VALUE)
-                .addContainerGap())
-        );
+    javax.swing.GroupLayout jPanelInnerFunctionLayout = new javax.swing.GroupLayout(jPanelInnerFunction);
+    jPanelInnerFunction.setLayout(jPanelInnerFunctionLayout);
+    jPanelInnerFunctionLayout.setHorizontalGroup(
+        jPanelInnerFunctionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(jPanelInnerFunctionLayout.createSequentialGroup()
+            .addContainerGap()
+            .addComponent(jLabelFunction, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
+            .addContainerGap())
+    );
+    jPanelInnerFunctionLayout.setVerticalGroup(
+        jPanelInnerFunctionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(jPanelInnerFunctionLayout.createSequentialGroup()
+            .addContainerGap()
+            .addComponent(jLabelFunction, javax.swing.GroupLayout.DEFAULT_SIZE, 567, Short.MAX_VALUE)
+            .addContainerGap())
+    );
 
-        jScrollPaneFunction.setViewportView(jPanelInnerFunction);
+    jScrollPaneFunction.setViewportView(jPanelInnerFunction);
 
-        javax.swing.GroupLayout jPanelOuterFunctionLayout = new javax.swing.GroupLayout(jPanelOuterFunction);
-        jPanelOuterFunction.setLayout(jPanelOuterFunctionLayout);
-        jPanelOuterFunctionLayout.setHorizontalGroup(
-            jPanelOuterFunctionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPaneFunction, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
-        );
-        jPanelOuterFunctionLayout.setVerticalGroup(
-            jPanelOuterFunctionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPaneFunction, javax.swing.GroupLayout.DEFAULT_SIZE, 585, Short.MAX_VALUE)
-        );
+    javax.swing.GroupLayout jPanelOuterFunctionLayout = new javax.swing.GroupLayout(jPanelOuterFunction);
+    jPanelOuterFunction.setLayout(jPanelOuterFunctionLayout);
+    jPanelOuterFunctionLayout.setHorizontalGroup(
+        jPanelOuterFunctionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addComponent(jScrollPaneFunction, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
+    );
+    jPanelOuterFunctionLayout.setVerticalGroup(
+        jPanelOuterFunctionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addComponent(jScrollPaneFunction, javax.swing.GroupLayout.DEFAULT_SIZE, 585, Short.MAX_VALUE)
+    );
 
-        jTabbedPaneEdit.addTab("Funkce", jPanelOuterFunction);
+    jTabbedPaneEdit.addTab("Funkce", jPanelOuterFunction);
 
-        jPanelInnerText.setPreferredSize(new java.awt.Dimension(0, 0));
+    jPanelInnerText.setPreferredSize(new java.awt.Dimension(0, 0));
 
-        jCheckBoxDefaultText.setText("Výchozí hodnoty");
-        jCheckBoxDefaultText.setToolTipText("Nastaví text symbolu, resp. jeho větví, na základě vyplněné funkce");
-        jCheckBoxDefaultText.setActionCommand("edit/defaultText");
+    jCheckBoxDefaultText.setText("Výchozí hodnoty");
+    jCheckBoxDefaultText.setToolTipText("Nastaví text symbolu, resp. jeho větví, na základě vyplněné funkce");
+    jCheckBoxDefaultText.setActionCommand("edit/defaultText");
 
-        jPanelTextSymbol.setBorder(javax.swing.BorderFactory.createTitledBorder("Text symbolu"));
+    jPanelTextSymbol.setBorder(javax.swing.BorderFactory.createTitledBorder("Text symbolu"));
 
-        jScrollPane1.setViewportView(jTextAreaTextSymbol);
+    jScrollPane1.setViewportView(jTextAreaTextSymbol);
 
-        javax.swing.GroupLayout jPanelTextSymbolLayout = new javax.swing.GroupLayout(jPanelTextSymbol);
-        jPanelTextSymbol.setLayout(jPanelTextSymbolLayout);
-        jPanelTextSymbolLayout.setHorizontalGroup(
-            jPanelTextSymbolLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1)
-        );
-        jPanelTextSymbolLayout.setVerticalGroup(
-            jPanelTextSymbolLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelTextSymbolLayout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
-                .addContainerGap())
-        );
+    javax.swing.GroupLayout jPanelTextSymbolLayout = new javax.swing.GroupLayout(jPanelTextSymbol);
+    jPanelTextSymbol.setLayout(jPanelTextSymbolLayout);
+    jPanelTextSymbolLayout.setHorizontalGroup(
+        jPanelTextSymbolLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addComponent(jScrollPane1)
+    );
+    jPanelTextSymbolLayout.setVerticalGroup(
+        jPanelTextSymbolLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(jPanelTextSymbolLayout.createSequentialGroup()
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
+            .addContainerGap())
+    );
 
-        jPanelTextSegment.setBorder(javax.swing.BorderFactory.createTitledBorder("Text větví symbolu"));
+    jPanelTextSegment.setBorder(javax.swing.BorderFactory.createTitledBorder("Text větví symbolu"));
 
-        jComboBoxSegment.setActionCommand("edit/segmentText");
+    jComboBoxSegment.setActionCommand("edit/segmentText");
 
-        javax.swing.GroupLayout jPanelTextSegmentLayout = new javax.swing.GroupLayout(jPanelTextSegment);
-        jPanelTextSegment.setLayout(jPanelTextSegmentLayout);
-        jPanelTextSegmentLayout.setHorizontalGroup(
-            jPanelTextSegmentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTextFieldTextSegment)
-            .addComponent(jComboBoxSegment, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        jPanelTextSegmentLayout.setVerticalGroup(
-            jPanelTextSegmentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelTextSegmentLayout.createSequentialGroup()
-                .addComponent(jTextFieldTextSegment, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jComboBoxSegment, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+    javax.swing.GroupLayout jPanelTextSegmentLayout = new javax.swing.GroupLayout(jPanelTextSegment);
+    jPanelTextSegment.setLayout(jPanelTextSegmentLayout);
+    jPanelTextSegmentLayout.setHorizontalGroup(
+        jPanelTextSegmentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addComponent(jTextFieldTextSegment)
+        .addComponent(jComboBoxSegment, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+    );
+    jPanelTextSegmentLayout.setVerticalGroup(
+        jPanelTextSegmentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelTextSegmentLayout.createSequentialGroup()
+            .addComponent(jTextFieldTextSegment, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(jComboBoxSegment, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+    );
 
-        javax.swing.GroupLayout jPanelInnerTextLayout = new javax.swing.GroupLayout(jPanelInnerText);
-        jPanelInnerText.setLayout(jPanelInnerTextLayout);
-        jPanelInnerTextLayout.setHorizontalGroup(
-            jPanelInnerTextLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanelTextSymbol, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanelTextSegment, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(jPanelInnerTextLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jCheckBoxDefaultText, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanelInnerTextLayout.setVerticalGroup(
-            jPanelInnerTextLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelInnerTextLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jCheckBoxDefaultText)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanelTextSymbol, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanelTextSegment, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(217, Short.MAX_VALUE))
-        );
+    javax.swing.GroupLayout jPanelInnerTextLayout = new javax.swing.GroupLayout(jPanelInnerText);
+    jPanelInnerText.setLayout(jPanelInnerTextLayout);
+    jPanelInnerTextLayout.setHorizontalGroup(
+        jPanelInnerTextLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addComponent(jPanelTextSymbol, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        .addComponent(jPanelTextSegment, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        .addGroup(jPanelInnerTextLayout.createSequentialGroup()
+            .addContainerGap()
+            .addComponent(jCheckBoxDefaultText, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
+            .addContainerGap())
+    );
+    jPanelInnerTextLayout.setVerticalGroup(
+        jPanelInnerTextLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(jPanelInnerTextLayout.createSequentialGroup()
+            .addContainerGap()
+            .addComponent(jCheckBoxDefaultText)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(jPanelTextSymbol, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(jPanelTextSegment, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addContainerGap(217, Short.MAX_VALUE))
+    );
 
-        jScrollPaneText.setViewportView(jPanelInnerText);
+    jScrollPaneText.setViewportView(jPanelInnerText);
 
-        javax.swing.GroupLayout jPanelOuterTextLayout = new javax.swing.GroupLayout(jPanelOuterText);
-        jPanelOuterText.setLayout(jPanelOuterTextLayout);
-        jPanelOuterTextLayout.setHorizontalGroup(
-            jPanelOuterTextLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPaneText, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
-        );
-        jPanelOuterTextLayout.setVerticalGroup(
-            jPanelOuterTextLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPaneText, javax.swing.GroupLayout.DEFAULT_SIZE, 585, Short.MAX_VALUE)
-        );
+    javax.swing.GroupLayout jPanelOuterTextLayout = new javax.swing.GroupLayout(jPanelOuterText);
+    jPanelOuterText.setLayout(jPanelOuterTextLayout);
+    jPanelOuterTextLayout.setHorizontalGroup(
+        jPanelOuterTextLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addComponent(jScrollPaneText, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
+    );
+    jPanelOuterTextLayout.setVerticalGroup(
+        jPanelOuterTextLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addComponent(jScrollPaneText, javax.swing.GroupLayout.DEFAULT_SIZE, 585, Short.MAX_VALUE)
+    );
 
-        jTabbedPaneEdit.addTab("Text symbolu", jPanelOuterText);
+    jTabbedPaneEdit.addTab("Text symbolu", jPanelOuterText);
 
-        javax.swing.GroupLayout jPanelDetailsLayout = new javax.swing.GroupLayout(jPanelDetails);
-        jPanelDetails.setLayout(jPanelDetailsLayout);
-        jPanelDetailsLayout.setHorizontalGroup(
-            jPanelDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPaneEdit)
-        );
-        jPanelDetailsLayout.setVerticalGroup(
-            jPanelDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPaneEdit)
-        );
+    javax.swing.GroupLayout jPanelDetailsLayout = new javax.swing.GroupLayout(jPanelDetails);
+    jPanelDetails.setLayout(jPanelDetailsLayout);
+    jPanelDetailsLayout.setHorizontalGroup(
+        jPanelDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addComponent(jTabbedPaneEdit)
+    );
+    jPanelDetailsLayout.setVerticalGroup(
+        jPanelDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addComponent(jTabbedPaneEdit)
+    );
 
-        jToolBarSymbols.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 1, 0, 1, new java.awt.Color(147, 152, 161)));
-        jToolBarSymbols.setFloatable(false);
-        jToolBarSymbols.setOrientation(javax.swing.SwingConstants.VERTICAL);
-        jToolBarSymbols.setRollover(true);
-        jToolBarSymbols.add(jSeparator5);
+    jToolBarSymbols.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 1, 0, 1, new java.awt.Color(147, 152, 161)));
+    jToolBarSymbols.setFloatable(false);
+    jToolBarSymbols.setOrientation(javax.swing.SwingConstants.VERTICAL);
+    jToolBarSymbols.setRollover(true);
+    jToolBarSymbols.add(jSeparator5);
 
-        javax.swing.GroupLayout jPanelEditLayout = new javax.swing.GroupLayout(jPanelEdit);
-        jPanelEdit.setLayout(jPanelEditLayout);
-        jPanelEditLayout.setHorizontalGroup(
-            jPanelEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelEditLayout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addComponent(jPanelDetails, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
-                .addGap(0, 0, 0)
-                .addComponent(jToolBarSymbols, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0))
-        );
-        jPanelEditLayout.setVerticalGroup(
-            jPanelEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelEditLayout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addGroup(jPanelEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jToolBarSymbols, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanelDetails, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 615, Short.MAX_VALUE))
-                .addGap(0, 0, 0))
-        );
+    javax.swing.GroupLayout jPanelEditLayout = new javax.swing.GroupLayout(jPanelEdit);
+    jPanelEdit.setLayout(jPanelEditLayout);
+    jPanelEditLayout.setHorizontalGroup(
+        jPanelEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(jPanelEditLayout.createSequentialGroup()
+            .addGap(0, 0, 0)
+            .addComponent(jPanelDetails, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
+            .addGap(0, 0, 0)
+            .addComponent(jToolBarSymbols, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGap(0, 0, 0))
+    );
+    jPanelEditLayout.setVerticalGroup(
+        jPanelEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(jPanelEditLayout.createSequentialGroup()
+            .addGap(0, 0, 0)
+            .addGroup(jPanelEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(jToolBarSymbols, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanelDetails, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 615, Short.MAX_VALUE))
+            .addGap(0, 0, 0))
+    );
 
-        javax.swing.GroupLayout jPanelLeftSplitLayout = new javax.swing.GroupLayout(jPanelLeftSplit);
-        jPanelLeftSplit.setLayout(jPanelLeftSplitLayout);
-        jPanelLeftSplitLayout.setHorizontalGroup(
-            jPanelLeftSplitLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanelEdit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        jPanelLeftSplitLayout.setVerticalGroup(
-            jPanelLeftSplitLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanelEdit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+    javax.swing.GroupLayout jPanelLeftSplitLayout = new javax.swing.GroupLayout(jPanelLeftSplit);
+    jPanelLeftSplit.setLayout(jPanelLeftSplitLayout);
+    jPanelLeftSplitLayout.setHorizontalGroup(
+        jPanelLeftSplitLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addComponent(jPanelEdit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+    );
+    jPanelLeftSplitLayout.setVerticalGroup(
+        jPanelLeftSplitLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addComponent(jPanelEdit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+    );
 
-        jSplitPane.setLeftComponent(jPanelLeftSplit);
+    jSplitPane.setLeftComponent(jPanelLeftSplit);
 
-        jScrollPaneDiagram.setHorizontalScrollBar(new JScrollBarDiagram(JScrollBar.HORIZONTAL));
-        jScrollPaneDiagram.setMinimumSize(new java.awt.Dimension(101, 20));
-        jScrollPaneDiagram.setPreferredSize(new java.awt.Dimension(690, 417));
-        jScrollPaneDiagram.setVerticalScrollBar(new JScrollBarDiagram(JScrollBar.VERTICAL));
+    jScrollPaneDiagram.setHorizontalScrollBar(new JScrollBarDiagram(JScrollBar.HORIZONTAL));
+    jScrollPaneDiagram.setMinimumSize(new java.awt.Dimension(101, 20));
+    jScrollPaneDiagram.setPreferredSize(new java.awt.Dimension(690, 417));
+    jScrollPaneDiagram.setVerticalScrollBar(new JScrollBarDiagram(JScrollBar.VERTICAL));
 
-        jPanelDiagram.setBackground(new java.awt.Color(255, 255, 255));
-        jPanelDiagram.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jPanelDiagram.setPreferredSize(new java.awt.Dimension(0, 0));
+    jPanelDiagram.setBackground(new java.awt.Color(255, 255, 255));
+    jPanelDiagram.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+    jPanelDiagram.setPreferredSize(new java.awt.Dimension(0, 0));
 
-        javax.swing.GroupLayout jPanelDiagramLayout = new javax.swing.GroupLayout(jPanelDiagram);
-        jPanelDiagram.setLayout(jPanelDiagramLayout);
-        jPanelDiagramLayout.setHorizontalGroup(
-            jPanelDiagramLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 577, Short.MAX_VALUE)
-        );
-        jPanelDiagramLayout.setVerticalGroup(
-            jPanelDiagramLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 609, Short.MAX_VALUE)
-        );
+    javax.swing.GroupLayout jPanelDiagramLayout = new javax.swing.GroupLayout(jPanelDiagram);
+    jPanelDiagram.setLayout(jPanelDiagramLayout);
+    jPanelDiagramLayout.setHorizontalGroup(
+        jPanelDiagramLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGap(0, 577, Short.MAX_VALUE)
+    );
+    jPanelDiagramLayout.setVerticalGroup(
+        jPanelDiagramLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGap(0, 609, Short.MAX_VALUE)
+    );
 
-        jScrollPaneDiagram.setViewportView(jPanelDiagram);
+    jScrollPaneDiagram.setViewportView(jPanelDiagram);
 
-        jSplitPane.setRightComponent(jScrollPaneDiagram);
+    jSplitPane.setRightComponent(jScrollPaneDiagram);
 
-        jMenuBar1.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(147, 152, 161)));
+    jMenuBar1.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(147, 152, 161)));
 
-        jMenuFile.setText("Soubor");
+    jMenuFile.setText("Soubor");
 
-        jMenuItemNew.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItemNew.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/menuitems/16-New.png"))); // NOI18N
-        jMenuItemNew.setMnemonic('n');
-        jMenuItemNew.setText("Nový");
-        jMenuItemNew.addActionListener(new java.awt.event.ActionListener()
+    jMenuItemNew.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
+    jMenuItemNew.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/menuitems/16-New.png"))); // NOI18N
+    jMenuItemNew.setMnemonic('n');
+    jMenuItemNew.setText("Nový");
+    jMenuItemNew.addActionListener(new java.awt.event.ActionListener()
+    {
+        public void actionPerformed(java.awt.event.ActionEvent evt)
         {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                jMenuItemNewActionPerformed(evt);
-            }
-        });
-        jMenuFile.add(jMenuItemNew);
+            jMenuItemNewActionPerformed(evt);
+        }
+    });
+    jMenuFile.add(jMenuItemNew);
 
-        jMenuItemOpen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItemOpen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/menuitems/16-Open.png"))); // NOI18N
-        jMenuItemOpen.setMnemonic('o');
-        jMenuItemOpen.setText("Otevřít");
-        jMenuItemOpen.addActionListener(new java.awt.event.ActionListener()
+    jMenuItemOpen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
+    jMenuItemOpen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/menuitems/16-Open.png"))); // NOI18N
+    jMenuItemOpen.setMnemonic('o');
+    jMenuItemOpen.setText("Otevřít");
+    jMenuItemOpen.addActionListener(new java.awt.event.ActionListener()
+    {
+        public void actionPerformed(java.awt.event.ActionEvent evt)
         {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                jMenuItemOpenActionPerformed(evt);
-            }
-        });
-        jMenuFile.add(jMenuItemOpen);
+            jMenuItemOpenActionPerformed(evt);
+        }
+    });
+    jMenuFile.add(jMenuItemOpen);
 
-        jMenuItemSave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItemSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/menuitems/16-Save.png"))); // NOI18N
-        jMenuItemSave.setMnemonic('u');
-        jMenuItemSave.setText("Uložit");
-        jMenuItemSave.addActionListener(new java.awt.event.ActionListener()
+    jMenuItemSave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
+    jMenuItemSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/menuitems/16-Save.png"))); // NOI18N
+    jMenuItemSave.setMnemonic('u');
+    jMenuItemSave.setText("Uložit");
+    jMenuItemSave.addActionListener(new java.awt.event.ActionListener()
+    {
+        public void actionPerformed(java.awt.event.ActionEvent evt)
         {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                jMenuItemSaveActionPerformed(evt);
-            }
-        });
-        jMenuFile.add(jMenuItemSave);
+            jMenuItemSaveActionPerformed(evt);
+        }
+    });
+    jMenuFile.add(jMenuItemSave);
 
-        jMenuItemSaveAs.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItemSaveAs.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/menuitems/16-SaveAs.png"))); // NOI18N
-        jMenuItemSaveAs.setMnemonic('j');
-        jMenuItemSaveAs.setText("Uložit Jako");
-        jMenuItemSaveAs.addActionListener(new java.awt.event.ActionListener()
+    jMenuItemSaveAs.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+    jMenuItemSaveAs.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/menuitems/16-SaveAs.png"))); // NOI18N
+    jMenuItemSaveAs.setMnemonic('j');
+    jMenuItemSaveAs.setText("Uložit Jako");
+    jMenuItemSaveAs.addActionListener(new java.awt.event.ActionListener()
+    {
+        public void actionPerformed(java.awt.event.ActionEvent evt)
         {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                jMenuItemSaveAsActionPerformed(evt);
-            }
-        });
-        jMenuFile.add(jMenuItemSaveAs);
-        jMenuFile.add(jSeparator10);
+            jMenuItemSaveAsActionPerformed(evt);
+        }
+    });
+    jMenuFile.add(jMenuItemSaveAs);
+    jMenuFile.add(jSeparator10);
 
-        jMenuItemExportImage.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/menuitems/16-Export_image.png"))); // NOI18N
-        jMenuItemExportImage.setText("Export do obrázku");
-        jMenuItemExportImage.addActionListener(new java.awt.event.ActionListener()
+    jMenuItemExportImage.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/menuitems/16-Export_image.png"))); // NOI18N
+    jMenuItemExportImage.setText("Export do obrázku");
+    jMenuItemExportImage.addActionListener(new java.awt.event.ActionListener()
+    {
+        public void actionPerformed(java.awt.event.ActionEvent evt)
         {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                jMenuItemExportImageActionPerformed(evt);
-            }
-        });
-        jMenuFile.add(jMenuItemExportImage);
+            jMenuItemExportImageActionPerformed(evt);
+        }
+    });
+    jMenuFile.add(jMenuItemExportImage);
 
-        jMenuItemExportPDF.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/menuitems/16-Export_pdf.png"))); // NOI18N
-        jMenuItemExportPDF.setText("Export do PDF");
-        jMenuItemExportPDF.addActionListener(new java.awt.event.ActionListener()
+    jMenuItemExportPDF.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/menuitems/16-Export_pdf.png"))); // NOI18N
+    jMenuItemExportPDF.setText("Export do PDF");
+    jMenuItemExportPDF.addActionListener(new java.awt.event.ActionListener()
+    {
+        public void actionPerformed(java.awt.event.ActionEvent evt)
         {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                jMenuItemExportPDFActionPerformed(evt);
-            }
-        });
-        jMenuFile.add(jMenuItemExportPDF);
-        jMenuFile.add(jSeparator11);
+            jMenuItemExportPDFActionPerformed(evt);
+        }
+    });
+    jMenuFile.add(jMenuItemExportPDF);
+    jMenuFile.add(jSeparator11);
 
-        jMenuItemCodeImport.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/menuitems/16-Import_Code.png"))); // NOI18N
-        jMenuItemCodeImport.setText("Import ze zdoj. kódu");
-        jMenuItemCodeImport.addActionListener(new java.awt.event.ActionListener()
+    jMenuItemCodeImport.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/menuitems/16-Import_Code.png"))); // NOI18N
+    jMenuItemCodeImport.setText("Import ze zdoj. kódu");
+    jMenuItemCodeImport.addActionListener(new java.awt.event.ActionListener()
+    {
+        public void actionPerformed(java.awt.event.ActionEvent evt)
         {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                jMenuItemCodeImportActionPerformed(evt);
-            }
-        });
-        jMenuFile.add(jMenuItemCodeImport);
+            jMenuItemCodeImportActionPerformed(evt);
+        }
+    });
+    jMenuFile.add(jMenuItemCodeImport);
 
-        jMenuItemCodeExport.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/menuitems/16-Export_Code.png"))); // NOI18N
-        jMenuItemCodeExport.setText("Export do zdoj. kódu");
-        jMenuItemCodeExport.addActionListener(new java.awt.event.ActionListener()
+    jMenuItemCodeExport.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/menuitems/16-Export_Code.png"))); // NOI18N
+    jMenuItemCodeExport.setText("Export do zdoj. kódu");
+    jMenuItemCodeExport.addActionListener(new java.awt.event.ActionListener()
+    {
+        public void actionPerformed(java.awt.event.ActionEvent evt)
         {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                jMenuItemCodeExportActionPerformed(evt);
-            }
-        });
-        jMenuFile.add(jMenuItemCodeExport);
-        jMenuFile.add(jSeparator14);
+            jMenuItemCodeExportActionPerformed(evt);
+        }
+    });
+    jMenuFile.add(jMenuItemCodeExport);
+    jMenuFile.add(jSeparator14);
 
-        jMenuItemExit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_MASK));
-        jMenuItemExit.setText("Konec");
-        jMenuItemExit.addActionListener(new java.awt.event.ActionListener()
+    jMenuItemExit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_MASK));
+    jMenuItemExit.setText("Konec");
+    jMenuItemExit.addActionListener(new java.awt.event.ActionListener()
+    {
+        public void actionPerformed(java.awt.event.ActionEvent evt)
         {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                jMenuItemExitActionPerformed(evt);
-            }
-        });
-        jMenuFile.add(jMenuItemExit);
+            jMenuItemExitActionPerformed(evt);
+        }
+    });
+    jMenuFile.add(jMenuItemExit);
 
-        jMenuBar1.add(jMenuFile);
+    jMenuBar1.add(jMenuFile);
 
-        jMenuEdit.setText("Úpravy");
-        jMenuEdit.setActionCommand("edit");
+    jMenuEdit.setText("Úpravy");
+    jMenuEdit.setActionCommand("edit");
 
-        jMenuItemUndo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItemUndo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/menuitems/16-Undo.png"))); // NOI18N
-        jMenuItemUndo.setText("Zpět");
-        jMenuItemUndo.setEnabled(false);
-        jMenuItemUndo.addActionListener(new java.awt.event.ActionListener()
+    jMenuItemUndo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.CTRL_MASK));
+    jMenuItemUndo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/menuitems/16-Undo.png"))); // NOI18N
+    jMenuItemUndo.setText("Zpět");
+    jMenuItemUndo.setEnabled(false);
+    jMenuItemUndo.addActionListener(new java.awt.event.ActionListener()
+    {
+        public void actionPerformed(java.awt.event.ActionEvent evt)
         {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                jMenuItemUndoActionPerformed(evt);
-            }
-        });
-        jMenuEdit.add(jMenuItemUndo);
+            jMenuItemUndoActionPerformed(evt);
+        }
+    });
+    jMenuEdit.add(jMenuItemUndo);
 
-        jMenuItemRedo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Y, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItemRedo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/menuitems/16-Redo.png"))); // NOI18N
-        jMenuItemRedo.setText("Znovu");
-        jMenuItemRedo.setEnabled(false);
-        jMenuItemRedo.addActionListener(new java.awt.event.ActionListener()
+    jMenuItemRedo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Y, java.awt.event.InputEvent.CTRL_MASK));
+    jMenuItemRedo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/menuitems/16-Redo.png"))); // NOI18N
+    jMenuItemRedo.setText("Znovu");
+    jMenuItemRedo.setEnabled(false);
+    jMenuItemRedo.addActionListener(new java.awt.event.ActionListener()
+    {
+        public void actionPerformed(java.awt.event.ActionEvent evt)
         {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                jMenuItemRedoActionPerformed(evt);
-            }
-        });
-        jMenuEdit.add(jMenuItemRedo);
-        jMenuEdit.add(jSeparator12);
+            jMenuItemRedoActionPerformed(evt);
+        }
+    });
+    jMenuEdit.add(jMenuItemRedo);
+    jMenuEdit.add(jSeparator12);
 
-        jMenuItemCut.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItemCut.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/menuitems/16-Cut.png"))); // NOI18N
-        jMenuItemCut.setText("Vyjmout symbol");
-        jMenuItemCut.setActionCommand("edit/cut");
-        jMenuEdit.add(jMenuItemCut);
+    jMenuItemCut.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.CTRL_MASK));
+    jMenuItemCut.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/menuitems/16-Cut.png"))); // NOI18N
+    jMenuItemCut.setText("Vyjmout symbol");
+    jMenuItemCut.setActionCommand("edit/cut");
+    jMenuEdit.add(jMenuItemCut);
 
-        jMenuItemCopy.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItemCopy.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/menuitems/16-Copy.png"))); // NOI18N
-        jMenuItemCopy.setText("Kopírovat symbol");
-        jMenuItemCopy.setActionCommand("edit/copy");
-        jMenuEdit.add(jMenuItemCopy);
+    jMenuItemCopy.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.CTRL_MASK));
+    jMenuItemCopy.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/menuitems/16-Copy.png"))); // NOI18N
+    jMenuItemCopy.setText("Kopírovat symbol");
+    jMenuItemCopy.setActionCommand("edit/copy");
+    jMenuEdit.add(jMenuItemCopy);
 
-        jMenuItemPaste.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItemPaste.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/menuitems/16-Copy.png"))); // NOI18N
-        jMenuItemPaste.setText("Vložit symbol");
-        jMenuItemPaste.setActionCommand("edit/paste");
-        jMenuEdit.add(jMenuItemPaste);
-        jMenuEdit.add(jSeparator6);
+    jMenuItemPaste.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.CTRL_MASK));
+    jMenuItemPaste.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/menuitems/16-Copy.png"))); // NOI18N
+    jMenuItemPaste.setText("Vložit symbol");
+    jMenuItemPaste.setActionCommand("edit/paste");
+    jMenuEdit.add(jMenuItemPaste);
+    jMenuEdit.add(jSeparator6);
 
-        jMenuItemDelete.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
-        jMenuItemDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/menuitems/16-Delete.png"))); // NOI18N
-        jMenuItemDelete.setMnemonic('d');
-        jMenuItemDelete.setText("Smazat symbol");
-        jMenuItemDelete.setActionCommand("edit/delete");
-        jMenuEdit.add(jMenuItemDelete);
+    jMenuItemDelete.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
+    jMenuItemDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/menuitems/16-Delete.png"))); // NOI18N
+    jMenuItemDelete.setMnemonic('d');
+    jMenuItemDelete.setText("Smazat symbol");
+    jMenuItemDelete.setActionCommand("edit/delete");
+    jMenuEdit.add(jMenuItemDelete);
 
-        jMenuBar1.add(jMenuEdit);
+    jMenuBar1.add(jMenuEdit);
 
-        jMenuLayouts.setText("Layouty");
-        jMenuLayouts.setActionCommand("layout");
-        jMenuLayouts.add(jSeparator7);
+    jMenuLayouts.setText("Layouty");
+    jMenuLayouts.setActionCommand("layout");
+    jMenuLayouts.add(jSeparator7);
 
-        jMenuLayoutSetting.setText("Nastavení zvoleného");
-        jMenuLayoutSetting.setActionCommand("layout/setting");
-        jMenuLayouts.add(jMenuLayoutSetting);
+    jMenuLayoutSetting.setText("Nastavení zvoleného");
+    jMenuLayoutSetting.setActionCommand("layout/setting");
+    jMenuLayouts.add(jMenuLayoutSetting);
 
-        jMenuBar1.add(jMenuLayouts);
+    jMenuBar1.add(jMenuLayouts);
 
-        jMenuConfiguration.setText("Nastavení");
-        jMenuConfiguration.setActionCommand("settings");
+    jMenuConfiguration.setText("Nastavení");
+    jMenuConfiguration.setActionCommand("settings");
 
-        jMenuItemSettings.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/menuitems/16-Settings.png"))); // NOI18N
-        jMenuItemSettings.setMnemonic('v');
-        jMenuItemSettings.setText("  Volby");
-        jMenuItemSettings.addActionListener(new java.awt.event.ActionListener()
+    jMenuItemSettings.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/menuitems/16-Settings.png"))); // NOI18N
+    jMenuItemSettings.setMnemonic('v');
+    jMenuItemSettings.setText("  Volby");
+    jMenuItemSettings.addActionListener(new java.awt.event.ActionListener()
+    {
+        public void actionPerformed(java.awt.event.ActionEvent evt)
         {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                jMenuItemSettingsActionPerformed(evt);
-            }
-        });
-        jMenuConfiguration.add(jMenuItemSettings);
+            jMenuItemSettingsActionPerformed(evt);
+        }
+    });
+    jMenuConfiguration.add(jMenuItemSettings);
 
-        jMenuBar1.add(jMenuConfiguration);
+    jMenuBar1.add(jMenuConfiguration);
 
-        jMenuHelp.setText("Nápověda");
-        jMenuHelp.setActionCommand("help");
+    jMenuHelp.setText("Nápověda");
+    jMenuHelp.setActionCommand("help");
 
-        jMenuItemUpdate.setText("Kontrola aktualizací");
-        jMenuItemUpdate.addActionListener(new java.awt.event.ActionListener()
+    jMenuItemUpdate.setText("Kontrola aktualizací");
+    jMenuItemUpdate.addActionListener(new java.awt.event.ActionListener()
+    {
+        public void actionPerformed(java.awt.event.ActionEvent evt)
         {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                jMenuItemUpdateActionPerformed(evt);
-            }
-        });
-        jMenuHelp.add(jMenuItemUpdate);
-        jMenuHelp.add(jSeparator15);
+            jMenuItemUpdateActionPerformed(evt);
+        }
+    });
+    jMenuHelp.add(jMenuItemUpdate);
+    jMenuHelp.add(jSeparator15);
 
-        jMenuItemAbout.setText("O aplikaci");
-        jMenuItemAbout.addActionListener(new java.awt.event.ActionListener()
+    jMenuItemAbout.setText("O aplikaci");
+    jMenuItemAbout.addActionListener(new java.awt.event.ActionListener()
+    {
+        public void actionPerformed(java.awt.event.ActionEvent evt)
         {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                jMenuItemAboutActionPerformed(evt);
-            }
-        });
-        jMenuHelp.add(jMenuItemAbout);
+            jMenuItemAboutActionPerformed(evt);
+        }
+    });
+    jMenuHelp.add(jMenuItemAbout);
 
-        jMenuBar1.add(jMenuHelp);
+    jMenuBar1.add(jMenuHelp);
 
-        setJMenuBar(jMenuBar1);
+    setJMenuBar(jMenuBar1);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jToolBarMenu, javax.swing.GroupLayout.DEFAULT_SIZE, 900, Short.MAX_VALUE)
-            .addComponent(jPanelStatus, javax.swing.GroupLayout.DEFAULT_SIZE, 900, Short.MAX_VALUE)
-            .addComponent(jSplitPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jToolBarMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jSplitPane)
-                .addGap(0, 0, 0)
-                .addComponent(jPanelStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
+    javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+    getContentPane().setLayout(layout);
+    layout.setHorizontalGroup(
+        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addComponent(jToolBarMenu, javax.swing.GroupLayout.DEFAULT_SIZE, 900, Short.MAX_VALUE)
+        .addComponent(jPanelStatus, javax.swing.GroupLayout.DEFAULT_SIZE, 900, Short.MAX_VALUE)
+        .addComponent(jSplitPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+    );
+    layout.setVerticalGroup(
+        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(layout.createSequentialGroup()
+            .addComponent(jToolBarMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGap(0, 0, 0)
+            .addComponent(jSplitPane)
+            .addGap(0, 0, 0)
+            .addComponent(jPanelStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+    );
 
-        pack();
+    pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMenuItemSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemSettingsActionPerformed
@@ -1985,22 +1992,7 @@ public final class MainWindow extends javax.swing.JFrame
         }
         currentTime = currentDate.getTime();
 
-//        Socket socket = new Socket();
-//        try {
-//            socket.connect(new InetSocketAddress(InetAddress.getByName("92.62.226.175"), 33789),
-//                    2000);
-//        } catch (IOException ex) {
-////            System.err.println("5: " + ex);
-////            ex.printStackTrace(System.err);
-//        } finally {
-//            try {
-//                socket.close();
-//            } catch (IOException ex) {
-//                System.err.println("6: " + ex);
-//                ex.printStackTrace(System.err);
-//            }
-//        }
-        if (currentTime > 1388530800000l || currentTime < SettingsHolder.settings.getLastTrialLaunchedTime()) { // 2014.1.1. 00:00:00 = 1388530800000 (System.out.println(new GregorianCalendar(2014, 0, 1).getTimeInMillis());) - month is zero-based
+        if (currentTime > 1396303200000l || currentTime < SettingsHolder.settings.getLastTrialLaunchedTime()) { // 2014.4.1. 00:00:00 = 1388530800000 (System.out.println(new GregorianCalendar(2014, 3, 1).getTimeInMillis());) - month is zero-based
             // html content
             JEditorPane ep = new JEditorPane("text/html", new String(new char[]{'<', 'h', 't', 'm',
                 'l', '>', 'P', 'l', 'a', 't', 'n', 'o', 's', 't', ' ', 't', 'é', 't', 'o', ' ', 'z',
@@ -2010,12 +2002,15 @@ public final class MainWindow extends javax.swing.JFrame
                 'o', 'v', 'é', ',', ' ', 'a', 'k', 't', 'u', 'á', 'l', 'n', 'í', ' ', 'v', 'e', 'r',
                 'z', 'e', ' ', 'm', 'n', 'e', ' ', 'k', 'o', 'n', 't', 'a', 'k', 't', 'u', 'j', 't',
                 'e', ' ', 'n', 'a', ' ', 'm', 'i', 'r', 'o', 's', 'l', 'a', 'v', 'b', 'a', 'r', 't',
-                'y', 'z', 'a', 'l', '@', 'g', 'm', 'a', 'i', 'l', '.', 'c', 'o', 'm', ',', ' ', 'n',
-                'e', 'b', 'o', ' ', 'n', 'a', 'v', 'š', 't', 'i', 'v', 't', 'e', ' ', 's', 't', 'r',
+                'y', 'z', 'a', 'l', '@', 'g', 'm', 'a', 'i', 'l', '.', 'c', 'o', 'm', ',', '<', 'b',
+                'r', ' ', '/', '>', 'n', 'a', 'v', 'š', 't', 'i', 'v', 't', 'e', ' ', 's', 't', 'r',
                 'á', 'n', 'k', 'y', ' ', '<', 'a', ' ', 'h', 'r', 'e', 'f', '=', '\"', 'h', 't', 't',
                 'p', ':', '/', '/', 'w', 'w', 'w', '.', 'p', 's', 'd', 'i', 'a', 'g', 'r', 'a', 'm',
                 '.', 'c', 'z', '\"', '>', 'p', 's', 'd', 'i', 'a', 'g', 'r', 'a', 'm', '.', 'c', 'z',
-                '<', '/', 'a', '>', '.', '<', '/', 'h', 't', 'm', 'l', '>'}));
+                '<', '/', 'a', '>', ' ', 'n', 'e', 'b', 'o', ' ', 'j', 'e', 'd', 'n', 'o', 'd', 'u',
+                'š', 'e', ' ', 'a', 'k', 't', 'u', 'a', 'l', 'i', 'z', 'u', 'j', 't', 'e', ' ', 'p',
+                'ř', 'e', 's', ' ', 'a', 'p', 'l', 'i', 'k', 'a', 'č', 'n', 'í', ' ', 'f', 'o', 'r',
+                'm', 'u', 'l', 'á', 'ř', '.', '<', '/', 'h', 't', 'm', 'l', '>'}));
             // handle link events
             ep.addHyperlinkListener(new HyperlinkListener()
             {

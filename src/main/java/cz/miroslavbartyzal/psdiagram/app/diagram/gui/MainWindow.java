@@ -1992,7 +1992,7 @@ public final class MainWindow extends javax.swing.JFrame
         }
         currentTime = currentDate.getTime();
 
-        if (currentTime > 1396303200000l || currentTime < SettingsHolder.settings.getLastTrialLaunchedTime()) { // 2014.4.1. 00:00:00 = 1388530800000 (System.out.println(new GregorianCalendar(2014, 3, 1).getTimeInMillis());) - month is zero-based
+        if (currentTime > 1404165600000l || currentTime < SettingsHolder.settings.getLastTrialLaunchedTime()) { // 2014.7.1. 00:00:00 = 1404165600000 (System.out.println(new GregorianCalendar(2014, 6, 1).getTimeInMillis());) - month is zero-based
             // html content
             JEditorPane ep = new JEditorPane("text/html", new String(new char[]{'<', 'h', 't', 'm',
                 'l', '>', 'P', 'l', 'a', 't', 'n', 'o', 's', 't', ' ', 't', 'é', 't', 'o', ' ', 'z',

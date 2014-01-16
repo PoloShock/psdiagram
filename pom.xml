@@ -4,7 +4,7 @@
 
     <groupId>cz.miroslavbartyzal</groupId>
     <artifactId>psdiagram</artifactId>
-    <version>1.2</version>
+    <version>1.2.1</version>
     <packaging>jar</packaging>
     <name>PS Diagram</name>
     <url>http://www.psdiagram.cz</url>
@@ -88,28 +88,21 @@
                                     <changelogurl></changelogurl>
                                     <releaseurl></releaseurl>
 
-                                    <headline>Veselé Vánoce! :)</headline>
+                                    <headline></headline>
                                     <description>
                                         <![CDATA[
                                         <html>
-                                        Přestože jsou Vánoce v plném proudu (nebo možná právě proto),
-                                        přináším Vám pod stromeček novou verzi PS Diagramu. :) Hlavní vylepšení, které s sebou nová verze nese je možnost
-                                        spuštění aplikace přes '.exe' soubor. Není již tedy nutné mít na Vašem počítači nainstalovanou Javu.<br />
-                                        Krásné prožití vánočních svátků a šťastný nový rok Vám přeje Míra Bartyzal, autor PS Diagramu. :)
+                                        Ukázalo se, že v .exe souboru se nacházela chyba, která bránila PS Diagram touto cestou spustit. Nyní by již mělo být vše v pořádku.
                                         </html>
                                         ]]>
                                     </description>
 
                                     <features></features>
-                                    <enhancements>
-                                        <enhancement>od teď již není nutné mít v počítači nainstalovanou Javu</enhancement>
-                                        <enhancement>PS Diagram je nyní spustitelný přes vlastní .exe soubor</enhancement>
-                                        <enhancement>nová ikonka okna PS Diagramu</enhancement>
-                                    </enhancements>
+                                    <enhancements></enhancements>
                                     <extensions></extensions>
                                     <changes></changes>
                                     <fixes>
-                                        <fix>měsíc vydání jednotlivých verzí v aktualizačním formuláři se již zobrazuje tak, jak má</fix>
+                                        <fix>odstraněna chyba v souboru PS Diagram.exe</fix>
                                     </fixes>
                                     <others></others>
                                 </configuration>
@@ -349,6 +342,7 @@
                 <version>2.4</version>
                 <configuration>
                     <archive>
+                        <addMavenDescriptor>false</addMavenDescriptor>
                         <manifest>
                             <Main-Class>cz.miroslavbartyzal.psdiagram.app.diagram.Main</Main-Class>
                         </manifest>

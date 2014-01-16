@@ -32,7 +32,7 @@ public final class Main
     // TODO ukolovani studentu? (seradit spravne kroky algoritmu, vyuziti jen urciteho poctu prikazu apod.)
     // TODO možnost nastavení barev v editacnim i animacnim rezimu
     // TODO po dvojitem poklepani na symbol, prepnout docasne na zalozku Text (nebo toggle?) Docasne proto, aby po vlozeni dalsiho symbolu jiz byla opet vybrana Funkce
-    // TODO pro skoly nechat defaultni nastaveni jako readonly soubor xml primo u aplikace (co ale s prekopirovanim domu?)
+    // TODO pro skoly nechat defaultni nastaveni jako readonly soubor xml primo u aplikace (co ale s prekopirovanim domu?) - NEBO co preferovat allusers slozku? :)
     // TODO menit i zeditovany text symbolu, pokud je zeditovany pouze o mezery ci odradkovani (nebo tak vymyslet automaticke odradkovavani?)
     // TODO moznost nastaveni prirazovaciho znamenka
     // TODO moznost prepnuti mezi Do-Until a Do-While
@@ -63,6 +63,8 @@ public final class Main
     // TODO umoznit vkladani i kdyz je oznaceny symbol a ne bod (povodne jen bod kvuli textu, ale tak nedopustime aby v clipboardu text byl.. (pripadne vlozime text))
     // TODO co to rucni propojovani sipek, kdyz bych je oznacil jinou barvou jako neoptimalni?
     // TODO moznost zkompilovat diagram do spustitelneho souboru
+    // TODO zvazit pouziti delty (viz opengl projekt) pri animaci
+    // TODO prejmenuj properties z appliaction na application.. :D
 
     /**
      * Metoda pro spuštění hlavního okna aplikace. Nejsou přijímány žádné

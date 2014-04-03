@@ -4,7 +4,7 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.update;
 
-import cz.miroslavbartyzal.psdiagram.app.diagram.Main;
+import cz.miroslavbartyzal.psdiagram.app.Main;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import cz.miroslavbartyzal.psdiagram.app.network.URLFileDownloader;
 import cz.miroslavbartyzal.psdiagram.app.network.URLStringDownloader;

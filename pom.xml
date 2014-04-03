@@ -4,14 +4,10 @@
 
     <groupId>cz.miroslavbartyzal</groupId>
     <artifactId>psdiagram</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>PS Diagram</name>
     <url>http://www.psdiagram.cz</url>
-
-    <prerequisites>
-        <maven>3.0</maven>
-    </prerequisites>
 
     <developers>
         <developer>
@@ -19,6 +15,10 @@
             <email>miroslavbartyzal@gmail.com</email>
         </developer>
     </developers>
+
+    <prerequisites>
+        <maven>3.0</maven>
+    </prerequisites>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -170,7 +170,10 @@
                                             <fileset dir="c:/Program Files (x86)/Java/jre7"/>
                                         </copy>
                                         <copy file="c:/Zaloha/Programovani/Moje/Visual Studio 2013/PS Diagram Launcher/PS Diagram Launcher/bin/Release/PS Diagram.exe" todir="${project.build.directory}/zip/PS Diagram"/>
-                                        <zip encoding="UTF-8" destfile="${project.build.directory}/OPENSHIFT_DATA/PS_Diagram_${project.version}.zip"
+                                        <zip destfile="${project.build.directory}/OPENSHIFT_DATA/PS_Diagram_${project.version}.zip"
+                                             encoding="UTF-8"
+                                             useLanguageEncodingFlag="true"
+                                             createUnicodeExtraFields="always"
                                              basedir="${project.build.directory}/zip"
                                              update="true"
                                              level="9"
@@ -190,7 +193,10 @@
                                 <configuration>
                                     <target name="prepare-updater">
                                         <copy file="${settings.localRepository}/cz/miroslavbartyzal/psdiagram.updater/${project.version}/psdiagram.updater-${project.version}-with_dependencies.jar" tofile="${project.build.directory}/zip/updater.jar"/>
-                                        <zip encoding="UTF-8" destfile="${project.build.directory}/OPENSHIFT_DATA/PSD-update_${project.version}.zip"
+                                        <zip destfile="${project.build.directory}/OPENSHIFT_DATA/PSD-update_${project.version}.zip"
+                                             encoding="UTF-8"
+                                             useLanguageEncodingFlag="true"
+                                             createUnicodeExtraFields="always"
                                              basedir="${project.build.directory}/zip"
                                              update="true"
                                              level="9"
@@ -333,6 +339,7 @@
                 <configuration>
                     <source>1.7</source>
                     <target>1.7</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
 

@@ -4,9 +4,9 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.global;
 
-import cz.miroslavbartyzal.psdiagram.app.diagram.Main;
-import cz.miroslavbartyzal.psdiagram.app.diagram.flowchart.layouts.AbstractLayout;
-import cz.miroslavbartyzal.psdiagram.app.diagram.flowchart.layouts.EnumLayout;
+import cz.miroslavbartyzal.psdiagram.app.Main;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.AbstractLayout;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.EnumLayout;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.GraphicsEnvironment;

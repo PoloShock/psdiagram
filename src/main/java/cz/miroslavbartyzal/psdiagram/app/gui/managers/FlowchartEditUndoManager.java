@@ -28,14 +28,13 @@ import javax.xml.bind.JAXBException;
 public final class FlowchartEditUndoManager extends UndoManager
 {
 
-    private JMenuItem jMenuItemUndo;
-    private JMenuItem jMenuItemRedo;
-    private JButton jButtonToolUndo;
-    private JButton jButtonToolRedo;
+    private final JMenuItem jMenuItemUndo;
+    private final JMenuItem jMenuItemRedo;
+    private final JButton jButtonToolUndo;
+    private final JButton jButtonToolRedo;
     private int[] beforeFocusedPath;
     private boolean beforeIsJoint;
     private ByteArrayOutputStream before;
-    private boolean beforePotencionalDefaultTexts;
 
     /**
      * Konstruktor, zajišťující základní spojení s klíčovými prvky uživatelského
@@ -57,12 +56,11 @@ public final class FlowchartEditUndoManager extends UndoManager
         super.setLimit(1000);
     }
 
-    protected void prepareToAddEdit(Layout layout, boolean potencionalDefaultTexts)
+    protected void init(Layout layout)
     {
         beforeFocusedPath = getFocusedPath(layout);
         beforeIsJoint = layout.getFocusedJoint() != null;
         before = new ByteArrayOutputStream();
-        beforePotencionalDefaultTexts = potencionalDefaultTexts;
         try {
             MainWindow.getJAXBcontext().createMarshaller().marshal(layout.getFlowchart(), before);
         } catch (JAXBException ex) {
@@ -71,23 +69,27 @@ public final class FlowchartEditUndoManager extends UndoManager
     }
 
     protected void addEdit(Layout layout, FlowchartEditManager flowchartEditManager,
-            boolean potencionalDefaultTexts, String presentationName)
+            String presentationName)
     {
         if (before != null) {
-            ByteArrayOutputStream after = new ByteArrayOutputStream();
+            ByteArrayOutputStream current = new ByteArrayOutputStream();
             try {
-                MainWindow.getJAXBcontext().createMarshaller().marshal(layout.getFlowchart(), after);
+                MainWindow.getJAXBcontext().createMarshaller().marshal(layout.getFlowchart(),
+                        current);
             } catch (JAXBException ex) {
                 ex.printStackTrace(System.err);
             }
-            if (!Arrays.equals(before.toByteArray(), after.toByteArray())) {
-                addEdit(new UniversalEdit(flowchartEditManager, before, after, beforeFocusedPath,
-                        beforeIsJoint, beforePotencionalDefaultTexts, getFocusedPath(layout),
-                        layout.getFocusedJoint() != null, potencionalDefaultTexts, presentationName));
-            }
+            if (!Arrays.equals(before.toByteArray(), current.toByteArray())) {
+                int[] currentFocusedPath = getFocusedPath(layout);
+                boolean currentIsJoint = layout.getFocusedJoint() != null;
 
-            beforeFocusedPath = null;
-            before = null;
+                addEdit(new UniversalEdit(flowchartEditManager, before, current, beforeFocusedPath,
+                        beforeIsJoint, currentFocusedPath, currentIsJoint, presentationName));
+
+                beforeFocusedPath = currentFocusedPath;
+                beforeIsJoint = currentIsJoint;
+                before = current;
+            }
         } else {
             discardAllEdits();
         }
@@ -179,7 +181,9 @@ public final class FlowchartEditUndoManager extends UndoManager
     @Override
     public synchronized void redo() throws CannotRedoException
     {
+        UniversalEdit UEdit = (UniversalEdit) super.editToBeRedone();
         super.redo();
+        init(UEdit.getFlowchartEditManager().getLayout());
         setButtons();
     }
 
@@ -212,7 +216,9 @@ public final class FlowchartEditUndoManager extends UndoManager
     @Override
     public synchronized void undo() throws CannotUndoException
     {
+        UniversalEdit UEdit = (UniversalEdit) super.editToBeUndone();
         super.undo();
+        init(UEdit.getFlowchartEditManager().getLayout());
         setButtons();
     }
 

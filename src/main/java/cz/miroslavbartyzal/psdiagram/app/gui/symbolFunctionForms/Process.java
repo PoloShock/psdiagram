@@ -216,7 +216,6 @@ public final class Process extends AbstractSymbolFunctionForm
     @Override
     public void insertUpdate(DocumentEvent de)
     {
-        super.getFlowchartEditManager().prepareUndoManager();
         generateValues();
         super.fireChangeEventToEditManager();
     }
@@ -230,7 +229,6 @@ public final class Process extends AbstractSymbolFunctionForm
     @Override
     public void removeUpdate(DocumentEvent de)
     {
-        super.getFlowchartEditManager().prepareUndoManager();
         generateValues();
         super.fireChangeEventToEditManager();
     }

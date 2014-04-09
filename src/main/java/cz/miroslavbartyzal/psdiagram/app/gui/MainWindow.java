@@ -107,7 +107,6 @@ public final class MainWindow extends javax.swing.JFrame
     private boolean editMode = true;
     private boolean animationMode = false;
     private final FlowchartEditManager flowchartEditManager;
-    private final FlowchartEditUndoManager flowchartEditUndoManager;
     private final FlowchartOverlookManager flowchartOverlookManager;
     private final FlowchartAnimationManager flowchartAnimationManager;
     private final JPanelDiagram jPnlDiagram;
@@ -265,9 +264,8 @@ public final class MainWindow extends javax.swing.JFrame
         jScrollPaneFunction.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE); // prevents glitches (http://andrewtill.blogspot.cz/2012/06/jscrollpane-repainting-problems.html)
         jScrollPaneText.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE); // prevents glitches (http://andrewtill.blogspot.cz/2012/06/jscrollpane-repainting-problems.html)
 
-        flowchartEditUndoManager = new FlowchartEditUndoManager(jMenuItemUndo, jMenuItemRedo,
-                jButtonToolUndo, jButtonToolRedo);
-        flowchartEditManager = new FlowchartEditManager(layout, this, flowchartEditUndoManager,
+        flowchartEditManager = new FlowchartEditManager(layout, this, new FlowchartEditUndoManager(
+                jMenuItemUndo, jMenuItemRedo, jButtonToolUndo, jButtonToolRedo),
                 jCheckBoxDefaultText, jComboBoxSegment, jTextFieldTextSegment, jTextAreaTextSymbol);
         flowchartOverlookManager = new FlowchartOverlookManager(this,
                 jScrollPaneDiagram.getHorizontalScrollBar(),
@@ -999,6 +997,19 @@ public final class MainWindow extends javax.swing.JFrame
 
     jMenuEdit.setText("Úpravy");
     jMenuEdit.setActionCommand("edit");
+    jMenuEdit.addMenuListener(new javax.swing.event.MenuListener()
+    {
+        public void menuCanceled(javax.swing.event.MenuEvent evt)
+        {
+        }
+        public void menuDeselected(javax.swing.event.MenuEvent evt)
+        {
+        }
+        public void menuSelected(javax.swing.event.MenuEvent evt)
+        {
+            jMenuEditMenuSelected(evt);
+        }
+    });
 
     jMenuItemUndo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.CTRL_MASK));
     jMenuItemUndo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/menuitems/16-Undo.png"))); // NOI18N
@@ -1280,10 +1291,9 @@ public final class MainWindow extends javax.swing.JFrame
                     jButtonToolEdit.hashCode(), "mode/editMode"));
         }
         layout.setFlowchart(null);
-        flowchartEditUndoManager.discardAllEdits();
-        flowchartEditManager.setEditMenuEnablers();
         flowchartEditManager.loadMarkedSymbolText();
         jPanelDiagram.repaint();
+        flowchartEditManager.resetUndoManager();
         SettingsHolder.settings.setActualFlowchartFile(null);
         super.setTitle(windowTitle);
     }//GEN-LAST:event_jMenuItemNewActionPerformed
@@ -1323,15 +1333,13 @@ public final class MainWindow extends javax.swing.JFrame
 
     private void jMenuItemUndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemUndoActionPerformed
         if (jMenuItemUndo.isEnabled()) {
-            flowchartEditManager.doPendingUndoRedos();
-            flowchartEditUndoManager.undo();
+            flowchartEditManager.undo();
         }
     }//GEN-LAST:event_jMenuItemUndoActionPerformed
 
     private void jMenuItemRedoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemRedoActionPerformed
         if (jMenuItemRedo.isEnabled()) {
-            flowchartEditManager.doPendingUndoRedos();
-            flowchartEditUndoManager.redo();
+            flowchartEditManager.redo();
         }
     }//GEN-LAST:event_jMenuItemRedoActionPerformed
 
@@ -1355,6 +1363,11 @@ public final class MainWindow extends javax.swing.JFrame
         jFrameUpdate.setLocationRelativeTo(this);
         jFrameUpdate.setVisible(true, forceUpdate);
     }//GEN-LAST:event_jMenuItemUpdateActionPerformed
+
+    private void jMenuEditMenuSelected(javax.swing.event.MenuEvent evt)//GEN-FIRST:event_jMenuEditMenuSelected
+    {//GEN-HEADEREND:event_jMenuEditMenuSelected
+        flowchartEditManager.updateEditMenuEnablers();
+    }//GEN-LAST:event_jMenuEditMenuSelected
 
 //    /**
 //     * Positions component by given percentages relatively to middle of main window.
@@ -1551,7 +1564,7 @@ public final class MainWindow extends javax.swing.JFrame
                 jPanelEdit.setVisible(true);
             }
 
-            flowchartEditUndoManager.setButtons();
+            flowchartEditManager.updateUndoRedoEnablers();
             for (Component component : getAllComponents(jPanelLeftSplit)) {
                 component.setEnabled(true);
             }
@@ -2158,10 +2171,9 @@ public final class MainWindow extends javax.swing.JFrame
         }
 
         layout.setFlowchart(flowchart);
-        flowchartEditUndoManager.discardAllEdits();
-        flowchartEditManager.setEditMenuEnablers();
         flowchartEditManager.loadMarkedSymbolText();
         flowchartEditManager.refreshComments();
+        flowchartEditManager.resetUndoManager();
         jPanelDiagram.repaint();
 
         SettingsHolder.settings.setActualFlowchartFile(null);
@@ -2190,9 +2202,8 @@ public final class MainWindow extends javax.swing.JFrame
             }
 
             layout.setFlowchart(flowchart);
-            flowchartEditUndoManager.discardAllEdits();
-            flowchartEditManager.setEditMenuEnablers();
             flowchartEditManager.refreshComments();
+            flowchartEditManager.resetUndoManager();
             jPanelDiagram.repaint();
 
             SettingsHolder.settings.setActualFlowchartFile(file);

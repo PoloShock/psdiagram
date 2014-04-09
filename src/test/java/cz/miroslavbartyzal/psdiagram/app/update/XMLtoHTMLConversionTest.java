@@ -16,6 +16,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Test;
 
 /**
@@ -52,6 +53,8 @@ public class XMLtoHTMLConversionTest
     @Test
     public void conversionTestBuild() throws TransformerConfigurationException, JAXBException, TransformerException
     {
+        Assume.assumeNotNull(System.getProperty("build.versioninfo")); // if we are in release profile, proceed
+
         // Source
         JAXBContext jc = JAXBUpdateContext.getJAXBContext();
         ChangesCondenser condenser = (ChangesCondenser) JAXBUpdateContext.getUnmarshaller().unmarshal(

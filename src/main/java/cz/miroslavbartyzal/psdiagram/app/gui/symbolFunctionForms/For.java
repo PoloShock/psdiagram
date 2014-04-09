@@ -400,7 +400,6 @@ public final class For extends AbstractSymbolFunctionForm
     }// </editor-fold>//GEN-END:initComponents
 
     private void jRadioButtonForActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonForActionPerformed
-        super.getFlowchartEditManager().prepareUndoManager();
         setForVisible();
         super.trimSize();
         generateValues();
@@ -408,7 +407,6 @@ public final class For extends AbstractSymbolFunctionForm
     }//GEN-LAST:event_jRadioButtonForActionPerformed
 
     private void jRadioButtonForeachActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonForeachActionPerformed
-        super.getFlowchartEditManager().prepareUndoManager();
         setForeachVisible();
         super.trimSize();
         generateValues();
@@ -454,7 +452,6 @@ public final class For extends AbstractSymbolFunctionForm
     @Override
     public void insertUpdate(DocumentEvent de)
     {
-        super.getFlowchartEditManager().prepareUndoManager();
         generateValues();
         super.fireChangeEventToEditManager();
     }
@@ -468,7 +465,6 @@ public final class For extends AbstractSymbolFunctionForm
     @Override
     public void removeUpdate(DocumentEvent de)
     {
-        super.getFlowchartEditManager().prepareUndoManager();
         generateValues();
         super.fireChangeEventToEditManager();
     }

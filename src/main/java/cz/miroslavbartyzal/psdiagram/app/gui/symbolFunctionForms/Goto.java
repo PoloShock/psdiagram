@@ -226,21 +226,18 @@ public final class Goto extends AbstractSymbolFunctionForm
 
     private void jRadioButtonBreakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonBreakActionPerformed
         super.setHasCommandsToSet(true);
-        super.getFlowchartEditManager().prepareUndoManager();
         generateValues();
         super.fireChangeEventToEditManager();
     }//GEN-LAST:event_jRadioButtonBreakActionPerformed
 
     private void jRadioButtonContinueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonContinueActionPerformed
         super.setHasCommandsToSet(true);
-        super.getFlowchartEditManager().prepareUndoManager();
         generateValues();
         super.fireChangeEventToEditManager();
     }//GEN-LAST:event_jRadioButtonContinueActionPerformed
 
     private void jRadioButtonGotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonGotoActionPerformed
         super.setHasCommandsToSet(false);
-        super.getFlowchartEditManager().prepareUndoManager();
         generateValues();
         super.fireChangeEventToEditManager();
     }//GEN-LAST:event_jRadioButtonGotoActionPerformed

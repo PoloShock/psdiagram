@@ -23,7 +23,7 @@ public abstract class AbstractSymbolFunctionForm extends javax.swing.JPanel impl
 {
 
     private FlowchartEditManager flowchartEditManager;
-    private LayoutElement element;
+    private final LayoutElement element;
     private boolean hasCommandsToSet = true; // indikuje, zda tento formular disponuje textovymi poli pro ovlivneni funkce symbolu - pouziva se pri dispatchingu textu symbolu pri zapnute zalozce funkce
 
     AbstractSymbolFunctionForm(LayoutElement element, FlowchartEditManager flowchartEditManager)

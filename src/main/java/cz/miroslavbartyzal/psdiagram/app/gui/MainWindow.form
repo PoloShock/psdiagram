@@ -146,6 +146,9 @@
             <Property name="text" type="java.lang.String" value="&#xda;pravy"/>
             <Property name="actionCommand" type="java.lang.String" value="edit"/>
           </Properties>
+          <Events>
+            <EventHandler event="menuSelected" listener="javax.swing.event.MenuListener" parameters="javax.swing.event.MenuEvent" handler="jMenuEditMenuSelected"/>
+          </Events>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemUndo">
               <Properties>

@@ -70,7 +70,7 @@ public final class LoopEnd extends AbstractSymbolFunctionForm
             if (SettingsHolder.settings.isFunctionFilters()) {
                 jTextFieldCondition.setText(
                         element.getSymbol().getCommands().get("condition").replace("==", "=").replace(
-                        "&&", "&").replace("||", "|")); // ulozeny jsou dvojite hodnoty
+                                "&&", "&").replace("||", "|")); // ulozeny jsou dvojite hodnoty
             } else {
                 jTextFieldCondition.setText(element.getSymbol().getCommands().get("condition"));
             }
@@ -133,7 +133,7 @@ public final class LoopEnd extends AbstractSymbolFunctionForm
                 for (int i = 0; i < conditionWithoutQ.length; i += 2) {
                     conditionWithoutQ[i] = conditionWithoutQ[i].replace("!=", "≠").replace(">=", "≥").replace(
                             "<=", "≤").replace("=", "==").replace("&", "&&").replace("|", "||").replace(
-                            "≠", "!=").replace("≥", ">=").replace("≤", "<=");
+                                    "≠", "!=").replace("≥", ">=").replace("≤", "<=");
                 }
                 String cndtn = "";
                 for (String commandPart : conditionWithoutQ) {
@@ -237,7 +237,6 @@ public final class LoopEnd extends AbstractSymbolFunctionForm
     @Override
     public void insertUpdate(DocumentEvent de)
     {
-        super.getFlowchartEditManager().prepareUndoManager();
         generateValues();
         super.fireChangeEventToEditManager();
     }
@@ -251,7 +250,6 @@ public final class LoopEnd extends AbstractSymbolFunctionForm
     @Override
     public void removeUpdate(DocumentEvent de)
     {
-        super.getFlowchartEditManager().prepareUndoManager();
         generateValues();
         super.fireChangeEventToEditManager();
     }

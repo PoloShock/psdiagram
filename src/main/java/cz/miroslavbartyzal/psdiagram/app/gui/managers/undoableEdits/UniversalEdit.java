@@ -19,13 +19,15 @@ import javax.swing.undo.CannotUndoException;
 import javax.xml.bind.JAXBException;
 
 /**
- * <p>Tato třída představuje univerzální Undo/Redo akci. Je paměťově méně
+ * <p>
+ * Tato třída představuje univerzální Undo/Redo akci. Je paměťově méně
  * náročná než ostatní metody implementace (třída AddSymbolEdit,
  * PasteSymbolEdit) a je méně komplikovaná, navíc univerzální. Nedochází zde ani
  * k desynchronizaci (kvůli javovske getByValue), která hrozila u předchozích
  * metod implementace.</p>
  *
- * <p>Univerzálnosti je docíleno tak, že se otiskne XML podoba vývojového
+ * <p>
+ * Univerzálnosti je docíleno tak, že se otiskne XML podoba vývojového
  * diagramu před změnou, a po jeho změně. Tyto dva XML záznamy jsou poté
  * porovnány, jsou vyhledány rozdíly a ty jsou uloženy do paměti. Tímto způsobem
  * lze docílit i velmi nízké paměťové náročnosti, není totiž ukládán celý XML
@@ -48,10 +50,8 @@ public final class UniversalEdit extends AbstractUndoableEdit
     private FlowchartEditManager flowchartEditManager;
     private int[] beforeFocusedPath;
     private boolean beforeIsJoint;
-    private boolean beforePotencionalDefaultTexts;
     private int[] afterFocusedPath;
     private boolean afterIsJoint;
-    private boolean afterPotencionalDefaultTexts;
     private String presentationName;
 
     /**
@@ -64,27 +64,20 @@ public final class UniversalEdit extends AbstractUndoableEdit
      * @param beforeFocusedPath cesta k předchozímu označenému symbolu (viz.
      * metoda getPathFromMainSegment() v LayoutElementu)
      * @param beforeIsJoint true, je-li označen joint
-     * @param beforePotencionalDefaultTexts předchozí hodnota proměnné
-     * potencionalDefaultTexts v flowchartEditManageru
      * @param afterFocusedPath cesta k aktuálně označenému symbolu (po změně)
      * @param afterIsJoint true, je-li aktuálně označen joint (po změně)
-     * @param afterPotencionalDefaultTexts aktuální hodnota proměnné
-     * potencionalDefaultTexts v flowchartEditManageru (po změně)
      * @param presentationName jméno, pod kterým tato Undo/Redo akce má být
      * prezentována - např. v tooltipu tlačítek Undo/Redo
      */
     public UniversalEdit(FlowchartEditManager flowchartEditManager, ByteArrayOutputStream before,
             ByteArrayOutputStream after, int[] beforeFocusedPath, boolean beforeIsJoint,
-            boolean beforePotencionalDefaultTexts, int[] afterFocusedPath, boolean afterIsJoint,
-            boolean afterPotencionalDefaultTexts, String presentationName)
+            int[] afterFocusedPath, boolean afterIsJoint, String presentationName)
     {
         this.flowchartEditManager = flowchartEditManager;
         this.beforeFocusedPath = beforeFocusedPath;
         this.beforeIsJoint = beforeIsJoint;
-        this.beforePotencionalDefaultTexts = beforePotencionalDefaultTexts;
         this.afterFocusedPath = afterFocusedPath;
         this.afterIsJoint = afterIsJoint;
-        this.afterPotencionalDefaultTexts = afterPotencionalDefaultTexts;
         this.presentationName = presentationName;
 
         byte[] smallerArr;
@@ -135,7 +128,6 @@ public final class UniversalEdit extends AbstractUndoableEdit
                  * System.out.println(new String(undoChange));
                  * System.out.println(new String(redoChange));
                  */
-
                 break;
             }
         }
@@ -157,7 +149,6 @@ public final class UniversalEdit extends AbstractUndoableEdit
             setFocused(afterFocusedPath, afterIsJoint);
 
             flowchartEditManager.resetVariables();
-            flowchartEditManager.setPotencionalDefaultTexts(afterPotencionalDefaultTexts);
             flowchartEditManager.refreshComments();
             flowchartEditManager.loadMarkedSymbolText();
             flowchartEditManager.repaintJPanelDiagram();
@@ -179,7 +170,6 @@ public final class UniversalEdit extends AbstractUndoableEdit
             setFocused(beforeFocusedPath, beforeIsJoint);
 
             flowchartEditManager.resetVariables();
-            flowchartEditManager.setPotencionalDefaultTexts(beforePotencionalDefaultTexts);
             flowchartEditManager.refreshComments();
             flowchartEditManager.loadMarkedSymbolText();
             flowchartEditManager.repaintJPanelDiagram();
@@ -223,7 +213,6 @@ public final class UniversalEdit extends AbstractUndoableEdit
 //            System.out.println(new String(undoChange));
 //            System.out.println(new String(redoChange));
 //            System.out.println();
-
             ByteArrayInputStream bais = new ByteArrayInputStream(futureFl);
             futureFlowchart = GlobalFunctions.unsafeCast(
                     MainWindow.getJAXBcontext().createUnmarshaller().unmarshal(bais));
@@ -254,6 +243,11 @@ public final class UniversalEdit extends AbstractUndoableEdit
         } else {
             flowchartEditManager.getLayout().setFocusedElement(element);
         }
+    }
+
+    public FlowchartEditManager getFlowchartEditManager()
+    {
+        return flowchartEditManager;
     }
 
 }

@@ -21,7 +21,6 @@ import cz.miroslavbartyzal.psdiagram.app.global.GlobalFunctions;
 import java.awt.Component;
 import java.awt.event.*;
 import java.awt.geom.Ellipse2D;
-import java.awt.geom.Line2D;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.io.ByteArrayInputStream;
@@ -31,14 +30,18 @@ import java.util.LinkedHashMap;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import javax.swing.text.BadLocationException;
 import javax.xml.bind.JAXBException;
 
 /**
- * <p>Tato třída je vrchním správcem editačního režimu aplikace. Je zároveň
+ * <p>
+ * Tato třída je vrchním správcem editačního režimu aplikace. Je zároveň
  * posluchačem událostí přicházejících z uživatelského rozhraní a obstarává tedy
  * předání příkazů layoutu vývojového diagramu.</p>
- * <p>Třída také úzce spolupracuje s třídou FlowchartEditUndoManager. Některé
+ * <p>
+ * Třída také úzce spolupracuje s třídou FlowchartEditUndoManager. Některé
  * události jsou třídě pro zpracování Undo/Redo předány úmyslně opožděně, pro
  * větší komfort při editaci. Konkrétně se jedná o editaci textu
  * symbolu/segmentu, kdy není vhodné zaznamenávat změny po jednom znaku, nýbrž
@@ -52,36 +55,26 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
 
     // TODO pridat do nastaveni skalu cest - nejmene 3
     // TODO pridat do nastaveni reset do defaultniho
-    private Layout layout;
-    private MainWindow mainWindow;
+    private final Layout layout;
+    private final MainWindow mainWindow;
     private JPopupMenu symbolPopup;
     private JMenuItem jSymbolPopupDelete;
     private JMenuItem jSymbolPopupCut;
     private JMenuItem jSymbolPopupCopy;
     private JMenuItem jSymbolPopupPaste;
-    private JCheckBox jCheckBoxDefaultText;
-    private JComboBox<String> jComboBoxSegment;
-    private JTextField jTextFieldTextSegment;
-    private JTextArea jTextAreaTextSymbol;
-    private FlowchartEditUndoManager flowchartEditUndoManager;
-    private ArrayList<Comment> lCommentSymbols; // uloziste vsech komentaru diagramu
-    private int procesCommentsPointIndex = -1; // uklada index relativniho bodu komentarove cesty, ktery se aktualne presouva
-    private Ellipse2D commentPathConnector = null; // uklada relativni bod komentarove cesty, se kterym se aktualne manipuluje
-    private int futureRelativePointIndex = -1;
-    private Comment procesComment; // uklada komentar, se kterym se aktualne manipuluje
-    private LayoutElement procesCommentElement;
-    private Symbol pairedSymbol; // uklada parovy symbol komentare, se kterym se manipuluje
+    private final JCheckBox jCheckBoxDefaultText;
+    private final JComboBox<String> jComboBoxSegment;
+    private final JTextField jTextFieldTextSegment;
+    private final JTextArea jTextAreaTextSymbol;
+    private final FlowchartEditUndoManager flowchartEditUndoManager;
+    private final FlowchartCommentSymbolManager commentsManager;
     private String commentAction = "Editace komentáře";
     private LinkedHashMap<ByteArrayOutputStream, Boolean> elementsToPaste;
-    //private LayoutElement boldPathCommentElement = null; // uklada element komentare, ktereho cesta se ma vykreslit zvyraznene
     private LayoutElement lastMarkedElement = null; // pro identifikaci posledniho elementu, pro ktery bylo zobrazeno editovani deskripce segmentů apod. - aby se index comboboxu nevracel kdyz nema apod.
     private boolean dragged = false;
     private boolean puttingText = false; // slouzi pro signalizaci DocumentListeneru, ze prave probiha aplikacni vkladani textu
     private boolean segmentTextBuffered = false; // pro bufferovani editcniho pole textu segmentu a jeho zalozohavni do undomanagera
     private boolean symbolTextBuffered = false; // pro bufferovani editcniho pole textu symbolu a jeho zalozohavni do undomanagera
-    private double cursorRelX; // slouzi k ulozeni relativni souradnice mysi vuci kommentu
-    private double cursorRelY; // -||-
-    private boolean potencionalDefaultTexts = false; // je-li true, značí, že texty by měli být defaultní a čeká se jen na znovu-přiřazení defaultních hodnot...
 
     /**
      * Konstruktor, zajišťující základní spojení s klíčovými prvky uživatelského
@@ -109,9 +102,9 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
         this.jTextFieldTextSegment = jTextFieldTextSegment;
         this.jTextAreaTextSymbol = jTextAreaTextSymbol;
 
-        lCommentSymbols = layout.getlCommentSymbols();
+        commentsManager = new FlowchartCommentSymbolManager(layout);
         loadMarkedSymbol();
-        setEditMenuEnablers();
+        flowchartEditUndoManager.init(layout);
     }
 
     /**
@@ -123,7 +116,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
      */
     public Ellipse2D getCommentPathConnector()
     {
-        return commentPathConnector;
+        return commentsManager.getCommentPathConnector();
     }
 
     /**
@@ -132,15 +125,19 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
     public void resetUndoManager()
     {
         flowchartEditUndoManager.discardAllEdits();
+        flowchartEditUndoManager.init(layout);
     }
 
-    /**
-     * Zavolá UndoManagera, aby provedl potřebné kroky těsně před tím, než bude
-     * vývojový diagram změněn.
-     */
-    public void prepareUndoManager()
+    public void undo()
     {
-        flowchartEditUndoManager.prepareToAddEdit(layout, potencionalDefaultTexts);
+        doPendingUndoRedos();
+        flowchartEditUndoManager.undo();
+    }
+
+    public void redo()
+    {
+        doPendingUndoRedos();
+        flowchartEditUndoManager.redo();
     }
 
     /**
@@ -149,32 +146,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
     public void resetVariables()
     {
         dragged = false;
-        procesComment = null;
-        procesCommentsPointIndex = -1;
-        if (layout.getBoldPathComment() == null) {
-            futureRelativePointIndex = -1;
-        }
-        procesCommentElement = null;
-        pairedSymbol = null;
-        cursorRelX = 0;
-        cursorRelY = 0;
-        potencionalDefaultTexts = false;
-    }
-
-    /**
-     * <p>Nastaví zdejší proměnnou potencionalDefaultTexts do daného stavu.<br
-     * />
-     * Tato proměnná označuje potencionální změnu textu symbolu na defaultní,
-     * vygenerované hodnoty. Když je true, text symbolu se automaticky mění
-     * podle defaultního.</p>
-     * <p>Tato proměnná je uchována i v UndoManagerovy, proto je pro její
-     * možnost obnovení po Undo/Redo akci zpřístupňena tato metoda</p>
-     *
-     * @param enabled požadovaný stav této proměnné
-     */
-    public void setPotencionalDefaultTexts(boolean enabled)
-    {
-        potencionalDefaultTexts = enabled;
+        commentsManager.resetVariables();
     }
 
     /**
@@ -184,7 +156,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
      */
     public void refreshComments()
     {
-        lCommentSymbols = layout.getlCommentSymbols();
+        commentsManager.refreshComments();
     }
 
     /**
@@ -263,21 +235,38 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
                 break;
             }
         }
+
+        this.symbolPopup.addPopupMenuListener(new PopupMenuListener()
+        {
+            @Override
+            public void popupMenuWillBecomeVisible(PopupMenuEvent e)
+            {
+                updateEditMenuEnablers();
+            }
+
+            @Override
+            public void popupMenuWillBecomeInvisible(PopupMenuEvent e)
+            {
+            }
+
+            @Override
+            public void popupMenuCanceled(PopupMenuEvent e)
+            {
+            }
+        });
     }
 
     /**
      * Metoda zpracuje všechny čekající operace k zápisu do UndoManagera.
      */
-    public void doPendingUndoRedos()
+    private void doPendingUndoRedos()
     {
         if (segmentTextBuffered) {
             segmentTextBuffered = false;
-            flowchartEditUndoManager.addEdit(layout, this, potencionalDefaultTexts,
-                    "Editace textu větve symbolu");
+            flowchartEditUndoManager.addEdit(layout, this, "Editace textu větve symbolu");
         } else if (symbolTextBuffered) {
             symbolTextBuffered = false;
-            flowchartEditUndoManager.addEdit(layout, this, potencionalDefaultTexts,
-                    "Editace textu symbolu");
+            flowchartEditUndoManager.addEdit(layout, this, "Editace textu symbolu");
         }
     }
 
@@ -305,8 +294,6 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
                 break;
             }
             case "addSymbol": {
-                prepareUndoManager();
-
                 switch (action[1]) {
                     case "COMMENT": {
                         Symbol symbol = EnumSymbol.valueOf(action[1]).getInstance("");
@@ -379,42 +366,33 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
                 loadMarkedSymbol();
                 puttingText = false;
 
-                flowchartEditUndoManager.addEdit(layout, this, potencionalDefaultTexts,
-                        "Přidání symbolu");
+                flowchartEditUndoManager.addEdit(layout, this, "Přidání symbolu");
                 break;
             }
             case "edit": {
                 switch (action[1]) {
                     case "delete": {
-                        if (commentPathConnector != null) {
-                            if (procesCommentsPointIndex < 0) { // kdyz je na commentPathConnector jen ukazano a je oznacen parovy symbol komentare, pusobilo by to zmatecne..
+                        if (commentsManager.isCommentPathConnectorVisible()) { // jestli je zobrazena kulicka zlomu komentarove cesty
+                            if (!commentsManager.isCommentPathConnectorDeletable()) {
                                 break;
                             }
-                            prepareUndoManager();
 
-                            procesComment.getRelativeMiddlePointsToSymbol().remove(
-                                    procesCommentsPointIndex);
-                            procesCommentElement.setPathToNextSymbol(
-                                    layout.getCommentPathFromRelative(procesComment, pairedSymbol)); // uprava cesty ke komentari
-                            commentPathConnector = null;
+                            commentsManager.deleteCommentPathConnector();
                             resetVariables();
                             layout.prepareFlowchart();
                             repaintJPanelDiagram();
 
-                            flowchartEditUndoManager.addEdit(layout, this, potencionalDefaultTexts,
-                                    "Smazání bodu komentáře");
+                            flowchartEditUndoManager.addEdit(layout, this, "Smazání bodu komentáře");
                         } else {
-                            prepareUndoManager();
                             removeFocusedElement();
                             repaintJPanelDiagram();
-                            flowchartEditUndoManager.addEdit(layout, this, potencionalDefaultTexts,
-                                    "Smazání symbolu");
+                            flowchartEditUndoManager.addEdit(layout, this, "Smazání symbolu");
                         }
                         break;
                     }
                     case "cut":
                     case "copy": {
-                        if (commentPathConnector != null) {
+                        if (commentsManager.isCommentPathConnectorVisible()) {
                             break;
                         }
                         LayoutElement focusedElement = layout.getFocusedElement();
@@ -435,28 +413,24 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
                                 break;
                             }
                             if (action[1].equals("cut")) {
-                                prepareUndoManager();
                                 removeFocusedElement();
                                 repaintJPanelDiagram();
-                                flowchartEditUndoManager.addEdit(layout, this,
-                                        potencionalDefaultTexts, "Vyjmutí symbolu");
+                                flowchartEditUndoManager.addEdit(layout, this, "Vyjmutí symbolu");
                             }
                         }
                         break;
                     }
                     case "paste": {
-                        if (commentPathConnector != null) {
+                        if (commentsManager.isCommentPathConnectorVisible()) {
                             break;
                         }
                         if (elementsToPaste != null) {
-                            prepareUndoManager();
-
                             ArrayList<LayoutElement> elementsToAdd = new ArrayList<>();
                             try {
                                 for (ByteArrayOutputStream baos : elementsToPaste.keySet()) {
                                     LayoutElement newElement = GlobalFunctions.unsafeCast(
                                             MainWindow.getJAXBcontext().createUnmarshaller().unmarshal(
-                                            new ByteArrayInputStream(baos.toByteArray())));
+                                                    new ByteArrayInputStream(baos.toByteArray())));
                                     elementsToAdd.add(newElement);
                                 }
                             } catch (JAXBException ex) {
@@ -469,8 +443,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
                             //elementsToMove = null;
                             repaintJPanelDiagram();
 
-                            flowchartEditUndoManager.addEdit(layout, this, potencionalDefaultTexts,
-                                    "Vložení symbolu");
+                            flowchartEditUndoManager.addEdit(layout, this, "Vložení symbolu");
                         }
                         break;
                     }
@@ -482,8 +455,6 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
                         return;
                     }
                     case "defaultText": {
-                        prepareUndoManager();
-
                         if (jCheckBoxDefaultText.isSelected()) {
                             loadDefaults(getMarkedElement());
                         } else {
@@ -492,31 +463,29 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
                         layout.prepareFlowchart();
                         repaintJPanelDiagram();
 
-                        flowchartEditUndoManager.addEdit(layout, this, potencionalDefaultTexts,
-                                "Výchozí text symbolu");
+                        flowchartEditUndoManager.addEdit(layout, this, "Výchozí text symbolu");
                         break;
                     }
                     case "defaultsChanged": { // udalost vystrelena kdyz se zmeni defaultni textove hodnoty aktuálně zobrazeného symbolu
                         LayoutElement element = getMarkedElement();
-                        if (jCheckBoxDefaultText.isVisible() && jCheckBoxDefaultText.isSelected() && !defaultValuesSet(
-                                element)) {
-                            loadCustom(getMarkedElement());
-                            potencionalDefaultTexts = true;
-                        } else if ((potencionalDefaultTexts && defaultValuesSet(element))
-                                || (jCheckBoxDefaultText.isVisible() && jCheckBoxDefaultText.isSelected() && defaultValuesSet(
-                                element) && !defaultsEqualsValues(element))
-                                || (!jCheckBoxDefaultText.isVisible() && !customValuesSet(element) && defaultValuesSet(
-                                element))) {
-                            potencionalDefaultTexts = false;
-                            loadDefaults(getMarkedElement());
+                        if (!defaultsEqualsValues(element)
+                                && ((jCheckBoxDefaultText.isVisible() && jCheckBoxDefaultText.isSelected())
+                                || (!jCheckBoxDefaultText.isVisible() && (!consistsCustomValues(
+                                        element) || !customsEqualsValues(element))))) {
+                            /*
+                             * nacteme defaulty i v pripade ze byli prave vymazany - tim bude nacten
+                             * prazdny retezec a poznam tak (posledni podminka), ze pri pristi zmene
+                             * defaultu je mam hned priradit, nybrz predtim byl jejich checkbox
+                             * selected
+                             */
+                            loadDefaults(element);
                         } else {
                             break;
                         }
                         layout.prepareFlowchart();
                         repaintJPanelDiagram();
 
-                        flowchartEditUndoManager.addEdit(layout, this, potencionalDefaultTexts,
-                                "Funkce symbolu");
+                        flowchartEditUndoManager.addEdit(layout, this, "Funkce symbolu");
                         break;
                     }
                 }
@@ -529,38 +498,23 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
         if (action.length < 2 || !action[1].equals("defaultsChanged")) {
             mainWindow.setJPanelDiagramFocus();
         }
-        setEditMenuEnablers();
     }
 
     // **********************MouseListener**********************
     /**
      * Metoda s prázdným tělem.
+     * <p>
+     * @param me
      */
     @Override
     public void mouseClicked(MouseEvent me)
     {
-        /*
-         * Point2D point = me.getPoint();
-         *
-         * Joint joint = getJointContaining(point);
-         * if (joint != null) {
-         * layout.setFocusedJoint(joint);
-         * repaintJPanelDiagram();
-         * return;
-         * }
-         *
-         * LayoutElement element = getElementContaining(layout.getFlowchart(),
-         * point);
-         * if (element != null) {
-         * layout.setFocusedElement(element);
-         * repaintJPanelDiagram();
-         * return;
-         * }
-         */
     }
 
     /**
      * Metoda s prázdným tělem.
+     * <p>
+     * @param me
      */
     @Override
     public void mouseEntered(MouseEvent me)
@@ -569,6 +523,8 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
 
     /**
      * Metoda s prázdným tělem.
+     * <p>
+     * @param me
      */
     @Override
     public void mouseExited(MouseEvent me)
@@ -591,46 +547,10 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
         Point2D p = getTransformedPoint(me.getPoint(), new Point2D.Double());
         doPendingUndoRedos();
 
-        if (commentPathConnector != null) {
-            if (commentPathConnector.contains(p)) {
-                for (Comment comment : lCommentSymbols) {
-                    int i = 0;
-                    for (Point2D point : comment.getRelativeMiddlePointsToSymbol()) {
-                        if (comment.getCenterX() - comment.getRelativeX() + point.getX() == commentPathConnector.getCenterX() && comment.getCenterY() - comment.getRelativeY() + point.getY() == commentPathConnector.getCenterY()) {
-                            procesComment = comment;
-                            procesCommentsPointIndex = i;
-                            procesCommentElement = layout.findMyElement(comment);
-                            if (comment.hasPairSymbol()) {
-                                pairedSymbol = layout.findMyPairedElement(procesCommentElement).getSymbol();
-                            }
-                            setEditMenuEnablers(true);
-                            maybeShowPopup(me);
-                            return;
-                        }
-                        i++;
-                    }
-                }
-            } else {
-                commentPathConnector = null;
-            }
+        if (commentsManager.wasMousePressedEventRelevantForConnector(p)) {
+            maybeShowPopup(me);
+            return;
         }
-
-        /*
-         * Comment boldPathComment = layout.getBoldPathComment();
-         * if (boldPathComment != null) {
-         * futureRelativePointIndex = 0;
-         * Point2D prevPoint = new Point2D.Double(boldPathComment.getCenterX() -
-         * boldPathComment.getRelativeX(), boldPathComment.getCenterY() -
-         * boldPathComment.getRelativeY());
-         * for (Point2D point:
-         * boldPathComment.getRelativeMiddlePointsToSymbol()) {
-         * if (point.distance(point) < prevPoint.distance(point)) {
-         *
-         * }
-         * }
-         * return;
-         * }
-         */
 
         Joint joint = getJointContaining(p);
         if (joint != null) {
@@ -639,7 +559,6 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
             loadMarkedSymbol();
             puttingText = false;
             repaintJPanelDiagram();
-            setEditMenuEnablers();
             maybeShowPopup(me);
             return;
         }
@@ -652,15 +571,8 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
             puttingText = false;
             repaintJPanelDiagram();
             if (element.getSymbol() instanceof Comment) {
-                //pressedCommentElement = lCommentSymbols.get(lCommentSymbols.indexOf(element));
-                procesCommentElement = element;
-                procesComment = (Comment) element.getSymbol();
-                setCursorRelCoords(p.getX(), p.getY());
-                if (procesCommentElement.getSymbol().hasPairSymbol()) {
-                    pairedSymbol = layout.findMyPairedElement(element).getSymbol();
-                }
+                commentsManager.mousePressedOnComment(element, p);
             }
-            setEditMenuEnablers();
             maybeShowPopup(me);
             return;
         }
@@ -688,18 +600,17 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
         }
         Point2D p = getTransformedPoint(me.getPoint(), new Point2D.Double());
         if (dragged) {
-            analyzeMouseToCommentPathAndConnector(p);
+            if (!symbolPopup.isVisible()) {
+                commentsManager.analyzeMouseToCommentPathAndConnector(p);
+            }
             repaintJPanelDiagram();
-            flowchartEditUndoManager.addEdit(layout, this, potencionalDefaultTexts, commentAction);
+            flowchartEditUndoManager.addEdit(layout, this, commentAction);
         }
-        if (commentPathConnector != null) {
-            if (commentPathConnector.contains(p)) {
+        if (commentsManager.isCommentPathConnectorVisible()) {
+            if (commentsManager.wereMouseReleasedCoordsInsideConnector(p)) {
                 if (maybeShowPopup(me)) {
-                    prepareUndoManager();
                     return;
                 }
-            } else {
-                commentPathConnector = null;
             }
         } else if ((layout.getFocusedElement() != null && layout.getFocusedElement().getSymbol().contains(
                 p)) || (layout.getFocusedJoint() != null && layout.getFocusedJoint().contains(p))) {
@@ -723,64 +634,25 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
         }
         Point2D p = getTransformedPoint(me.getPoint(), new Point2D.Double());
         if (layout.getBoldPathComment() != null) {
-            prepareUndoManager();
             commentAction = "Vytvoření bodu komentáře";
             dragged = true;
-            Comment comment = layout.getBoldPathComment();
-            setCommentPathConnector(p.getX(), p.getY());
-            procesComment = comment;
-            comment.getRelativeMiddlePointsToSymbol().add(futureRelativePointIndex, null);
-            procesCommentsPointIndex = futureRelativePointIndex;
-            procesCommentElement = layout.findMyElement(comment);
-            if (comment.hasPairSymbol()) {
-                pairedSymbol = layout.findMyPairedElement(procesCommentElement).getSymbol();
-            }
-            layout.setBoldPathComment(null);
-            futureRelativePointIndex = -1;
+
+            commentsManager.setCommentPathConnectorFromDraggedMouse(p);
         }
-        if (commentPathConnector != null && procesComment != null) {
+        if (commentsManager.isCommentPathConnectorVisible()) {
             if (!dragged) {
-                prepareUndoManager();
                 commentAction = "Přesunutí bodu komentáře";
                 dragged = true;
             }
-            Point2D point = new Point2D.Double(
-                    p.getX() - procesComment.getCenterX() + procesComment.getRelativeX(),
-                    p.getY() - procesComment.getCenterY() + procesComment.getRelativeY());
-            procesComment.getRelativeMiddlePointsToSymbol().set(procesCommentsPointIndex, point);
-            setCommentPathConnector(p.getX(), p.getY());
-            procesCommentElement.setPathToNextSymbol(
-                    layout.getCommentPathFromRelative(procesComment, pairedSymbol)); // uprava cesty ke komentari
-        } else if (procesCommentElement != null) {
+
+            commentsManager.dragCommentPathConnector(p);
+        } else if (commentsManager.isCommentElementBeingProcessed()) {
             if (!dragged) {
-                prepareUndoManager();
                 commentAction = "Přesunutí komentáře";
                 dragged = true;
             }
-            double relX = (p.getX() - procesComment.getCenterX()) - cursorRelX;
-            double relY = (p.getY() - procesComment.getCenterY()) - cursorRelY;
-            procesComment.setCenterX(procesComment.getCenterX() + relX);
-            procesComment.setCenterY(procesComment.getCenterY() + relY);
-            procesComment.setRelativeX(procesComment.getRelativeX() + relX);
-            procesComment.setRelativeY(procesComment.getRelativeY() + relY);
-            boolean toRightSite = procesComment.istoRightSite();
-            procesCommentElement.setPathToNextSymbol(
-                    layout.getCommentPathFromRelative(procesComment, pairedSymbol)); // uprava cesty ke komentari
-            if (toRightSite != procesComment.istoRightSite()) { // otocil-li se komentar, je treba aktualizovat CursorRelCoords
-                setCursorRelCoords(p.getX(), p.getY());
-                /*
-                 * try {
-                 * Robot robot = new Robot();
-                 * setCursorRelCoords(p.getX(), p.getY());
-                 * robot.mouseMove((int)(me.getXOnScreen() +
-                 * (procesComment.getCenterX() - p.getX())*2),
-                 * me.getYOnScreen());
-                 * setCursorRelCoords(p.getX(), p.getY());
-                 * } catch (AWTException ex) {
-                 * setCursorRelCoords(p.getX(), p.getY());
-                 * }
-                 */
-            }
+
+            commentsManager.dragCommentElement(p);
         }
         repaintJPanelDiagram();
     }
@@ -799,13 +671,17 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
             return;
         }
         Point2D p = getTransformedPoint(me.getPoint(), new Point2D.Double());
-        analyzeMouseToCommentPathAndConnector(p);
+        if (!symbolPopup.isVisible()) {
+            commentsManager.analyzeMouseToCommentPathAndConnector(p);
+        }
         repaintJPanelDiagram();
     }
 
     // **********************DocumentListener**********************
     /**
      * Metoda s prázdným tělem.
+     * <p>
+     * @param de
      */
     @Override
     public void changedUpdate(DocumentEvent de)
@@ -828,7 +704,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
             if (de.getDocument().equals(jTextFieldTextSegment.getDocument())) {
                 setSegmentDescription(getMarkedElement().getInnerSegment(
                         jComboBoxSegment.getSelectedIndex()), de.getDocument().getText(0,
-                        de.getDocument().getLength()));
+                                de.getDocument().getLength()));
             } else {
                 setSymbolText(getMarkedElement(), de.getDocument().getText(0,
                         de.getDocument().getLength()));
@@ -853,7 +729,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
             if (de.getDocument().equals(jTextFieldTextSegment.getDocument())) {
                 setSegmentDescription(getMarkedElement().getInnerSegment(
                         jComboBoxSegment.getSelectedIndex()), de.getDocument().getText(0,
-                        de.getDocument().getLength()));
+                                de.getDocument().getLength()));
             } else {
                 setSymbolText(getMarkedElement(), de.getDocument().getText(0,
                         de.getDocument().getLength()));
@@ -865,7 +741,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
     // **********************KeyListener**********************
     /**
      * Posluchač stiknutých kláves nad plátnem. Je-li stisknuta klávesa
-     * mezerník, je tato událost přesměrována textovému poli pro editaci textu
+     * back space, je tato událost přesměrována textovému poli pro editaci textu
      * symbolu.
      *
      * @param ke nová událost
@@ -873,6 +749,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
     @Override
     public void keyPressed(KeyEvent ke)
     {
+        updateEditMenuEnablers(); // update it so the shortcuts (delete, ctrl+c, ...) are handled correctly
         if (ke.getKeyCode() == KeyEvent.VK_BACK_SPACE) {// || ke.getKeyCode() == KeyEvent.VK_ENTER) {
             dispatchKeyEventToSymbolTextArea(ke); // predani KeyEventu editaci textu symbolu
         }
@@ -880,7 +757,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
 
     /**
      * Posluchač stiknutých kláves nad plátnem. Je-li stisknuta klávesa
-     * mezerník, je tato událost přesměrována textovému poli pro editaci textu
+     * back space, je tato událost přesměrována textovému poli pro editaci textu
      * symbolu.
      *
      * @param ke nová událost
@@ -911,6 +788,8 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
     // **********************FocusListener**********************
     /**
      * Metoda s prázdným tělem.
+     * <p>
+     * @param fe
      */
     @Override
     public void focusGained(FocusEvent fe)
@@ -929,14 +808,12 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
         if (fe.getComponent().equals(jTextFieldTextSegment)) {
             if (segmentTextBuffered) {
                 segmentTextBuffered = false;
-                flowchartEditUndoManager.addEdit(layout, this, potencionalDefaultTexts,
-                        "Editace textu větve symbolu");
+                flowchartEditUndoManager.addEdit(layout, this, "Editace textu větve symbolu");
             }
         } else { // jTextAreaTextSymbol
             if (symbolTextBuffered) {
                 symbolTextBuffered = false;
-                flowchartEditUndoManager.addEdit(layout, this, potencionalDefaultTexts,
-                        "Editace textu symbolu");
+                flowchartEditUndoManager.addEdit(layout, this, "Editace textu symbolu");
             }
         }
     }
@@ -1029,7 +906,6 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
                  * comboBoxModel.addListDataListener(this);
                  * jComboBoxSegment.setModel(comboBoxModel);
                  */
-
                 //if (lastMarkedElement != null) { // neboli neni-li odebrany action-listener
                 jComboBoxSegment.removeActionListener(this);
                 //}
@@ -1049,7 +925,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
             jComboBoxSegment.removeActionListener(this);
             mainWindow.setJPanelTextSegmentVisible(false);
         }
-        if (defaultValuesSet(markedElement)) {
+        if (consistsDefaultValues(markedElement)) {
             if (jCheckBoxDefaultText.isVisible()) {
                 jCheckBoxDefaultText.removeActionListener(this);
             }
@@ -1094,7 +970,24 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
         return true;
     }
 
-    private boolean defaultValuesSet(LayoutElement element)
+    private boolean customsEqualsValues(LayoutElement element)
+    {
+        if (element.getSymbol().getValue().equals(element.getSymbol().getCustomValue())) {
+            if (element.getSymbol().getInnerOutsCount() == -1) { // je-li symbol instanci podminky nebo switch, je treba otestovat i deskripci segmentů
+                for (int i = element.getSymbol().getDefaultSegmentDescriptions().length; i < element.getInnerSegments().size(); i++) {
+                    if (!element.getInnerSegment(i).getCustomDescription().equals(
+                            element.getInnerSegment(i).getDescription())) {
+                        return false;
+                    }
+                }
+            }
+        } else {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean consistsDefaultValues(LayoutElement element)
     {
         if (element.getSymbol().getDefaultValue() != null && !element.getSymbol().getDefaultValue().equals(
                 "")) {
@@ -1112,7 +1005,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
         return true;
     }
 
-    private boolean customValuesSet(LayoutElement element)
+    private boolean consistsCustomValues(LayoutElement element)
     {
         if (element.getSymbol().getCustomValue() != null && !element.getSymbol().getCustomValue().equals(
                 "")) {
@@ -1130,13 +1023,12 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
         return true;
     }
 
-    // POZOR! tuto metodu muze pouzivat ejen documment listener - pozor na undoManagera
+    // POZOR! tuto metodu muze pouzivat jen documment listener - pozor na undoManagera
     private void setSegmentDescription(LayoutSegment segment, String text)
     {
         if (segment.getDescription() == null || !segment.getDescription().equals(text)) {
             if (!segmentTextBuffered) {
                 segmentTextBuffered = true;
-                prepareUndoManager();
             }
             segment.setDescription(text);
             if (segment.getDefaultDescription() != null) {
@@ -1156,9 +1048,6 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
             } else {
                 segment.setCustomDescription(text);
             }
-            if (potencionalDefaultTexts) {
-                potencionalDefaultTexts = false;
-            }
 
             layout.prepareFlowchart(); // nemohu zde otestovat velikost jako v setSymbolText(..), protoze zustava stejna - roztahovani se deje jen pri definovani mrizky
             repaintJPanelDiagram();
@@ -1172,11 +1061,9 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
             if (jTextAreaTextSymbol.isFocusOwner()) {
                 if (!symbolTextBuffered) {
                     symbolTextBuffered = true;
-                    prepareUndoManager();
                 }
             } else {
                 symbolTextBuffered = false;
-                prepareUndoManager();
             }
             double prevSymbolWidth = element.getSymbol().getWidth();
             double prevSymbolHeight = element.getSymbol().getHeight();
@@ -1199,67 +1086,14 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
             } else {
                 element.getSymbol().setCustomValue(text);
             }
-            if (potencionalDefaultTexts) {
-                potencionalDefaultTexts = false;
-            }
 
             if (element.getSymbol().getWidth() != prevSymbolWidth || element.getSymbol().getHeight() != prevSymbolHeight) {
                 layout.prepareFlowchart(); // pro znovuumisteni v pripade zmeny velikosti symbolu
             }
             if (!symbolTextBuffered) {
-                flowchartEditUndoManager.addEdit(layout, this, potencionalDefaultTexts,
-                        "Editace textu symbolu");
+                flowchartEditUndoManager.addEdit(layout, this, "Editace textu symbolu");
             }
             repaintJPanelDiagram();
-        }
-    }
-
-    private void analyzeMouseToCommentPathAndConnector(Point2D p)
-    {
-        if (!symbolPopup.isVisible()) {
-            Comment boldPathComment = null;
-            for (Comment comment : lCommentSymbols) {
-                // pri hledani commentPathConnector muzu rovnou i hledat potencionalni Path zvyrazneni.. v pripade nalezeni commentPathConnectoru uz je pak nebudu potrebovat, takze se mi ten return hodi
-                double origAbsX = comment.getCenterX() - comment.getRelativeX();
-                double origAbsY = comment.getCenterY() - comment.getRelativeY();
-                Point2D prevPoint = new Point2D.Double(origAbsX, origAbsY);
-
-                for (Point2D pnt : comment.getRelativeMiddlePointsToSymbol()) {
-                    Point2D point = new Point2D.Double(origAbsX + pnt.getX(), origAbsY + pnt.getY());
-                    if (point.distance(p.getX(), p.getY()) < 4) {
-                        setCommentPathConnector(point.getX(), point.getY());
-                        layout.setBoldPathComment(null);
-                        //repaintJPanelDiagram();
-                        return;
-                    }
-                    if (boldPathComment == null) {
-                        if (shouldBeBold(comment, prevPoint, point, p)) {
-                            boldPathComment = comment;
-                            futureRelativePointIndex = comment.getRelativeMiddlePointsToSymbol().indexOf(
-                                    pnt);
-                        } else {
-                            prevPoint = point;
-                        }
-                    }
-                }
-                if (boldPathComment == null) {
-                    if (shouldBeBold(comment, prevPoint, new Point2D.Double(comment.getCenterX(),
-                            comment.getCenterY()), p)) {
-                        boldPathComment = comment;
-                        futureRelativePointIndex = comment.getRelativeMiddlePointsToSymbol().size();
-                    }
-                }
-            }
-            if (commentPathConnector != null) { // .., vymazat commentPathConnector jen kdyz neni zobrazeno popup menu pro jeho smazani
-                commentPathConnector = null;
-                setEditMenuEnablers();
-            }
-            if (boldPathComment != null) {
-                layout.setBoldPathComment(boldPathComment);
-            } else {
-                layout.setBoldPathComment(null);
-            }
-            //repaintJPanelDiagram();
         }
     }
 
@@ -1283,12 +1117,6 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
         return destPoint;
     }
 
-    private boolean shouldBeBold(Comment comment, Point2D p1, Point2D p2, Point2D p3)
-    {
-        return Line2D.ptSegDist(p1.getX(), p1.getY(), p2.getX(), p2.getY(), p3.getX(), p3.getY()) <= 3 && !comment.contains(
-                p3) && (!comment.hasPairSymbol() || !layout.findMyPairedSymbol(comment).contains(p3));
-    }
-
     private String askForNumber(int min, int max, String defaultString)
     {
         return (String) JOptionPane.showInputDialog(mainWindow,
@@ -1296,22 +1124,27 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
                 "Počet větví", JOptionPane.QUESTION_MESSAGE, null, null, defaultString);
     }
 
+    public void updateUndoRedoEnablers()
+    {
+        flowchartEditUndoManager.setButtons();
+    }
+
     /**
      * Nastaví korespondující hodnoty enabled položkám v menu pro úpravu
      * symbolu.
      */
-    public void setEditMenuEnablers()
+    public void updateEditMenuEnablers()
     {
         if (!mainWindow.getEditMode()) {
             setEditMenuEnablers(false);
-        } else if (commentPathConnector != null) {
+        } else if (commentsManager.isCommentPathConnectorVisible()) {
             setEditMenuEnablers(true);
         } else {
             LayoutElement element = layout.getFocusedElement();
             if (element != null && !(element.getParentSegment().getParentElement() == null && (element.getParentSegment().indexOfElement(
                     element) + 1 == element.getParentSegment().size() || (element.getParentSegment().indexOfElement(
-                    element) == 0 && element.getSymbol() instanceof StartEnd) || (element.getParentSegment().indexOfElement(
-                    element) == 1 && element.getParentSegment().getElement(0).getSymbol() instanceof Comment)))) {
+                            element) == 0 && element.getSymbol() instanceof StartEnd) || (element.getParentSegment().indexOfElement(
+                            element) == 1 && element.getParentSegment().getElement(0).getSymbol() instanceof Comment)))) {
                 mainWindow.setjMenuItemDeleteEnabled(true);
                 mainWindow.setjMenuItemCutEnabled(true);
                 mainWindow.setjMenuItemCopyEnabled(true);
@@ -1358,7 +1191,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
             mainWindow.setjMenuItemPasteEnabled(false);
         }
 
-        if (commentPathConnector != null) {
+        if (commentsManager.isCommentPathConnectorVisible()) {
             enabled = false;
         }
         if (jSymbolPopupCut != null) {
@@ -1373,7 +1206,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
 
     private void setPasteEnabled()
     { // TODO umoznit vkladat symboly i pri neprimo oznacenem Jointu, komentare parovat automaticky dle potreby (abstrLay?)
-        if (elementsToPaste != null && commentPathConnector == null && (layout.getFocusedElement() == null || (elementsToPaste.size() == 1 && elementsToPaste.containsValue(
+        if (elementsToPaste != null && !commentsManager.isCommentPathConnectorVisible() && (layout.getFocusedElement() == null || (elementsToPaste.size() == 1 && elementsToPaste.containsValue(
                 true)))) {
             if (jSymbolPopupPaste != null) {
                 jSymbolPopupPaste.setEnabled(true);
@@ -1399,23 +1232,6 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
         return false;
     }
 
-    private void setCommentPathConnector(double centerPointX, double centerPointY)
-    {
-        double width = 8;
-        commentPathConnector = new Ellipse2D.Double(centerPointX - width / 2,
-                centerPointY - width / 2, width, width);
-    }
-
-    private Comment getCommentContaining(Point2D point)
-    {
-        for (Comment comment : lCommentSymbols) {
-            if (comment.contains(point)) {
-                return comment;
-            }
-        }
-        return null;
-    }
-
     private Joint getJointContaining(Point2D p)
     {
         for (Joint joint : layout.getlJoints()) {
@@ -1429,10 +1245,6 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
     private LayoutElement getElementContaining(Flowchart<LayoutSegment, LayoutElement> flowchart,
             Point2D p)
     {
-        Comment comment = getCommentContaining(p);
-        if (comment != null) {
-            return layout.findMyElement(comment);
-        }
         for (LayoutSegment segment : flowchart) {
             if (segment != null) {
                 for (LayoutElement element : segment) {
@@ -1443,12 +1255,6 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
             }
         }
         return null;
-    }
-
-    private void setCursorRelCoords(double mouseX, double mouseY)
-    {
-        cursorRelX = mouseX - procesCommentElement.getSymbol().getCenterX();
-        cursorRelY = mouseY - procesCommentElement.getSymbol().getCenterY();
     }
 
 }

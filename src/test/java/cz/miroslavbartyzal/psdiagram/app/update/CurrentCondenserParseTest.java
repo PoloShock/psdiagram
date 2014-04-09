@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Test;
 
 /**
@@ -21,6 +22,8 @@ public class CurrentCondenserParseTest
     @Test
     public void currentChangesXMLGlobalTest() throws UnsupportedEncodingException
     {
+        Assume.assumeNotNull(System.getProperty("build.versioninfo")); // if we are in release profile, proceed
+
         ChangesCondenser condenser = null;
         try {
             condenser = ChangesCondenserTest.JAXBCondenserUnmarshal(new FileInputStream(
@@ -34,6 +37,8 @@ public class CurrentCondenserParseTest
     @Test
     public void currentChangesXMLBuildTest() throws UnsupportedEncodingException
     {
+        Assume.assumeNotNull(System.getProperty("build.versioninfo")); // if we are in release profile, proceed
+
         ChangesCondenser condenser = null;
         try {
             condenser = ChangesCondenserTest.JAXBCondenserUnmarshal(new FileInputStream(

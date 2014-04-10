@@ -53,8 +53,8 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
         MouseMotionListener, DocumentListener, KeyListener, FocusListener
 {
 
-    // TODO pridat do nastaveni skalu cest - nejmene 3
-    // TODO pridat do nastaveni reset do defaultniho
+    // TODO pridat do nastaveni skalu barev cest pri animaci - nejmene 3
+    // TODO pridat do nastaveni reset do defaultniho nastaveni
     private final Layout layout;
     private final MainWindow mainWindow;
     private JPopupMenu symbolPopup;
@@ -75,6 +75,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
     private boolean puttingText = false; // slouzi pro signalizaci DocumentListeneru, ze prave probiha aplikacni vkladani textu
     private boolean segmentTextBuffered = false; // pro bufferovani editcniho pole textu segmentu a jeho zalozohavni do undomanagera
     private boolean symbolTextBuffered = false; // pro bufferovani editcniho pole textu symbolu a jeho zalozohavni do undomanagera
+    private boolean defaultTextBeingEdited = false;
 
     /**
      * Konstruktor, zajišťující základní spojení s klíčovými prvky uživatelského
@@ -147,6 +148,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
     {
         dragged = false;
         commentsManager.resetVariables();
+        defaultTextBeingEdited = false;
     }
 
     /**
@@ -458,6 +460,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
                         if (jCheckBoxDefaultText.isSelected()) {
                             loadDefaults(getMarkedElement());
                         } else {
+                            defaultTextBeingEdited = true;
                             loadCustom(getMarkedElement());
                         }
                         layout.prepareFlowchart();
@@ -467,17 +470,13 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
                         break;
                     }
                     case "defaultsChanged": { // udalost vystrelena kdyz se zmeni defaultni textove hodnoty aktuálně zobrazeného symbolu
+                        defaultTextBeingEdited = true;
                         LayoutElement element = getMarkedElement();
                         if (!defaultsEqualsValues(element)
                                 && ((jCheckBoxDefaultText.isVisible() && jCheckBoxDefaultText.isSelected())
-                                || (!jCheckBoxDefaultText.isVisible() && (!consistsCustomValues(
-                                        element) || !customsEqualsValues(element))))) {
-                            /*
-                             * nacteme defaulty i v pripade ze byli prave vymazany - tim bude nacten
-                             * prazdny retezec a poznam tak (posledni podminka), ze pri pristi zmene
-                             * defaultu je mam hned priradit, nybrz predtim byl jejich checkbox
-                             * selected
-                             */
+                                || (!jCheckBoxDefaultText.isVisible() && !jCheckBoxDefaultText.isSelected() && !consistsCustomValues(
+                                        element)))) {
+                            //nacteme defaulty i v pripade ze byli prave vymazany
                             loadDefaults(element);
                         } else {
                             break;
@@ -848,6 +847,9 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
     private void loadMarkedSymbol()
     {
         LayoutElement markedElement = getMarkedElement();
+        if (!markedElement.equals(lastMarkedElement)) {
+            defaultTextBeingEdited = false; // nacitam novy symbol, takze nyni uzivatel jiz defaultni texty needituje
+        }
         loadMarkedSymbolText(markedElement);
         loadMarkedSymbolFunction(markedElement);
         lastMarkedElement = markedElement;
@@ -925,7 +927,9 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
             jComboBoxSegment.removeActionListener(this);
             mainWindow.setJPanelTextSegmentVisible(false);
         }
-        if (consistsDefaultValues(markedElement)) {
+        if (consistsDefaultValues(markedElement) || (consistsCustomValues(markedElement) && defaultsEqualsValues(
+                markedElement))) {
+            // jestli symbol obsahuje defaultni texty, nebo jestli je neobsahuje ale obsahuje custom a je aktualne nastaveny na prazdy text (= defaultni)
             if (jCheckBoxDefaultText.isVisible()) {
                 jCheckBoxDefaultText.removeActionListener(this);
             }
@@ -936,7 +940,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
             }
             jCheckBoxDefaultText.setVisible(true); // jsou-li definované defaultní texty, zviditelníme checkbox
             jCheckBoxDefaultText.addActionListener(this);
-        } else if (jCheckBoxDefaultText.isVisible()) {
+        } else if (jCheckBoxDefaultText.isVisible() && !defaultTextBeingEdited) {
             jCheckBoxDefaultText.removeActionListener(this);
             jCheckBoxDefaultText.setSelected(false);
             jCheckBoxDefaultText.setVisible(false);
@@ -955,28 +959,18 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
 
     private boolean defaultsEqualsValues(LayoutElement element)
     {
-        if (element.getSymbol().getValue().equals(element.getSymbol().getDefaultValue())) {
+        if (element.getSymbol().getValue().equals(element.getSymbol().getDefaultValue()) || element.getSymbol().getValue().equals(
+                "") && element.getSymbol().getDefaultValue() == null) {
             if (element.getSymbol().getInnerOutsCount() == -1) { // je-li symbol instanci podminky nebo switch, je treba otestovat i deskripci segmentů
                 for (int i = element.getSymbol().getDefaultSegmentDescriptions().length; i < element.getInnerSegments().size(); i++) {
-                    if (!element.getInnerSegment(i).getDefaultDescription().equals(
-                            element.getInnerSegment(i).getDescription())) {
-                        return false;
-                    }
-                }
-            }
-        } else {
-            return false;
-        }
-        return true;
-    }
+                    String desc = element.getInnerSegment(i).getDescription();
+                    String defDesc = element.getInnerSegment(i).getDefaultDescription();
 
-    private boolean customsEqualsValues(LayoutElement element)
-    {
-        if (element.getSymbol().getValue().equals(element.getSymbol().getCustomValue())) {
-            if (element.getSymbol().getInnerOutsCount() == -1) { // je-li symbol instanci podminky nebo switch, je treba otestovat i deskripci segmentů
-                for (int i = element.getSymbol().getDefaultSegmentDescriptions().length; i < element.getInnerSegments().size(); i++) {
-                    if (!element.getInnerSegment(i).getCustomDescription().equals(
-                            element.getInnerSegment(i).getDescription())) {
+                    if ((desc != null || defDesc != null)
+                            && ((desc != null || defDesc == null) || !defDesc.equals(""))
+                            && ((defDesc != null || desc == null) || !desc.equals(""))
+                            && (desc == null || !desc.equals(defDesc))) {
+                        // jestli se defaultni a aktualni deskripce segmentu nerovnaji (beru v potaz i null)
                         return false;
                     }
                 }

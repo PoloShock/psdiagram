@@ -599,9 +599,6 @@ public abstract class AbstractLayout implements Layout
              * this.flowchart.getMainSegment().addSymbol(focusedElement,
              * EnumSymbol.PROCESS.getInstance(null));
              */
-
-
-
         }
         focusedElement = null;
     }
@@ -715,7 +712,7 @@ public abstract class AbstractLayout implements Layout
                     }
                     boolean EndStartEnd = element.getSymbol() instanceof StartEnd && (element.getParentSegment().getParentElement() != null || element.getParentSegment().indexOfElement(
                             element) > 1 || (element.getParentSegment().indexOfElement(element) == 1 && !(element.getParentSegment().getElement(
-                            0).getSymbol() instanceof Comment)));
+                                    0).getSymbol() instanceof Comment)));
                     if (!(element.getSymbol() instanceof Comment) && !(element.getSymbol() instanceof Goto) && !(EndStartEnd)) {
                         drawPath(g2d, element.getPathToNextSymbol());
                         lastGoto = false;
@@ -797,7 +794,7 @@ public abstract class AbstractLayout implements Layout
 
         if ((editMode && element != null && !(symbol instanceof Comment)
                 && (element.equals(focusedElement) || (focusedElement == null && focusedJoint != null && element.equals(
-                focusedJoint.getParentElement())))) || (symbol.equals(focusedJoint))) {
+                        focusedJoint.getParentElement())))) || (symbol.equals(focusedJoint))) {
 
             shapeUpColor = focusedUpColor;
             shapeDownColor = focusedDownColor;
@@ -967,7 +964,7 @@ public abstract class AbstractLayout implements Layout
                         focusedElement);
                 if (focusedElement.getSymbol() instanceof Comment || (indexOfFocusedElement - 1 >= 0 && focusedElement.getParentSegment().getElement(
                         indexOfFocusedElement - 1).getSymbol() instanceof Comment && focusedElement.getParentSegment().getElement(
-                        indexOfFocusedElement - 1).getSymbol().hasPairSymbol())) {
+                                indexOfFocusedElement - 1).getSymbol().hasPairSymbol())) {
                     symbol.setHasPairSymbol(false);
                     element = focusedJoint.getParentSegment().addSymbol(
                             focusedJoint.getParentElement(), symbol, innerOutCount);
@@ -1027,18 +1024,26 @@ public abstract class AbstractLayout implements Layout
     @Override
     public void addElements(ArrayList<LayoutElement> elements)
     {
-        if (elements.size() == 1 && elements.get(0).getSymbol().hasPairSymbol() && elements.get(0).getSymbol() instanceof Comment) { // pridavame jen parovy komentar
-            addNewSymbol(elements.get(0).getSymbol(), 0);
-            return;
-        }
-        LayoutElement parentElement = focusedElement;
-        if (parentElement == null) {
-            parentElement = focusedJoint.getParentElement();
-        }
+        LayoutElement parentElement = focusedJoint.getParentElement();
         LayoutSegment segment = focusedJoint.getParentSegment();
 
-        for (LayoutElement element : elements) {
-            parentElement = segment.addElement(parentElement, element);
+        for (int i = 0; i < elements.size(); i++) {
+            LayoutElement element = elements.get(i);
+
+            if (element.getSymbol() instanceof Comment) {
+                if (i == 0) {
+                    // je-li prvni symbol komentar, musim rozhodnout, zda jej pripnu k symbolu nebo ho necham na samostatne pozici
+                    if (focusedElement != null) {
+                        element.getSymbol().setHasPairSymbol(true);
+                    } else {
+                        element.getSymbol().setHasPairSymbol(false);
+                    }
+                }
+                addNewSymbol(element.getSymbol(), 0); // metoda addNewSymbol zvaliduje nastavene parovani komentare
+                return;
+            } else {
+                parentElement = segment.addElement(parentElement, element);
+            }
         }
 
         prepareMyFlowchart();
@@ -1072,7 +1077,7 @@ public abstract class AbstractLayout implements Layout
     {
         if (element.getParentSegment().getParentElement() == null && (element.getParentSegment().indexOfElement(
                 element) + 1 == element.getParentSegment().size() || (element.getParentSegment().indexOfElement(
-                element) == 0 && element.getSymbol() instanceof StartEnd))) {
+                        element) == 0 && element.getSymbol() instanceof StartEnd))) {
             return; // jestli se jedna o prvni nebo koncovy znak
         }
         LayoutSegment parentSegment = element.getParentSegment();
@@ -1095,7 +1100,6 @@ public abstract class AbstractLayout implements Layout
          * }
          * }
          */
-
         ArrayList<LayoutElement> arrElementToDelete = getMeAndMyDependents(element);
         int elementIndex = parentSegment.indexOfElement(arrElementToDelete.get(0));
         for (int i = elementIndex - 1; i >= 0; i--) {
@@ -1470,7 +1474,7 @@ public abstract class AbstractLayout implements Layout
     }
 
     /**
-     * Metoda pro získání aktuálně označeného symbolu.<br />
+     * Metoda pro získání aktuálně označeného (orámovaného) symbolu.<br />
      * Je-li označen joint, vrací null. Pro získání označeného elementu který
      * nemá focus, použijte metodu getFocusedJoint.
      *
@@ -1507,7 +1511,7 @@ public abstract class AbstractLayout implements Layout
     }
 
     /**
-     * Vrací aktuálně označený joint.
+     * Vrací aktuálně označený (orámovaný) joint.
      *
      * @return aktuálně označený joint
      */

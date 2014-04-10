@@ -423,30 +423,28 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
                         break;
                     }
                     case "paste": {
-                        if (commentsManager.isCommentPathConnectorVisible()) {
+                        if (commentsManager.isCommentPathConnectorVisible() || elementsToPaste == null) {
                             break;
                         }
-                        if (elementsToPaste != null) {
-                            ArrayList<LayoutElement> elementsToAdd = new ArrayList<>();
-                            try {
-                                for (ByteArrayOutputStream baos : elementsToPaste.keySet()) {
-                                    LayoutElement newElement = GlobalFunctions.unsafeCast(
-                                            MainWindow.getJAXBcontext().createUnmarshaller().unmarshal(
-                                                    new ByteArrayInputStream(baos.toByteArray())));
-                                    elementsToAdd.add(newElement);
-                                }
-                            } catch (JAXBException ex) {
-                                ex.printStackTrace(System.err);
-                                break;
+                        ArrayList<LayoutElement> elementsToAdd = new ArrayList<>();
+                        try {
+                            for (ByteArrayOutputStream baos : elementsToPaste.keySet()) {
+                                LayoutElement newElement = GlobalFunctions.unsafeCast(
+                                        MainWindow.getJAXBcontext().createUnmarshaller().unmarshal(
+                                                new ByteArrayInputStream(baos.toByteArray())));
+                                elementsToAdd.add(newElement);
                             }
-
-                            layout.addElements(elementsToAdd);
-                            refreshComments();
-                            //elementsToMove = null;
-                            repaintJPanelDiagram();
-
-                            flowchartEditUndoManager.addEdit(layout, this, "Vložení symbolu");
+                        } catch (JAXBException ex) {
+                            ex.printStackTrace(System.err);
+                            break;
                         }
+
+                        layout.addElements(elementsToAdd);
+                        refreshComments();
+                        //elementsToMove = null;
+                        repaintJPanelDiagram();
+
+                        flowchartEditUndoManager.addEdit(layout, this, "Vložení symbolu");
                         break;
                     }
                     case "segmentText": {
@@ -779,7 +777,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
     @Override
     public void keyTyped(KeyEvent ke)
     {
-        if ((int) ke.getKeyChar() != KeyEvent.VK_DELETE && (int) ke.getKeyChar() != KeyEvent.VK_ENTER) {
+        if (!ke.isControlDown() && !ke.isAltDown() && (int) ke.getKeyChar() != KeyEvent.VK_DELETE && (int) ke.getKeyChar() != KeyEvent.VK_ENTER) {
             dispatchKeyEventToSymbolTextArea(ke); // predani KeyEventu editaci textu symbolu
         }
     }
@@ -1199,9 +1197,8 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
     }
 
     private void setPasteEnabled()
-    { // TODO umoznit vkladat symboly i pri neprimo oznacenem Jointu, komentare parovat automaticky dle potreby (abstrLay?)
-        if (elementsToPaste != null && !commentsManager.isCommentPathConnectorVisible() && (layout.getFocusedElement() == null || (elementsToPaste.size() == 1 && elementsToPaste.containsValue(
-                true)))) {
+    {
+        if (elementsToPaste != null && !elementsToPaste.isEmpty() && !commentsManager.isCommentPathConnectorVisible()) {
             if (jSymbolPopupPaste != null) {
                 jSymbolPopupPaste.setEnabled(true);
             }

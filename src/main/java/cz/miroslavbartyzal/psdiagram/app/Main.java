@@ -59,7 +59,6 @@ public final class Main
     // TODO pamatovat si velikost oken (http://stackoverflow.com/questions/7777640/best-practice-for-setting-jframe-locations)
     // TODO otestovat kdyz chybi consolas
     // TODO Pascal podpora vice vstupu naraz - prikaz read[ln](x,y,z)
-    //-> TODO umoznit vkladani i kdyz je oznaceny symbol a ne bod (puvodne jen bod kvuli textu, ale tak nedopustime aby v clipboardu text byl.. (pripadne vlozime text))
     // TODO co to rucni propojovani sipek, kdyz bych je oznacil jinou barvou jako neoptimalni?
     // TODO moznost zkompilovat diagram do spustitelneho souboru
     // TODO zvazit pouziti delty (viz opengl projekt) pri animaci

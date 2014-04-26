@@ -65,11 +65,20 @@ public final class Main
     // TODO prejmenuj properties z appliaction na application.. :D
     // TODO dat uzivateli vedet ze muze normalne upgradovat, kdyz proceeduje (z hlasky o vyprseni zkusebky to neni poznat)
     // TODO nemel bych pro ziskani casu posilat HTTP HEAD misto GET?
-    // TODO upozornit na vyprseni zkusebky nekolik dni pred jejim skutecnym vyprsenim
+    //e! TODO upozornit na vyprseni zkusebky nekolik dni pred jejim skutecnym vyprsenim
     // TODO koukni po jednotce kibibyte v updateru - nemam to prehozene s kilobytem?
-    //e! TODO zobraz pocet dni do konce zkusebky!
     // TODO drag&drop nejen do PSD ale i z nej - presun diagramu jako export tahem do emailove prilohy apod.
     // TODO u proguardu dynamicky do manifestu priradit main podle jeho obfuskace - tak nebudu muset zachovavat balickovou cestu k mainu
+    // TODO presouvat / koprovat symboly pomocí drag&drop na platne
+    //      - pri dragu umistit jako kurzor mysi zmenseninu presouvaneho symbolu
+    //      - smazat symbol z predesle pozice jakmile se pozice kurzoru ocitne mimo vnitrek daneho symbolu
+    //		- na miste stredu smazaneho symbolu musi byt joint, ktery po nem zbyl -> posunuti diagramu dolu
+    //		- focused zustane po celou dobu jen joint puvodni pozice (pro snadne vraceni k puvodnimu umisteni)
+    //      - symbol (kurzorovy) prilepovat na relativni vzdalenost (vuci zvetseni platna) k vkladacim bodum
+    //      - prilepenim se posunou ostatni symboly nahoru a dolu tak, aby vkladaci bod (= stred presouvaneho symbolu)
+    //      byl uprostred a nepresouvany
+    //      - odlepeni probehne za stejne podminky jako smazani puvodni pozice symbolu - opustenim jeho prostoru
+    // TODO pohyb mezi symboly v editacnim rezimu pomoci kurzorovych sipek
 
     /**
      * Metoda pro spuštění hlavního okna aplikace. Nejsou přijímány žádné

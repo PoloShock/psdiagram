@@ -2,14 +2,14 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.miroslavbartyzal.psdiagram.app.animation;
+package cz.miroslavbartyzal.psdiagram.app.debug;
 
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Comment;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.StartEnd;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.GotoLabel;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Goto;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
-import cz.miroslavbartyzal.psdiagram.app.animation.function.FunctionManager;
+import cz.miroslavbartyzal.psdiagram.app.debug.function.FunctionManager;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.Layout;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutElement;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutSegment;
@@ -44,7 +44,7 @@ import javax.swing.Timer;
  *
  * @author Miroslav Bartyzal (miroslavbartyzal@gmail.com)
  */
-public final class Animator
+public final class DebugAnimator
 {
 
     //private final int FPS = 40; // orientacni hodnota
@@ -92,11 +92,11 @@ public final class Animator
     private TreeMap<Integer, ArrayList<Path2D[]>> paths = new TreeMap<>(); // bez komentarovych a goto cest
     //private HashMap<Path2D[], Integer> paths = new HashMap<>(70); // bez komentarovych a goto cest
     //private LinkedHashMap<Integer, ArrayList<AnimSymbol>> symbols = new LinkedHashMap<>();
-    private HashMap<AnimSymbol, Integer> symbols = new HashMap<>(30); // bez komentaru
+    private HashMap<DebugSymbol, Integer> symbols = new HashMap<>(30); // bez komentaru
     private LinkedHashMap<Integer, HashMap<TextLayout, Point2D>> segmentDescs = new LinkedHashMap<>();
     private ArrayList<Path2D> commentPaths = new ArrayList<>();
     private ArrayList<Path2D> gotoPaths = new ArrayList<>();
-    private ArrayList<AnimSymbol> commentSymbols = new ArrayList<>();
+    private ArrayList<DebugSymbol> commentSymbols = new ArrayList<>();
     private BasicStroke mainStroke = new BasicStroke(2);
     private BasicStroke gotoStroke;
     private BasicStroke commentStroke;
@@ -113,7 +113,7 @@ public final class Animator
      * @param functionManager FunctionManager zajišťující logickou funkčnost
      * diagramu
      */
-    public Animator(Layout layout, JPanel jPanelDiagram, JSlider jSliderSpeed,
+    public DebugAnimator(Layout layout, JPanel jPanelDiagram, JSlider jSliderSpeed,
             FunctionManager functionManager)
     {
         this.layout = layout;
@@ -191,7 +191,7 @@ public final class Animator
                 boolean lastGoto = false;
                 for (LayoutElement element : segment) {
                     if (!(element.getSymbol() instanceof Comment)) {
-                        symbols.put(initAnimSymbol(new AnimSymbol(element.getSymbol()),
+                        symbols.put(initAnimSymbol(new DebugSymbol(element.getSymbol()),
                                 symbolColors.get(0)[0], symbolColors.get(0)[1]), 0);
                     }
                     boolean EndStartEnd = element.getSymbol() instanceof StartEnd && (element.getParentSegment().getParentElement() != null || element.getParentSegment().indexOfElement(
@@ -214,7 +214,7 @@ public final class Animator
                         gotoPaths.add(element.getPathToNextSymbol());
                         lastGoto = true;
                     } else {
-                        commentSymbols.add(initAnimSymbol(new AnimSymbol(element.getSymbol()),
+                        commentSymbols.add(initAnimSymbol(new DebugSymbol(element.getSymbol()),
                                 symbolColors.get(0)[0], symbolColors.get(0)[0]));
                         commentPaths.add(element.getPathToNextSymbol());
                     }
@@ -334,7 +334,7 @@ public final class Animator
         playTimer.stop();
 
         // presypu vsechny do nulte barvy, vymazu progressDescs
-        for (AnimSymbol animSymbol : symbols.keySet()) {
+        for (DebugSymbol animSymbol : symbols.keySet()) {
             animSymbol.setProgressDesc(null);
             animSymbol.setProgressString(null);
             symbols.put(animSymbol, 0);
@@ -415,7 +415,7 @@ public final class Animator
         }
 
         // vykresleni stínu symbolů
-        for (AnimSymbol animSymbol : symbols.keySet()) {
+        for (DebugSymbol animSymbol : symbols.keySet()) {
             if (reinitSymbols) {
                 int colorSchemeIndex = symbols.get(animSymbol);
                 if (colorSchemeIndex >= symbolColors.size()) {
@@ -446,7 +446,7 @@ public final class Animator
         }
 
         // vykreslení symbolů
-        for (AnimSymbol animSymbol : symbols.keySet()) {
+        for (DebugSymbol animSymbol : symbols.keySet()) {
             drawAnimSymbolSymbol(g2d, animSymbol, symbols.get(animSymbol));
         }
 
@@ -475,7 +475,7 @@ public final class Animator
         }
         // vykresleni komentaru
         if (commentSymbols.size() > 0) {
-            for (AnimSymbol animCommentSymbol : commentSymbols) {
+            for (DebugSymbol animCommentSymbol : commentSymbols) {
                 drawAnimSymbolSymbol(g2d, animCommentSymbol, 0);
             }
         }
@@ -508,7 +508,7 @@ public final class Animator
         }
 
         // vykresleni udaju o prubehu
-        for (AnimSymbol animSymbol : symbols.keySet()) {
+        for (DebugSymbol animSymbol : symbols.keySet()) {
             if (animSymbol.getProgressDesc() != null) {
                 g2d.setColor(new Color(0, 0, 0, 100));
                 animSymbol.getProgressDesc().draw(g2d,
@@ -589,7 +589,7 @@ public final class Animator
     private void elevateSymbolProgressSdescs(Symbol fromSymbol, String progressDesc,
             Path2D[] throughPaths, TextLayout segmentDesc, boolean elevate)
     {
-        AnimSymbol animSymbol = findAnimSymbol(fromSymbol);
+        DebugSymbol animSymbol = findAnimSymbol(fromSymbol);
         if (progressDesc == null || progressDesc.equals("")) {
             animSymbol.setProgressDesc(null);
         } else {
@@ -773,9 +773,9 @@ public final class Animator
         return path1.getBounds2D().equals(path2.getBounds2D());
     }
 
-    private AnimSymbol findAnimSymbol(Symbol symbol)
+    private DebugSymbol findAnimSymbol(Symbol symbol)
     {
-        for (AnimSymbol animSymbol : symbols.keySet()) {
+        for (DebugSymbol animSymbol : symbols.keySet()) {
             if (animSymbol.getSymbol().equals(symbol)) {
                 return animSymbol;
             }
@@ -783,7 +783,7 @@ public final class Animator
         return null;
     }
 
-    private void drawAnimSymbolSymbol(Graphics2D g2d, AnimSymbol animSymbol, int colorSchemeIndex)
+    private void drawAnimSymbolSymbol(Graphics2D g2d, DebugSymbol animSymbol, int colorSchemeIndex)
     {
         Color col = g2d.getColor();
 
@@ -824,7 +824,7 @@ public final class Animator
         g2d.setColor(col);
     }
 
-    private void drawAnimSymbolShade(Graphics2D g2d, AnimSymbol animSymbol)
+    private void drawAnimSymbolShade(Graphics2D g2d, DebugSymbol animSymbol)
     {
         AffineTransform af = g2d.getTransform();
         Color col = g2d.getColor();
@@ -843,7 +843,7 @@ public final class Animator
         g2d.setTransform(af);
     }
 
-    private AnimSymbol initAnimSymbol(AnimSymbol animSymbol, Color shapeFirstColor,
+    private DebugSymbol initAnimSymbol(DebugSymbol animSymbol, Color shapeFirstColor,
             Color shapeSecondColor)
     {
         Symbol symbol = animSymbol.getSymbol();
@@ -948,7 +948,7 @@ public final class Animator
         return animSymbol;
     }
 
-    private void setNoShine(AnimSymbol animSymbol)
+    private void setNoShine(DebugSymbol animSymbol)
     {
         animSymbol.setBallShineGradient(null);
         animSymbol.setShadeColor(null);

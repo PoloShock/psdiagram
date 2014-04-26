@@ -28,7 +28,7 @@ import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.LoopStart;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.StartEnd;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.SubRoutine;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Switch;
-import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartAnimationManager;
+import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartDebugManager;
 import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditManager;
 import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditUndoManager;
 import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartOverlookManager;
@@ -108,7 +108,7 @@ public final class MainWindow extends javax.swing.JFrame
     private boolean animationMode = false;
     private final FlowchartEditManager flowchartEditManager;
     private final FlowchartOverlookManager flowchartOverlookManager;
-    private final FlowchartAnimationManager flowchartAnimationManager;
+    private final FlowchartDebugManager flowchartAnimationManager;
     private final JPanelDiagram jPnlDiagram;
     private AffineTransform affineTransform;
     private boolean graphicsXTransformedByScrollbar = false;
@@ -270,7 +270,7 @@ public final class MainWindow extends javax.swing.JFrame
         flowchartOverlookManager = new FlowchartOverlookManager(this,
                 jScrollPaneDiagram.getHorizontalScrollBar(),
                 jScrollPaneDiagram.getVerticalScrollBar(), jSliderZoom);
-        flowchartAnimationManager = new FlowchartAnimationManager(this,
+        flowchartAnimationManager = new FlowchartDebugManager(this,
                 jPanelVariables.getVariableModel(), jPanelDiagram, jSliderSpeed,
                 jButtonToolPlayPause, jButtonToolPrevious, jButtonToolNext, jButtonToolStop,
                 jButtonLaunch);

@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.miroslavbartyzal.psdiagram.app.animation;
+package cz.miroslavbartyzal.psdiagram.app.debug;
 
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
 import java.awt.Color;
@@ -27,7 +27,7 @@ import java.awt.geom.Rectangle2D;
  *
  * @author Miroslav Bartyzal (miroslavbartyzal@gmail.com)
  */
-public final class AnimSymbol
+public final class DebugSymbol
 {
 
     private Symbol symbol;
@@ -47,7 +47,7 @@ public final class AnimSymbol
      *
      * @param symbol symbol, který má tato třída reprezentovat
      */
-    public AnimSymbol(Symbol symbol)
+    public DebugSymbol(Symbol symbol)
     {
         this(symbol, null, null, 0, 0, null);
     }
@@ -60,7 +60,7 @@ public final class AnimSymbol
      * @param symbolGradient gradient výplně AnimSymbolu
      * @param ballShineGradient gradient záře kuličky
      */
-    public AnimSymbol(Symbol symbol, GradientPaint symbolGradient, GradientPaint ballShineGradient)
+    public DebugSymbol(Symbol symbol, GradientPaint symbolGradient, GradientPaint ballShineGradient)
     {
         this(symbol, symbolGradient, ballShineGradient, 0, 0, null);
     }
@@ -75,7 +75,7 @@ public final class AnimSymbol
      * @param shadeTransY posun Yové souřadníce stínu vůči symbolu
      * @param shadeColor barva stínu
      */
-    public AnimSymbol(Symbol symbol, GradientPaint symbolGradient, GradientPaint ballShineGradient,
+    public DebugSymbol(Symbol symbol, GradientPaint symbolGradient, GradientPaint ballShineGradient,
             double shadeTransX, double shadeTransY, Color shadeColor)
     {
         this.symbol = symbol;

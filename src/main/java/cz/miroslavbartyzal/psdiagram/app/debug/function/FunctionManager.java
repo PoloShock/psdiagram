@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.miroslavbartyzal.psdiagram.app.animation.function;
+package cz.miroslavbartyzal.psdiagram.app.debug.function;
 
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Comment;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.StartEnd;
@@ -10,15 +10,15 @@ import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.For;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.GotoLabel;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Goto;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
-import cz.miroslavbartyzal.psdiagram.app.animation.Animator;
-import cz.miroslavbartyzal.psdiagram.app.animation.function.variables.variableScopes.BlockScopeVariables;
-import cz.miroslavbartyzal.psdiagram.app.animation.function.variables.variableScopes.GlobalScopeVariables;
-import cz.miroslavbartyzal.psdiagram.app.animation.function.variables.variableScopes.VariablesScope;
+import cz.miroslavbartyzal.psdiagram.app.debug.DebugAnimator;
+import cz.miroslavbartyzal.psdiagram.app.debug.function.variables.variableScopes.BlockScopeVariables;
+import cz.miroslavbartyzal.psdiagram.app.debug.function.variables.variableScopes.GlobalScopeVariables;
+import cz.miroslavbartyzal.psdiagram.app.debug.function.variables.variableScopes.VariablesScope;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.FlowchartElement;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.FlowchartSegment;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.Layout;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutElement;
-import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartAnimationManager;
+import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartDebugManager;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -48,9 +48,9 @@ public final class FunctionManager
 
     private final int STACKLIMIT = 1000;
     private Thread launchThread;
-    private FlowchartAnimationManager flowchartAnimationManager;
+    private FlowchartDebugManager flowchartAnimationManager;
     private JPanel jPanelDiagram;
-    private Animator animator;
+    private DebugAnimator animator;
     private Layout layout;
     //private boolean blockScopeVariables;
     private VariablesScope variables;
@@ -73,11 +73,11 @@ public final class FunctionManager
      * diagramu
      */
     public FunctionManager(Layout layout, JPanel jPanelDiagram, JSlider jSliderSpeed,
-            FlowchartAnimationManager flowchartAnimationManager)
+            FlowchartDebugManager flowchartAnimationManager)
     {
         this.jPanelDiagram = jPanelDiagram;
         this.layout = layout;
-        this.animator = new Animator(layout, jPanelDiagram, jSliderSpeed, this);
+        this.animator = new DebugAnimator(layout, jPanelDiagram, jSliderSpeed, this);
         this.flowchartAnimationManager = flowchartAnimationManager;
     }
 
@@ -478,7 +478,7 @@ public final class FunctionManager
      * @return instance třídy Animator, starající se o animaci průchodu
      * tohoto diagramu
      */
-    public Animator getAnimator()
+    public DebugAnimator getAnimator()
     {
         return animator;
     }

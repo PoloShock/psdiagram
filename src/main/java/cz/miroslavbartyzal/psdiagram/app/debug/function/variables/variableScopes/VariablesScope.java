@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.miroslavbartyzal.psdiagram.app.animation.function.variables.variableScopes;
+package cz.miroslavbartyzal.psdiagram.app.debug.function.variables.variableScopes;
 
 import cz.miroslavbartyzal.psdiagram.app.flowchart.FlowchartSegment;
 import java.util.HashMap;

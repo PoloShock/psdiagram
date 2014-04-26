@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.miroslavbartyzal.psdiagram.app.animation.function.variables;
+package cz.miroslavbartyzal.psdiagram.app.debug.function.variables;
 
 import cz.miroslavbartyzal.psdiagram.app.gui.treeTable.AbstractTreeTableModel;
 import cz.miroslavbartyzal.psdiagram.app.gui.treeTable.TreeTableModel;

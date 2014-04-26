@@ -4,7 +4,7 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.gui;
 
-import cz.miroslavbartyzal.psdiagram.app.animation.function.variables.VariableModel;
+import cz.miroslavbartyzal.psdiagram.app.debug.function.variables.VariableModel;
 import cz.miroslavbartyzal.psdiagram.app.gui.treeTable.JTreeTable;
 import javax.swing.JViewport;
 import javax.swing.tree.DefaultTreeCellRenderer;

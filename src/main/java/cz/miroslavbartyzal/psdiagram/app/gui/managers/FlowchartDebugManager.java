@@ -4,9 +4,9 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.gui.managers;
 
-import cz.miroslavbartyzal.psdiagram.app.animation.Animator;
-import cz.miroslavbartyzal.psdiagram.app.animation.function.FunctionManager;
-import cz.miroslavbartyzal.psdiagram.app.animation.function.variables.VariableModel;
+import cz.miroslavbartyzal.psdiagram.app.debug.DebugAnimator;
+import cz.miroslavbartyzal.psdiagram.app.debug.function.FunctionManager;
+import cz.miroslavbartyzal.psdiagram.app.debug.function.variables.VariableModel;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.Flowchart;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.Layout;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutElement;
@@ -34,7 +34,7 @@ import javax.swing.*;
  *
  * @author Miroslav Bartyzal (miroslavbartyzal@gmail.com)
  */
-public final class FlowchartAnimationManager implements KeyListener, ActionListener,
+public final class FlowchartDebugManager implements KeyListener, ActionListener,
         MouseMotionListener, MouseListener
 {
 
@@ -47,7 +47,7 @@ public final class FlowchartAnimationManager implements KeyListener, ActionListe
     private JButton jButtonLaunch;
     private JPopupMenu breakpointPopup;
     private Layout layout;
-    private Animator animator;
+    private DebugAnimator animator;
     private VariableModel variableModel;
     private JPanel jPanelDiagram;
     private Symbol breakpointSymbol = null;
@@ -70,7 +70,7 @@ public final class FlowchartAnimationManager implements KeyListener, ActionListe
      * @param jButtonToolStop tlačítko pro zastavení, resetu animace
      * @param jButtonLaunch tlačítko pro rychlý průchod diagramem
      */
-    public FlowchartAnimationManager(MainWindow mainWindow, VariableModel variableModel,
+    public FlowchartDebugManager(MainWindow mainWindow, VariableModel variableModel,
             JPanel jPanelDiagram, JSlider jSliderSpeed, JButton jButtonToolPlayPause,
             JButton jButtonToolPrevious, JButton jButtonToolNext, JButton jButtonToolStop,
             JButton jButtonLaunch)

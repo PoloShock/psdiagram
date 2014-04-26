@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.miroslavbartyzal.psdiagram.app.animation.function;
+package cz.miroslavbartyzal.psdiagram.app.debug.function;
 
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.StartEnd;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Comment;

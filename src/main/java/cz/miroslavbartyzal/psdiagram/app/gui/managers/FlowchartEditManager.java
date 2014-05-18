@@ -19,8 +19,8 @@ import cz.miroslavbartyzal.psdiagram.app.gui.MainWindow;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.AbstractSymbolFunctionForm;
 import cz.miroslavbartyzal.psdiagram.app.global.GlobalFunctions;
 import java.awt.Component;
+import java.awt.Graphics2D;
 import java.awt.event.*;
-import java.awt.geom.Ellipse2D;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.io.ByteArrayInputStream;
@@ -68,10 +68,9 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
     private final JTextArea jTextAreaTextSymbol;
     private final FlowchartEditUndoManager flowchartEditUndoManager;
     private final FlowchartCommentSymbolManager commentsManager;
-    private String commentAction = "Editace komentáře";
+    private final FlowchartSymbolDragManager symbolDragManager;
     private LinkedHashMap<ByteArrayOutputStream, Boolean> elementsToPaste;
     private LayoutElement lastMarkedElement = null; // pro identifikaci posledniho elementu, pro ktery bylo zobrazeno editovani deskripce segmentů apod. - aby se index comboboxu nevracel kdyz nema apod.
-    private boolean dragged = false;
     private boolean puttingText = false; // slouzi pro signalizaci DocumentListeneru, ze prave probiha aplikacni vkladani textu
     private boolean segmentTextBuffered = false; // pro bufferovani editcniho pole textu segmentu a jeho zalozohavni do undomanagera
     private boolean symbolTextBuffered = false; // pro bufferovani editcniho pole textu symbolu a jeho zalozohavni do undomanagera
@@ -104,22 +103,22 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
         this.jTextAreaTextSymbol = jTextAreaTextSymbol;
 
         commentsManager = new FlowchartCommentSymbolManager(layout);
+        symbolDragManager = new FlowchartSymbolDragManager(layout);
         loadMarkedSymbol();
         flowchartEditUndoManager.init(layout);
     }
 
-    /**
-     * Vrátí aktuálně označenou spojnici komentářové cesty. Není-li žádná
-     * vybrána, vrací null.
-     *
-     * @return Aktuálně označenou spojnici komentářové cesty. Není-li žádná
-     * vybrána, vrací null.
-     */
-    public Ellipse2D getCommentPathConnector()
-    {
-        return commentsManager.getCommentPathConnector();
-    }
-
+//    /**
+//     * Vrátí aktuálně označenou spojnici komentářové cesty. Není-li žádná
+//     * vybrána, vrací null.
+//     *
+//     * @return Aktuálně označenou spojnici komentářové cesty. Není-li žádná
+//     * vybrána, vrací null.
+//     */
+//    public Ellipse2D getCommentPathConnector()
+//    {
+//        return commentsManager.getCommentPathConnector();
+//    }
     /**
      * Vymaže veškeré záznamy UndoManagera.
      */
@@ -146,7 +145,6 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
      */
     public void resetVariables()
     {
-        dragged = false;
         commentsManager.resetVariables();
         defaultTextBeingEdited = false;
     }
@@ -159,6 +157,12 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
     public void refreshComments()
     {
         commentsManager.refreshComments();
+    }
+
+    public void paint(Graphics2D grphcs2D)
+    {
+        commentsManager.paint(grphcs2D);
+        symbolDragManager.paint(grphcs2D);
     }
 
     /**
@@ -270,6 +274,21 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
             symbolTextBuffered = false;
             flowchartEditUndoManager.addEdit(layout, this, "Editace textu symbolu");
         }
+
+        if (commentsManager.isCommentOrJointBeingDragged() || symbolDragManager.isAbleToDrag()) {
+            if (commentsManager.isCommentOrJointBeingDragged()) {
+                layout.prepareFlowchart(); // pro pripad ze bod ci komentar je umisten za platnem, nebo byl a byl posunut do platna
+                flowchartEditUndoManager.addEdit(layout, this, commentsManager.getCommentAction());
+            } else if (symbolDragManager.isDragging()) {
+                if (symbolDragManager.mouseReleased()) {
+                    flowchartEditUndoManager.addEdit(layout, this, "Přesunutí symbolu");
+                }
+            }
+            repaintJPanelDiagram();
+        }
+
+        resetVariables();
+
     }
 
     // **********************ActionListener**********************
@@ -401,7 +420,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
                         if (focusedElement != null) {
                             elementsToPaste = new LinkedHashMap<>();
                             try {
-                                for (LayoutElement element : layout.getMeAndMyDependents(
+                                for (LayoutElement element : layout.getMeAndMyDependants(
                                         focusedElement)) {
                                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                                     MainWindow.getJAXBcontext().createMarshaller().marshal(element,
@@ -569,6 +588,11 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
             repaintJPanelDiagram();
             if (element.getSymbol() instanceof Comment) {
                 commentsManager.mousePressedOnComment(element, p);
+            } else {
+                updateEditMenuEnablers();
+                if (jSymbolPopupCut.isEnabled()) {
+                    symbolDragManager.mousePressedOnSymbol(element, p);
+                }
             }
             maybeShowPopup(me);
             return;
@@ -592,16 +616,22 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
     {
         //if (commentPathConnector.getCenterX() > mainWindow.setJPanelDiagramFocus().getWidth() - layout.getFlowchartPadding() || commentPathConnector.getCenterX() < 0 + layout.getFlowchartPadding() || commentPathConnector.getCenterY() > mainWindow.setJPanelDiagramFocus().getHeight() - layout.getFlowchartPadding() || commentPathConnector.getCenterY() < 0 + layout.getFlowchartPadding()) {
         //if (procesComment.getX() + procesComment.getWidth() > mainWindow.setJPanelDiagramFocus().getWidth() - layout.getFlowchartPadding() || procesComment.getX() < 0 + layout.getFlowchartPadding() || procesComment.getY() + procesComment.getHeight() > mainWindow.setJPanelDiagramFocus().getHeight() - layout.getFlowchartPadding() || procesComment.getY() < 0 + layout.getFlowchartPadding()) {
-        if (dragged) {
+
+        if (commentsManager.isCommentOrJointBeingDragged()) {
             layout.prepareFlowchart(); // pro pripad ze bod ci komentar je umisten za platnem, nebo byl a byl posunut do platna
+        } else if (symbolDragManager.isDragging()) {
+            if (symbolDragManager.mouseReleased()) {
+                flowchartEditUndoManager.addEdit(layout, this, "Přesunutí symbolu");
+            }
+            repaintJPanelDiagram();
         }
         Point2D p = getTransformedPoint(me.getPoint(), new Point2D.Double());
-        if (dragged) {
+        if (commentsManager.isCommentOrJointBeingDragged()) {
             if (!symbolPopup.isVisible()) {
                 commentsManager.analyzeMouseToCommentPathAndConnector(p);
             }
             repaintJPanelDiagram();
-            flowchartEditUndoManager.addEdit(layout, this, commentAction);
+            flowchartEditUndoManager.addEdit(layout, this, commentsManager.getCommentAction());
         }
         if (commentsManager.isCommentPathConnectorVisible()) {
             if (commentsManager.wereMouseReleasedCoordsInsideConnector(p)) {
@@ -630,28 +660,14 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
             return;
         }
         Point2D p = getTransformedPoint(me.getPoint(), new Point2D.Double());
-        if (layout.getBoldPathComment() != null) {
-            commentAction = "Vytvoření bodu komentáře";
-            dragged = true;
 
-            commentsManager.setCommentPathConnectorFromDraggedMouse(p);
+        if (commentsManager.isAbleToDrag()) {
+            commentsManager.performDrag(p);
+            repaintJPanelDiagram();
+        } else if (symbolDragManager.isAbleToDrag()) {
+            symbolDragManager.performDrag(p);
+            repaintJPanelDiagram();
         }
-        if (commentsManager.isCommentPathConnectorVisible()) {
-            if (!dragged) {
-                commentAction = "Přesunutí bodu komentáře";
-                dragged = true;
-            }
-
-            commentsManager.dragCommentPathConnector(p);
-        } else if (commentsManager.isCommentElementBeingProcessed()) {
-            if (!dragged) {
-                commentAction = "Přesunutí komentáře";
-                dragged = true;
-            }
-
-            commentsManager.dragCommentElement(p);
-        }
-        repaintJPanelDiagram();
     }
 
     /**

@@ -116,6 +116,18 @@ public interface Layout
     public void removeElement(LayoutElement element);
 
     /**
+     * Metoda pro vymazání daného elementu. S elementem se smažou i případné
+     * další elementy na něj závislé, jako například párové komentáře, párové
+     * elementy.
+     * Označený joint bude ten, pro který by přidávaný symbol zastoupil
+     * symbol právě smazaný. Focus označení korespondujícího symbolu nebude vykresleno.
+     * Tento stav je zrusen pridanim noveho symbolu do diagramu.
+     *
+     * @param element element, který má být vymazán
+     */
+    public void removeElementTemporarily(LayoutElement element);
+
+    /**
      * Metoda pro získání vývojového diagramu v podobě instance Flowchart.
      *
      * @return instance Flowchart, reprezentující vývojový diagram
@@ -315,7 +327,7 @@ public interface Layout
      * @param element element, jehož závislé elementy je třeba dohledat
      * @return kolekce závislých elementů na elementu vstupním
      */
-    public ArrayList<LayoutElement> getMeAndMyDependents(LayoutElement element);
+    public ArrayList<LayoutElement> getMeAndMyDependants(LayoutElement element);
 
     /**
      * Metoda pro vložení více elementů naráz. Elementy se vloží na místo

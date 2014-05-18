@@ -22,7 +22,7 @@ public final class Main
     // TODO do budoucna podprogram moznst expandovat/collapsovat :)
     // TODO nastaveni zarovnavani komentarovych textu
     //e TODO zakomponovat priklady do vyuky primo jako soucast aplikace (do menu a submenu podle adresarove struktury a nazvat jako 'knihovna algoritmu')
-    // TODO zoom k mysi
+    //-> TODO zoom k mysi -> krasna implementace v JFreeChart!
     // TODO odkazy na weby obrazku
     //e TODO exception handling: http://stackoverflow.com/questions/4590295/catch-exception-high-in-the-call-stack-when-dealing-with-n-tiers
     //e TODO logovani
@@ -36,7 +36,7 @@ public final class Main
     // TODO menit i zeditovany text symbolu, pokud je zeditovany pouze o mezery ci odradkovani (nebo tak vymyslet automaticke odradkovavani?)
     // TODO moznost nastaveni prirazovaciho znamenka
     // TODO moznost prepnuti mezi Do-Until a Do-While
-    // TODO doplnit celociselny podil (DIV v pascalu)
+    // TODO doplnit celociselny podil (DIV v pascalu) -> co treba "//" jako v pythonu?
     // TODO doplnit priklad celociselneho deleni do symbolu procesu
     //e TODO pridat labely kdyz a pak u podminky v panelu funkce?
     // TODO pomoci tranc preklopit TBLR layout na LFTB? :)
@@ -47,11 +47,11 @@ public final class Main
     // TODO vedle exportu do obrázku a PDF, vytvořit export do HTML! :)
     // TODO dat uzivateli vedet ze pri exportu do obrazku zalezi na aktualnim zvetseni! (nebo to udelat nejak jinak)
     // TODO pridat input symbolu text, aby nebylo nutne pouzivat output symbol pro oznameni co promenna znamena..
-    // TODO animace pridavani symbolu
+    // TODO animace uprav layoutu
     // TODO moznost promitani vytvořených algoritmů na webu (pro pasivní učení a prezentaci)? - Jelinek
     // TODO merit zakovi cas za ktery ulohu vykona, monitorovat problemy, se kterymi se setkal (co treba zachovavat vsechny stavy diagramu?) - Jelinek
     // TODO Timer, udalosti jako procedura (interrupt či vlákno)
-    // TODO mrkni na http://jelastic.com/ a na jejich barvy, maji to cool :)
+    // TODO mrkni na http://jelastic.com/ a na jejich barvy, maji to cool :); http://www.noip.com/
     // TODO zkontrolovat obfuskaci po upgradu proguardu
     // TODO check these: http://sourceforge.net/projects/flowcharts/?source=recommended, http://sourceforge.net/projects/simpeflowd/?source=recommended, http://sourceforge.net/projects/devflowcharter/?source=recommended, http://sourceforge.net/projects/javablock/
     // TODO sjednotit jazyk na EN (dokumentace)
@@ -69,16 +69,10 @@ public final class Main
     // TODO koukni po jednotce kibibyte v updateru - nemam to prehozene s kilobytem?
     // TODO drag&drop nejen do PSD ale i z nej - presun diagramu jako export tahem do emailove prilohy apod.
     // TODO u proguardu dynamicky do manifestu priradit main podle jeho obfuskace - tak nebudu muset zachovavat balickovou cestu k mainu
-    // TODO presouvat / koprovat symboly pomocí drag&drop na platne
-    //      - pri dragu umistit jako kurzor mysi zmenseninu presouvaneho symbolu
-    //      - smazat symbol z predesle pozice jakmile se pozice kurzoru ocitne mimo vnitrek daneho symbolu
-    //		- na miste stredu smazaneho symbolu musi byt joint, ktery po nem zbyl -> posunuti diagramu dolu
-    //		- focused zustane po celou dobu jen joint puvodni pozice (pro snadne vraceni k puvodnimu umisteni)
-    //      - symbol (kurzorovy) prilepovat na relativni vzdalenost (vuci zvetseni platna) k vkladacim bodum
-    //      - prilepenim se posunou ostatni symboly nahoru a dolu tak, aby vkladaci bod (= stred presouvaneho symbolu)
-    //      byl uprostred a nepresouvany
-    //      - odlepeni probehne za stejne podminky jako smazani puvodni pozice symbolu - opustenim jeho prostoru
+    //e TODO kopirovat symboly pomocí drag&drop na platne
+    //e TODO vytvaret symboly pomocí drag&drop z postranni listy se symboly
     // TODO pohyb mezi symboly v editacnim rezimu pomoci kurzorovych sipek
+    // TODO podivat se na logicnost posouvani diagramu pri posunu komentare mimo platno a zpet
 
     /**
      * Metoda pro spuštění hlavního okna aplikace. Nejsou přijímány žádné

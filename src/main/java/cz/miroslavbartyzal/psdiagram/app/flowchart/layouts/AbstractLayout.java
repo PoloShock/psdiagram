@@ -51,6 +51,7 @@ public abstract class AbstractLayout implements Layout
     private LayoutElement focusedElement = null; // kdyz neni null, je oznacen prioritne
     private Joint focusedJoint = null;
     private Comment boldPathComment = null; // uklada komentar, ktereho cesta se ma vykreslit zvyraznene
+    private boolean symbolRemovedTemporarily = false;
 
     /**
      * Základní konstruktor s parametrem, určující plátno, na které má být
@@ -766,7 +767,7 @@ public abstract class AbstractLayout implements Layout
             }
         }
         // oramovani oznaceneho symbolu
-        if (editMode) {
+        if (editMode && !symbolRemovedTemporarily) {
             Symbol focused;
             if (focusedElement != null) {
                 focused = focusedElement.getSymbol();
@@ -792,7 +793,7 @@ public abstract class AbstractLayout implements Layout
         Color shapeDownColor = symbol.getShapeDownColor();
         Color borderColor = symbol.getBorderColor();
 
-        if ((editMode && element != null && !(symbol instanceof Comment)
+        if ((editMode && element != null && !symbolRemovedTemporarily && !(symbol instanceof Comment)
                 && (element.equals(focusedElement) || (focusedElement == null && focusedJoint != null && element.equals(
                         focusedJoint.getParentElement())))) || (symbol.equals(focusedJoint))) {
 
@@ -957,6 +958,8 @@ public abstract class AbstractLayout implements Layout
     @Override
     public LayoutElement addNewSymbol(Symbol symbol, int innerOutCount)
     {
+        symbolRemovedTemporarily = false;
+
         LayoutElement element;
         if (symbol instanceof Comment) {
             if (symbol.hasPairSymbol() && focusedElement != null) {
@@ -1024,26 +1027,23 @@ public abstract class AbstractLayout implements Layout
     @Override
     public void addElements(ArrayList<LayoutElement> elements)
     {
+        symbolRemovedTemporarily = false;
+
+        if (elements.size() == 1 && elements.get(0).getSymbol() instanceof Comment) {
+            // je-li jediny symbol komentar, musim rozhodnout, zda jej pripnu k symbolu nebo ho necham na samostatne pozici
+            if (focusedElement != null) {
+                elements.get(0).getSymbol().setHasPairSymbol(true);
+            } else {
+                elements.get(0).getSymbol().setHasPairSymbol(false);
+            }
+            addNewSymbol(elements.get(0).getSymbol(), 0); // metoda addNewSymbol zvaliduje nastavene parovani komentare
+            return;
+        }
+
         LayoutElement parentElement = focusedJoint.getParentElement();
         LayoutSegment segment = focusedJoint.getParentSegment();
-
         for (int i = 0; i < elements.size(); i++) {
-            LayoutElement element = elements.get(i);
-
-            if (element.getSymbol() instanceof Comment) {
-                if (i == 0) {
-                    // je-li prvni symbol komentar, musim rozhodnout, zda jej pripnu k symbolu nebo ho necham na samostatne pozici
-                    if (focusedElement != null) {
-                        element.getSymbol().setHasPairSymbol(true);
-                    } else {
-                        element.getSymbol().setHasPairSymbol(false);
-                    }
-                }
-                addNewSymbol(element.getSymbol(), 0); // metoda addNewSymbol zvaliduje nastavene parovani komentare
-                return;
-            } else {
-                parentElement = segment.addElement(parentElement, element);
-            }
+            parentElement = segment.addElement(parentElement, elements.get(i));
         }
 
         prepareMyFlowchart();
@@ -1075,10 +1075,66 @@ public abstract class AbstractLayout implements Layout
     @Override
     public void removeElement(LayoutElement element)
     {
+        int elementIndex = myRemoveElement(element);
+        if (elementIndex < 0) {
+            return;
+        }
+
+        LayoutSegment parentSegment = element.getParentSegment();
+        LayoutElement elmet;
+        if (parentSegment.isEmpty()) { // jestli byl element jedinacek v segmentu
+            elmet = parentSegment.getParentElement(); // parentElement bude pristupny vzdy, nebot v kazdem diagramu jsou minimalne dva symboly (zacatek, konec)
+        } else {
+            if (elementIndex < parentSegment.size()) { // jestli existuje element pod timto elementem
+                elmet = parentSegment.getElement(elementIndex);
+            } else {
+                elmet = parentSegment.getElement(elementIndex - 1);
+            }
+        }
+        setFocusedElement(elmet);
+    }
+
+    /**
+     * Metoda pro vymazání daného elementu. S elementem se smažou i případné
+     * další elementy na něj závislé, jako například párové komentáře, párové
+     * elementy.
+     * Označený joint bude ten, pro který by přidávaný symbol zastoupil
+     * symbol právě smazaný. Focus označení korespondujícího symbolu nebude vykresleno.
+     * Tento stav je zrusen pridanim noveho symbolu do diagramu.
+     *
+     * @param element element, který má být vymazán
+     */
+    @Override
+    public void removeElementTemporarily(LayoutElement element)
+    {
+        int elementIndex = myRemoveElement(element);
+        if (elementIndex < 0) {
+            return;
+        }
+
+        LayoutSegment parentSegment = element.getParentSegment();
+        LayoutElement elmet;
+        if (parentSegment.isEmpty() || elementIndex == 0) { // jestli byl element jedinacek v segmentu
+            elmet = parentSegment.getParentElement(); // parentElement bude pristupny vzdy, nebot v kazdem diagramu jsou minimalne dva symboly (zacatek, konec)
+        } else {
+            elmet = parentSegment.getElement(elementIndex - 1);
+        }
+
+        for (Joint joint : lJoints) {
+            if (joint.getParentElement().equals(elmet) && joint.getParentSegment().equals(
+                    parentSegment)) {
+                setFocusedJoint(joint);
+            }
+        }
+        symbolRemovedTemporarily = true;
+    }
+
+    private int myRemoveElement(LayoutElement element)
+    {
         if (element.getParentSegment().getParentElement() == null && (element.getParentSegment().indexOfElement(
                 element) + 1 == element.getParentSegment().size() || (element.getParentSegment().indexOfElement(
                         element) == 0 && element.getSymbol() instanceof StartEnd))) {
-            return; // jestli se jedna o prvni nebo koncovy znak
+            return -1; // jestli se jedna o prvni nebo koncovy znak
         }
         LayoutSegment parentSegment = element.getParentSegment();
 
@@ -1100,7 +1156,7 @@ public abstract class AbstractLayout implements Layout
          * }
          * }
          */
-        ArrayList<LayoutElement> arrElementToDelete = getMeAndMyDependents(element);
+        ArrayList<LayoutElement> arrElementToDelete = getMeAndMyDependants(element);
         int elementIndex = parentSegment.indexOfElement(arrElementToDelete.get(0));
         for (int i = elementIndex - 1; i >= 0; i--) {
             if (!arrElementToDelete.contains(parentSegment.getElement(i))) {
@@ -1112,18 +1168,7 @@ public abstract class AbstractLayout implements Layout
             parentSegment.removeElement(elm);
         }
         prepareMyFlowchart();
-
-        LayoutElement elmet;
-        if (parentSegment.size() > 0) { // jestli nebyl element jedinacek v segmentu
-            if (elementIndex < parentSegment.size()) { // jestli existuje element pod timto elementem
-                elmet = parentSegment.getElement(elementIndex);
-            } else {
-                elmet = parentSegment.getElement(elementIndex - 1);
-            }
-        } else {
-            elmet = parentSegment.getParentElement(); // parentElement bude pristupny vzdy, nebot v kazdem diagramu jsou minimalne dva symboly (zacatek, konec)
-        }
-        setFocusedElement(elmet);
+        return elementIndex;
     }
 
     /**
@@ -1135,7 +1180,7 @@ public abstract class AbstractLayout implements Layout
      * @return kolekce závislých elementů na elementu vstupním
      */
     @Override
-    public ArrayList<LayoutElement> getMeAndMyDependents(LayoutElement element)
+    public ArrayList<LayoutElement> getMeAndMyDependants(LayoutElement element)
     {
         ArrayList<LayoutElement> arr = new ArrayList<>();
         LayoutSegment parentSegment = element.getParentSegment();

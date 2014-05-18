@@ -9,6 +9,9 @@ import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.Layout;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutElement;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Comment;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
@@ -31,6 +34,8 @@ public class FlowchartCommentSymbolManager
     private Symbol pairedSymbol; // uklada parovy symbol komentare, se kterym se manipuluje
     private double cursorRelX; // slouzi k ulozeni relativni souradnice mysi vuci kommentu
     private double cursorRelY; // -||-
+    private String commentAction;
+    private boolean dragging = false;
 
     protected FlowchartCommentSymbolManager(Layout layout)
     {
@@ -91,6 +96,7 @@ public class FlowchartCommentSymbolManager
         pairedSymbol = null;
         cursorRelX = 0;
         cursorRelY = 0;
+        dragging = false;
     }
 
     protected boolean wasMousePressedEventRelevantForConnector(Point2D mouseCoords)
@@ -156,7 +162,7 @@ public class FlowchartCommentSymbolManager
         futureRelativePointIndex = -1;
     }
 
-    protected void dragCommentPathConnector(Point2D mouseCoords)
+    private void dragCommentPathConnector(Point2D mouseCoords)
     {
         Point2D point = new Point2D.Double(
                 mouseCoords.getX() - procesComment.getCenterX() + procesComment.getRelativeX(),
@@ -167,7 +173,7 @@ public class FlowchartCommentSymbolManager
                 pairedSymbol)); // uprava cesty ke komentari
     }
 
-    protected void dragCommentElement(Point2D mouseCoords)
+    private void dragCommentElement(Point2D mouseCoords)
     {
         double relX = (mouseCoords.getX() - procesComment.getCenterX()) - cursorRelX;
         double relY = (mouseCoords.getY() - procesComment.getCenterY()) - cursorRelY;
@@ -234,6 +240,59 @@ public class FlowchartCommentSymbolManager
     {
         cursorRelX = mouseX - procesCommentElement.getSymbol().getCenterX();
         cursorRelY = mouseY - procesCommentElement.getSymbol().getCenterY();
+    }
+
+    protected boolean isAbleToDrag()
+    {
+        return isCommentElementBeingProcessed() || layout.getBoldPathComment() != null || isCommentPathConnectorVisible();
+    }
+
+    protected void performDrag(Point2D p)
+    {
+        if (layout.getBoldPathComment() != null) {
+            commentAction = "Vytvoření bodu komentáře";
+            dragging = true;
+
+            setCommentPathConnectorFromDraggedMouse(p);
+        }
+        if (isCommentPathConnectorVisible()) {
+            if (!dragging) {
+                commentAction = "Přesunutí bodu komentáře";
+                dragging = true;
+            }
+
+            dragCommentPathConnector(p);
+        } else if (isCommentElementBeingProcessed()) {
+            if (!dragging) {
+                commentAction = "Přesunutí komentáře";
+                dragging = true;
+            }
+
+            dragCommentElement(p);
+        }
+    }
+
+    protected boolean isCommentOrJointBeingDragged()
+    {
+        return dragging;
+    }
+
+    public String getCommentAction()
+    {
+        return commentAction;
+    }
+
+    public void paint(Graphics2D grphcs2D)
+    {
+        if (commentPathConnector != null) {
+            float dash[] = {4, 4};
+            grphcs2D.setStroke(new BasicStroke(1, BasicStroke.CAP_BUTT,
+                    BasicStroke.JOIN_MITER, 10.0f, dash, 0));
+            grphcs2D.setColor(new Color(230, 230, 230));
+            grphcs2D.fill(commentPathConnector);
+            grphcs2D.setColor(Color.BLACK);
+            grphcs2D.draw(commentPathConnector);
+        }
     }
 
 }

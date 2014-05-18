@@ -2309,16 +2309,7 @@ public final class MainWindow extends javax.swing.JFrame
                 } else {
                     layout.paintFlowchart(grphcs2D, false);
                 }
-                Ellipse2D commentPathConnector = flowchartEditManager.getCommentPathConnector();
-                if (commentPathConnector != null) {
-                    float dash[] = {4, 4};
-                    grphcs2D.setStroke(new BasicStroke(1, BasicStroke.CAP_BUTT,
-                            BasicStroke.JOIN_MITER, 10.0f, dash, 0));
-                    grphcs2D.setColor(new Color(230, 230, 230));
-                    grphcs2D.fill(commentPathConnector);
-                    grphcs2D.setColor(Color.BLACK);
-                    grphcs2D.draw(commentPathConnector);
-                }
+                flowchartEditManager.paint(grphcs2D);
             } else {
                 throw new Error("Parameter Graphics g is not instance of Graphics2D!");
             }

@@ -264,8 +264,9 @@ public final class MainWindow extends javax.swing.JFrame
         jScrollPaneFunction.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE); // prevents glitches (http://andrewtill.blogspot.cz/2012/06/jscrollpane-repainting-problems.html)
         jScrollPaneText.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE); // prevents glitches (http://andrewtill.blogspot.cz/2012/06/jscrollpane-repainting-problems.html)
 
-        flowchartEditManager = new FlowchartEditManager(layout, this, new FlowchartEditUndoManager(
-                jMenuItemUndo, jMenuItemRedo, jButtonToolUndo, jButtonToolRedo),
+        flowchartEditManager = new FlowchartEditManager(layout, this, jPanelDiagram,
+                new FlowchartEditUndoManager(jMenuItemUndo, jMenuItemRedo, jButtonToolUndo,
+                        jButtonToolRedo),
                 jCheckBoxDefaultText, jComboBoxSegment, jTextFieldTextSegment, jTextAreaTextSymbol);
         flowchartOverlookManager = new FlowchartOverlookManager(this,
                 jScrollPaneDiagram.getHorizontalScrollBar(),

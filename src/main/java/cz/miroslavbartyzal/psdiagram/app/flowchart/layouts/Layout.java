@@ -120,12 +120,26 @@ public interface Layout
      * další elementy na něj závislé, jako například párové komentáře, párové
      * elementy.
      * Označený joint bude ten, pro který by přidávaný symbol zastoupil
-     * symbol právě smazaný. Focus označení korespondujícího symbolu nebude vykresleno.
-     * Tento stav je zrusen pridanim noveho symbolu do diagramu.
+     * symbol právě smazaný.
      *
      * @param element element, který má být vymazán
      */
-    public void removeElementTemporarily(LayoutElement element);
+    public void removeElementFocusItsJoint(LayoutElement element);
+
+    /**
+     * Focus označení korespondujícího symbolu nebude vykresleno. Voláním této metody se ruší
+     * noFocusPaint.
+     * Tento stav je zrusen pridanim noveho symbolu do diagramu.
+     */
+    public void setFocusJointOnly();
+
+    /**
+     * Layout vizuálně přestane vykreslovat jakýkoliv focus.
+     * Tento stav je zrusen pridanim noveho symbolu do diagramu.
+     */
+    public void setNoFocusPaint();
+
+    public void setFocusPaintToDefault();
 
     /**
      * Metoda pro získání vývojového diagramu v podobě instance Flowchart.

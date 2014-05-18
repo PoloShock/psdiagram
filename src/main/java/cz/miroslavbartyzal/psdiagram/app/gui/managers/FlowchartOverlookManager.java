@@ -18,7 +18,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 /**
- * <p>Tato třída je vrchním správcem náhledového režimu aplikace. Je zároveň
+ * <p>
+ * Tato třída je vrchním správcem náhledového režimu aplikace. Je zároveň
  * posluchačem událostí přicházejících z uživatelského rozhraní a obstarává tedy
  * předání příkazů hlavnímu oknu aplikace.</p>
  *
@@ -135,7 +136,7 @@ public final class FlowchartOverlookManager implements MouseListener, MouseMotio
     public void mousePressed(MouseEvent me)
     {
         mainWindow.setJPanelDiagramFocus();
-        if (me.isControlDown() || (!mainWindow.getEditMode() && !mainWindow.getAnimationMode())) {
+        if (!mainWindow.getEditMode() && !mainWindow.getAnimationMode()) {
             setStartDragGrab(me);
         }
     }

@@ -51,7 +51,8 @@ public abstract class AbstractLayout implements Layout
     private LayoutElement focusedElement = null; // kdyz neni null, je oznacen prioritne
     private Joint focusedJoint = null;
     private Comment boldPathComment = null; // uklada komentar, ktereho cesta se ma vykreslit zvyraznene
-    private boolean symbolRemovedTemporarily = false;
+    private boolean focusJointOnly = false;
+    private boolean noFocusPaint = false;
 
     /**
      * Základní konstruktor s parametrem, určující plátno, na které má být
@@ -767,7 +768,7 @@ public abstract class AbstractLayout implements Layout
             }
         }
         // oramovani oznaceneho symbolu
-        if (editMode && !symbolRemovedTemporarily) {
+        if (editMode && !focusJointOnly && !noFocusPaint) {
             Symbol focused;
             if (focusedElement != null) {
                 focused = focusedElement.getSymbol();
@@ -793,9 +794,9 @@ public abstract class AbstractLayout implements Layout
         Color shapeDownColor = symbol.getShapeDownColor();
         Color borderColor = symbol.getBorderColor();
 
-        if ((editMode && element != null && !symbolRemovedTemporarily && !(symbol instanceof Comment)
+        if ((editMode && element != null && !focusJointOnly && !noFocusPaint && !(symbol instanceof Comment)
                 && (element.equals(focusedElement) || (focusedElement == null && focusedJoint != null && element.equals(
-                        focusedJoint.getParentElement())))) || (symbol.equals(focusedJoint))) {
+                        focusedJoint.getParentElement())))) || (symbol.equals(focusedJoint) && !noFocusPaint)) {
 
             shapeUpColor = focusedUpColor;
             shapeDownColor = focusedDownColor;
@@ -958,7 +959,7 @@ public abstract class AbstractLayout implements Layout
     @Override
     public LayoutElement addNewSymbol(Symbol symbol, int innerOutCount)
     {
-        symbolRemovedTemporarily = false;
+        setFocusPaintToDefault();
 
         LayoutElement element;
         if (symbol instanceof Comment) {
@@ -1027,7 +1028,7 @@ public abstract class AbstractLayout implements Layout
     @Override
     public void addElements(ArrayList<LayoutElement> elements)
     {
-        symbolRemovedTemporarily = false;
+        setFocusPaintToDefault();
 
         if (elements.size() == 1 && elements.get(0).getSymbol() instanceof Comment) {
             // je-li jediny symbol komentar, musim rozhodnout, zda jej pripnu k symbolu nebo ho necham na samostatne pozici
@@ -1099,13 +1100,12 @@ public abstract class AbstractLayout implements Layout
      * další elementy na něj závislé, jako například párové komentáře, párové
      * elementy.
      * Označený joint bude ten, pro který by přidávaný symbol zastoupil
-     * symbol právě smazaný. Focus označení korespondujícího symbolu nebude vykresleno.
-     * Tento stav je zrusen pridanim noveho symbolu do diagramu.
+     * symbol právě smazaný.
      *
      * @param element element, který má být vymazán
      */
     @Override
-    public void removeElementTemporarily(LayoutElement element)
+    public void removeElementFocusItsJoint(LayoutElement element)
     {
         int elementIndex = myRemoveElement(element);
         if (elementIndex < 0) {
@@ -1126,7 +1126,37 @@ public abstract class AbstractLayout implements Layout
                 setFocusedJoint(joint);
             }
         }
-        symbolRemovedTemporarily = true;
+    }
+
+    /**
+     * Focus označení korespondujícího symbolu nebude vykresleno. Voláním této metody se ruší
+     * noFocusPaint.
+     * Tento stav je zrusen pridanim noveho symbolu do diagramu.
+     */
+    @Override
+    public void setFocusJointOnly()
+    {
+        focusedElement = null;
+        focusJointOnly = true;
+        noFocusPaint = false;
+    }
+
+    /**
+     * Layout vizuálně přestane vykreslovat jakýkoliv focus.
+     * Tento stav je zrusen pridanim noveho symbolu do diagramu.
+     */
+    @Override
+    public void setNoFocusPaint()
+    {
+        noFocusPaint = true;
+    }
+
+    @Override
+    public void setFocusPaintToDefault()
+    {
+
+        focusJointOnly = false;
+        noFocusPaint = false;
     }
 
     private int myRemoveElement(LayoutElement element)

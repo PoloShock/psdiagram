@@ -20,6 +20,7 @@ import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.AbstractSymbolF
 import cz.miroslavbartyzal.psdiagram.app.global.GlobalFunctions;
 import java.awt.Component;
 import java.awt.Graphics2D;
+import java.awt.dnd.DragSource;
 import java.awt.event.*;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
@@ -89,7 +90,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
      * @param jTextFieldTextSegment textové pole textu segmentu
      * @param jTextAreaTextSymbol textová oblast textu symbolu
      */
-    public FlowchartEditManager(Layout layout, MainWindow mainWindow,
+    public FlowchartEditManager(Layout layout, MainWindow mainWindow, JPanel canvasPanel,
             FlowchartEditUndoManager flowchartEditUndoManager, JCheckBox jCheckBoxDefaultText,
             JComboBox<String> jComboBoxSegment, JTextField jTextFieldTextSegment,
             JTextArea jTextAreaTextSymbol)
@@ -103,7 +104,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
         this.jTextAreaTextSymbol = jTextAreaTextSymbol;
 
         commentsManager = new FlowchartCommentSymbolManager(layout);
-        symbolDragManager = new FlowchartSymbolDragManager(layout);
+        symbolDragManager = new FlowchartSymbolDragManager(layout, canvasPanel);
         loadMarkedSymbol();
         flowchartEditUndoManager.init(layout);
     }
@@ -281,7 +282,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
                 flowchartEditUndoManager.addEdit(layout, this, commentsManager.getCommentAction());
             } else if (symbolDragManager.isDragging()) {
                 if (symbolDragManager.mouseReleased()) {
-                    flowchartEditUndoManager.addEdit(layout, this, "Přesunutí symbolu");
+                    flowchartEditUndoManager.addEdit(layout, this, symbolDragManager.getDragAction());
                 }
             }
             repaintJPanelDiagram();
@@ -557,9 +558,6 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
     @Override
     public void mousePressed(MouseEvent me)
     {
-        if (me.isControlDown()) {
-            return;
-        }
         Point2D p = getTransformedPoint(me.getPoint(), new Point2D.Double());
         doPendingUndoRedos();
 
@@ -621,7 +619,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
             layout.prepareFlowchart(); // pro pripad ze bod ci komentar je umisten za platnem, nebo byl a byl posunut do platna
         } else if (symbolDragManager.isDragging()) {
             if (symbolDragManager.mouseReleased()) {
-                flowchartEditUndoManager.addEdit(layout, this, "Přesunutí symbolu");
+                flowchartEditUndoManager.addEdit(layout, this, symbolDragManager.getDragAction());
             }
             repaintJPanelDiagram();
         }
@@ -656,16 +654,13 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
     @Override
     public void mouseDragged(MouseEvent me)
     {
-        if (me.isControlDown()) {
-            return;
-        }
         Point2D p = getTransformedPoint(me.getPoint(), new Point2D.Double());
 
         if (commentsManager.isAbleToDrag()) {
             commentsManager.performDrag(p);
             repaintJPanelDiagram();
         } else if (symbolDragManager.isAbleToDrag()) {
-            symbolDragManager.performDrag(p);
+            symbolDragManager.performDrag(p, me.isControlDown());
             repaintJPanelDiagram();
         }
     }
@@ -680,9 +675,6 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
     @Override
     public void mouseMoved(MouseEvent me)
     {
-        if (me.isControlDown()) {
-            return;
-        }
         Point2D p = getTransformedPoint(me.getPoint(), new Point2D.Double());
         if (!symbolPopup.isVisible()) {
             commentsManager.analyzeMouseToCommentPathAndConnector(p);
@@ -765,6 +757,10 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
         updateEditMenuEnablers(); // update it so the shortcuts (delete, ctrl+c, ...) are handled correctly
         if (ke.getKeyCode() == KeyEvent.VK_BACK_SPACE) {// || ke.getKeyCode() == KeyEvent.VK_ENTER) {
             dispatchKeyEventToSymbolTextArea(ke); // predani KeyEventu editaci textu symbolu
+        } else if (symbolDragManager.isDragging() && ke.getKeyCode() == KeyEvent.VK_CONTROL) {
+            if (symbolDragManager.controlKeyUpdate(true)) {
+                repaintJPanelDiagram();
+            }
         }
     }
 
@@ -780,6 +776,10 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
     {
         if (ke.getKeyCode() == KeyEvent.VK_BACK_SPACE) {// || ke.getKeyCode() == KeyEvent.VK_ENTER) {
             dispatchKeyEventToSymbolTextArea(ke); // predani KeyEventu editaci textu symbolu
+        } else if (symbolDragManager.isDragging() && ke.getKeyCode() == KeyEvent.VK_CONTROL) {
+            if (symbolDragManager.controlKeyUpdate(false)) {
+                repaintJPanelDiagram();
+            }
         }
     }
 

@@ -69,7 +69,6 @@ public final class Main
     // TODO koukni po jednotce kibibyte v updateru - nemam to prehozene s kilobytem?
     // TODO drag&drop nejen do PSD ale i z nej - presun diagramu jako export tahem do emailove prilohy apod.
     // TODO u proguardu dynamicky do manifestu priradit main podle jeho obfuskace - tak nebudu muset zachovavat balickovou cestu k mainu
-    //e TODO kopirovat symboly pomocí drag&drop na platne
     //e TODO vytvaret symboly pomocí drag&drop z postranni listy se symboly
     // TODO pohyb mezi symboly v editacnim rezimu pomoci kurzorovych sipek
     // TODO podivat se na logicnost posouvani diagramu pri posunu komentare mimo platno a zpet

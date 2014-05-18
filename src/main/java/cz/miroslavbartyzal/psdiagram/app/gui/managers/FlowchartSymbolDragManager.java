@@ -47,14 +47,31 @@ public class FlowchartSymbolDragManager
     private Point2D lastP = new Point2D.Double();
     private Point2D lastPScaled = new Point2D.Double();
 
+    // ******create symbols section******
+    private boolean creatingSymbol = false;
+    private LayoutElement defaultElement = null;
+    private ValidSymbolJointDropListener callback = null;
+    // **********************************
+
     public FlowchartSymbolDragManager(Layout layout, JPanel canvasPanel)
     {
         this.layout = layout;
         this.canvasPanel = canvasPanel;
     }
 
+    protected void createSymbol(Symbol symbolToCreate,
+            ValidSymbolJointDropListener validSymbolJointDropListener)
+    {
+        this.processedSymbol = symbolToCreate;
+        callback = validSymbolJointDropListener;
+        creatingSymbol = true;
+        defaultJoint = layout.getFocusedJoint();
+        defaultElement = layout.getFocusedElement();
+    }
+
     protected void mousePressedOnSymbol(LayoutElement element, Point2D mouseCoords)
     {
+        creatingSymbol = false; // just for case
         processedElement = element;
         try {
             processedSymbol = cloneElement(element).getSymbol();
@@ -72,6 +89,19 @@ public class FlowchartSymbolDragManager
         boolean retVal = false;
         processedElement = null;
         processedSymbol = null;
+        defaultElement = null;
+
+        if (creatingSymbol) {
+            creatingSymbol = false;
+            if (dockedJoint != null) {
+                dragAction = "Přidání symbolu"; // not needed because it will be handled in editManager regardless
+                callback.validDropPerformed();
+                retVal = true;
+            } else {
+                layout.setFocusPaintToDefault();
+            }
+            return retVal;
+        }
 
         if (dragging) {
             if (!copying) {
@@ -100,6 +130,14 @@ public class FlowchartSymbolDragManager
         return retVal;
     }
 
+    protected void cancelCreationProcess()
+    {
+        if (creatingSymbol) {
+            dockedJoint = null;
+            mouseReleased();
+        }
+    }
+
     protected boolean isDragging()
     {
         return dragging;
@@ -113,6 +151,11 @@ public class FlowchartSymbolDragManager
     protected boolean isSymbolBeingDragged()
     {
         return dragging;
+    }
+
+    protected boolean isCreatingSymbol()
+    {
+        return creatingSymbol;
     }
 
     /**
@@ -209,6 +252,15 @@ public class FlowchartSymbolDragManager
         }
     }
 
+    protected void performSymbolCreationDrag(Point2D p)
+    {
+        if (creatingSymbol) {
+            lastP = p;
+            lastPScaled = new Point2D.Double(p.getX() / SCALE, p.getY() / SCALE);
+            performMouseUpdate();
+        }
+    }
+
     private void performMouseUpdate()
     {
         if (dockedJoint != null && (processedSymbol.contains(lastPScaled) || dockedJoint.contains(
@@ -221,19 +273,22 @@ public class FlowchartSymbolDragManager
             if (processedSymbol.contains(lastPScaled) || joint.contains(lastP)) { // joint.contains je tu pro symbol GotoLabel
                 layout.setFocusedJoint(joint);
                 dockedJoint = joint;
-                if (copying) {
-                    layout.setFocusJointOnly();
-                }
+                layout.setFocusJointOnly();
                 return;
             }
         }
-        if (copying) {
+        if (copying || creatingSymbol) {
             layout.setNoFocusPaint();
         }
         dockedJoint = null;
         processedSymbol.setCenterX(lastPScaled.getX());
         processedSymbol.setCenterY(lastPScaled.getY());
-        layout.setFocusedJoint(defaultJoint);
+        if (creatingSymbol && defaultJoint == null) {
+            layout.setFocusedElement(defaultElement);
+        } else {
+            layout.setFocusedJoint(defaultJoint);
+        }
+
     }
 
     public String getDragAction()
@@ -243,7 +298,7 @@ public class FlowchartSymbolDragManager
 
     public void paint(Graphics2D grphcs2D)
     {
-        if (dragging && processedSymbol != null) {
+        if ((dragging || creatingSymbol) && processedSymbol != null) {
             grphcs2D.scale(SCALE, SCALE);
             grphcs2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                     RenderingHints.VALUE_ANTIALIAS_ON);
@@ -286,6 +341,13 @@ public class FlowchartSymbolDragManager
                         (float) p.getY());
             }
         }
+    }
+
+    public interface ValidSymbolJointDropListener
+    {
+
+        public void validDropPerformed();
+
     }
 
 }

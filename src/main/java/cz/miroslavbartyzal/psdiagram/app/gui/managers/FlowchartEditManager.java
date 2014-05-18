@@ -276,20 +276,30 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
             flowchartEditUndoManager.addEdit(layout, this, "Editace textu symbolu");
         }
 
-        if (commentsManager.isCommentOrJointBeingDragged() || symbolDragManager.isAbleToDrag()) {
+        if (commentsManager.isCommentOrJointBeingDragged() || symbolDragManager.isAbleToDrag() || symbolDragManager.isCreatingSymbol()) {
             if (commentsManager.isCommentOrJointBeingDragged()) {
                 layout.prepareFlowchart(); // pro pripad ze bod ci komentar je umisten za platnem, nebo byl a byl posunut do platna
                 flowchartEditUndoManager.addEdit(layout, this, commentsManager.getCommentAction());
-            } else if (symbolDragManager.isDragging()) {
+            } else if (symbolDragManager.isAbleToDrag()) {
                 if (symbolDragManager.mouseReleased()) {
                     flowchartEditUndoManager.addEdit(layout, this, symbolDragManager.getDragAction());
                 }
+            } else if (symbolDragManager.isCreatingSymbol()) {
+                symbolDragManager.cancelCreationProcess();
             }
             repaintJPanelDiagram();
         }
 
         resetVariables();
 
+    }
+
+    public void cancelDragCreationProcess()
+    {
+        if (symbolDragManager.isCreatingSymbol()) {
+            symbolDragManager.cancelCreationProcess();
+            repaintJPanelDiagram();
+        }
     }
 
     // **********************ActionListener**********************
@@ -299,7 +309,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
      * @param ae nová událost
      */
     @Override
-    public void actionPerformed(ActionEvent ae)
+    public void actionPerformed(final ActionEvent ae)
     {
         doPendingUndoRedos();
         String[] action = ae.getActionCommand().split("/");
@@ -327,17 +337,84 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
                         break;
                     }
                     case "LOOPCONDITIONUP":
+                        if (action.length == 3 && action[2].equals("byDnD")) {
+                            symbolDragManager.createSymbol(
+                                    EnumSymbol.valueOf(action[1]).getInstance(""),
+                                    new FlowchartSymbolDragManager.ValidSymbolJointDropListener()
+                                    {
+                                        @Override
+                                        public void validDropPerformed()
+                                        {
+                                            actionPerformed(new ActionEvent(ae.getSource(),
+                                                            ae.getID(),
+                                                            ae.getActionCommand().substring(0,
+                                                                    ae.getActionCommand().lastIndexOf(
+                                                                            "/"))));
+                                        }
+                                    });
+                            return;
+                        }
                     case "LOOPCONDITIONDOWN": {
+                        if (action.length == 3 && action[2].equals("byDnD")) {
+                            symbolDragManager.createSymbol(new LoopEnd(),
+                                    new FlowchartSymbolDragManager.ValidSymbolJointDropListener()
+                                    {
+                                        @Override
+                                        public void validDropPerformed()
+                                        {
+                                            actionPerformed(new ActionEvent(ae.getSource(),
+                                                            ae.getID(),
+                                                            ae.getActionCommand().substring(0,
+                                                                    ae.getActionCommand().lastIndexOf(
+                                                                            "/"))));
+                                        }
+                                    });
+                            return;
+                        }
                         layout.addNewSymbol(new LoopEnd());
                         layout.addNewSymbol(EnumSymbol.valueOf(action[1]).getInstance(""));
                         break;
                     }
                     case "STARTEND": {
-                        layout.addNewSymbol(EnumSymbol.valueOf(action[1]).getInstance("Konec"));
+                        Symbol symbol = EnumSymbol.valueOf(action[1]).getInstance("Konec");
+                        if (action.length == 3 && action[2].equals("byDnD")) {
+                            symbolDragManager.createSymbol(symbol,
+                                    new FlowchartSymbolDragManager.ValidSymbolJointDropListener()
+                                    {
+                                        @Override
+                                        public void validDropPerformed()
+                                        {
+                                            actionPerformed(new ActionEvent(ae.getSource(),
+                                                            ae.getID(),
+                                                            ae.getActionCommand().substring(0,
+                                                                    ae.getActionCommand().lastIndexOf(
+                                                                            "/"))));
+                                        }
+                                    });
+                            return;
+                        }
+                        layout.addNewSymbol(symbol);
                         break;
                     }
                     default: {
                         Symbol symbol = EnumSymbol.valueOf(action[1]).getInstance("");
+                        if (action.length == 3 && action[2].equals("byDnD")) {
+                            symbolDragManager.createSymbol(symbol,
+                                    new FlowchartSymbolDragManager.ValidSymbolJointDropListener()
+                                    {
+                                        @Override
+                                        public void validDropPerformed()
+                                        {
+                                            actionPerformed(new ActionEvent(ae.getSource(),
+                                                            ae.getID(),
+                                                            ae.getActionCommand().substring(0,
+                                                                    ae.getActionCommand().lastIndexOf(
+                                                                            "/"))));
+                                        }
+                                    });
+                            return;
+                        }
+
                         int innerOutCount = 0;
 
                         if (symbol.getInnerOutsCount() == -1) {
@@ -615,11 +692,19 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
         //if (commentPathConnector.getCenterX() > mainWindow.setJPanelDiagramFocus().getWidth() - layout.getFlowchartPadding() || commentPathConnector.getCenterX() < 0 + layout.getFlowchartPadding() || commentPathConnector.getCenterY() > mainWindow.setJPanelDiagramFocus().getHeight() - layout.getFlowchartPadding() || commentPathConnector.getCenterY() < 0 + layout.getFlowchartPadding()) {
         //if (procesComment.getX() + procesComment.getWidth() > mainWindow.setJPanelDiagramFocus().getWidth() - layout.getFlowchartPadding() || procesComment.getX() < 0 + layout.getFlowchartPadding() || procesComment.getY() + procesComment.getHeight() > mainWindow.setJPanelDiagramFocus().getHeight() - layout.getFlowchartPadding() || procesComment.getY() < 0 + layout.getFlowchartPadding()) {
 
+        if (symbolDragManager.isCreatingSymbol()) {
+            if (!symbolDragManager.mouseReleased()) {
+                // nothing was added so I need to repaint in order to make the dragged symbol disapear
+                repaintJPanelDiagram();
+            }
+        }
+
         if (commentsManager.isCommentOrJointBeingDragged()) {
             layout.prepareFlowchart(); // pro pripad ze bod ci komentar je umisten za platnem, nebo byl a byl posunut do platna
-        } else if (symbolDragManager.isDragging()) {
+        } else if (symbolDragManager.isAbleToDrag()) {
             if (symbolDragManager.mouseReleased()) {
                 flowchartEditUndoManager.addEdit(layout, this, symbolDragManager.getDragAction());
+                refreshComments();
             }
             repaintJPanelDiagram();
         }
@@ -658,6 +743,9 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
 
         if (commentsManager.isAbleToDrag()) {
             commentsManager.performDrag(p);
+            repaintJPanelDiagram();
+        } else if (symbolDragManager.isCreatingSymbol()) {
+            symbolDragManager.performSymbolCreationDrag(p);
             repaintJPanelDiagram();
         } else if (symbolDragManager.isAbleToDrag()) {
             symbolDragManager.performDrag(p, me.isControlDown());

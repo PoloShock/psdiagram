@@ -44,6 +44,7 @@ import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
@@ -52,6 +53,10 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.InvalidDnDOperationException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.AffineTransform;
@@ -88,6 +93,7 @@ import javax.swing.TransferHandler;
 import javax.swing.TransferHandler.TransferSupport;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+import javax.swing.event.MouseInputAdapter;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -297,12 +303,77 @@ public final class MainWindow extends javax.swing.JFrame
         //pridani tlacitek pro pridani symbolu
         for (EnumSymbol enumSymbol : EnumSymbol.values()) {
             try {
-                JButton button = new JButton(new javax.swing.ImageIcon(getClass().getResource(
+                final JButton button = new JButton(new javax.swing.ImageIcon(getClass().getResource(
                         "/img/symbols/24-" + enumSymbol.name() + ".png")));
                 button.setFocusable(false);
                 button.setActionCommand("addSymbol/" + enumSymbol.name());
                 button.setToolTipText(enumSymbol.getToolTipText());
                 button.addActionListener(flowchartEditManager);
+                if (!enumSymbol.name().equals("COMMENT")) {
+                    MouseInputAdapter listener = new MouseInputAdapter()
+                    {
+                        // a little bit of hacking in order to achieve drag'n drop while creating symbols
+                        private boolean releasedAlready = true;
+                        private boolean dragging = false;
+
+                        @Override
+                        public void mouseExited(MouseEvent e)
+                        {
+                            if (!releasedAlready) {
+                                dragging = true;
+                                String action = button.getActionCommand();
+                                for (ActionListener a : button.getActionListeners()) {
+                                    a.actionPerformed(new ActionEvent(button,
+                                            ActionEvent.ACTION_PERFORMED, action + "/byDnD"));
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void mouseEntered(MouseEvent e)
+                        {
+                            if (dragging) {
+                                dragging = false;
+                                // we returned back from canvas to button -> lets cancel symbol creation process
+                                flowchartEditManager.cancelDragCreationProcess();
+                            }
+                        }
+
+                        @Override
+                        public void mouseDragged(MouseEvent e)
+                        {
+                            if (dragging) {
+                                // we already sent the actionEvent
+                                for (MouseMotionListener listener : jPanelDiagram.getMouseMotionListeners()) {
+                                    listener.mouseDragged(SwingUtilities.convertMouseEvent(button,
+                                            e, jPanelDiagram));
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void mouseReleased(MouseEvent e)
+                        {
+                            releasedAlready = true;
+                            if (dragging) {
+                                // we already sent the actionEvent
+                                for (MouseListener listener : jPanelDiagram.getMouseListeners()) {
+                                    listener.mouseReleased(SwingUtilities.convertMouseEvent(button,
+                                            e, jPanelDiagram));
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void mousePressed(MouseEvent e)
+                        {
+                            releasedAlready = false;
+                        }
+                    };
+
+                    button.addMouseListener(listener);
+                    button.addMouseMotionListener(listener);
+                }
                 jToolBarSymbols.add(button);
             } catch (NullPointerException e) {
                 throw new Error("Error while loading symbol images!");
@@ -1293,8 +1364,9 @@ public final class MainWindow extends javax.swing.JFrame
         }
         layout.setFlowchart(null);
         flowchartEditManager.loadMarkedSymbolText();
-        jPanelDiagram.repaint();
+        flowchartEditManager.refreshComments();
         flowchartEditManager.resetUndoManager();
+        jPanelDiagram.repaint();
         SettingsHolder.settings.setActualFlowchartFile(null);
         super.setTitle(windowTitle);
     }//GEN-LAST:event_jMenuItemNewActionPerformed

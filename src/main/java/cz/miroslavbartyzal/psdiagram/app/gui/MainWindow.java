@@ -1364,7 +1364,6 @@ public final class MainWindow extends javax.swing.JFrame
         }
         layout.setFlowchart(null);
         flowchartEditManager.loadMarkedSymbolText();
-        flowchartEditManager.refreshComments();
         flowchartEditManager.resetUndoManager();
         jPanelDiagram.repaint();
         SettingsHolder.settings.setActualFlowchartFile(null);
@@ -2245,7 +2244,6 @@ public final class MainWindow extends javax.swing.JFrame
 
         layout.setFlowchart(flowchart);
         flowchartEditManager.loadMarkedSymbolText();
-        flowchartEditManager.refreshComments();
         flowchartEditManager.resetUndoManager();
         jPanelDiagram.repaint();
 
@@ -2275,7 +2273,6 @@ public final class MainWindow extends javax.swing.JFrame
             }
 
             layout.setFlowchart(flowchart);
-            flowchartEditManager.refreshComments();
             flowchartEditManager.resetUndoManager();
             jPanelDiagram.repaint();
 

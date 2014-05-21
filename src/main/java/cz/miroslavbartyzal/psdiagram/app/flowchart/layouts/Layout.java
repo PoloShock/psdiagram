@@ -9,6 +9,7 @@ import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Comment;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Joint;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
 import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Path2D;
 import java.util.ArrayList;
@@ -45,6 +46,9 @@ import javax.swing.JMenuItem;
  */
 public interface Layout
 {
+
+    public static final Color FOCUSED_UP_COLOR = new Color(184, 209, 255);
+    public static final Color FOCUSED_DOWN_COLOR = FOCUSED_UP_COLOR.darker();
 
 //     static final int defaultSymbolPadding = 14;
 //     public static final int defaultFlowchartPadding = 15;

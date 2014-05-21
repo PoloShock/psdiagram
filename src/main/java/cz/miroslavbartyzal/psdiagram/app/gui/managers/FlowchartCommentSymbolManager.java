@@ -25,7 +25,6 @@ public class FlowchartCommentSymbolManager
 {
 
     private final Layout layout;
-    private ArrayList<Comment> lCommentSymbols; // uloziste vsech komentaru diagramu
     private int procesCommentsPointIndex = -1; // uklada index relativniho bodu komentarove cesty, ktery se aktualne presouva
     private Ellipse2D commentPathConnector = null; // uklada relativni bod komentarove cesty, se kterym se aktualne manipuluje
     private int futureRelativePointIndex = -1;
@@ -40,13 +39,12 @@ public class FlowchartCommentSymbolManager
     protected FlowchartCommentSymbolManager(Layout layout)
     {
         this.layout = layout;
-        lCommentSymbols = new ArrayList<>(layout.getlCommentSymbols());
     }
 
     protected void analyzeMouseToCommentPathAndConnector(Point2D p)
     {
         Comment boldPathComment = null;
-        for (Comment comment : lCommentSymbols) {
+        for (Comment comment : layout.getlCommentSymbols()) {
             // pri hledani commentPathConnector muzu rovnou i hledat potencionalni Path zvyrazneni.. v pripade nalezeni commentPathConnectoru uz je pak nebudu potrebovat, takze se mi ten return hodi
             double origAbsX = comment.getCenterX() - comment.getRelativeX();
             double origAbsY = comment.getCenterY() - comment.getRelativeY();
@@ -103,7 +101,7 @@ public class FlowchartCommentSymbolManager
     {
         if (commentPathConnector != null) {
             if (commentPathConnector.contains(mouseCoords)) {
-                for (Comment comment : lCommentSymbols) {
+                for (Comment comment : layout.getlCommentSymbols()) {
                     int i = 0;
                     for (Point2D point : comment.getRelativeMiddlePointsToSymbol()) {
                         if (comment.getCenterX() - comment.getRelativeX() + point.getX() == commentPathConnector.getCenterX() && comment.getCenterY() - comment.getRelativeY() + point.getY() == commentPathConnector.getCenterY()) {
@@ -216,11 +214,6 @@ public class FlowchartCommentSymbolManager
     protected Ellipse2D getCommentPathConnector()
     {
         return commentPathConnector;
-    }
-
-    protected void refreshComments()
-    {
-        lCommentSymbols = layout.getlCommentSymbols();
     }
 
     private boolean shouldBeBold(Comment comment, Point2D p1, Point2D p2, Point2D p3)

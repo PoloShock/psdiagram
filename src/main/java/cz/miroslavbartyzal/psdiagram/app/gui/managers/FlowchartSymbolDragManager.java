@@ -5,6 +5,7 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.gui.managers;
 
+import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.AbstractLayout;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.Layout;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutElement;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Joint;
@@ -306,12 +307,24 @@ public class FlowchartSymbolDragManager
 //            Color shapeUpColor = processedSymbol.getShapeUpColor();
 //            Color shapeDownColor = processedSymbol.getShapeDownColor();
 //            Color borderColor = processedSymbol.getBorderColor();
-            Color shapeUpColor = new Color(processedSymbol.getShapeUpColor().getRed(),
-                    processedSymbol.getShapeUpColor().getGreen(),
-                    processedSymbol.getShapeUpColor().getBlue(), 220);
-            Color shapeDownColor = new Color(processedSymbol.getShapeDownColor().getRed(),
-                    processedSymbol.getShapeDownColor().getGreen(),
-                    processedSymbol.getShapeDownColor().getBlue(), 220);
+            Color shapeUpColor;
+            Color shapeDownColor;
+            if (dockedJoint != null) {
+                shapeUpColor = new Color(Layout.FOCUSED_UP_COLOR.getRed(),
+                        Layout.FOCUSED_UP_COLOR.getGreen(),
+                        Layout.FOCUSED_UP_COLOR.getBlue(), 220);
+                shapeDownColor = new Color(Layout.FOCUSED_DOWN_COLOR.getRed(),
+                        Layout.FOCUSED_DOWN_COLOR.getGreen(),
+                        Layout.FOCUSED_DOWN_COLOR.getBlue(), 220);
+            } else {
+                shapeUpColor = new Color(processedSymbol.getShapeUpColor().getRed(),
+                        processedSymbol.getShapeUpColor().getGreen(),
+                        processedSymbol.getShapeUpColor().getBlue(), 220);
+                shapeDownColor = new Color(processedSymbol.getShapeDownColor().getRed(),
+                        processedSymbol.getShapeDownColor().getGreen(),
+                        processedSymbol.getShapeDownColor().getBlue(), 220);
+            }
+
             Color borderColor = new Color(processedSymbol.getBorderColor().getRed(),
                     processedSymbol.getBorderColor().getGreen(),
                     processedSymbol.getBorderColor().getBlue(), 220);

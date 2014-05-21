@@ -20,7 +20,6 @@ import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.AbstractSymbolF
 import cz.miroslavbartyzal.psdiagram.app.global.GlobalFunctions;
 import java.awt.Component;
 import java.awt.Graphics2D;
-import java.awt.dnd.DragSource;
 import java.awt.event.*;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
@@ -148,16 +147,6 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
     {
         commentsManager.resetVariables();
         defaultTextBeingEdited = false;
-    }
-
-    /**
-     * Znovu načte všechny komentáře obsažené v diagramu. Tato metoda by měla
-     * být volána vždy po jakékoliv modifikaci komentářových symbolů, aby je
-     * bylo možné modifikovat krz tuto třídu.
-     */
-    public void refreshComments()
-    {
-        commentsManager.refreshComments();
     }
 
     public void paint(Graphics2D grphcs2D)
@@ -333,7 +322,6 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
                             symbol.setHasPairSymbol(true);
                         }
                         layout.addNewSymbol(symbol);
-                        refreshComments();
                         break;
                     }
                     case "LOOPCONDITIONUP":
@@ -537,7 +525,6 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
                         }
 
                         layout.addElements(elementsToAdd);
-                        refreshComments();
                         //elementsToMove = null;
                         repaintJPanelDiagram();
 
@@ -704,7 +691,6 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
         } else if (symbolDragManager.isAbleToDrag()) {
             if (symbolDragManager.mouseReleased()) {
                 flowchartEditUndoManager.addEdit(layout, this, symbolDragManager.getDragAction());
-                refreshComments();
             }
             repaintJPanelDiagram();
         }
@@ -1198,7 +1184,6 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
         LayoutElement focusedElement = layout.getFocusedElement();
         if (focusedElement != null) {
             layout.removeElement(focusedElement);
-            refreshComments();
         }
     }
 

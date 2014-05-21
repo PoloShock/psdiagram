@@ -34,17 +34,15 @@ public abstract class AbstractLayout implements Layout
     private int symbolPadding = 14;
     private int arrowLength = 12;
     private boolean editMode = true;
-    private Color pathColor = Color.BLACK;
-    private Color focusedUpColor = new Color(184, 209, 255);
-    private Color focusedDownColor = focusedUpColor.darker();
-    private Color shadowColor = new Color(0, 0, 0, 100);
-    private BasicStroke commentStroke = new BasicStroke(1, BasicStroke.CAP_BUTT,
+    private final Color pathColor = Color.BLACK;
+    private final Color shadowColor = new Color(0, 0, 0, 100);
+    private final BasicStroke commentStroke = new BasicStroke(1, BasicStroke.CAP_BUTT,
             BasicStroke.JOIN_MITER, 10.0f, new float[]{10, 5}, 0);
-    private BasicStroke commentBoldStroke = new BasicStroke(4, BasicStroke.CAP_BUTT,
+    private final BasicStroke commentBoldStroke = new BasicStroke(4, BasicStroke.CAP_BUTT,
             BasicStroke.JOIN_ROUND, 10.0f, new float[]{10, 5}, 0);
-    private BasicStroke highlightStroke = new BasicStroke(1, BasicStroke.CAP_BUTT,
+    private final BasicStroke highlightStroke = new BasicStroke(1, BasicStroke.CAP_BUTT,
             BasicStroke.JOIN_MITER, 10.0f, new float[]{4, 4}, 0);
-    private BasicStroke gotoStroke = highlightStroke;
+    private final BasicStroke gotoStroke = highlightStroke;
     private Flowchart<LayoutSegment, LayoutElement> flowchart;
     private JComponent canvas;
     private ArrayList<Joint> lJoints = new ArrayList<>(30);
@@ -798,10 +796,10 @@ public abstract class AbstractLayout implements Layout
                 && (element.equals(focusedElement) || (focusedElement == null && focusedJoint != null && element.equals(
                         focusedJoint.getParentElement())))) || (symbol.equals(focusedJoint) && !noFocusPaint)) {
 
-            shapeUpColor = focusedUpColor;
-            shapeDownColor = focusedDownColor;
+            shapeUpColor = Layout.FOCUSED_UP_COLOR;
+            shapeDownColor = Layout.FOCUSED_DOWN_COLOR;
             if (symbol.getShapeUpColor() == null) {
-                borderColor = focusedUpColor;
+                borderColor = Layout.FOCUSED_UP_COLOR;
             }
         }
         if (symbol.getShapeUpColor() != null) {

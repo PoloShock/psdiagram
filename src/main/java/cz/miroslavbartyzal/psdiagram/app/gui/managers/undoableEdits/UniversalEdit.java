@@ -149,7 +149,6 @@ public final class UniversalEdit extends AbstractUndoableEdit
             setFocused(afterFocusedPath, afterIsJoint);
 
             flowchartEditManager.resetVariables();
-            flowchartEditManager.refreshComments();
             flowchartEditManager.loadMarkedSymbolText();
             flowchartEditManager.repaintJPanelDiagram();
         }
@@ -170,7 +169,6 @@ public final class UniversalEdit extends AbstractUndoableEdit
             setFocused(beforeFocusedPath, beforeIsJoint);
 
             flowchartEditManager.resetVariables();
-            flowchartEditManager.refreshComments();
             flowchartEditManager.loadMarkedSymbolText();
             flowchartEditManager.repaintJPanelDiagram();
         }

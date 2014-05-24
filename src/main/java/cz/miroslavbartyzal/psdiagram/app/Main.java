@@ -15,19 +15,18 @@ import javax.swing.ToolTipManager;
  */
 public final class Main
 {
+
     // TODO kdyz se pomalinku posouva diagram doleva nahoru, posouvani se v miste objeveni scrollbaru seka (uprava ulozene pozice kurzoru v zavislosti na zmene velikosti platna pri zobrazenych scrollbrech? nebo podminka s elseif misto dvou?)
     // TODO az budu dynamicky menit layout, budu muset prepsat odkazy na layout ve vsech tridach jako by reference: AtomicReference<Object> ref = new AtomicReference<Object>("Hello");
     // TODO je-li v else vetvi jen podminka, je to pri exportu elseif!
     // TODO mozna pridat komentar do XML a exportu PDF, kodu.. o PS Diagramu
     // TODO do budoucna podprogram moznst expandovat/collapsovat :)
     // TODO nastaveni zarovnavani komentarovych textu
-    //e TODO zakomponovat priklady do vyuky primo jako soucast aplikace (do menu a submenu podle adresarove struktury a nazvat jako 'knihovna algoritmu')
-    //-> TODO zoom k mysi -> krasna implementace v JFreeChart!
+    //e TODO zoom k mysi -> krasna implementace v JFreeChart!
     // TODO odkazy na weby obrazku
     //e TODO exception handling: http://stackoverflow.com/questions/4590295/catch-exception-high-in-the-call-stack-when-dealing-with-n-tiers
     //e TODO logovani
     // TODO pridat info o verzi a licenci
-    // TODO pridat automaticke nacitani predchozi neulozene prace v pripade padu aplikace (recovered priznak, viz MS paint)
     // TODO prepnuti focusu z platna do textboxu i pri editaci funkce symbolu
     // TODO ukolovani studentu? (seradit spravne kroky algoritmu, vyuziti jen urciteho poctu prikazu apod.)
     // TODO možnost nastavení barev v editacnim i animacnim rezimu
@@ -63,7 +62,7 @@ public final class Main
     // TODO moznost zkompilovat diagram do spustitelneho souboru
     // TODO zvazit pouziti delty (viz opengl projekt) pri animaci
     // TODO prejmenuj properties z appliaction na application.. :D
-    // TODO dat uzivateli vedet ze muze normalne upgradovat, kdyz proceeduje (z hlasky o vyprseni zkusebky to neni poznat)
+    //e! TODO dat uzivateli vedet ze muze normalne upgradovat, kdyz proceeduje (z hlasky o vyprseni zkusebky to neni poznat)
     // TODO nemel bych pro ziskani casu posilat HTTP HEAD misto GET?
     //e! TODO upozornit na vyprseni zkusebky nekolik dni pred jejim skutecnym vyprsenim
     // TODO koukni po jednotce kibibyte v updateru - nemam to prehozene s kilobytem?
@@ -72,7 +71,8 @@ public final class Main
     // TODO pohyb mezi symboly v editacnim rezimu pomoci kurzorovych sipek
     // TODO podivat se na logicnost posouvani diagramu pri posunu komentare mimo platno a zpet
     //e TODO nasadit best practice v gitu
-
+    //e! TODO layout v menu je spatnej u scopu promennych
+    //e TODO zvazit umoznit nastaveni cesty k adresari, ktera bude nadrazena working_dir a my_dir (v tomto poradi) a odkud se pak budou tahat priklady algoritmu a (nektera) nastaveni
     /**
      * Metoda pro spuštění hlavního okna aplikace. Nejsou přijímány žádné
      * parametry.

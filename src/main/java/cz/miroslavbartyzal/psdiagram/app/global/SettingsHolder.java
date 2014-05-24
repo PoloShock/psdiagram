@@ -253,6 +253,8 @@ public final class SettingsHolder
         // aktuální, uložený soubor diagramu - slouží také k načtení při příštím spuštění
         @XmlElement(name = "actualFlowchartFile")
         private File actualFlowchartFile;
+        @XmlElement(name = "dontSaveDirectly")
+        private boolean dontSaveDirectly = false;
         @XmlElement(name = "exportTransparency")
         private boolean exportTransparency = true;
         @XmlElement(name = "exportFlowchartPadding")
@@ -462,6 +464,17 @@ public final class SettingsHolder
         public void setLoadLastFlowchart(boolean loadLastFlowchart)
         {
             this.loadLastFlowchart = loadLastFlowchart;
+            saveSettings();
+        }
+
+        public boolean isDontSaveDirectly()
+        {
+            return dontSaveDirectly;
+        }
+
+        public void setDontSaveDirectly(boolean dontSaveDirectly)
+        {
+            this.dontSaveDirectly = dontSaveDirectly;
             saveSettings();
         }
 

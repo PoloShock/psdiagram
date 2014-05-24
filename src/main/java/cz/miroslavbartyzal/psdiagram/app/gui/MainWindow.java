@@ -10,6 +10,7 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.gui;
 
+import cz.miroslavbartyzal.psdiagram.app.edit.FlowchartCrashRecovery;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.Flowchart;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.EnumLayout;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.Layout;
@@ -36,7 +37,6 @@ import cz.miroslavbartyzal.psdiagram.app.global.GlobalFunctions;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import cz.miroslavbartyzal.psdiagram.app.network.TimeCollector;
 import cz.miroslavbartyzal.psdiagram.app.update.Updater;
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
@@ -44,7 +44,6 @@ import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
@@ -55,12 +54,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -71,7 +68,6 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.ResourceBundle;
 import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
@@ -125,8 +121,9 @@ public final class MainWindow extends javax.swing.JFrame
     private final JFrameCodeExport jFrameCodeExport;
     private final JFrameAbout jFrameAbout;
     private final JFrameUpdate jFrameUpdate;
-    private static JAXBContext jAXBcontext;
+    private static final JAXBContext jAXBcontext = createJAXBContext();
     private final String windowTitle = "PS Diagram"; // BEWARE OF CHANGE - updater using it for process identification
+    private final FlowchartCrashRecovery flowchartCrashRecovery;
     private static Timer statusTimer = new Timer(0, new ActionListener()
     {
         @Override
@@ -200,6 +197,22 @@ public final class MainWindow extends javax.swing.JFrame
             jMenuLayouts.add(rbMenuItem, 0);
         }
 
+        // pridani prikladu do knihovny
+        ArrayList<Component> examples = ExamplesLoader.getExamplesMenuItems(
+                new ExamplesLoader.ExampleActionListener()
+                {
+                    @Override
+                    public void exampleActionPerformed(String examplePath)
+                    {
+                        openDiagram(new File(examplePath));
+                        SettingsHolder.settings.setDontSaveDirectly(true);
+                    }
+                });
+        for (Component component : examples) {
+            jMenuAlgorithms.add(component);
+        }
+        jMenuAlgorithms.setToolTipText(ExamplesLoader.getExamplesLocationLoadToolTip());
+
         jFrameSettings = new JFrameSettings();
         jFrameCodeImport = new JFrameCodeImport(this);
         jFrameCodeExport = new JFrameCodeExport(this);
@@ -211,14 +224,7 @@ public final class MainWindow extends javax.swing.JFrame
             public void onBeforeExit()
             {
                 if (!checkIfSaved(false)) {
-                    try {
-                        Marshaller jAXBmarshaller = getJAXBcontext().createMarshaller();
-                        jAXBmarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-                        jAXBmarshaller.marshal(layout.getFlowchart(), new File(
-                                SettingsHolder.WORKING_DIR, "tmp.xml"));
-                    } catch (JAXBException ex) {
-                        ex.printStackTrace(System.err);
-                    }
+                    flowchartCrashRecovery.backupFlowchart();
                 }
             }
         });
@@ -401,19 +407,46 @@ public final class MainWindow extends javax.swing.JFrame
         jButtonToolStop.addActionListener(flowchartAnimationManager);
         jButtonLaunch.addActionListener(flowchartAnimationManager);
 
+        Marshaller jAXBmarshaller = null;
+        try {
+            jAXBmarshaller = getJAXBcontext().createMarshaller();
+            jAXBmarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        } catch (JAXBException ex) {
+            ex.printStackTrace(System.err);
+        }
+        flowchartCrashRecovery = new FlowchartCrashRecovery(layout, new File(
+                SettingsHolder.WORKING_DIR, "tmp.xml"), jAXBmarshaller);
+
         editMode = !editMode;
         setEditMode(!editMode);
 
-        if (SettingsHolder.settings.getActualFlowchartFile() != null) {
-            openDiagram(SettingsHolder.settings.getActualFlowchartFile());
-        } else {
-            File tmp = new File(SettingsHolder.WORKING_DIR, "tmp.xml");
-            if (tmp.exists()) {
-                openDiagram(tmp);
-                SettingsHolder.settings.setActualFlowchartFile(null);
-                tmp.delete();
+        boolean dontSaveDirectly = SettingsHolder.settings.isDontSaveDirectly();
+        if (flowchartCrashRecovery.fileToSaveTo.exists()) {
+            File f = SettingsHolder.settings.getActualFlowchartFile();
+            openDiagram(flowchartCrashRecovery.fileToSaveTo);
+            SettingsHolder.settings.setActualFlowchartFile(f);
+            updateTitle();
+            super.setTitle(super.getTitle() + " (zotaveno)");
+            if (f != null) {
+                try {
+                    Flowchart<LayoutSegment, LayoutElement> currentFlowchart = layout.getFlowchart();
+                    Flowchart<LayoutSegment, LayoutElement> savedFlowchart = GlobalFunctions.unsafeCast(
+                            getJAXBcontext().createUnmarshaller().unmarshal(f));
+                    layout.setFlowchart(savedFlowchart);
+                    flowchartCrashRecovery.updateSavedFlowchart();
+                    layout.setFlowchart(currentFlowchart);
+                    flowchartCrashRecovery.backupFlowchart();
+                } catch (JAXBException ex) {
+                    ex.printStackTrace(System.err);
+                }
+            } else {
+                flowchartCrashRecovery.updateSavedFlowchart();
             }
+            setStatusText("Diagram byl po neočekávaném ukončení aplikace úspěšně zotaven.", 5000);
+        } else if (SettingsHolder.settings.getActualFlowchartFile() != null) {
+            openDiagram(SettingsHolder.settings.getActualFlowchartFile());
         }
+        SettingsHolder.settings.setDontSaveDirectly(dontSaveDirectly); // we want to preserve that setting
 
         updater.loadInfo(null, new Updater.InfoLoadListener()
         {
@@ -423,12 +456,11 @@ public final class MainWindow extends javax.swing.JFrame
                 if (newVersionAvailable) {
                     jMenuItemUpdateActionPerformed(null);
                 } else if (forceUpdate) {
+                    flowchartCrashRecovery.backupFlowchart();
                     System.exit(0);
                 }
             }
         });
-
-        getJAXBcontext(); // TODO: did in hurry - I am not for lazy loading in the end
     }
 
     /**
@@ -515,6 +547,7 @@ public final class MainWindow extends javax.swing.JFrame
         jMenuItemPaste = new javax.swing.JMenuItem();
         jSeparator6 = new javax.swing.JPopupMenu.Separator();
         jMenuItemDelete = new javax.swing.JMenuItem();
+        jMenuAlgorithms = new javax.swing.JMenu();
         jMenuLayouts = new javax.swing.JMenu();
         jSeparator7 = new javax.swing.JPopupMenu.Separator();
         jMenuLayoutSetting = new javax.swing.JMenu();
@@ -1138,6 +1171,9 @@ public final class MainWindow extends javax.swing.JFrame
 
     jMenuBar1.add(jMenuEdit);
 
+    jMenuAlgorithms.setText("Knihovna algoritmů");
+    jMenuBar1.add(jMenuAlgorithms);
+
     jMenuLayouts.setText("Layouty");
     jMenuLayouts.setActionCommand("layout");
     jMenuLayouts.add(jSeparator7);
@@ -1334,7 +1370,7 @@ public final class MainWindow extends javax.swing.JFrame
     }//GEN-LAST:event_jMenuItemOpenActionPerformed
 
     private void jMenuItemSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemSaveActionPerformed
-        if (SettingsHolder.settings.getActualFlowchartFile() == null) {
+        if (SettingsHolder.settings.getActualFlowchartFile() == null || SettingsHolder.settings.isDontSaveDirectly()) {
             jMenuItemSaveAsActionPerformed(evt);
         } else {
             try {
@@ -1342,6 +1378,7 @@ public final class MainWindow extends javax.swing.JFrame
                 jAXBmarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
                 jAXBmarshaller.marshal(layout.getFlowchart(),
                         SettingsHolder.settings.getActualFlowchartFile());
+                flowchartCrashRecovery.updateSavedFlowchart();
                 setStatusText(
                         "Diagram byl úspěšně uložen do " + SettingsHolder.settings.getActualFlowchartFile().getPath(),
                         3500);
@@ -1362,12 +1399,14 @@ public final class MainWindow extends javax.swing.JFrame
             flowchartEditManager.actionPerformed(new ActionEvent(jButtonToolEdit,
                     jButtonToolEdit.hashCode(), "mode/editMode"));
         }
+        SettingsHolder.settings.setDontSaveDirectly(false);
         layout.setFlowchart(null);
         flowchartEditManager.loadMarkedSymbolText();
         flowchartEditManager.resetUndoManager();
         jPanelDiagram.repaint();
         SettingsHolder.settings.setActualFlowchartFile(null);
-        super.setTitle(windowTitle);
+        updateTitle();
+        flowchartCrashRecovery.updateSavedFlowchart();
     }//GEN-LAST:event_jMenuItemNewActionPerformed
 
     private void jMenuItemSaveAsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemSaveAsActionPerformed
@@ -1384,10 +1423,11 @@ public final class MainWindow extends javax.swing.JFrame
                 jAXBmarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
                 jAXBmarshaller.marshal(layout.getFlowchart(), file);
 
+                SettingsHolder.settings.setDontSaveDirectly(false);
                 SettingsHolder.settings.setActualFlowchartFile(file);
-                super.setTitle(SettingsHolder.settings.getActualFlowchartFile().getName().substring(
-                        0, SettingsHolder.settings.getActualFlowchartFile().getName().length() - 4) + " - " + windowTitle);
+                updateTitle();
 
+                flowchartCrashRecovery.updateSavedFlowchart();
                 setStatusText(
                         "Diagram byl úspěšně uložen do " + SettingsHolder.settings.getActualFlowchartFile().getPath(),
                         3500);
@@ -1521,6 +1561,7 @@ public final class MainWindow extends javax.swing.JFrame
     private javax.swing.JLabel jLabelFunction;
     private static javax.swing.JLabel jLabelStatus;
     private javax.swing.JLabel jLabelZoom;
+    private javax.swing.JMenu jMenuAlgorithms;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenu jMenuConfiguration;
     private javax.swing.JMenu jMenuEdit;
@@ -1643,6 +1684,7 @@ public final class MainWindow extends javax.swing.JFrame
             jTextAreaTextSymbol.getDocument().addDocumentListener(flowchartEditManager);
             jTextFieldTextSegment.getDocument().addDocumentListener(flowchartEditManager);
             //setEnableToSymbolButtons(true);
+            flowchartCrashRecovery.startPolling();
         } else {
             try {
                 jButtonToolEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource(
@@ -1668,6 +1710,7 @@ public final class MainWindow extends javax.swing.JFrame
                 component.setEnabled(false);
             }
             //setEnableToSymbolButtons(false);
+            flowchartCrashRecovery.stopPolling();
         }
         layout.setEditMode(editMode);
         this.editMode = editMode;
@@ -2008,9 +2051,6 @@ public final class MainWindow extends javax.swing.JFrame
      */
     public static JAXBContext getJAXBcontext()
     {
-        if (jAXBcontext == null) {
-            jAXBcontext = createJAXBContext();
-        }
         return jAXBcontext;
     }
 
@@ -2242,16 +2282,28 @@ public final class MainWindow extends javax.swing.JFrame
                     jButtonToolEdit.hashCode(), "mode/editMode"));
         }
 
+        SettingsHolder.settings.setDontSaveDirectly(false);
         layout.setFlowchart(flowchart);
         flowchartEditManager.loadMarkedSymbolText();
         flowchartEditManager.resetUndoManager();
         jPanelDiagram.repaint();
 
         SettingsHolder.settings.setActualFlowchartFile(null);
-        super.setTitle(windowTitle);
+        updateTitle();
+        flowchartCrashRecovery.updateSavedFlowchart();
 
         setStatusText("Diagram byl úspěšně vygenerován ze zdrojového kódu", 5000);
         return true;
+    }
+
+    private void updateTitle()
+    {
+        if (SettingsHolder.settings.getActualFlowchartFile() == null) {
+            super.setTitle(windowTitle);
+        } else {
+            super.setTitle(SettingsHolder.settings.getActualFlowchartFile().getName().substring(0,
+                    SettingsHolder.settings.getActualFlowchartFile().getName().length() - 4) + " - " + windowTitle);
+        }
     }
 
     private void openDiagram(File file)
@@ -2260,6 +2312,7 @@ public final class MainWindow extends javax.swing.JFrame
             return;
         }
         try {
+            SettingsHolder.settings.setDontSaveDirectly(false);
             Flowchart<LayoutSegment, LayoutElement> flowchart = GlobalFunctions.unsafeCast(
                     getJAXBcontext().createUnmarshaller().unmarshal(file));
 
@@ -2277,9 +2330,9 @@ public final class MainWindow extends javax.swing.JFrame
             jPanelDiagram.repaint();
 
             SettingsHolder.settings.setActualFlowchartFile(file);
-            super.setTitle(SettingsHolder.settings.getActualFlowchartFile().getName().substring(0,
-                    SettingsHolder.settings.getActualFlowchartFile().getName().length() - 4) + " - " + windowTitle);
+            updateTitle();
 
+            flowchartCrashRecovery.updateSavedFlowchart();
             setStatusText(
                     "Diagram " + SettingsHolder.settings.getActualFlowchartFile().getPath() + " byl úspěšně otevřen.",
                     5000);
@@ -2290,6 +2343,7 @@ public final class MainWindow extends javax.swing.JFrame
             if (SettingsHolder.settings.getActualFlowchartFile() != null
                     && SettingsHolder.settings.getActualFlowchartFile().equals(file)) {
                 SettingsHolder.settings.setActualFlowchartFile(null);
+                flowchartCrashRecovery.updateSavedFlowchart();
             }
         }
     }
@@ -2342,6 +2396,7 @@ public final class MainWindow extends javax.swing.JFrame
         if (!checkIfSaved(true)) {
             return;
         }
+        flowchartCrashRecovery.deleteBackup();
         System.exit(0);
     }
 

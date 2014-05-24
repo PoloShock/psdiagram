@@ -7,11 +7,11 @@
                 <shapeDownColor>230,230,230,255</shapeDownColor>
                 <hasShadow>true</hasShadow>
                 <customValue>Algoritmus, který určí nejmenší prvek a počet
-jeho výskytů v posloupnosti čísel ukončené
-nulou, která do posloupnosti nepatří.</customValue>
+jeho výskytů v posloupnosti zadaných čísel 
+ukončené nulou, která do posloupnosti nepatří.</customValue>
                 <value>Algoritmus, který určí nejmenší prvek a počet
-jeho výskytů v posloupnosti čísel ukončené
-nulou, která do posloupnosti nepatří.</value>
+jeho výskytů v posloupnosti zadaných čísel 
+ukončené nulou, která do posloupnosti nepatří.</value>
                 <alwaysLeftAlign>false</alwaysLeftAlign>
                 <relativeX>77.0</relativeX>
                 <relativeY>34.0</relativeY>

@@ -235,6 +235,11 @@
             </MenuItem>
           </SubComponents>
         </Menu>
+        <Menu class="javax.swing.JMenu" name="jMenuAlgorithms">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Knihovna algoritm&#x16f;"/>
+          </Properties>
+        </Menu>
         <Menu class="javax.swing.JMenu" name="jMenuLayouts">
           <Properties>
             <Property name="text" type="java.lang.String" value="Layouty"/>

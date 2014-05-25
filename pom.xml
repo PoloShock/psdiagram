@@ -244,14 +244,14 @@
                 <filtering>true</filtering>
                 <directory>src/main/resources</directory>
                 <includes>
-                    <include>appliaction.properties</include>
+                    <include>application.properties</include>
                 </includes>
             </resource>
             <resource>
                 <filtering>false</filtering>
                 <directory>src/main/resources</directory>
                 <excludes>
-                    <exclude>appliaction.properties</exclude>
+                    <exclude>application.properties</exclude>
                 </excludes>
             </resource>
         </resources>
@@ -351,7 +351,7 @@
                     <archive>
                         <addMavenDescriptor>false</addMavenDescriptor>
                         <manifest>
-                            <Main-Class>cz.miroslavbartyzal.psdiagram.app.diagram.Main</Main-Class>
+                            <Main-Class>cz.miroslavbartyzal.psdiagram.app.Main</Main-Class>
                         </manifest>
                         <manifestEntries>
                             <Built-By>Miroslav Bartyzal</Built-By>
@@ -397,7 +397,7 @@
                             </relocations>-->
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <Main-Class>cz.miroslavbartyzal.psdiagram.app.diagram.Main</Main-Class>
+                                    <Main-Class>cz.miroslavbartyzal.psdiagram.app.Main</Main-Class>
                                     <manifestEntries>
                                         <Built-By>Miroslav Bartyzal</Built-By>
                                         <Build-Number>${buildNumber}</Build-Number>
@@ -431,7 +431,7 @@
                         <configuration>
                             <archive>
                                 <manifest>
-                                    <Main-Class>cz.miroslavbartyzal.psdiagram.app.diagram.Main</Main-Class>
+                                    <Main-Class>cz.miroslavbartyzal.psdiagram.app.Main</Main-Class>
                                 </manifest>
                                 <manifestEntries>
                                     <Built-By>Miroslav Bartyzal</Built-By>

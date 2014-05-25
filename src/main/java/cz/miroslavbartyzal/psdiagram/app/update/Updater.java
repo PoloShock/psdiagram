@@ -4,7 +4,6 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.update;
 
-import cz.miroslavbartyzal.psdiagram.app.Main;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import cz.miroslavbartyzal.psdiagram.app.network.URLFileDownloader;
 import cz.miroslavbartyzal.psdiagram.app.network.URLStringDownloader;
@@ -13,10 +12,10 @@ import java.beans.PropertyChangeListener;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import javax.swing.SwingUtilities;
 import javax.xml.bind.JAXBException;
 
 /**
@@ -37,36 +36,61 @@ public final class Updater
     public void loadInfo(final PropertyChangeListener statusListener,
             final InfoLoadListener infoLoadListener)
     {
-        cleanAfterSelf();
-        HashMap<String, String> vars = new HashMap<>();
-        vars.put("since", cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder.PSDIAGRAM_VERSION);
-        URLStringDownloader uRLStringDownloader = new URLStringDownloader();
-        uRLStringDownloader.addPropertyChangeListener(statusListener);
-        uRLStringDownloader.sendRequest(SettingsHolder.PSDIAGRAM_SERVER + "/versioninfo", vars,
-                new URLStringDownloader.DownloadFinishListener()
-                {
-                    @Override
-                    public void onDownloadFinished(String result, Charset charset)
-                    {
-                        if (result != null && !result.equals("")) {
-                            try {
-                                changesCondenser = (ChangesCondenser) JAXBUpdateContext.getUnmarshaller().unmarshal(
-                                        new ByteArrayInputStream(result.getBytes(charset)));
-                            } catch (JAXBException ex) {
-                                ex.printStackTrace(System.err);
-                                statusListener.propertyChange(new PropertyChangeEvent(this, "error",
-                                                null,
-                                                "chyba při konverzi xml"));
+        new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                cleanAfterSelf();
+                HashMap<String, String> vars = new HashMap<>();
+                vars.put("since",
+                        cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder.PSDIAGRAM_VERSION);
+                URLStringDownloader uRLStringDownloader = new URLStringDownloader();
+                uRLStringDownloader.addPropertyChangeListener(statusListener);
+                uRLStringDownloader.sendRequest(SettingsHolder.PSDIAGRAM_SERVER + "/versioninfo",
+                        vars, new URLStringDownloader.DownloadFinishListener()
+                        {
+                            @Override
+                            public void onDownloadFinished(final String result,
+                                    final Charset charset)
+                            {
+                                new Thread(new Runnable()
+                                        {
+                                            @Override
+                                            public void run()
+                                            {
+                                                if (result != null && !result.equals("")) {
+                                                    try {
+                                                        changesCondenser = (ChangesCondenser) JAXBUpdateContext.getUnmarshaller().unmarshal(
+                                                                new ByteArrayInputStream(
+                                                                        result.getBytes(charset)));
+                                                    } catch (JAXBException ex) {
+                                                        ex.printStackTrace(System.err);
+                                                        statusListener.propertyChange(
+                                                                new PropertyChangeEvent(this,
+                                                                        "error", null,
+                                                                        "chyba při konverzi xml"));
+                                                    }
+                                                    if (changesCondenser != null) {
+                                                        changesHTML = CondenserToHTMLConverter.convertToHTML(
+                                                                changesCondenser, charset);
+                                                    }
+                                                }
+                                                SwingUtilities.invokeLater(new Runnable()
+                                                        {
+                                                            @Override
+                                                            public void run()
+                                                            {
+                                                                infoLoadListener.onInfoLoaded(
+                                                                        hasNewerVersion());
+                                                            }
+                                                });
+                                            }
+                                }).start();
                             }
-                            if (changesCondenser != null) {
-                                changesHTML = CondenserToHTMLConverter.convertToHTML(
-                                        changesCondenser,
-                                        charset);
-                            }
-                        }
-                        infoLoadListener.onInfoLoaded(hasNewerVersion());
-                    }
-                });
+                        });
+            }
+        }).start();
     }
 
     public void downloadAndInstallUdate(final PropertyChangeListener statusListener,
@@ -174,18 +198,19 @@ public final class Updater
         // launch it
         try {
             if (SettingsHolder.JAVAW == null) {
-                String command = "start \"updater\" /d \"" + updaterFile.getParentFile() + "\""
+                String command = "start \"updater\" /d \"" + updaterFile.getParentFile().getAbsolutePath() + "\""
                         + " \"" + updaterFile.getAbsolutePath() + "\""
                         + " -psdir \"" + SettingsHolder.MY_DIR.getAbsolutePath() + "\"";
 
                 Runtime.getRuntime().exec(new String[]{"cmd", "/s", "/c", "\"" + command + "\""});
             } else {
-                String command = "start \"updater\" /d \"" + updaterFile.getParentFile() + "\""
+                String command = "start \"updater\" /d \"" + updaterFile.getParentFile().getAbsolutePath() + "\""
                         + " \"" + SettingsHolder.JAVAW.getAbsolutePath() + "\""
                         + " -jar \"" + updaterFile.getAbsolutePath() + "\""
                         + " -psdir \"" + SettingsHolder.MY_DIR.getAbsolutePath() + "\"";
 
-                Runtime.getRuntime().exec(new String[]{"cmd", "/s", "/c", "\"" + command + "\""});
+                Runtime.getRuntime().exec(new String[]{"cmd", "/s", "/c", "\"" + command + "\""},
+                        null, updaterFile.getParentFile());
             }
 
         } catch (IOException ex) {
@@ -208,6 +233,7 @@ public final class Updater
             }
             ArchiveExtractor.delete(new File(SettingsHolder.WORKING_DIR, ARCHIVE_NAME.substring(
                     0, ARCHIVE_NAME.length() - 4)));
+            ArchiveExtractor.delete(new File(SettingsHolder.WORKING_DIR, "oldjre"));
         } catch (IOException ex) {
         }
     }

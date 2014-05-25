@@ -36,6 +36,7 @@ public final class Main
     // TODO moznost nastaveni prirazovaciho znamenka
     // TODO moznost prepnuti mezi Do-Until a Do-While
     // TODO doplnit celociselny podil (DIV v pascalu) -> co treba "//" jako v pythonu?
+    // TODO vytvor si testy na syntakticke filtry
     // TODO doplnit priklad celociselneho deleni do symbolu procesu
     //e TODO pridat labely kdyz a pak u podminky v panelu funkce?
     // TODO pomoci tranc preklopit TBLR layout na LFTB? :)
@@ -61,18 +62,13 @@ public final class Main
     // TODO co to rucni propojovani sipek, kdyz bych je oznacil jinou barvou jako neoptimalni?
     // TODO moznost zkompilovat diagram do spustitelneho souboru
     // TODO zvazit pouziti delty (viz opengl projekt) pri animaci
-    // TODO prejmenuj properties z appliaction na application.. :D
-    //e! TODO dat uzivateli vedet ze muze normalne upgradovat, kdyz proceeduje (z hlasky o vyprseni zkusebky to neni poznat)
     // TODO nemel bych pro ziskani casu posilat HTTP HEAD misto GET?
-    //e! TODO upozornit na vyprseni zkusebky nekolik dni pred jejim skutecnym vyprsenim
     // TODO koukni po jednotce kibibyte v updateru - nemam to prehozene s kilobytem?
     // TODO drag&drop nejen do PSD ale i z nej - presun diagramu jako export tahem do emailove prilohy apod.
     // TODO u proguardu dynamicky do manifestu priradit main podle jeho obfuskace - tak nebudu muset zachovavat balickovou cestu k mainu
     // TODO pohyb mezi symboly v editacnim rezimu pomoci kurzorovych sipek
     // TODO podivat se na logicnost posouvani diagramu pri posunu komentare mimo platno a zpet
     //e TODO nasadit best practice v gitu
-    //e! TODO layout v menu je spatnej u scopu promennych
-    //e TODO zvazit umoznit nastaveni cesty k adresari, ktera bude nadrazena working_dir a my_dir (v tomto poradi) a odkud se pak budou tahat priklady algoritmu a (nektera) nastaveni
     /**
      * Metoda pro spuštění hlavního okna aplikace. Nejsou přijímány žádné
      * parametry.

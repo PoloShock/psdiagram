@@ -64,6 +64,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -104,7 +105,6 @@ import org.freehep.graphicsio.pdf.PDFGraphics2D;
 public final class MainWindow extends javax.swing.JFrame
 {
 
-    private static boolean forceUpdate = false;
     private Layout layout;
     private boolean editMode = true;
     private boolean animationMode = false;
@@ -123,6 +123,8 @@ public final class MainWindow extends javax.swing.JFrame
     private final JFrameUpdate jFrameUpdate;
     private static final JAXBContext jAXBcontext = createJAXBContext();
     private final String windowTitle = "PS Diagram"; // BEWARE OF CHANGE - updater using it for process identification
+    private static boolean forceUpdate = false;
+    private Long daysLeft;
     private final FlowchartCrashRecovery flowchartCrashRecovery;
     private static Timer statusTimer = new Timer(0, new ActionListener()
     {
@@ -139,7 +141,7 @@ public final class MainWindow extends javax.swing.JFrame
     /** Creates new form MainWindow */
     private MainWindow()
     {
-        String buildProfile = ResourceBundle.getBundle("appliaction").getString("buildProfile");
+        String buildProfile = ResourceBundle.getBundle("application").getString("buildProfile");
         if (!buildProfile.equals("deployment") && !buildProfile.equals("development-run")) {
             if (System.getenv("COMPUTERNAME").equals("POLOSHOCK-NB")) {
                 JOptionPane.showMessageDialog(null, buildProfile, "", JOptionPane.WARNING_MESSAGE);
@@ -155,7 +157,7 @@ public final class MainWindow extends javax.swing.JFrame
 
         System.setProperty("java.net.useSystemProxies", "true");
         initComponents();
-        addWindowListener(new WindowAdapter()
+        super.addWindowListener(new WindowAdapter()
         {
             @Override
             public void windowClosing(WindowEvent we)
@@ -217,17 +219,6 @@ public final class MainWindow extends javax.swing.JFrame
         jFrameCodeImport = new JFrameCodeImport(this);
         jFrameCodeExport = new JFrameCodeExport(this);
         jFrameAbout = new JFrameAbout();
-        Updater updater = new Updater();
-        jFrameUpdate = new JFrameUpdate(updater, new Updater.BeforeExitListener()
-        {
-            @Override
-            public void onBeforeExit()
-            {
-                if (!checkIfSaved(false)) {
-                    flowchartCrashRecovery.backupFlowchart();
-                }
-            }
-        });
 
         jPanelVariables.setVisible(false);
 
@@ -275,6 +266,18 @@ public final class MainWindow extends javax.swing.JFrame
         jScrollPane1.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE); // prevents glitches (http://andrewtill.blogspot.cz/2012/06/jscrollpane-repainting-problems.html)
         jScrollPaneFunction.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE); // prevents glitches (http://andrewtill.blogspot.cz/2012/06/jscrollpane-repainting-problems.html)
         jScrollPaneText.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE); // prevents glitches (http://andrewtill.blogspot.cz/2012/06/jscrollpane-repainting-problems.html)
+
+        Updater updater = new Updater();
+        jFrameUpdate = new JFrameUpdate(updater, new Updater.BeforeExitListener()
+        {
+            @Override
+            public void onBeforeExit()
+            {
+                if (!checkIfSaved(false)) {
+                    flowchartCrashRecovery.backupFlowchart();
+                }
+            }
+        }, forceUpdate, daysLeft);
 
         flowchartEditManager = new FlowchartEditManager(layout, this, jPanelDiagram,
                 new FlowchartEditUndoManager(jMenuItemUndo, jMenuItemRedo, jButtonToolUndo,
@@ -454,8 +457,66 @@ public final class MainWindow extends javax.swing.JFrame
             public void onInfoLoaded(boolean newVersionAvailable)
             {
                 if (newVersionAvailable) {
+                    if (forceUpdate) {
+                        JOptionPane.showMessageDialog(null, new String(new byte[]{60, 104, 116, 109,
+                            108, 62, 80, 108, 97, 116, 110, 111, 115, 116, 32, 116, -61, -87, 116,
+                            111, 32, 122, 107, 117, -59, -95, 101, 98, 110, -61, -83, 32, 118, 101,
+                            114, 122, 101, 32, 97, 112, 108, 105, 107, 97, 99, 101, 32, 118, 121,
+                            112, 114, -59, -95, 101, 108, 97, 46, 60, 98, 114, 32, 47, 62, 80, 114,
+                            111, 32, 106, 101, 106, -61, -83, 32, 97, 107, 116, 117, 97, 108, 105,
+                            122, 97, 99, 105, 32, 118, 121, 117, -59, -66, 105, 106, 116, 101, 32,
+                            112, 114, 111, 115, -61, -83, 109, 32, 110, -61, -95, 115, 108, 101, 100,
+                            117, 106, -61, -83, 99, -61, -83, 104, 111, 32, 102, 111, 114, 109, 117,
+                            108, -61, -95, -59, -103, 101, 46, 60, 47, 104, 116, 109, 108, 62},
+                                StandardCharsets.UTF_8), new String(
+                                        new byte[]{75, 111, 110, 101, 99, 32, 112, 108, 97, 116, 110,
+                                            111, 115, 116, 105, 32, 122, 107, 117, -59, -95, 101, 98,
+                                            110, -61, -83, 32, 118, 101, 114, 122, 101},
+                                        StandardCharsets.UTF_8), JOptionPane.WARNING_MESSAGE); // Konec platnosti zkušební verze; <html>Platnost této zkušební verze aplikace vypršela.<br />Pro její aktualizaci využijte prosím následujícího formuláře.</html>
+                    }
                     jMenuItemUpdateActionPerformed(null);
                 } else if (forceUpdate) {
+                    // html content
+                    JEditorPane ep = new JEditorPane("text/html", new String(
+                            new byte[]{60, 104, 116, 109, 108, 62, 80, 108, 97, 116, 110, 111, 115,
+                                116, 32, 116, -61, -87, 116, 111, 32, 122, 107, 117, -59, -95, 101,
+                                98, 110, -61, -83, 32, 118, 101, 114, 122, 101, 32, 97, 112, 108,
+                                105, 107, 97, 99, 101, 32, 118, 121, 112, 114, -59, -95, 101, 108,
+                                97, 46, 60, 98, 114, 32, 47, 62, 80, 114, 111, 32, 122, -61, -83,
+                                115, 107, -61, -95, 110, -61, -83, 32, 110, 111, 118, -61, -87, 44,
+                                32, 97, 107, 116, 117, -61, -95, 108, 110, -61, -83, 32, 118, 101,
+                                114, 122, 101, 44, 32, 110, 97, 118, -59, -95, 116, 105, 118, 116,
+                                101, 32, 112, 114, 111, 115, -61, -83, 109, 32, 115, 116, 114, -61,
+                                -95, 110, 107, 121, 32, 60, 97, 32, 104, 114, 101, 102, 61, 34, 104,
+                                116, 116, 112, 58, 47, 47, 119, 119, 119, 46, 112, 115, 100, 105, 97,
+                                103, 114, 97, 109, 46, 99, 122, 34, 62, 112, 115, 100, 105, 97, 103,
+                                114, 97, 109, 46, 99, 122, 60, 47, 97, 62, 46, 60, 47, 104, 116, 109,
+                                108, 62}, StandardCharsets.UTF_8)); // <html>Platnost této zkušební verze aplikace vypršela.<br />Pro získání nové, aktuální verze, navštivte prosím stránky <a href="http://www.psdiagram.cz">psdiagram.cz</a>.</html>
+                    // handle link events
+                    ep.addHyperlinkListener(new HyperlinkListener()
+                    {
+                        @Override
+                        public void hyperlinkUpdate(HyperlinkEvent e)
+                        {
+                            if (e.getEventType().equals(HyperlinkEvent.EventType.ACTIVATED)) {
+                                try {
+                                    try {
+                                        Desktop.getDesktop().browse(e.getURL().toURI());
+                                    } catch (URISyntaxException ex) {
+                                    }
+                                } catch (IOException ex) {
+                                }
+                            }
+                        }
+                    });
+                    ep.setEditable(false);
+                    ep.setBackground(new Color(0, 0, 0, 0));
+                    // show
+                    JOptionPane.showMessageDialog(null, ep, new String(new byte[]{75, 111, 110, 101,
+                        99, 32, 112, 108, 97, 116, 110, 111, 115, 116, 105, 32, 122, 107, 117, -59,
+                        -95, 101, 98, 110, -61, -83, 32, 118, 101, 114, 122, 101},
+                            StandardCharsets.UTF_8), JOptionPane.WARNING_MESSAGE); // Konec platnosti zkušební verze
+
                     flowchartCrashRecovery.backupFlowchart();
                     System.exit(0);
                 }
@@ -1473,7 +1534,7 @@ public final class MainWindow extends javax.swing.JFrame
     private void jMenuItemUpdateActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jMenuItemUpdateActionPerformed
     {//GEN-HEADEREND:event_jMenuItemUpdateActionPerformed
         jFrameUpdate.setLocationRelativeTo(this);
-        jFrameUpdate.setVisible(true, forceUpdate);
+        jFrameUpdate.setVisible(true);
     }//GEN-LAST:event_jMenuItemUpdateActionPerformed
 
     private void jMenuEditMenuSelected(javax.swing.event.MenuEvent evt)//GEN-FIRST:event_jMenuEditMenuSelected
@@ -2096,69 +2157,34 @@ public final class MainWindow extends javax.swing.JFrame
             currentDate = TimeCollector.getTimeAndDate(
                     cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder.TIMESERVER);
             if (currentDate == null) {
-                JOptionPane.showMessageDialog(null, new String(new char[]{'<', 'h', 't', 'm', 'l',
-                    '>', 'T', 'a', 't', 'o', ' ', 'z', 'k', 'u', 'š', 'e', 'b', 'n', 'í', ' ', 'v',
-                    'e', 'r', 'z', 'e', ' ', 'a', 'p', 'l', 'i', 'k', 'a', 'c', 'e', ' ', 'p', 'o',
-                    't', 'ř', 'e', 'b', 'u', 'j', 'e', ' ', 'p', 'r', 'o', ' ', 's', 'v', 'ů', 'j',
-                    ' ', 'b', 'ě', 'h', ' ', 'p', 'ř', 'i', 'p', 'o', 'j', 'e', 'n', 'í', ' ', 'k',
-                    ' ', 'i', 'n', 't', 'e', 'r', 'n', 'e', 't', 'u', '.', '<', 'b', 'r', ' ', '/',
-                    '>', 'M', 'á', 't', 'e', '-', 'l', 'i', ' ', 'p', 'o', 't', 'í', 'ž', 'e', ',',
-                    ' ', 'k', 'o', 'n', 't', 'a', 'k', 't', 'u', 'j', 't', 'e', ' ', 'm', 'n', 'e',
-                    ' ', 'n', 'a', ' ', 'm', 'i', 'r', 'o', 's', 'l', 'a', 'v', 'b', 'a', 'r', 't',
-                    'y', 'z', 'a', 'l', '@', 'g', 'm', 'a', 'i', 'l', '.', 'c', 'o', 'm', '.', '<',
-                    'b', 'r', ' ', '/', '>', 'N', 'y', 'n', 'í', ' ', 's', 'e', ' ', 'P', 'S', ' ',
-                    'D', 'i', 'a', 'g', 'r', 'a', 'm', ' ', 'u', 'k', 'o', 'n', 'č', 'í', '.', '.',
-                    '.', '<', '/', 'h', 't', 'm', 'l', '>'}), new String(new char[]{'N', 'e', 'p',
-                    'o', 'd', 'a', 'ř', 'i', 'l', 'o', ' ', 's', 'e', ' ', 'n', 'a', 'v', 'á', 'z',
-                    'a', 't', ' ', 's', 'p', 'o', 'j', 'e', 'n', 'í', ' ', 's', 'e', ' ', 's', 'e',
-                    'r', 'v', 'e', 'r', 'e', 'm'}), JOptionPane.WARNING_MESSAGE); //<html>Nepodařilo se navázat spojení se serverem; Tato zkušební verze aplikace potřebuje pro svůj běh připojení k internetu.<br />Máte-li potíže, kontaktujte mne na miroslavbartyzal@gmail.com.<br /> Nyní se PS Diagram ukončí...</html>
+                JOptionPane.showMessageDialog(null, new String(
+                        new byte[]{60, 104, 116, 109, 108, 62, 84, 97, 116, 111, 32, 122, 107,
+                            117, -59, -95, 101, 98, 110, -61, -83, 32, 118, 101, 114, 122, 101,
+                            32, 97, 112, 108, 105, 107, 97, 99, 101, 32, 112, 111, 116, -59,
+                            -103, 101, 98, 117, 106, 101, 32, 112, 114, 111, 32, 115, 118, -59,
+                            -81, 106, 32, 98, -60, -101, 104, 32, 112, -59, -103, 105, 112, 111,
+                            106, 101, 110, -61, -83, 32, 107, 32, 105, 110, 116, 101, 114, 110,
+                            101, 116, 117, 46, 60, 98, 114, 32, 47, 62, 77, -61, -95, 116, 101,
+                            45, 108, 105, 32, 112, 111, 116, -61, -83, -59, -66, 101, 44, 32,
+                            107, 111, 110, 116, 97, 107, 116, 117, 106, 116, 101, 32, 109, 110,
+                            101, 32, 112, 114, 111, 115, -61, -83, 109, 32, 110, 97, 32, 109,
+                            105, 114, 111, 115, 108, 97, 118, 98, 97, 114, 116, 121, 122, 97,
+                            108, 64, 103, 109, 97, 105, 108, 46, 99, 111, 109, 46, 60, 98, 114,
+                            32, 47, 62, 78, 121, 110, -61, -83, 32, 115, 101, 32, 80, 83, 32, 68,
+                            105, 97, 103, 114, 97, 109, 32, 117, 107, 111, 110, -60, -115, -61,
+                            -83, 46, 46, 46, 60, 47, 104, 116, 109, 108, 62},
+                        StandardCharsets.UTF_8), new String(new byte[]{78, 101, 112, 111, 100,
+                            97, -59, -103, 105, 108, 111, 32, 115, 101, 32, 110, 97, 118, -61, -95,
+                            122, 97, 116, 32, 115, 112, 111, 106, 101, 110, -61, -83, 32, 115, 101,
+                            32, 115, 101, 114, 118, 101, 114, 101, 109}, StandardCharsets.UTF_8),
+                        JOptionPane.WARNING_MESSAGE); // Nepodařilo se navázat spojení se serverem; <html>Tato zkušební verze aplikace potřebuje pro svůj běh připojení k internetu.<br />Máte-li potíže, kontaktujte mne prosím na miroslavbartyzal@gmail.com.<br />Nyní se PS Diagram ukončí...</html>
                 System.exit(0);
             }
         }
         currentTime = currentDate.getTime();
 
+        daysLeft = (1404165600000l - currentTime) / 86400000l;
         if (currentTime > 1404165600000l || currentTime < SettingsHolder.settings.getLastTrialLaunchedTime()) { // 2014.7.1. 00:00:00 = 1404165600000 (System.out.println(new GregorianCalendar(2014, 6, 1).getTimeInMillis());) - month is zero-based
-            // html content
-            JEditorPane ep = new JEditorPane("text/html", new String(new char[]{'<', 'h', 't', 'm',
-                'l', '>', 'P', 'l', 'a', 't', 'n', 'o', 's', 't', ' ', 't', 'é', 't', 'o', ' ', 'z',
-                'k', 'u', 'š', 'e', 'b', 'n', 'í', ' ', 'v', 'e', 'r', 'z', 'e', ' ', 'a', 'p', 'l',
-                'i', 'k', 'a', 'c', 'e', ' ', 'v', 'y', 'p', 'r', 'š', 'e', 'l', 'a', '.', '<', 'b',
-                'r', ' ', '/', '>', 'P', 'r', 'o', ' ', 'z', 'í', 's', 'k', 'á', 'n', 'í', ' ', 'n',
-                'o', 'v', 'é', ',', ' ', 'a', 'k', 't', 'u', 'á', 'l', 'n', 'í', ' ', 'v', 'e', 'r',
-                'z', 'e', ' ', 'm', 'n', 'e', ' ', 'k', 'o', 'n', 't', 'a', 'k', 't', 'u', 'j', 't',
-                'e', ' ', 'n', 'a', ' ', 'm', 'i', 'r', 'o', 's', 'l', 'a', 'v', 'b', 'a', 'r', 't',
-                'y', 'z', 'a', 'l', '@', 'g', 'm', 'a', 'i', 'l', '.', 'c', 'o', 'm', ',', '<', 'b',
-                'r', ' ', '/', '>', 'n', 'a', 'v', 'š', 't', 'i', 'v', 't', 'e', ' ', 's', 't', 'r',
-                'á', 'n', 'k', 'y', ' ', '<', 'a', ' ', 'h', 'r', 'e', 'f', '=', '\"', 'h', 't', 't',
-                'p', ':', '/', '/', 'w', 'w', 'w', '.', 'p', 's', 'd', 'i', 'a', 'g', 'r', 'a', 'm',
-                '.', 'c', 'z', '\"', '>', 'p', 's', 'd', 'i', 'a', 'g', 'r', 'a', 'm', '.', 'c', 'z',
-                '<', '/', 'a', '>', ' ', 'n', 'e', 'b', 'o', ' ', 'j', 'e', 'd', 'n', 'o', 'd', 'u',
-                'š', 'e', ' ', 'a', 'k', 't', 'u', 'a', 'l', 'i', 'z', 'u', 'j', 't', 'e', ' ', 'p',
-                'ř', 'e', 's', ' ', 'a', 'p', 'l', 'i', 'k', 'a', 'č', 'n', 'í', ' ', 'f', 'o', 'r',
-                'm', 'u', 'l', 'á', 'ř', '.', '<', '/', 'h', 't', 'm', 'l', '>'}));
-            // handle link events
-            ep.addHyperlinkListener(new HyperlinkListener()
-            {
-                @Override
-                public void hyperlinkUpdate(HyperlinkEvent e)
-                {
-                    if (e.getEventType().equals(HyperlinkEvent.EventType.ACTIVATED)) {
-                        try {
-                            try {
-                                Desktop.getDesktop().browse(e.getURL().toURI());
-                            } catch (URISyntaxException ex) {
-                            }
-                        } catch (IOException ex) {
-                        }
-                    }
-                }
-            });
-            ep.setEditable(false);
-            ep.setBackground(new Color(0, 0, 0, 0));
-            // show
-            JOptionPane.showMessageDialog(null, ep, new String(new char[]{'K', 'o', 'n', 'e', 'c',
-                ' ', 'p', 'l', 'a', 't', 'n', 'o', 's', 't', 'i', ' ', 'z', 'k', 'u', 'š', 'e', 'b',
-                'n', 'í', ' ', 'v', 'e', 'r', 'z', 'e'}), JOptionPane.WARNING_MESSAGE);
 //            System.exit(0); <- let's let the user download newer version of PS Diagram
             forceUpdate = true;
         } else {

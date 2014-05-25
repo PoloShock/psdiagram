@@ -9,15 +9,19 @@ import cz.miroslavbartyzal.psdiagram.app.update.Updater;
 import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.math.RoundingMode;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Calendar;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 
@@ -32,24 +36,44 @@ public class JFrameUpdate extends javax.swing.JFrame implements PropertyChangeLi
     private String fileSize;
     private boolean downloadInProgress;
     private final Updater.BeforeExitListener beforeExitListener;
+    private boolean downloadHit = false;
 
-    public JFrameUpdate(Updater updater, Updater.BeforeExitListener beforeExitListener)
+    public JFrameUpdate(Updater updater, Updater.BeforeExitListener beforeExitListener,
+            final boolean forceUpdate, final Long daysLeft)
     {
         this.updater = updater;
         this.beforeExitListener = beforeExitListener;
-        initComponents();
-        jScrollPane2.getVerticalScrollBar().setUnitIncrement(10);
-        jScrollPane2.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE); // prevents glitches (http://andrewtill.blogspot.cz/2012/06/jscrollpane-repainting-problems.html)
-    }
-
-    public void setVisible(boolean visibility, boolean forceUpdate)
-    {
         if (forceUpdate) {
             super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         } else {
             super.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         }
-        setVisible(visibility);
+
+        initComponents();
+        jScrollPane2.getVerticalScrollBar().setUnitIncrement(10);
+        jScrollPane2.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE); // prevents glitches (http://andrewtill.blogspot.cz/2012/06/jscrollpane-repainting-problems.html)
+        super.addWindowListener(new WindowAdapter()
+        {
+            @Override
+            public void windowClosing(WindowEvent we)
+            {
+                if (!forceUpdate && daysLeft != null && daysLeft >= 0 && daysLeft < 16 && !JFrameUpdate.this.downloadHit) {
+                    JFrameUpdate.this.setAlwaysOnTop(false);
+                    JOptionPane.showMessageDialog(null, new String(
+                            new byte[]{60, 104, 116, 109, 108, 62, 79, 100, 108, 111, -59, -66,
+                                101, 110, -61, -83, 32, 97, 107, 116, 117, 97, 108, 105, 122, 97,
+                                99, 101, 32, 98, 117, 100, 101, 32, 109, 111, -59, -66, 110, -61,
+                                -87, 32, 117, -59, -66, 32, 106, 101, 110, 32, 60, 98, 62},
+                            StandardCharsets.UTF_8) + daysLeft + new String(new byte[]{60, 47, 98,
+                                62, 32, 100, 97, 108, -59, -95, -61, -83, 99, 104, 32, 100, 110, -59,
+                                -81, 46, 60, 47, 104, 116, 109, 108, 62}, StandardCharsets.UTF_8),
+                            new String(new byte[]{79, 100, 108, 111, -59, -66, 101, 110, -61, -83,
+                                32, 97, 107, 116, 117, 97, 108, 105, 122, 97, 99, 101},
+                            StandardCharsets.UTF_8), JOptionPane.WARNING_MESSAGE); // Odložení aktualizace; <html>Odložení aktualizace bude možné už jen <b>X</b> dalších dnů.</html>
+                    JFrameUpdate.this.setAlwaysOnTop(true);
+                }
+            }
+        });
     }
 
     @Override
@@ -402,6 +426,7 @@ public class JFrameUpdate extends javax.swing.JFrame implements PropertyChangeLi
 
     private void jButtonDoInActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButtonDoInActionPerformed
     {//GEN-HEADEREND:event_jButtonDoInActionPerformed
+        downloadHit = true;
         if (!downloadInProgress) {
             resetProgreess();
             downloadInProgress = true;

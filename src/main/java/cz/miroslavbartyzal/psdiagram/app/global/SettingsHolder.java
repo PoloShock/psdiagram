@@ -15,6 +15,7 @@ import java.awt.font.FontRenderContext;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import java.util.ResourceBundle;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -77,12 +78,13 @@ public final class SettingsHolder
         }
 
         // resolve self location
-        try {
-            MY_DIR = new File(
-                    Main.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParentFile();
-        } catch (URISyntaxException ex) {
-            ex.printStackTrace(System.err);
-        }
+//        try {
+//            MY_DIR = new File(
+//                    Main.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParentFile();
+        MY_DIR = Paths.get("").toAbsolutePath().toFile();
+//        } catch (URISyntaxException ex) {
+//            ex.printStackTrace(System.err);
+//        }
     }
 
     private SettingsHolder()
@@ -117,11 +119,11 @@ public final class SettingsHolder
      */
     public static final String TIMESERVER = "http://www.seznam.cz";
 //    public static final String PSDIAGRAM_SERVER = "http://www.psdiagram.cz";
-    public static final String PSDIAGRAM_SERVER = ResourceBundle.getBundle("appliaction").getString(
+    public static final String PSDIAGRAM_SERVER = ResourceBundle.getBundle("application").getString(
             "psdiagramWebUrl");
-    public static final String PSDIAGRAM_VERSION = ResourceBundle.getBundle("appliaction").getString(
+    public static final String PSDIAGRAM_VERSION = ResourceBundle.getBundle("application").getString(
             "version");
-    public static final String PSDIAGRAM_BUILD = ResourceBundle.getBundle("appliaction").getString(
+    public static final String PSDIAGRAM_BUILD = ResourceBundle.getBundle("application").getString(
             "buildInfo");
     public static final String PSDIAGRAM_BUILD_NUMBER = PSDIAGRAM_BUILD.replaceAll("\\s.*$", "");
     public static final String PSDIAGRAM_BUILD_DATE = PSDIAGRAM_BUILD.replaceAll("^[\\d\\s]+\\(", "").replaceAll(

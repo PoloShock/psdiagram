@@ -158,8 +158,8 @@ public final class Updater
         return changesCondenser;
     }
 
-    private void launchUpdate(File downloadedFile, PropertyChangeListener statusListener,
-            BeforeExitListener beforeExitListener)
+    private void launchUpdate(File downloadedFile, final PropertyChangeListener statusListener,
+            final BeforeExitListener beforeExitListener)
     {
         statusListener.propertyChange(new PropertyChangeEvent(this, "status", null,
                 "extrahuji..."));
@@ -187,40 +187,48 @@ public final class Updater
 
         statusListener.propertyChange(new PropertyChangeEvent(this, "status", null,
                 "připravuji spuštění instalace..."));
-        File updaterFile = new File(extractedDir, UPDATER_FILENAME);
+        final File updaterFile = new File(extractedDir, UPDATER_FILENAME);
         if (!updaterFile.exists()) {
             statusListener.propertyChange(new PropertyChangeEvent(this, "error", null,
                     "chyba: nenalezen instalátor"));
             return;
         }
-        beforeExitListener.onBeforeExit();
+        SwingUtilities.invokeLater(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                beforeExitListener.onBeforeExit();
 
-        // launch it
-        try {
-            if (SettingsHolder.JAVAW == null) {
-                String command = "start \"updater\" /d \"" + updaterFile.getParentFile().getAbsolutePath() + "\""
-                        + " \"" + updaterFile.getAbsolutePath() + "\""
-                        + " -psdir \"" + SettingsHolder.MY_DIR.getAbsolutePath() + "\"";
+                // launch it
+                try {
+                    if (SettingsHolder.JAVAW == null) {
+                        String command = "start \"updater\" /d \"" + updaterFile.getParentFile().getAbsolutePath() + "\""
+                                + " \"" + updaterFile.getAbsolutePath() + "\""
+                                + " -psdir \"" + SettingsHolder.MY_DIR.getAbsolutePath() + "\"";
 
-                Runtime.getRuntime().exec(new String[]{"cmd", "/s", "/c", "\"" + command + "\""});
-            } else {
-                String command = "start \"updater\" /d \"" + updaterFile.getParentFile().getAbsolutePath() + "\""
-                        + " \"" + SettingsHolder.JAVAW.getAbsolutePath() + "\""
-                        + " -jar \"" + updaterFile.getAbsolutePath() + "\""
-                        + " -psdir \"" + SettingsHolder.MY_DIR.getAbsolutePath() + "\"";
+                        Runtime.getRuntime().exec(new String[]{"cmd", "/s", "/c",
+                            "\"" + command + "\""});
+                    } else {
+                        String command = "start \"updater\" /d \"" + updaterFile.getParentFile().getAbsolutePath() + "\""
+                                + " \"" + SettingsHolder.JAVAW.getAbsolutePath() + "\""
+                                + " -jar \"" + updaterFile.getAbsolutePath() + "\""
+                                + " -psdir \"" + SettingsHolder.MY_DIR.getAbsolutePath() + "\"";
 
-                Runtime.getRuntime().exec(new String[]{"cmd", "/s", "/c", "\"" + command + "\""},
-                        null, updaterFile.getParentFile());
+                        Runtime.getRuntime().exec(new String[]{"cmd", "/s", "/c",
+                            "\"" + command + "\""}, null, updaterFile.getParentFile());
+                    }
+
+                } catch (IOException ex) {
+                    ex.printStackTrace(System.err);
+                    statusListener.propertyChange(new PropertyChangeEvent(this, "error", null,
+                            "chyba při spouštění instalátoru"));
+                    return;
+                }
+
+                System.exit(0);
             }
-
-        } catch (IOException ex) {
-            ex.printStackTrace(System.err);
-            statusListener.propertyChange(new PropertyChangeEvent(this, "error", null,
-                    "chyba při spouštění instalátoru"));
-            return;
-        }
-
-        System.exit(0);
+        });
     }
 
     private void cleanAfterSelf()
@@ -257,23 +265,30 @@ public final class Updater
         }
 
         @Override
-        public void onDownloadFinished(String result, Charset charset)
+        public void onDownloadFinished(final String result, final Charset charset)
         {
-            String checksum = FileChecksum.getMD5Checksum(downloadedFile);
-            if (result == null || checksum == null) {
-                statusListener.propertyChange(new PropertyChangeEvent(this, "error", null,
-                        "chyba: nepodařilo se ověřit kontrolní součet"));
-                return;
-            }
-            if (!result.equals(checksum)) {
-                statusListener.propertyChange(new PropertyChangeEvent(this, "error", null,
-                        "kontrolní součet nesouhlasí"));
-                return;
-            }
+            new Thread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    String checksum = FileChecksum.getMD5Checksum(downloadedFile);
+                    if (result == null || checksum == null) {
+                        statusListener.propertyChange(new PropertyChangeEvent(this, "error", null,
+                                "chyba: nepodařilo se ověřit kontrolní součet"));
+                        return;
+                    }
+                    if (!result.equals(checksum)) {
+                        statusListener.propertyChange(new PropertyChangeEvent(this, "error", null,
+                                "kontrolní součet nesouhlasí"));
+                        return;
+                    }
 
-            statusListener.propertyChange(new PropertyChangeEvent(this, "status", null,
-                    "kontrolní součet ověřen"));
-            launchUpdate(downloadedFile, statusListener, beforeExitListener);
+                    statusListener.propertyChange(new PropertyChangeEvent(this, "status", null,
+                            "kontrolní součet ověřen"));
+                    launchUpdate(downloadedFile, statusListener, beforeExitListener);
+                }
+            }).start();
         }
 
     }

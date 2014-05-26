@@ -44,6 +44,7 @@ public final class LinkedHashMapAdapter extends XmlAdapter<LinkedHashMapAdapter.
      *
      * @param type instance třídy MapType, ze které se má objekt unmarshalovat
      * @return instance třídy LinkedHashMap
+     * @throws java.lang.Exception
      */
     @Override
     public LinkedHashMap<String, String> unmarshal(MapType type) throws Exception

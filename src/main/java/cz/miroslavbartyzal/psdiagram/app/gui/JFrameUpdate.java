@@ -134,7 +134,7 @@ public class JFrameUpdate extends javax.swing.JFrame implements PropertyChangeLi
         jLabelOldVersion.setText(ov);
         jLabelNewVersion.setText(nv);
 
-        resetProgreess();
+        resetProgress();
 
         if (condenser.getReleaseURLs() != null && condenser.getReleaseURLs().get(newVersion) != null) {
             final String url = condenser.getReleaseURLs().get(newVersion);
@@ -191,7 +191,7 @@ public class JFrameUpdate extends javax.swing.JFrame implements PropertyChangeLi
         });
     }
 
-    private void resetProgreess()
+    private void resetProgress()
     {
         jLabelSpeed.setText(" "); // don't fold layout
         jLabelSizes.setText(" "); // don't fold layout
@@ -428,7 +428,7 @@ public class JFrameUpdate extends javax.swing.JFrame implements PropertyChangeLi
     {//GEN-HEADEREND:event_jButtonDoInActionPerformed
         downloadHit = true;
         if (!downloadInProgress) {
-            resetProgreess();
+            resetProgress();
             downloadInProgress = true;
             jButtonDoIn.setText("Zrušit");
             fileSize = null;

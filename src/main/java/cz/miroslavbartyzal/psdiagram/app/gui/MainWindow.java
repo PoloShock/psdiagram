@@ -2183,8 +2183,8 @@ public final class MainWindow extends javax.swing.JFrame
         }
         currentTime = currentDate.getTime();
 
-        daysLeft = (1404165600000l - currentTime) / 86400000l;
-        if (currentTime > 1404165600000l || currentTime < SettingsHolder.settings.getLastTrialLaunchedTime()) { // 2014.7.1. 00:00:00 = 1404165600000 (System.out.println(new GregorianCalendar(2014, 6, 1).getTimeInMillis());) - month is zero-based
+        daysLeft = (1414796400000l - currentTime) / 86400000l;
+        if (currentTime > 1414796400000l || currentTime < SettingsHolder.settings.getLastTrialLaunchedTime()) { // 2014.11.1. 00:00:00 = 1414796400000 (System.out.println(new GregorianCalendar(2014, 10, 1).getTimeInMillis());) - month is zero-based
 //            System.exit(0); <- let's let the user download newer version of PS Diagram
             forceUpdate = true;
         } else {

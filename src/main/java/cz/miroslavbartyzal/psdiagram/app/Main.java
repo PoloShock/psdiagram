@@ -68,7 +68,6 @@ public final class Main
     // TODO u proguardu dynamicky do manifestu priradit main podle jeho obfuskace - tak nebudu muset zachovavat balickovou cestu k mainu
     // TODO pohyb mezi symboly v editacnim rezimu pomoci kurzorovych sipek
     // TODO podivat se na logicnost posouvani diagramu pri posunu komentare mimo platno a zpet
-    //e TODO nasadit best practice v gitu
     /**
      * Metoda pro spuštění hlavního okna aplikace. Nejsou přijímány žádné
      * parametry.

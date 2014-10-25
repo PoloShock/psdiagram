@@ -161,7 +161,8 @@ public final class LoopStart extends AbstractSymbolFunctionForm
     {
 
         jLabel1 = new javax.swing.JLabel();
-        jTextFieldCondition = new javax.swing.JTextField();
+        jTextFieldCondition = new WatermarkJTextField("proveď cyklus, když...")
+        ;
         jPanel1 = new cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.JPanelSymbol(mySymbol, jLabelDescription);
         jLabel3 = new javax.swing.JLabel();
         jLabelExamples = new javax.swing.JLabel();

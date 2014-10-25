@@ -206,7 +206,7 @@ public final class JFrameSettings extends javax.swing.JFrame
             }
         });
 
-        jLabel8.setText("<html>\nJe-li volba povolena a pokud při minulém zavření aplikace byl otevřen uložený diagram, při opětovném spuštění aplikace se tento diagram otevře spolu s aplikací.\n</html>");
+        jLabel8.setText("<html>\nJe-li volba povolena a pokud při minulém zavření aplikace byl otevřen uložený diagram, při opětovném spuštění aplikace se tento diagram znovu načte.\n</html>");
 
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
         jPanel10.setLayout(jPanel10Layout);
@@ -223,7 +223,7 @@ public final class JFrameSettings extends javax.swing.JFrame
                 .addComponent(jCheckBoxLoadLast)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 190, Short.MAX_VALUE))
+                .addGap(0, 222, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
@@ -274,7 +274,7 @@ public final class JFrameSettings extends javax.swing.JFrame
             }
         });
 
-        jLabel1.setText("<html>\n<p style=\"font-weight:bold;\">\nPozor! Tato volba je jen pro pokročilé uživatele, měla by být vždy povolena.<br />\nJste-li nuceni tuto funkci vypnout z důvodu chyby některého z filtrů, obraťte se prosím s popisem chyby na autora aplikace.\n</p>\n</html>");
+        jLabel1.setText("<html>\n<p style=\"font-weight:bold;\">\nPozor! Tato volba je jen pro pokročilé uživatele a měla by být vždy povolena.<br />\nJste-li nuceni tuto funkci vypnout z důvodu chyby některého z filtrů, obraťte se prosím s popisem chyby na autora aplikace.\n</p>\n</html>");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -476,9 +476,9 @@ public final class JFrameSettings extends javax.swing.JFrame
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 

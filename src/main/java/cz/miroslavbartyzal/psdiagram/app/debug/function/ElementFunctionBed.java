@@ -29,12 +29,14 @@ import javax.script.ScriptException;
 import javax.swing.JOptionPane;
 
 /**
- * <p>Tato třída představuje jakýsi "blackbox", či "postýlku", ve které jsou
+ * <p>
+ * Tato třída představuje jakýsi "blackbox", či "postýlku", ve které jsou
  * prováděny veškeré funkce symbolů. K tomuto účelu je používán Javascript
  * (Rhino), který je součástí JDK Javy.</p>
  *
- * <p>Funkce symbolu je provedena a následně jsou všechny proměnné
- * překontrolovány, přičemž se hledají jejich případné modifikace, či proměnné,
+ * <p>
+ * Funkce symbolu je provedena a následně jsou všechny proměnné
+ * překontrolovány, přičemž se hledají jejich případné modifikace či proměnné,
  * které právě vznikly.</p>
  *
  * @author Miroslav Bartyzal (miroslavbartyzal@gmail.com)
@@ -108,7 +110,7 @@ public final class ElementFunctionBed
         Symbol symbol = actualElement.getSymbol();
         if (symbol instanceof StartEnd && (actualSegment.getParentElement() != null
                 || actualSegment.indexOfElement(actualElement) > 1 || (actualSegment.indexOfElement(
-                actualElement) == 1 && !(actualSegment.getElement(0).getSymbol() instanceof Comment)))) { // > 1 protoze 0ty muze byt komentar
+                        actualElement) == 1 && !(actualSegment.getElement(0).getSymbol() instanceof Comment)))) { // > 1 protoze 0ty muze byt komentar
             return result;
         }
         HashMap<String, String> commandsCopy = null; // budu nahrazovat randomy, tak abych nenahrazoval i zdroj..
@@ -252,7 +254,6 @@ public final class ElementFunctionBed
             }
         }
 
-
         ArrayList<Path2D> paths = new ArrayList<>();
         if (innerSegment > -1) {
             actualSegment = actualElement.getInnerSegment(innerSegment);
@@ -275,8 +276,16 @@ public final class ElementFunctionBed
         return new ScriptEngineManager().getEngineByName("JavaScript");
     }
 
+    /**
+     *
+     * @param variables
+     * @param symbolScript
+     * @param extraReturn
+     * @param silently
+     * @return null if there was an error and the debug process should be stopped
+     */
     private static HashMap<String, String> doSymbolScript(HashMap<String, String> variables,
-            String symbolScript, String[] extraReturn, boolean silently)
+            String symbolScript, String[] extraReturn, boolean silently) throws ScriptException
     {
         HashMap<String, String> updatedVariables = new HashMap<>();
         ScriptEngine jsEngine = getJavaScriptEngine();
@@ -290,6 +299,7 @@ public final class ElementFunctionBed
             if (!silently) {
                 JOptionPane.showMessageDialog(null, ex.getCause().getMessage(), "Chyba!",
                         JOptionPane.ERROR_MESSAGE);
+                throw ex;
             }
         }
         /*
@@ -344,7 +354,7 @@ public final class ElementFunctionBed
                         try {
                             commandSplit[i] = commandSplit[i].replaceFirst(
                                     "Math.random\\([^\\)]*\\)", getJavaScriptEngine().eval(
-                                    "Math.random();").toString());
+                                            "Math.random();").toString());
                         } catch (ScriptException ex) {
                             ex.printStackTrace(System.err);
                             commandSplit[i] = commandSplit[i].replaceFirst(
@@ -383,8 +393,14 @@ public final class ElementFunctionBed
             for (int j = 0; j < methodsSplit.length; j++) {
                 if (j % 2 == 1) {
                     String[] extraRet = new String[1];
-                    doSymbolScript(variables, "_extraRet_[0] = myUneval(" + methodsSplit[j] + ");",
-                            extraRet, true);
+                    try {
+                        doSymbolScript(variables,
+                                "_extraRet_[0] = myUneval(" + methodsSplit[j] + ");",
+                                extraRet, true);
+                    } catch (ScriptException ex) {
+                        // won't happen since silent is on true as doSymbolScript call parameter
+                        ex.printStackTrace(System.err);
+                    }
                     methodsSplit[j] = extraRet[0];
                 }
                 commandsWithoutQ[i] += methodsSplit[j];
@@ -403,16 +419,21 @@ public final class ElementFunctionBed
                 if (SettingsHolder.settings.isFunctionFilters()) {
                     commandSplit[i] = commandSplit[i].replace("==", "=").replace("&&", "&").replace(
                             "||", "|").replace("!=", "≠").replace("!", "¬").replace(">=", "≥").replace(
-                            "<=", "≤");
+                                    "<=", "≤");
                 }
             } else {
                 if (!commandSplit[i].equals("") && !commandSplit[i].matches("^\\s+$")) {
                     // nahradim promennou jeji hodnotou
                     String[] extraRet = new String[1];
-                    //doSymbolScript(variables, "_extraRet_[0] = " + commandSplit[i] + ";", extraRet);
-                    //doSymbolScript(variables, "_extraRet_[0] = " + commandSplit[i] + ".toSource();", extraRet);
-                    doSymbolScript(variables, "_extraRet_[0] = myUneval(" + commandSplit[i] + ");",
-                            extraRet, true);
+                    try {
+                        //doSymbolScript(variables, "_extraRet_[0] = " + commandSplit[i] + ";", extraRet);
+                        //doSymbolScript(variables, "_extraRet_[0] = " + commandSplit[i] + ".toSource();", extraRet);
+                        doSymbolScript(variables,
+                                "_extraRet_[0] = myUneval(" + commandSplit[i] + ");", extraRet, true);
+                    } catch (ScriptException ex) {
+                        // won't happen since silent is on true as doSymbolScript call parameter
+                        ex.printStackTrace(System.err);
+                    }
 
                     if (extraRet[0] != null) {
                         commandSplit[i] = extraRet[0];
@@ -452,7 +473,7 @@ public final class ElementFunctionBed
 
         // bohuzel switch nema za stejne hodnoty new Number(1) a 1; new String("ahoj") a "ahoj"
         // musel bych kazdou "key" hodnotu protahnout scriptovou toSource() metodou - to uz bude lepsi nahradit switch if else..
-        /*
+            /*
          * String script = ""
          * + "_extraRet_[0] = " + commands.get("conditionVar") + ";"
          * + "if (false){}";
@@ -474,8 +495,11 @@ public final class ElementFunctionBed
          * + "_extraRet_[1] = 0;"
          * + "}";
          */
-
-        result.updatedVariables = doSymbolScript(variables, script, extraRet, false);
+        try {
+            result.updatedVariables = doSymbolScript(variables, script, extraRet, false);
+        } catch (ScriptException ex) {
+            result.haltDebug = true;
+        }
         result.progressDesc = extraRet[1];
         return Integer.parseInt(extraRet[0]);
     }
@@ -491,7 +515,11 @@ public final class ElementFunctionBed
                 + "_extraRet_[0] = 0;"
                 + "}";
 
-        result.updatedVariables = doSymbolScript(variables, script, extraRet, false);
+        try {
+            result.updatedVariables = doSymbolScript(variables, script, extraRet, false);
+        } catch (ScriptException ex) {
+            result.haltDebug = true;
+        }
         result.progressDesc = getCompiledProgressDesc(variables, commands.get("condition"));
         return Integer.parseInt(extraRet[0]);
     }
@@ -502,7 +530,7 @@ public final class ElementFunctionBed
         String[] extraRet = new String[]{null, "-1"};
         String script = "if ((" + commands.get("inc") + " > 0 && " + commands.get("var") + " > " + commands.get(
                 "to") + ") || (" + commands.get("inc") + " < 0 && " + commands.get("var") + " < " + commands.get(
-                "to") + ")) {";
+                        "to") + ")) {";
         if (variables.containsKey(commands.get("var"))) {
             // inicializace jiz probehla
             if (commands.containsKey("array")) {
@@ -518,7 +546,7 @@ public final class ElementFunctionBed
             } else {
                 script = ""
                         + "var " + commands.get("var") + " = " + commands.get("var") + " + " + commands.get(
-                        "inc") + ";"
+                                "inc") + ";"
                         + script
                         + "_extraRet_[1] = -1;"
                         + "} else {"
@@ -557,7 +585,11 @@ public final class ElementFunctionBed
             }
         }
 
-        result.updatedVariables = doSymbolScript(variables, script, extraRet, false);
+        try {
+            result.updatedVariables = doSymbolScript(variables, script, extraRet, false);
+        } catch (ScriptException ex) {
+            result.haltDebug = true;
+        }
         if (!commands.containsKey("array") || !extraRet[1].equals("-1")) {
             // v pripade inicializace je treba upozornit (zvyrazneni ve vypisu promennych) na inicializacni promennou
             addVarToResultIfNotPresent(commands.get("var").split("\\[.*")[0], variables,
@@ -573,7 +605,7 @@ public final class ElementFunctionBed
             HashMap<String, String> variables)
     {
         String script;
-        if (commands.containsKey("var")) {
+        if (commands.containsKey("var")) { // input
             String var = "";
             String[] splitBrackets = RegexFunctions.varBracketsInsides(commands.get("var"));
             for (int i = 0; i < splitBrackets.length; i++) {
@@ -581,8 +613,14 @@ public final class ElementFunctionBed
                     var += splitBrackets[i];
                 } else {
                     String[] extraRet = new String[1];
-                    doSymbolScript(variables, "_extraRet_[0] = myUneval(" + splitBrackets[i] + ");",
-                            extraRet, true);
+                    try {
+                        doSymbolScript(variables,
+                                "_extraRet_[0] = myUneval(" + splitBrackets[i] + ");",
+                                extraRet, true);
+                    } catch (ScriptException ex) {
+                        // won't happen since silent is on true as doSymbolScript call parameter
+                        ex.printStackTrace(System.err);
+                    }
                     var += extraRet[0];
                 }
             }
@@ -592,7 +630,9 @@ public final class ElementFunctionBed
                     JOptionPane.QUESTION_MESSAGE);
             if (input == null) {
                 input = "null";
+                result.haltDebug = true;
             } else if (!input.matches("^(\\-|\\+)?([1-9]|0(?=\\.|$))[0-9]*(\\.[0-9]+)?$")) {
+                // input is not a number
                 input = "\"" + input.replaceAll("\"", "").replaceAll("\'", "") + "\"";
             }
 
@@ -602,17 +642,29 @@ public final class ElementFunctionBed
                 script = commands.get("var") + " = " + input + ";";
             }
 
-            result.updatedVariables = doSymbolScript(variables, script, null, false);
+            try {
+                result.updatedVariables = doSymbolScript(variables, script, null, false);
+            } catch (ScriptException ex) {
+                result.haltDebug = true;
+            }
             addVarToResultIfNotPresent(commands.get("var").split("\\[.*")[0], variables,
                     result.updatedVariables);
             result.progressDesc = var + " ← " + input;
-        } else { // value
-            String[] extraRet = new String[1];
+        } else { // output
+            String[] extraRet = new String[2];
             script = "_extraRet_[0] = myUneval(" + commands.get("value") + ");"
-                    + "JOptionPane.showMessageDialog(null, _extraRet_[0].replaceAll(\"\\\"\", \"\"), \"Výstup\", JOptionPane.INFORMATION_MESSAGE);";
+                    + "_extraRet_[1] = JOptionPane.showConfirmDialog(null, _extraRet_[0].replaceAll(\"\\\"\", \"\"), \"Výstup\", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);";
+            //+ "_extraRet_[1] = JOptionPane.showOptionDialog(null, _extraRet_[0].replaceAll(\"\\\"\", \"\"), \"Výstup\", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, [\"OK\", \"Přerušit\"], \"OK\");";
             //+ "JOptionPane.showMessageDialog(null, _extraRet_[0], \"Výstup\", JOptionPane.INFORMATION_MESSAGE);";
 
-            result.updatedVariables = doSymbolScript(variables, script, extraRet, false);
+            try {
+                result.updatedVariables = doSymbolScript(variables, script, extraRet, false);
+            } catch (ScriptException ex) {
+                result.haltDebug = true;
+            }
+            if (extraRet[1] != null && Integer.valueOf(extraRet[1]) == JOptionPane.CANCEL_OPTION) {
+                result.haltDebug = true;
+            }
             result.progressDesc = extraRet[0] + " →";
         }
 
@@ -629,8 +681,13 @@ public final class ElementFunctionBed
                 var += splitBrackets[i];
             } else {
                 String[] extraRet = new String[1];
-                doSymbolScript(variables, "_extraRet_[0] = myUneval(" + splitBrackets[i] + ");",
-                        extraRet, true);
+                try {
+                    doSymbolScript(variables, "_extraRet_[0] = myUneval(" + splitBrackets[i] + ");",
+                            extraRet, true);
+                } catch (ScriptException ex) {
+                    // won't happen since silent is on true as doSymbolScript call parameter
+                    ex.printStackTrace(System.err);
+                }
                 var += extraRet[0];
             }
         }
@@ -642,7 +699,11 @@ public final class ElementFunctionBed
             script = commands.get("var") + " = " + commands.get("value") + ";";
         }
 
-        result.updatedVariables = doSymbolScript(variables, script, null, false);
+        try {
+            result.updatedVariables = doSymbolScript(variables, script, null, false);
+        } catch (ScriptException ex) {
+            result.haltDebug = true;
+        }
         addVarToResultIfNotPresent(commands.get("var").split("\\[.*")[0], variables,
                 result.updatedVariables);
         result.progressDesc = var + " ← " + getCompiledProgressDesc(variables, commands.get("value"));

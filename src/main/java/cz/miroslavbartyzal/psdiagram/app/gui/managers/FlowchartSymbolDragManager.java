@@ -5,7 +5,6 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.gui.managers;
 
-import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.AbstractLayout;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.Layout;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutElement;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Joint;

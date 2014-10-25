@@ -16,13 +16,11 @@ import javax.swing.ToolTipManager;
 public final class Main
 {
 
-    // TODO kdyz se pomalinku posouva diagram doleva nahoru, posouvani se v miste objeveni scrollbaru seka (uprava ulozene pozice kurzoru v zavislosti na zmene velikosti platna pri zobrazenych scrollbrech? nebo podminka s elseif misto dvou?)
     // TODO az budu dynamicky menit layout, budu muset prepsat odkazy na layout ve vsech tridach jako by reference: AtomicReference<Object> ref = new AtomicReference<Object>("Hello");
     // TODO je-li v else vetvi jen podminka, je to pri exportu elseif!
     // TODO mozna pridat komentar do XML a exportu PDF, kodu.. o PS Diagramu
     // TODO do budoucna podprogram moznst expandovat/collapsovat :)
     // TODO nastaveni zarovnavani komentarovych textu
-    //e TODO zoom k mysi -> krasna implementace v JFreeChart!
     // TODO odkazy na weby obrazku
     //e TODO exception handling: http://stackoverflow.com/questions/4590295/catch-exception-high-in-the-call-stack-when-dealing-with-n-tiers
     //e TODO logovani
@@ -38,7 +36,6 @@ public final class Main
     // TODO doplnit celociselny podil (DIV v pascalu) -> co treba "//" jako v pythonu?
     // TODO vytvor si testy na syntakticke filtry
     // TODO doplnit priklad celociselneho deleni do symbolu procesu
-    //e TODO pridat labely kdyz a pak u podminky v panelu funkce?
     // TODO pomoci tranc preklopit TBLR layout na LFTB? :)
     // TODO mail Havelkova 19.4.
     // TODO misto blokovani syntaktickym filtrem, pouze zcervenit
@@ -51,7 +48,7 @@ public final class Main
     // TODO moznost promitani vytvořených algoritmů na webu (pro pasivní učení a prezentaci)? - Jelinek
     // TODO merit zakovi cas za ktery ulohu vykona, monitorovat problemy, se kterymi se setkal (co treba zachovavat vsechny stavy diagramu?) - Jelinek
     // TODO Timer, udalosti jako procedura (interrupt či vlákno)
-    // TODO mrkni na http://jelastic.com/ a na jejich barvy, maji to cool :); http://www.noip.com/
+    // TODO mrkni na http://jelastic.com/ a na jejich barvy, maji to cool :); http://www.noip.com/, http://www.hwinfo.com/
     // TODO zkontrolovat obfuskaci po upgradu proguardu
     // TODO check these: http://sourceforge.net/projects/flowcharts/?source=recommended, http://sourceforge.net/projects/simpeflowd/?source=recommended, http://sourceforge.net/projects/devflowcharter/?source=recommended, http://sourceforge.net/projects/javablock/
     // TODO sjednotit jazyk na EN (dokumentace)
@@ -68,6 +65,7 @@ public final class Main
     // TODO u proguardu dynamicky do manifestu priradit main podle jeho obfuskace - tak nebudu muset zachovavat balickovou cestu k mainu
     // TODO pohyb mezi symboly v editacnim rezimu pomoci kurzorovych sipek
     // TODO podivat se na logicnost posouvani diagramu pri posunu komentare mimo platno a zpet
+    // TODO pridat info o poctu vykonanych prikazu po konceni algoritmu -> hezky benchmark, kriterium pro hodnoceni efektivity algoritmu :)
     /**
      * Metoda pro spuštění hlavního okna aplikace. Nejsou přijímány žádné
      * parametry.

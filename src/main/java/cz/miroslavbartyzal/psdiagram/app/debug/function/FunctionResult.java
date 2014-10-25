@@ -25,7 +25,9 @@ public final class FunctionResult
     public Path2D[] paths; // jaka cesta povede k pristimu elementu
     public String progressDesc; // popisek progresu aktualniho elementu
     public HashMap<String, String> updatedVariables = new HashMap<>();
+    public boolean haltDebug = false;
     //public FlowchartSegment updateSegment;
     public TextLayout segmentDesc;
     //public String[] inputs;
+
 }

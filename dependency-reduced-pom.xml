@@ -64,7 +64,7 @@
               <shadedArtifactAttached>false</shadedArtifactAttached>
               <transformers>
                 <transformer>
-                  <Main-Class>cz.miroslavbartyzal.psdiagram.app.diagram.Main</Main-Class>
+                  <Main-Class>cz.miroslavbartyzal.psdiagram.app.Main</Main-Class>
                 </transformer>
               </transformers>
             </configuration>

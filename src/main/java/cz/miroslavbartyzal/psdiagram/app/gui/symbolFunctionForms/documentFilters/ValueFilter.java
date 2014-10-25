@@ -7,9 +7,11 @@ package cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilter
 import java.util.regex.Pattern;
 
 /**
- * <p>Tato třída představuje filtr obecné hodnoty.</p>
+ * <p>
+ * Tato třída představuje filtr obecné hodnoty.</p>
  *
- * <p>Může se jednat o hodnotu dosazovanou do proměnné, či o hodnotu použitou
+ * <p>
+ * Může se jednat o hodnotu dosazovanou do proměnné, či o hodnotu použitou
  * jako vyhodnocovací podmíněný výraz. Tento filtr je nejkomplexnější ze všech
  * ostatních.</p>
  *
@@ -25,7 +27,7 @@ public final class ValueFilter extends AbstractFilter
     }
 
     /**
-     * Pokusí se daný textový řeťezec porovnat vůči tomuto filtru.
+     * Pokusí se daný textový řetězec porovnat vůči tomuto filtru.
      *
      * @param text text, který chceme prověřit
      * @return true, prošel-li text tímto filtrem
@@ -57,12 +59,12 @@ public final class ValueFilter extends AbstractFilter
                             "([a-zA-Z\\_\\$][\\w\\$]*\\.?)+\\([^\\(\\)]*\\)", "");
                 }
 
-                if (withoutBrackets.indexOf(",") != -1
-                        && ((withoutBrackets.indexOf("[") == -1 || withoutBrackets.indexOf("[") > withoutBrackets.indexOf(
-                        ","))
+                if (withoutBrackets.contains(",")
+                        && ((!withoutBrackets.contains("[") || withoutBrackets.indexOf("[") > withoutBrackets.indexOf(
+                                ","))
                         && (!withoutBrackets.matches(
-                        "[^0-9]*([a-zA-Z\\_\\$][\\w\\$]*\\.?)+\\([^\\(\\)]*\\)?.*") || withoutBrackets.indexOf(
-                        "(") > withoutBrackets.indexOf(",")))) {
+                                "[^0-9]*([a-zA-Z\\_\\$][\\w\\$]*\\.?)+\\([^\\(\\)]*\\)?.*") || withoutBrackets.indexOf(
+                                "(") > withoutBrackets.indexOf(",")))) {
                     return false; // carka se muze vyskytovat jen uvnitr hranatych zavorek - pri inicializaci pole a ve volani fce
                 }
             }
@@ -88,12 +90,7 @@ public final class ValueFilter extends AbstractFilter
         }
         int left = withoutQuotes.length() - withoutQuotes.replaceAll("\\[", "").length();
         int right = withoutQuotes.length() - withoutQuotes.replaceAll("\\]", "").length();
-        if (left < right) {
-            return false;
-        } else {
-            return true;
-        }
-
+        return left >= right;
         /*
          * Pattern pattern =
          * Pattern.compile("([\\w\\s\\(\\)\\[\\]\\.\\+\\-\\/\\*\\%]"
@@ -106,7 +103,6 @@ public final class ValueFilter extends AbstractFilter
          * return false;
          * }
          */
-
         /*
          * String group = "";
          * if (matcher.matches()) {

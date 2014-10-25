@@ -58,6 +58,8 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -110,7 +112,7 @@ public final class MainWindow extends javax.swing.JFrame
     private boolean animationMode = false;
     private final FlowchartEditManager flowchartEditManager;
     private final FlowchartOverlookManager flowchartOverlookManager;
-    private final FlowchartDebugManager flowchartAnimationManager;
+    private final FlowchartDebugManager flowchartDebugManager;
     private final JPanelDiagram jPnlDiagram;
     private AffineTransform affineTransform;
     private boolean graphicsXTransformedByScrollbar = false;
@@ -266,6 +268,7 @@ public final class MainWindow extends javax.swing.JFrame
         jScrollPane1.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE); // prevents glitches (http://andrewtill.blogspot.cz/2012/06/jscrollpane-repainting-problems.html)
         jScrollPaneFunction.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE); // prevents glitches (http://andrewtill.blogspot.cz/2012/06/jscrollpane-repainting-problems.html)
         jScrollPaneText.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE); // prevents glitches (http://andrewtill.blogspot.cz/2012/06/jscrollpane-repainting-problems.html)
+        jScrollPaneDiagram.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE); // prevents glitches (http://andrewtill.blogspot.cz/2012/06/jscrollpane-repainting-problems.html)
 
         Updater updater = new Updater();
         jFrameUpdate = new JFrameUpdate(updater, new Updater.BeforeExitListener()
@@ -286,7 +289,7 @@ public final class MainWindow extends javax.swing.JFrame
         flowchartOverlookManager = new FlowchartOverlookManager(this,
                 jScrollPaneDiagram.getHorizontalScrollBar(),
                 jScrollPaneDiagram.getVerticalScrollBar(), jSliderZoom);
-        flowchartAnimationManager = new FlowchartDebugManager(this,
+        flowchartDebugManager = new FlowchartDebugManager(this,
                 jPanelVariables.getVariableModel(), jPanelDiagram, jSliderSpeed,
                 jButtonToolPlayPause, jButtonToolPrevious, jButtonToolNext, jButtonToolStop,
                 jButtonLaunch);
@@ -396,7 +399,7 @@ public final class MainWindow extends javax.swing.JFrame
          * jMenuItemPaste.addActionListener(flowchartEditManager);
          */
         jButtonToolEdit.addActionListener(flowchartEditManager);
-        jButtonToolAnimation.addActionListener(flowchartAnimationManager);
+        jButtonToolAnimation.addActionListener(flowchartDebugManager);
         jButtonToolZoomIn.addActionListener(flowchartOverlookManager);
         jButtonToolZoomOut.addActionListener(flowchartOverlookManager);
         jPanelDiagram.addMouseListener(flowchartOverlookManager);
@@ -404,11 +407,11 @@ public final class MainWindow extends javax.swing.JFrame
         jPanelDiagram.addMouseWheelListener(flowchartOverlookManager);
         jPanelDiagram.addKeyListener(flowchartOverlookManager);
         jSliderZoom.addChangeListener(flowchartOverlookManager);
-        jButtonToolPlayPause.addActionListener(flowchartAnimationManager);
-        jButtonToolNext.addActionListener(flowchartAnimationManager);
-        jButtonToolPrevious.addActionListener(flowchartAnimationManager);
-        jButtonToolStop.addActionListener(flowchartAnimationManager);
-        jButtonLaunch.addActionListener(flowchartAnimationManager);
+        jButtonToolPlayPause.addActionListener(flowchartDebugManager);
+        jButtonToolNext.addActionListener(flowchartDebugManager);
+        jButtonToolPrevious.addActionListener(flowchartDebugManager);
+        jButtonToolStop.addActionListener(flowchartDebugManager);
+        jButtonLaunch.addActionListener(flowchartDebugManager);
 
         Marshaller jAXBmarshaller = null;
         try {
@@ -1579,8 +1582,7 @@ public final class MainWindow extends javax.swing.JFrame
                 }
             }
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(
-                    java.util.logging.Level.SEVERE, null, ex);
+            ex.printStackTrace(System.err);
         }
         //</editor-fold>
 
@@ -1716,7 +1718,7 @@ public final class MainWindow extends javax.swing.JFrame
         }
         if (editMode) {
             if (animationMode) {
-                flowchartAnimationManager.actionPerformed(new ActionEvent(jButtonToolAnimation,
+                flowchartDebugManager.actionPerformed(new ActionEvent(jButtonToolAnimation,
                         jButtonToolAnimation.hashCode(), "mode/animationMode"));
             }
             try {
@@ -1795,11 +1797,11 @@ public final class MainWindow extends javax.swing.JFrame
             }
             jMenuLayouts.setEnabled(false);
             jButtonToolAnimation.setSelected(true);
-            jSliderZoom.addKeyListener(flowchartAnimationManager); // aby zkratky pro prehravani byli pristupny i kdyz je focus na slideru
-            jSliderSpeed.addKeyListener(flowchartAnimationManager);
-            jPanelDiagram.addKeyListener(flowchartAnimationManager);
-            jPanelDiagram.addMouseListener(flowchartAnimationManager);
-            jPanelDiagram.addMouseMotionListener(flowchartAnimationManager);
+            jSliderZoom.addKeyListener(flowchartDebugManager); // aby zkratky pro prehravani byli pristupny i kdyz je focus na slideru
+            jSliderSpeed.addKeyListener(flowchartDebugManager);
+            jPanelDiagram.addKeyListener(flowchartDebugManager);
+            jPanelDiagram.addMouseListener(flowchartDebugManager);
+            jPanelDiagram.addMouseMotionListener(flowchartDebugManager);
             jButtonToolPlayPause.setEnabled(true);
             jButtonToolNext.setEnabled(true);
             jButtonToolStop.setEnabled(true);
@@ -1818,11 +1820,11 @@ public final class MainWindow extends javax.swing.JFrame
         } else {
             jMenuLayouts.setEnabled(true);
             jButtonToolAnimation.setSelected(false);
-            jSliderZoom.removeKeyListener(flowchartAnimationManager);
-            jSliderSpeed.removeKeyListener(flowchartAnimationManager);
-            jPanelDiagram.removeKeyListener(flowchartAnimationManager);
-            jPanelDiagram.removeMouseListener(flowchartAnimationManager);
-            jPanelDiagram.removeMouseMotionListener(flowchartAnimationManager);
+            jSliderZoom.removeKeyListener(flowchartDebugManager);
+            jSliderSpeed.removeKeyListener(flowchartDebugManager);
+            jPanelDiagram.removeKeyListener(flowchartDebugManager);
+            jPanelDiagram.removeMouseListener(flowchartDebugManager);
+            jPanelDiagram.removeMouseMotionListener(flowchartDebugManager);
             jButtonToolPlayPause.setEnabled(false);
             jButtonToolPrevious.setEnabled(false);
             jButtonToolNext.setEnabled(false);
@@ -2005,10 +2007,11 @@ public final class MainWindow extends javax.swing.JFrame
      * Nastaví požadované zvětšení vývojového diagramu.
      *
      * @param scale požadované zvětšení vývojového diagramu
+     * @param anchorPoint
      */
-    public void setScale(double scale)
+    public void setScale(double scale, Point2D anchorPoint)
     {
-        jPnlDiagram.setScale(scale);
+        jPnlDiagram.setScale(scale, anchorPoint);
     }
 
     /**
@@ -2347,7 +2350,7 @@ public final class MainWindow extends javax.swing.JFrame
                 flowchartEditManager.actionPerformed(new ActionEvent(jButtonToolEdit,
                         jButtonToolEdit.hashCode(), "mode/editMode"));
             } else if (animationMode) {
-                flowchartAnimationManager.actionPerformed(new ActionEvent(jButtonToolAnimation,
+                flowchartDebugManager.actionPerformed(new ActionEvent(jButtonToolAnimation,
                         jButtonToolAnimation.hashCode(), "mode/animationMode"));
             }
 
@@ -2422,6 +2425,7 @@ public final class MainWindow extends javax.swing.JFrame
         if (!checkIfSaved(true)) {
             return;
         }
+        flowchartCrashRecovery.stopPolling();
         flowchartCrashRecovery.deleteBackup();
         System.exit(0);
     }
@@ -2429,9 +2433,9 @@ public final class MainWindow extends javax.swing.JFrame
     private class JPanelDiagram extends JPanel
     {
 
-        double translateX = 0;
-        double translateY = 0;
-        double scale = 1;
+        private double translateX = 0;
+        private double translateY = 0;
+        private double scale = 1;
 
         @Override
         protected void paintComponent(Graphics grphcs)
@@ -2445,18 +2449,22 @@ public final class MainWindow extends javax.swing.JFrame
                 //grphcs2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
                 double transX = translateX;
                 double transY = translateY;
-                if (transX < 0) { // TODO tohle asi budu muset odstranit, prizpusobit dragging
+
+                /*
+                 * Při posunu diagramu vlevo je nastaven panel do šířky, ale vykreslit diagram je
+                 * potřeba vždy na začátek panelu.
+                 */
+                if (transX < 0) {
                     transX = 0;
                 }
                 if (transY < 0) {
                     transY = 0;
                 }
-                affineTransform = AffineTransform.getTranslateInstance(transX, transY);
-                affineTransform.scale(scale, scale);
+                updateAffineTransform();
                 grphcs2D.translate(transX, transY);
                 grphcs2D.scale(scale, scale);
                 if (animationMode) {
-                    flowchartAnimationManager.paintFlowchart(grphcs2D);
+                    flowchartDebugManager.paintFlowchart(grphcs2D);
                 } else {
                     layout.paintFlowchart(grphcs2D, false);
                 }
@@ -2466,11 +2474,62 @@ public final class MainWindow extends javax.swing.JFrame
             }
         }
 
+        private void updateAffineTransform()
+        {
+            double transX = translateX;
+            double transY = translateY;
+
+            /*
+             * Při posunu diagramu vlevo je nastaven panel do šířky, ale vykreslit diagram je
+             * potřeba vždy na začátek panelu.
+             */
+            if (transX < 0) {
+                transX = 0;
+            }
+            if (transY < 0) {
+                transY = 0;
+            }
+            affineTransform = AffineTransform.getTranslateInstance(transX, transY);
+            affineTransform.scale(scale, scale);
+        }
+
+        /**
+         * V této metodě upravuji velikost panelu uvnitř scrollpane tak, aby velikost způsobila
+         * očekávané změny ve scrollbarech (posun doprava -> zešířit plátno -> objeví se
+         * horizontální scrollbar).
+         * <p>
+         * @param dmnsn
+         */
         @Override
         public void setPreferredSize(Dimension dmnsn)
         {
-            super.setPreferredSize(new Dimension((int) (dmnsn.width * scale + Math.abs(translateX)),
-                    (int) (dmnsn.height * scale + Math.abs(translateY))));
+            Dimension dim = new Dimension((int) (dmnsn.width * scale),
+                    (int) (dmnsn.height * scale));
+            Dimension viewSize = ((JScrollBarDiagram) jScrollPaneDiagram.getHorizontalScrollBar()).getViewSize();
+
+            if (translateX >= 0) {
+                dim.width += translateX;
+            } else if (dim.width <= viewSize.width) { // jestliže diagram je menší než scrollable oblast
+                dim.width = viewSize.width - (int) translateX;
+            } else {
+                int difference = viewSize.width - dim.width - (int) translateX;
+                if (difference > 0) { // diagram je větší než scrollable oblast a natažení plátna je nutné jen tehdy, když už končí dole jeho okraj
+                    dim.width += difference;
+                }
+            }
+
+            if (translateY >= 0) {
+                dim.height += translateY;
+            } else if (dim.height <= viewSize.height) { // jestliže diagram je menší než scrollable oblast
+                dim.height = viewSize.height - (int) translateY;
+            } else {
+                int difference = viewSize.height - dim.height - (int) translateY;
+                if (difference > 0) { // diagram je větší než scrollable oblast a natažení plátna je nutné jen tehdy, když už končí dole jeho okraj
+                    dim.height += difference;
+                }
+            }
+
+            super.setPreferredSize(dim);
             jPanelDiagram.revalidate();
             jScrollPaneDiagram.revalidate();
         }
@@ -2503,20 +2562,41 @@ public final class MainWindow extends javax.swing.JFrame
             return translateY;
         }
 
-        public void setScale(double scale)
+        public void setScale(double scale, Point2D anchorPoint)
         {
-            // TODO zvetsovat k mysi, ke stredu
-//            if (this.scale < scale) { // zvetsuji
-//                translateX -= (layout.getWidth()*scale - layout.getWidth()*this.scale)/2;
-//                translateY -= (layout.getHeight()*scale - layout.getHeight()*this.scale)/2;
-//            } else if (this.scale > scale) { //zmensuji
-//                translateX += (layout.getWidth()*this.scale - layout.getWidth()*scale)/2;
-//                translateY += (layout.getHeight()*this.scale - layout.getHeight()*scale)/2;
-//            }
+            if (anchorPoint == null) {
+                anchorPoint = jScrollPaneDiagram.getViewport().getViewPosition();
+            }
+
+            Point2D anchorTranslated = null;
+            try {
+                anchorTranslated = affineTransform.createInverse().transform(anchorPoint, null);
+            } catch (NoninvertibleTransformException e) {
+                throw new Error("Error while transforming coordnates!");
+            }
 
             this.scale = scale;
             this.setPreferredSize(new Dimension((int) (layout.getWidth()),
                     (int) (layout.getHeight())));
+
+            updateAffineTransform();
+            Point2D anchorPostTranslated = null;
+            try {
+                anchorPostTranslated = affineTransform.createInverse().transform(anchorPoint, null);
+            } catch (NoninvertibleTransformException e) {
+                throw new Error("Error while transforming coordnates!");
+            }
+            if (anchorPostTranslated != null && anchorTranslated != null) {
+                double changeX = (anchorTranslated.getX() - anchorPostTranslated.getX()) * scale;
+                double changeY = (anchorTranslated.getY() - anchorPostTranslated.getY()) * scale;
+
+                JScrollBar horizontalScrollbar = jScrollPaneDiagram.getHorizontalScrollBar();
+                JScrollBar verticalScrollbar = jScrollPaneDiagram.getVerticalScrollBar();
+                horizontalScrollbar.setValue(horizontalScrollbar.getValue() + (int) Math.round(
+                        changeX));
+                verticalScrollbar.setValue(verticalScrollbar.getValue() + (int) Math.round(
+                        changeY));
+            }
         }
 
         public double getScale()
@@ -2534,9 +2614,6 @@ public final class MainWindow extends javax.swing.JFrame
     private class JScrollBarDiagram extends JScrollBar
     {
 
-        private int jPanelDiagramSize;
-        private int viewportSize;
-        private int diagramSize;
         private int value;
 
         public JScrollBarDiagram(int orientation)
@@ -2545,101 +2622,179 @@ public final class MainWindow extends javax.swing.JFrame
         }
 
         @Override
+        public int getMaximum()
+        {
+            int maximum = super.getMaximum();
+            if (super.orientation == HORIZONTAL) {
+                JScrollBar theOtherScrollBar = jScrollPaneDiagram.getVerticalScrollBar();
+                if (jPnlDiagram != null && theOtherScrollBar.isVisible() && jPnlDiagram.getTranslateX() < 0) {
+                    maximum -= theOtherScrollBar.getWidth();
+                }
+            } else {
+                JScrollBar theOtherScrollBar = jScrollPaneDiagram.getHorizontalScrollBar();
+                if (jPnlDiagram != null && theOtherScrollBar.isVisible() && jPnlDiagram.getTranslateY() < 0) {
+                    maximum -= theOtherScrollBar.getHeight();
+                }
+            }
+            return maximum;
+        }
+
+        public Dimension getViewSize()
+        {
+            Dimension dimension = jScrollPaneDiagram.getViewport().getExtentSize();
+            if (super.orientation == HORIZONTAL) {
+                JScrollBar theOtherScrollBar = jScrollPaneDiagram.getVerticalScrollBar();
+                if (theOtherScrollBar.isVisible()) {
+                    dimension.width += theOtherScrollBar.getWidth();
+                }
+                if (super.isVisible()) {
+                    dimension.height += super.getHeight();
+                }
+            } else {
+                JScrollBar theOtherScrollBar = jScrollPaneDiagram.getHorizontalScrollBar();
+                if (theOtherScrollBar.isVisible()) {
+                    dimension.height += theOtherScrollBar.getHeight();
+                }
+                if (super.isVisible()) {
+                    dimension.width += super.getWidth();
+                }
+            }
+            return dimension;
+        }
+
+        @Override
         public void setValue(int value)
         {
-            int viewportWidth = jScrollPaneDiagram.getViewport().getWidth();
-            int viewportHeight = jScrollPaneDiagram.getViewport().getHeight();
-            int hScrollMax = jPnlDiagram.getPreferredSize().width - viewportWidth;
-            int vScrollMax = jPnlDiagram.getPreferredSize().height - viewportHeight;
-            double translateX = jPnlDiagram.getTranslateX();
-            double translateY = jPnlDiagram.getTranslateY();
+            if (super.getValueIsAdjusting()) {
+                super.setValue(value);
+                return;
+            }
 
             if (super.orientation == HORIZONTAL) {
                 graphicsXTransformedByScrollbar = false;
             } else {
                 graphicsYTransformedByScrollbar = false;
             }
-            if (getValueIsAdjusting() || (value > 0 && ((super.orientation == HORIZONTAL && translateX == 0 && value <= hScrollMax) || (super.orientation == VERTICAL && translateY == 0 && value <= vScrollMax)))) {
-                super.setValue(value);
-                return;
-            }
 
-            this.value = value;
-            int scrollMax;
-            double translation;
             int flowchartPadding = (int) (layout.getFlowchartPadding() * getScale());
+            int diagramSize;
+            int viewportSize;
 
             if (super.orientation == HORIZONTAL) {
-                viewportSize = viewportWidth;
-                scrollMax = hScrollMax;
-                translation = translateX;
-                diagramSize = (int) (jPnlDiagram.getPreferredSize().width - Math.abs(translateX));
-                jPanelDiagramSize = jPnlDiagram.getPreferredSize().width;
+                value = (int) Math.round(jPnlDiagram.getTranslateX()) + this.value - value;
+                diagramSize = (int) (layout.getWidth() * jPnlDiagram.getScale());
+                viewportSize = getViewSize().width;
             } else {
-                viewportSize = viewportHeight;
-                scrollMax = vScrollMax;
-                translation = translateY;
-                diagramSize = (int) (jPnlDiagram.getPreferredSize().height - Math.abs(translateY));
-                jPanelDiagramSize = jPnlDiagram.getPreferredSize().height;
+                value = (int) Math.round(jPnlDiagram.getTranslateY()) + this.value - value;
+                diagramSize = (int) (layout.getHeight() * jPnlDiagram.getScale());
+                viewportSize = getViewSize().height;
             }
 
-            if (value < 0 && translation < viewportSize - flowchartPadding) { // odkryvam levo/nahoru
-                if (translation < 0) {
-                    translation += getActualPosTranslation();
-                } else {
-                    translation = getActualPosTranslation();
+            // ochrana před utečením diagramu příliš za okraj
+            if (value > 0) {
+                int maxValue = viewportSize - flowchartPadding;
+                if (value > maxValue) {
+                    value = maxValue;
                 }
-                if (translation > viewportSize - flowchartPadding) {
-                    translation = viewportSize - flowchartPadding;
-                }
-            } else if (value > 0 && value <= scrollMax && translation != 0) { // kompenzuji
-                if (translation > 0) {
-                    double prevTranslation = translation;
-                    translation = getActualPosTranslation();
-                    if (translation < 0) {
-                        translation = 0;
-                    }
-                    value -= prevTranslation;
-                } else {
-                    translation = getActualNegTranslation();
-                    if (translation > 0) {
-                        translation = 0;
-                    }
-                }
-            } else if (value > 0 && translation > flowchartPadding - viewportSize) { // odkryvam pravo/dolu
-                if (translation > 0 && diagramSize < viewportSize) {
-                    translation = getActualPosTranslation();
-                } else if (translation > 0) {
-                    translation = getActualNegTranslation() + translation;
-                } else {
-                    translation = getActualNegTranslation();
-                }
-
-                if (translation < flowchartPadding - viewportSize) {
-                    translation = flowchartPadding - viewportSize;
+            } else if (value < 0) {
+                int minValue = -diagramSize + flowchartPadding;
+                if (value < minValue) {
+                    value = minValue;
                 }
             }
 
             if (super.orientation == HORIZONTAL) {
-                jPnlDiagram.setTranslateX(translation);
+                jPnlDiagram.setTranslateX(value);
             } else {
-                jPnlDiagram.setTranslateY(translation);
+                jPnlDiagram.setTranslateY(value);
             }
-            jPnlDiagram.repaint();
 
+            if (value >= 0) { // posun diagramu doprava/dolů
+                value = 0;
+            } else { // posun diagramu doleva/nahoru
+                int jPanelDiagramSize;
+                if (super.orientation == HORIZONTAL) {
+                    jPanelDiagramSize = jPnlDiagram.getPreferredSize().width;
+                } else {
+                    jPanelDiagramSize = jPnlDiagram.getPreferredSize().height;
+                }
+                int diagramSizeDifference = jPanelDiagramSize - Math.abs(value) - viewportSize;
+                value = jPanelDiagramSize - viewportSize; // max value
+                if (diagramSizeDifference > 0) { // diagram je vetsi nez platno
+                    value -= diagramSizeDifference;
+                }
+            }
+
+            final int val = value;
+            SwingUtilities.invokeLater(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    /*
+                     * Nastavuji to takto pres vlakno protoze kdyz se ma scrollbar prave objevit
+                     * a jeho hodnota ma byt na max, zavolanim super.setValue by se nam max
+                     * nenastavil protoze jeste nevi, ze ma takovouhle max hodnotu (neni ani
+                     * zatim visible)
+                     */
+                    JScrollBarDiagram.this.superSetValue(val);
+                }
+            });
+            superSetValue(value); // pro případné pozdější dotazy na value
+        }
+
+        public void superSetValue(int value)
+        {
+            this.value = value;
             super.setValue(value);
+            jPnlDiagram.repaint();
         }
 
-        private int getActualPosTranslation()
-        {
-            return jPanelDiagramSize - diagramSize - value;
-        }
-
-        private int getActualNegTranslation()
-        {
-            return diagramSize - value - viewportSize;
-        }
-
+        //        public boolean shouldBeVisible()
+        //        {
+        //            int currentDiagramPanelSize;
+        //            int viewportSize;
+        //            int theOtherDiagramPanelSize;
+        //            int theOtherViewportSize;
+        //            int theOtherScrollBarSize;
+        ////            int theOtherScrollBarValue;
+        //
+        //            if (super.orientation == HORIZONTAL) {
+        //                currentDiagramPanelSize = jPnlDiagram.getPreferredSize().width;
+        //                viewportSize = jScrollPaneDiagram.getViewport().getWidth();
+        //                theOtherDiagramPanelSize = jPnlDiagram.getPreferredSize().height;
+        //                theOtherViewportSize = jScrollPaneDiagram.getViewport().getHeight();
+        //                theOtherScrollBarSize = jScrollPaneDiagram.getVerticalScrollBar().getWidth();
+        ////                theOtherScrollBarValue = jScrollPaneDiagram.getVerticalScrollBar().getValue();
+        //            } else {
+        //                currentDiagramPanelSize = jPnlDiagram.getPreferredSize().height;
+        //                viewportSize = jScrollPaneDiagram.getViewport().getHeight();
+        //                theOtherDiagramPanelSize = jPnlDiagram.getPreferredSize().width;
+        //                theOtherViewportSize = jScrollPaneDiagram.getViewport().getWidth();
+        //                theOtherScrollBarSize = jScrollPaneDiagram.getHorizontalScrollBar().getHeight();
+        ////                theOtherScrollBarValue = jScrollPaneDiagram.getHorizontalScrollBar().getValue();
+        //            }
+        //
+        ////                    int a = jScrollPaneDiagram.getVerticalScrollBar().getWidth();
+        ////                    int b = jPnlDiagram.getPreferredSize().height;
+        ////                    int c = jScrollPaneDiagram.getViewport().getHeight();
+        ////                    int d = super.getHeight();
+        //            return !(currentDiagramPanelSize <= viewportSize
+        //                    || (currentDiagramPanelSize <= viewportSize + theOtherScrollBarSize
+        //                    && theOtherDiagramPanelSize <= theOtherViewportSize + super.getHeight())); // právě zmizne horizontální scrollbar
+        ////            return currentDiagramPanelSize > viewportSize
+        ////                    && (currentDiagramPanelSize > viewportSize + theOtherScrollBarSize
+        ////                    || theOtherDiagramPanelSize > theOtherViewportSize + super.getHeight());
+        //            /*
+        //             * Vrchní podmínka: scrollbar zmizne, když aktuální plátno diagramu je
+        //             * menší než zobrazovací plocha scrollpanu. Může se mi stát, že se mi tímto
+        //             * posune diagram dolů (předchozí výpočet s výškou zobrazovací plochy je
+        //             * nyní chybný, protože se změnila její velikost díky zmizení scrollbaru),
+        //             * čemuž se snažím zabránit. V tomto případě může nastat i taková situace,
+        //             * kdy se mění i šířka zobrazovací plochy, protože může zároveň zmizet i
+        //             * scrollbar vertikální -> toto ošetřuje druhá část podmínky.
+        //             */
+        //        }
     }
 
 }

@@ -25,8 +25,8 @@ import javax.swing.text.BadLocationException;
 public final class Decision extends AbstractSymbolFunctionForm
 {
 
-    private JLabel jLabelDescription;
-    private Symbol mySymbol = EnumSymbol.DECISION.getInstance(null);
+    private final JLabel jLabelDescription;
+    private final Symbol mySymbol = EnumSymbol.DECISION.getInstance(null);
 
     /**
      * Konstruktor, inicializující tento formulář.
@@ -160,7 +160,8 @@ public final class Decision extends AbstractSymbolFunctionForm
     {
 
         jLabel1 = new javax.swing.JLabel();
-        jTextFieldCondition = new javax.swing.JTextField();
+        jTextFieldCondition = new WatermarkJTextField("když platí, že...")
+        ;
         jPanel1 = new cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.JPanelSymbol(mySymbol, jLabelDescription);
         jLabel3 = new javax.swing.JLabel();
         jLabelExamples = new javax.swing.JLabel();

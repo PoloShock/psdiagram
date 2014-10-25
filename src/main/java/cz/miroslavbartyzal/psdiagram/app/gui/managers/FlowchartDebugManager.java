@@ -20,7 +20,6 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.*;
-import java.awt.font.TextLayout;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
@@ -38,18 +37,18 @@ public final class FlowchartDebugManager implements KeyListener, ActionListener,
         MouseMotionListener, MouseListener
 {
 
-    private MainWindow mainWindow;
-    private JSlider jSliderSpeed;
-    private JButton jButtonToolPlayPause;
-    private JButton jButtonToolPrevious;
-    private JButton jButtonToolNext;
-    private JButton jButtonToolStop;
-    private JButton jButtonLaunch;
-    private JPopupMenu breakpointPopup;
-    private Layout layout;
-    private DebugAnimator animator;
-    private VariableModel variableModel;
-    private JPanel jPanelDiagram;
+    private final MainWindow mainWindow;
+    private final JSlider jSliderSpeed;
+    private final JButton jButtonToolPlayPause;
+    private final JButton jButtonToolPrevious;
+    private final JButton jButtonToolNext;
+    private final JButton jButtonToolStop;
+    private final JButton jButtonLaunch;
+    private final JPopupMenu breakpointPopup;
+    private final Layout layout;
+    private final DebugAnimator animator;
+    private final VariableModel variableModel;
+    private final JPanel jPanelDiagram;
     private Symbol breakpointSymbol = null;
     private FunctionManager functionManager;
     private boolean easterEgg = false;
@@ -91,7 +90,7 @@ public final class FlowchartDebugManager implements KeyListener, ActionListener,
         breakpointPopup = new JPopupMenu();
         JMenuItem menuItem = new JMenuItem("Vložit/Smazat breakpoint         Poklepání",
                 new javax.swing.ImageIcon(getClass().getResource(
-                "/img/menuitems/16-Breakpoint.png")));
+                                "/img/menuitems/16-Breakpoint.png")));
         menuItem.addActionListener(new ActionListener()
         {
             @Override
@@ -167,7 +166,7 @@ public final class FlowchartDebugManager implements KeyListener, ActionListener,
                     }
                     case "next": {
                         if (!jButtonToolPlayPause.getActionCommand().equals("animation/pause")) {
-                            jButtonToolPrevious.setEnabled(functionManager.next());
+                            jButtonToolPrevious.setEnabled(functionManager.next().stepBacksNotEmpty);
                         } else {
                             functionManager.next(); // pri probihajici animaci kulicky nelze provadet krok zpet
                         }
@@ -260,6 +259,8 @@ public final class FlowchartDebugManager implements KeyListener, ActionListener,
 
     /**
      * Metoda s prázdným tělem.
+     * <p>
+     * @param me
      */
     @Override
     public void mouseEntered(MouseEvent me)
@@ -268,6 +269,8 @@ public final class FlowchartDebugManager implements KeyListener, ActionListener,
 
     /**
      * Metoda s prázdným tělem.
+     * <p>
+     * @param me
      */
     @Override
     public void mouseExited(MouseEvent me)
@@ -377,6 +380,8 @@ public final class FlowchartDebugManager implements KeyListener, ActionListener,
 
     /**
      * Metoda s prázdným tělem.
+     * <p>
+     * @param ke
      */
     @Override
     public void keyReleased(KeyEvent ke)
@@ -385,6 +390,8 @@ public final class FlowchartDebugManager implements KeyListener, ActionListener,
 
     /**
      * Metoda s prázdným tělem.
+     * <p>
+     * @param ke
      */
     @Override
     public void keyTyped(KeyEvent ke)

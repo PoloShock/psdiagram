@@ -138,7 +138,7 @@
                                   <Component id="jCheckBoxLoadLast" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace min="0" pref="190" max="32767" attributes="0"/>
+                                  <EmptySpace min="0" pref="222" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
@@ -154,7 +154,7 @@
                         </Component>
                         <Component class="javax.swing.JLabel" name="jLabel8">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;Je-li volba povolena a pokud p&#x159;i minul&#xe9;m zav&#x159;en&#xed; aplikace byl otev&#x159;en ulo&#x17e;en&#xfd; diagram, p&#x159;i op&#x11b;tovn&#xe9;m spu&#x161;t&#x11b;n&#xed; aplikace se tento diagram otev&#x159;e spolu s aplikac&#xed;.&#xa;&lt;/html&gt;"/>
+                            <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;Je-li volba povolena a pokud p&#x159;i minul&#xe9;m zav&#x159;en&#xed; aplikace byl otev&#x159;en ulo&#x17e;en&#xfd; diagram, p&#x159;i op&#x11b;tovn&#xe9;m spu&#x161;t&#x11b;n&#xed; aplikace se tento diagram znovu na&#x10d;te.&#xa;&lt;/html&gt;"/>
                           </Properties>
                         </Component>
                       </SubComponents>
@@ -266,7 +266,7 @@
                         </Component>
                         <Component class="javax.swing.JLabel" name="jLabel1">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;&lt;p style=&quot;font-weight:bold;&quot;&gt;&#xa;Pozor! Tato volba je jen pro pokro&#x10d;il&#xe9; u&#x17e;ivatele, m&#x11b;la by b&#xfd;t v&#x17e;dy povolena.&lt;br /&gt;&#xa;Jste-li nuceni tuto funkci vypnout z d&#x16f;vodu chyby n&#x11b;kter&#xe9;ho z filtr&#x16f;, obra&#x165;te se pros&#xed;m s popisem chyby na autora aplikace.&#xa;&lt;/p&gt;&#xa;&lt;/html&gt;"/>
+                            <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;&lt;p style=&quot;font-weight:bold;&quot;&gt;&#xa;Pozor! Tato volba je jen pro pokro&#x10d;il&#xe9; u&#x17e;ivatele a m&#x11b;la by b&#xfd;t v&#x17e;dy povolena.&lt;br /&gt;&#xa;Jste-li nuceni tuto funkci vypnout z d&#x16f;vodu chyby n&#x11b;kter&#xe9;ho z filtr&#x16f;, obra&#x165;te se pros&#xed;m s popisem chyby na autora aplikace.&#xa;&lt;/p&gt;&#xa;&lt;/html&gt;"/>
                           </Properties>
                         </Component>
                       </SubComponents>
@@ -331,10 +331,10 @@
                     <DimensionLayout dim="1">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace min="-2" max="-2" attributes="0"/>
+                              <Component id="jPanel4" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jPanel4" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jPanel5" max="32767" attributes="0"/>
+                              <Component id="jPanel5" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
                       </Group>

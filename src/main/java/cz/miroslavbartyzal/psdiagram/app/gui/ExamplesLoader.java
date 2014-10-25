@@ -65,7 +65,7 @@ public class ExamplesLoader
             return loadExamples(examples, exampleActionListener);
         } else {
             ArrayList<Component> ret = new ArrayList<>();
-            JMenuItem item = new JMenuItem("nenalezeny žádné příklady...");
+            JMenuItem item = new JMenuItem("nenalezeny žádné algoritmy...");
             item.setEnabled(false);
             item.setToolTipText(getExamplesLocationLoadToolTip());
             ret.add(item);

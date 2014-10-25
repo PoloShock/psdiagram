@@ -27,12 +27,14 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 /**
- * <p>Tato třída zajišťuje vykreslování vývojového diagramu při spuštěném
+ * <p>
+ * Tato třída zajišťuje vykreslování vývojového diagramu při spuštěném
  * animačním
  * režimu aplikace. Inicializuje barvy, časové intervaly animace a zajišťuje
  * pohyb průchozí kuličky na jehož základě generuje pozice stínů symbolů a
  * jejich ozáření.</p>
- * <p>Vykreslení vývojového diagramu v animačním režimu je zpracováváno jinak,
+ * <p>
+ * Vykreslení vývojového diagramu v animačním režimu je zpracováváno jinak,
  * než je tomu u ostatních režimů aplikace.<br />
  * Vývojový diagram je zanalyzován a
  * uložen v paměti, aby nedocházelo ke zbytečným vedlejším operacím při jeho
@@ -160,9 +162,11 @@ public final class DebugAnimator
     }
 
     /**
-     * <p>Inicializuje vývojový diagram pro animační režim aplikace a spustí
+     * <p>
+     * Inicializuje vývojový diagram pro animační režim aplikace a spustí
      * přechodový efekt.</p>
-     * <p>Inicializace zahrnuje načtení všech symbolů diagramu a jeho spojnic.
+     * <p>
+     * Inicializace zahrnuje načtení všech symbolů diagramu a jeho spojnic.
      * Po této operaci by mělo být zajištěno, aby nedošlo k jakékoliv změně
      * layoutu v průběhu animace.</p>
      */
@@ -196,7 +200,7 @@ public final class DebugAnimator
                     }
                     boolean EndStartEnd = element.getSymbol() instanceof StartEnd && (element.getParentSegment().getParentElement() != null || element.getParentSegment().indexOfElement(
                             element) > 1 || (element.getParentSegment().indexOfElement(element) == 1 && !(element.getParentSegment().getElement(
-                            0).getSymbol() instanceof Comment)));
+                                    0).getSymbol() instanceof Comment)));
                     if (!(element.getSymbol() instanceof Comment) && !(element.getSymbol() instanceof Goto) && !(EndStartEnd)) {
                         if (!element.getPathToNextSymbol().getPathIterator(null).isDone()) {
                             paths.get(0).add(layout.shouldBeArrow(element.getPathToNextSymbol()));
@@ -402,7 +406,6 @@ public final class DebugAnimator
             g2d.setColor(pathColors[colorIndex]);
             g2d.draw(playTimer.lineInProcess);
         }
-
 
         // vykresleni goto cest
         if (gotoPaths.size() > 0) {
@@ -1069,7 +1072,6 @@ public final class DebugAnimator
 
             float sizePerc = 1;
 
-
             if (completeBegining && completedLines.isEmpty()) { // na uplnem zacatku
                 double startDist = Point2D.distance(lineInProcess.getP1().getX(),
                         lineInProcess.getP1().getY(), x, y);
@@ -1117,14 +1119,13 @@ public final class DebugAnimator
                 if (SettingsHolder.settings.isBallShine()) {
                     ballShineGradient = new RadialGradientPaint(centerP,
                             SettingsHolder.settings.getBallShineRadius() * sizePerc, new float[]{
-                        0.0f, 1.0f}, new Color[]{ballColor, new Color(ballColor.getRed(),
-                        ballColor.getGreen(), ballColor.getBlue(), 0)},
+                                0.0f, 1.0f}, new Color[]{ballColor, new Color(ballColor.getRed(),
+                                        ballColor.getGreen(), ballColor.getBlue(), 0)},
                             MultipleGradientPaint.CycleMethod.NO_CYCLE);
                 }
             }
 
             reinitSymbols = true;
-
 
 //            // TODO nebo nastavovat primarne focus point, na zaklade vzdalenosti center point odsazovat aby byl daleko jako BALLRADIUS/2?
 //
@@ -1234,7 +1235,6 @@ public final class DebugAnimator
 //
 //                ballShineGradient = new RadialGradientPaint(centerP, BALLSHINERADIUS, focusP, new float[]{0.0f, 1.0f}, new Color[]{ballColor, new Color(ballColor.getRed(), ballColor.getGreen(), ballColor.getBlue(), 0)}, MultipleGradientPaint.CycleMethod.NO_CYCLE);
 //            }*/
-
         }
 
         private float getSliderModif()
@@ -1303,7 +1303,6 @@ public final class DebugAnimator
             for (Iterator<Line2D> it = ballPaths.peek().iterator(); it.hasNext(); i++) {
                 Line2D line = it.next();
                 if (i == 0) {
-                    lineInProcess = line;
                     currentLineLength = Point2D.distance(line.getX1(), line.getY1(), line.getX2(),
                             line.getY2());
                 }
@@ -1393,7 +1392,9 @@ public final class DebugAnimator
                         public void run()
                         {
                             if (playTimer.isRunning()) {
-                                functionManager.next();
+                                if (functionManager.next().debugShouldBeHalted) {
+                                    functionManager.globalPause();
+                                }
                             }
                         }
                     });

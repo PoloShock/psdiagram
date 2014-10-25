@@ -32,13 +32,15 @@ import javax.swing.JSlider;
 import javax.swing.SwingUtilities;
 
 /**
- * <p>Tato třída spravuje veškeré řízení průběhu diagramu na základě
+ * <p>
+ * Tato třída spravuje veškeré řízení průběhu diagramu na základě
  * zpracovaných funkcí symbolů.<br />
  * Je jakýmsi managerem, který řídí třídu Animator a poslouchá příkazy shora, z
  * třídy FlowchartAnimationManager. Pro zpracování samotné funkce symbolu je
  * určena třída ElementFunctionBed, jejíž metody jsou volány právě touto
  * třídou.</p>
- * <p>Třída zároveň uchovává paměťový zásobník s funkcí "krok zpět" (viz. třída
+ * <p>
+ * Třída zároveň uchovává paměťový zásobník s funkcí "krok zpět" (viz. třída
  * StepBack). Velikost tohoto zásobníku je defaultně omezena na 1000 kroků.</p>
  *
  * @author Miroslav Bartyzal (miroslavbartyzal@gmail.com)
@@ -48,14 +50,14 @@ public final class FunctionManager
 
     private final int STACKLIMIT = 1000;
     private Thread launchThread;
-    private FlowchartDebugManager flowchartAnimationManager;
-    private JPanel jPanelDiagram;
-    private DebugAnimator animator;
-    private Layout layout;
+    private final FlowchartDebugManager flowchartDebugManager;
+    private final JPanel jPanelDiagram;
+    private final DebugAnimator animator;
+    private final Layout layout;
     //private boolean blockScopeVariables;
     private VariablesScope variables;
     private LinkedBlockingDeque<StepBack> stepBacks = new LinkedBlockingDeque<>(STACKLIMIT);
-    private ArrayList<Symbol> breakpointSymbols = new ArrayList<>();
+    private final ArrayList<Symbol> breakpointSymbols = new ArrayList<>();
     private LayoutElement nextElement = null;
     private LayoutElement actualElement = null;
     private HashMap<Symbol, String> forVarValue = new HashMap<>();
@@ -68,17 +70,17 @@ public final class FunctionManager
      * procházení
      * @param jPanelDiagram JPanel, který má sloužit jako kreslící plátno
      * @param jSliderSpeed JSlider ovlivňující rychlost kuličky
-     * @param flowchartAnimationManager instance třídy
+     * @param flowchartDebugManager instance třídy
      * FlowchartAnimationManager, jež bude informována o průběhu toku procházení
      * diagramu
      */
     public FunctionManager(Layout layout, JPanel jPanelDiagram, JSlider jSliderSpeed,
-            FlowchartDebugManager flowchartAnimationManager)
+            FlowchartDebugManager flowchartDebugManager)
     {
         this.jPanelDiagram = jPanelDiagram;
         this.layout = layout;
         this.animator = new DebugAnimator(layout, jPanelDiagram, jSliderSpeed, this);
-        this.flowchartAnimationManager = flowchartAnimationManager;
+        this.flowchartDebugManager = flowchartDebugManager;
     }
 
     /**
@@ -110,6 +112,19 @@ public final class FunctionManager
         if (!animator.isPlayBuffered()) {
             next();
         }
+    }
+
+    public void globalPause()
+    {
+        SwingUtilities.invokeLater(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                flowchartDebugManager.actionPerformed(new ActionEvent(this,
+                        this.hashCode(), "animation/pause"));
+            }
+        });
     }
 
     /**
@@ -145,30 +160,32 @@ public final class FunctionManager
             @Override
             public void run()
             {
+                Runnable runnable = new Runnable()
+                {
+                    private boolean paused = false;
+
+                    @Override
+                    public void run()
+                    {
+                        if (!paused) { // don't allow further next()s if we interrupted ourselves
+                            paused = next().debugShouldBeHalted;
+                            if (paused) {
+                                globalPause();
+                                Thread.currentThread().interrupt();
+                            }
+                        }
+                    }
+                };
+
                 do {
                     try {
-                        SwingUtilities.invokeAndWait(new Runnable()
-                        {
-                            @Override
-                            public void run()
-                            {
-                                next();
-                            }
-                        });
+                        SwingUtilities.invokeAndWait(runnable);
                     } catch (InterruptedException | InvocationTargetException ex) {
                         return;
                     }
                 } while (nextElement != null && !breakpointSymbols.contains(nextElement.getSymbol()));
                 if (nextElement != null && breakpointSymbols.contains(nextElement.getSymbol())) {
-                    SwingUtilities.invokeLater(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            flowchartAnimationManager.actionPerformed(new ActionEvent(this,
-                                    this.hashCode(), "animation/pause"));
-                        }
-                    });
+                    globalPause();
                 }
             }
         });
@@ -194,8 +211,8 @@ public final class FunctionManager
         variables.setActualSegment(nextElement.getParentSegment());
 
         variables.hackupdateVariables(stepBack.prevVariables);
-        flowchartAnimationManager.updateVariables(stepBack.prevDisplayVariables);
-        flowchartAnimationManager.updateVariables(stepBack.prevPrevDisplayVariables);
+        flowchartDebugManager.updateVariables(stepBack.prevDisplayVariables);
+        flowchartDebugManager.updateVariables(stepBack.prevPrevDisplayVariables);
 
         for (Symbol forSymbol : stepBack.prevForValues.keySet()) {
             if (stepBack.prevForValues.get(forSymbol) == null) {
@@ -231,10 +248,12 @@ public final class FunctionManager
      * aktuálního symbolu čekajícího na provedení, jeho zvýraznění a zvýrazní se
      * také spojnice vedoucí k symbolu následujícímu.
      *
-     * @return Stav zásobníku s kroky zpět. True znamená, že zásobník má alespoň
-     * jeden možný krok zpět, false naopak značí prázdný zásobník.
+     * @return NextOutput objekt se stavem zásobníku s kroky zpět. True znamená, že zásobník má
+     * alespoň jeden možný krok zpět, false naopak značí prázdný zásobník. Dále obsahuje informaci
+     * o tom, zda by se mělo automatické spouštění příkazu pozastavit (kvůli chybě nebo zrušenému
+     * dialogu symbolu In/Out)
      */
-    public boolean next()
+    public NextOutput next()
     {
         StepBack stepBack = new StepBack();
         Path2D gotoLabelPath = null;
@@ -292,10 +311,10 @@ public final class FunctionManager
                         true);
             }
             animator.setActiveSymbol(null);
-            flowchartAnimationManager.animationDone(!stepBacks.isEmpty());
+            flowchartDebugManager.animationDone(!stepBacks.isEmpty());
 
             stepBacks.addFirst(stepBack);
-            return !stepBacks.isEmpty();
+            return new NextOutput(!stepBacks.isEmpty(), functionResult.haltDebug);
         }
         FlowchartSegment updateSegment = nextElement.getParentSegment();
 
@@ -368,8 +387,8 @@ public final class FunctionManager
             }
         }
 
-        stepBack.prevPrevDisplayVariables = flowchartAnimationManager.getLastUpdateVars();
-        stepBack.prevDisplayVariables = flowchartAnimationManager.updateVariables(updateDisplayVars);
+        stepBack.prevPrevDisplayVariables = flowchartDebugManager.getLastUpdateVars();
+        stepBack.prevDisplayVariables = flowchartDebugManager.updateVariables(updateDisplayVars);
         stepBack.prevVariables = prevVariables;
 
         Path2D[] paths = null;
@@ -402,7 +421,7 @@ public final class FunctionManager
             stepBacks.removeLast();
         }
         stepBacks.addFirst(stepBack);
-        return !stepBacks.isEmpty();
+        return new NextOutput(!stepBacks.isEmpty(), functionResult.haltDebug);
     }
 
     /**
@@ -518,4 +537,18 @@ public final class FunctionManager
      * }
      * }
      */
+    public final class NextOutput
+    {
+
+        public boolean stepBacksNotEmpty;
+        public boolean debugShouldBeHalted;
+
+        public NextOutput(boolean stepBacksNotEmpty, boolean debugShouldBeHalted)
+        {
+            this.stepBacksNotEmpty = stepBacksNotEmpty;
+            this.debugShouldBeHalted = debugShouldBeHalted;
+        }
+
+    }
+
 }

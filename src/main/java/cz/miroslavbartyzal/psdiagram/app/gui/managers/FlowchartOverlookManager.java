@@ -10,6 +10,7 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.*;
+import java.awt.geom.Point2D;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JScrollBar;
@@ -34,9 +35,10 @@ public final class FlowchartOverlookManager implements MouseListener, MouseMotio
     private JScrollBar verticalScrollbar;
     private JSlider sliderZoom;
     private Cursor grab = null;
-    private int pressedCursorX = -1;
-    private int pressedCursorY = -1;
+    private Integer pressedCursorX = null;
+    private Integer pressedCursorY = null;
     private boolean horizontalScrolled = false;
+    private Point2D zoomAnchorPoint = null;
 
     /**
      * Konstruktor, zajišťující základní spojení s klíčovými prvky uživatelského
@@ -103,6 +105,8 @@ public final class FlowchartOverlookManager implements MouseListener, MouseMotio
     // **********************MouseListener**********************
     /**
      * Metoda s prázdným tělem.
+     * <p>
+     * @param me
      */
     @Override
     public void mouseClicked(MouseEvent me)
@@ -111,6 +115,8 @@ public final class FlowchartOverlookManager implements MouseListener, MouseMotio
 
     /**
      * Metoda s prázdným tělem.
+     * <p>
+     * @param me
      */
     @Override
     public void mouseEntered(MouseEvent me)
@@ -119,6 +125,8 @@ public final class FlowchartOverlookManager implements MouseListener, MouseMotio
 
     /**
      * Metoda s prázdným tělem.
+     * <p>
+     * @param me
      */
     @Override
     public void mouseExited(MouseEvent me)
@@ -149,7 +157,7 @@ public final class FlowchartOverlookManager implements MouseListener, MouseMotio
     @Override
     public void mouseReleased(MouseEvent me)
     {
-        if (pressedCursorX >= 0 || pressedCursorY >= 0) {
+        if (pressedCursorX != null || pressedCursorY != null) {
             resetVariables(me);
         }
     }
@@ -164,49 +172,23 @@ public final class FlowchartOverlookManager implements MouseListener, MouseMotio
     @Override
     public void mouseDragged(MouseEvent me)
     {
-        if (pressedCursorX >= 0 || pressedCursorY >= 0) {
+        if (pressedCursorX != null || pressedCursorY != null) {
             if (!me.getComponent().getCursor().equals(grab)) {
                 me.getComponent().setCursor(grab);
             }
             //component.scrollRectToVisible(new Rectangle(me.getX(), me.getY(), 1, 1));
 
-            int hValue = horizontalScrollbar.getValue();
-            int vValue = verticalScrollbar.getValue();
-            double translateX = mainWindow.getTranslateX();
-            double translateY = mainWindow.getTranslateY();
+            int moveX = pressedCursorX - me.getXOnScreen();
+            int moveY = pressedCursorY - me.getYOnScreen();
 
-            int moveX = pressedCursorX - me.getX();
-            int moveY = pressedCursorY - me.getY();
+            horizontalScrollbar.setValue(horizontalScrollbar.getValue() + moveX);
+            verticalScrollbar.setValue(verticalScrollbar.getValue() + moveY);
 
-            horizontalScrollbar.setValue(moveX + hValue);
-            verticalScrollbar.setValue(moveY + vValue);
-
-            int afterHValue = horizontalScrollbar.getValue();
-            int afterVValue = verticalScrollbar.getValue();
-            double afterTranslateX = mainWindow.getTranslateX();
-            double afterTranslateY = mainWindow.getTranslateY();
-
-            if (translateX > 0 && mainWindow.graphicsXTransformedByScrollbar()) {
-                if (hValue > 0 && hValue == afterHValue) {
-                    if (afterTranslateX < 0) {
-                        pressedCursorX = (int) (me.getX() - translateX - afterTranslateX);
-                    } else {
-                        pressedCursorX = me.getX() - hValue;
-                    }
-                } else {
-                    pressedCursorX = me.getX() - hValue + afterHValue;
-                }
+            if (mainWindow.graphicsXTransformedByScrollbar()) {
+                pressedCursorX = me.getXOnScreen();
             }
-            if (translateY > 0 && mainWindow.graphicsYTransformedByScrollbar()) {
-                if (vValue > 0 && vValue == afterVValue) {
-                    if (afterTranslateY < 0) {
-                        pressedCursorY = (int) (me.getY() - translateY - afterTranslateY);
-                    } else {
-                        pressedCursorY = me.getY() - vValue;
-                    }
-                } else {
-                    pressedCursorY = me.getY() - vValue + afterVValue;
-                }
+            if (mainWindow.graphicsYTransformedByScrollbar()) {
+                pressedCursorY = me.getYOnScreen();
             }
         }
     }
@@ -219,7 +201,7 @@ public final class FlowchartOverlookManager implements MouseListener, MouseMotio
     @Override
     public void mouseMoved(MouseEvent me)
     {
-        if (pressedCursorX >= 0 || pressedCursorY >= 0) {
+        if (pressedCursorX != null || pressedCursorY != null) {
             resetVariables(me);
         }
     }
@@ -241,12 +223,14 @@ public final class FlowchartOverlookManager implements MouseListener, MouseMotio
                 if (zoomValue == sliderZoom.getMaximum()) {
                     return;
                 }
+                zoomAnchorPoint = mwe.getPoint();
                 sliderZoom.setValue(zoomValue + 1);
             } else { // zoom-out
                 int zoomValue = sliderZoom.getValue();
                 if (zoomValue == sliderZoom.getMinimum()) {
                     return;
                 }
+                zoomAnchorPoint = mwe.getPoint();
                 sliderZoom.setValue(zoomValue - 1);
             }
             return;
@@ -254,7 +238,7 @@ public final class FlowchartOverlookManager implements MouseListener, MouseMotio
 
         // scrollovani
         int totalScrollAmount = mwe.getWheelRotation() * Math.abs(mwe.getUnitsToScroll());
-        if (mwe.isAltDown()) {
+        if (mwe.isAltDown() || mwe.isShiftDown()) {
             horizontalScrolled = true;
             totalScrollAmount *= horizontalScrollbar.getUnitIncrement();
             horizontalScrollbar.setValue(horizontalScrollbar.getValue() + totalScrollAmount);
@@ -267,6 +251,8 @@ public final class FlowchartOverlookManager implements MouseListener, MouseMotio
     // **********************KeyListener**********************
     /**
      * Metoda s prázdným tělem.
+     * <p>
+     * @param ke
      */
     @Override
     public void keyPressed(KeyEvent ke)
@@ -290,6 +276,8 @@ public final class FlowchartOverlookManager implements MouseListener, MouseMotio
 
     /**
      * Metoda s prázdným tělem.
+     * <p>
+     * @param ke
      */
     @Override
     public void keyTyped(KeyEvent ke)
@@ -308,14 +296,14 @@ public final class FlowchartOverlookManager implements MouseListener, MouseMotio
     {
         int value = sliderZoom.getValue();
         mainWindow.setJLabelZoomText((value * 10) + "%");
-        mainWindow.setScale(value * 0.1);
-        mainWindow.repaintJPanelDiagram();
+        mainWindow.setScale(value * 0.1, zoomAnchorPoint);
+        zoomAnchorPoint = null;
     }
 
     protected void setStartDragGrab(MouseEvent me)
     {
-        pressedCursorX = me.getX();
-        pressedCursorY = me.getY();
+        pressedCursorX = me.getXOnScreen();
+        pressedCursorY = me.getYOnScreen();
     }
 
     // ***********************************************************
@@ -323,8 +311,8 @@ public final class FlowchartOverlookManager implements MouseListener, MouseMotio
     // ***********************************************************
     private void resetVariables(MouseEvent me)
     {
-        pressedCursorX = -1;
-        pressedCursorY = -1;
+        pressedCursorX = null;
+        pressedCursorY = null;
         if (me.getComponent().getCursor().equals(grab)) {
             me.getComponent().setCursor(Cursor.getDefaultCursor());
         }

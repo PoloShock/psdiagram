@@ -4,7 +4,6 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.global;
 
-import cz.miroslavbartyzal.psdiagram.app.Main;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.AbstractLayout;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.EnumLayout;
 import java.awt.Font;
@@ -14,7 +13,6 @@ import java.awt.RenderingHints;
 import java.awt.font.FontRenderContext;
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.ResourceBundle;
 import javax.xml.bind.JAXBContext;
@@ -64,13 +62,21 @@ public final class SettingsHolder
         jAXBcontext = context;
         jAXBmarshaller = marshaller;
         if (jAXBcontext != null && settingsFile.exists()) {
+            Settings stngs;
+            boolean settingsAreNew = false;
             try {
-                settings = (Settings) jAXBcontext.createUnmarshaller().unmarshal(settingsFile);
-                if (!settings.loadLastFlowchart || (settings.actualFlowchartFile != null && !settings.actualFlowchartFile.exists())) {
-                    settings.actualFlowchartFile = null;
+                stngs = (Settings) jAXBcontext.createUnmarshaller().unmarshal(settingsFile);
+                if (!stngs.loadLastFlowchart || (stngs.actualFlowchartFile != null && !stngs.actualFlowchartFile.exists())) {
+                    stngs.actualFlowchartFile = null;
                 }
             } catch (JAXBException ex) {
                 ex.printStackTrace(System.err);
+                stngs = new Settings();
+                settingsAreNew = true;
+            }
+            settings = stngs;
+            if (settingsAreNew) {
+                saveSettings();
             }
         } else {
             settings = new Settings();

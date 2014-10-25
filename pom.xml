@@ -4,7 +4,8 @@
 
     <groupId>cz.miroslavbartyzal</groupId>
     <artifactId>psdiagram</artifactId>
-    <version>1.3.1-SNAPSHOT</version>
+    <!--<version>1.3.3-SNAPSHOT</version>-->
+    <version>1.3.2</version>
     <packaging>jar</packaging>
     <name>PS Diagram</name>
     <url>http://www.psdiagram.cz</url>
@@ -88,42 +89,38 @@
                                     <changelogurl></changelogurl>
                                     <releaseurl></releaseurl>
 
-                                    <headline><![CDATA[Drag & Drop? Ano prosím!]]></headline>
+                                    <headline><![CDATA[Zacyklení? Nikdy více.]]></headline>
                                     <description>
                                         <![CDATA[
                                         <html>
-                                        <p>Po kratší odmlce vám s radostí přináším opět o něco vychytanější PS Diagram. :)</p>
-                                        <p>Tentokrát jsem update zaměřil hlavně na využití drag & drop při editaci diagramu. Po aktualizaci tak budete moci symboly
-                                        táhnutím jednoduše přesouvat, kopírovat i vytvářet.</p>
-                                        <p>Dále jsem zakomponoval do hlavního menu nabídku "Knihovna algoritmů". Zde se automaticky nashromáží jakékoliv diagramy,
-                                        které byly uloženy do složky "examples", a to i s přítomnou hierarchií adresářů. Představuji si, že by tato knihovna mohla
-                                        skvěle sloužit i jako úložiště práce z předchozích vyučovacích hodin. Cestu ke složkám "examples" odhalíte přidržením myši
-                                        nad nabídkou "Knihovna algoritmů" v hlavním menu.</p>
+                                        <p>S přáním krásných podzimních dnů vám opět přináším novou verzi <br />PS Diagramu. :)</p>
+                                        <p>Pro tentokrát jsem se na zoubek podíval především manipulaci s diagramem, která doznala
+                                        příjemných vylepšení, oprav i rozšíření. Další pilíř tohoto updatu tkví v možnosti přerušit
+                                        průchod diagramem při zobrazeném dialogu symbolu Vstup/Výstup. Konečně tak můžeme dát sbohem
+                                        situacím, kdy jsme se zacykleni nemohli dostat k tlačítku přerušení běhu rychlého procházení
+                                        diagramu.</p>
                                         </html>
                                         ]]>
                                     </description>
 
                                     <features>
-                                        <feature><![CDATA[možnost přesouvání symbolů diagramu pomocí drag & drop]]></feature>
-                                        <feature><![CDATA[možnost kopírování symbolů diagramu pomocí drag & drop a stisknuté klávesy CTRL]]></feature>
-                                        <feature><![CDATA[možnost vkládání nových symbolů diagramu pomocí drag & drop z lišty symbolů vlevo]]></feature>
-                                        <feature>v hlavním menu přibyla záložka "Knihovna algoritmů", kde jsou shromážděny všechny diagramy uložené v "examples" adresářích</feature>
-                                        <feature>automatické obnovení diagramu po neočekávaném ukončení aplikace</feature>
+                                        <feature>dialog symbolu Vstup/Výstup nyní umožňuje přerušit průchod diagramu</feature>
                                     </features>
                                     <enhancements>
-                                        <enhancement>symbol lze nyní vložit i při nepřímo označeném vkládacím bodu</enhancement>
-                                        <enhancement>optimalizace PS Diagramu pro možnost běhu ze síťového úložiště SAMBA</enhancement>
-                                        <enhancement>při probíhající aktualizaci je nyní zobrazeno více informací o jejím průběhu</enhancement>
-                                        <enhancement>zrychlen proces aktualizace</enhancement>
+                                        <enhancement>dojde-li při běhu algoritmu diagramu k chybě, je jeho automatické procházení pozastaveno</enhancement>
+                                        <enhancement>do textového pole pro zadání podmínkového výrazu (symbol Podmínka a Cyklus s podmínkou) byl jako vodítko přidán plovoucí text s nápovědou</enhancement>
+                                        <enhancement>přibližování a oddalování pomocí slideru vpravo dole nyní bere v potaz pozici levého horního okraje náhledu (nikoliv levý horní okraj diagramu)</enhancement>
                                     </enhancements>
-                                    <extensions></extensions>
+                                    <extensions>
+                                        <extension>logika přibližování a oddalování diagramu nyní pracuje na základě pozice kurzoru myši</extension>
+                                    </extensions>
                                     <changes>
+                                        <change><![CDATA[je-li symbol při vytváření metodou drag & drop zanesen zpět do svého tlačítka v paletě symbolů vlevo, nevytvoří se]]></change>
+                                        <change>vertikální posun diagramu je nyní možný i s kombinací klávesy Shift (dříve jen Alt)</change>
                                     </changes>
                                     <fixes>
-                                        <fix>opraven překrývající se text ve formuláři nastavení aplikace</fix>
-                                        <fix>v určité konstelaci diagramu mohla operace "Krok zpět" vyvolat chybu</fix>
-                                        <fix>v případě uloženého, avšak rozpracovaného diagramu byli po znovu-spuštění aplikace po aktualizaci, neuložené změny ztraceny</fix>
-                                        <fix>dialog pro zrušení probíhající aktualizace již není uvězněn v pozadí aktualizačního formuláře</fix>
+                                        <fix>při přesunu diagramu do levého horního rohu již nedochází k jeho rozkmitání</fix>
+                                        <fix>opraveno plané zotavování diagramu</fix>
                                     </fixes>
                                     <others>
                                         <other>aktualizace JRE</other>

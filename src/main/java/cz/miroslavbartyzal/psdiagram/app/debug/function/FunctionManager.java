@@ -123,6 +123,7 @@ public final class FunctionManager
             {
                 flowchartDebugManager.actionPerformed(new ActionEvent(this,
                         this.hashCode(), "animation/pause"));
+                jPanelDiagram.repaint();
             }
         });
     }

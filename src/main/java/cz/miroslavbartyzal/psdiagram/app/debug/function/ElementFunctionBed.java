@@ -19,6 +19,7 @@ import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutElement;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutSegment;
 import cz.miroslavbartyzal.psdiagram.app.global.RegexFunctions;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
+import cz.miroslavbartyzal.psdiagram.app.gui.EnhancedJOptionPane;
 import java.awt.geom.Path2D;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -625,9 +626,9 @@ public final class ElementFunctionBed
                 }
             }
 
-            String input = JOptionPane.showInputDialog(null,
+            String input = EnhancedJOptionPane.showInputDialog(null,
                     "Zadej hodnotu pro proměnnou " + var + ":", "Vstup",
-                    JOptionPane.QUESTION_MESSAGE);
+                    JOptionPane.QUESTION_MESSAGE, new String[]{"OK", "Přerušit"}, "OK");
             if (input == null) {
                 input = "null";
                 result.haltDebug = true;
@@ -653,8 +654,8 @@ public final class ElementFunctionBed
         } else { // output
             String[] extraRet = new String[2];
             script = "_extraRet_[0] = myUneval(" + commands.get("value") + ");"
-                    + "_extraRet_[1] = JOptionPane.showConfirmDialog(null, _extraRet_[0].replaceAll(\"\\\"\", \"\"), \"Výstup\", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);";
-            //+ "_extraRet_[1] = JOptionPane.showOptionDialog(null, _extraRet_[0].replaceAll(\"\\\"\", \"\"), \"Výstup\", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, [\"OK\", \"Přerušit\"], \"OK\");";
+                    + "_extraRet_[1] = JOptionPane.showOptionDialog(null, _extraRet_[0].replaceAll(\"\\\"\", \"\"), \"Výstup\", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, [\"OK\", \"Přerušit\"], \"OK\");";
+//                    + "_extraRet_[1] = JOptionPane.showConfirmDialog(null, _extraRet_[0].replaceAll(\"\\\"\", \"\"), \"Výstup\", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);";
             //+ "JOptionPane.showMessageDialog(null, _extraRet_[0], \"Výstup\", JOptionPane.INFORMATION_MESSAGE);";
 
             try {
@@ -662,7 +663,8 @@ public final class ElementFunctionBed
             } catch (ScriptException ex) {
                 result.haltDebug = true;
             }
-            if (extraRet[1] != null && Integer.valueOf(extraRet[1]) == JOptionPane.CANCEL_OPTION) {
+            if (!result.haltDebug && extraRet[1] != null && Integer.valueOf(extraRet[1]) != JOptionPane.CLOSED_OPTION && Integer.valueOf(
+                    extraRet[1]) != JOptionPane.OK_OPTION) {
                 result.haltDebug = true;
             }
             result.progressDesc = extraRet[0] + " →";

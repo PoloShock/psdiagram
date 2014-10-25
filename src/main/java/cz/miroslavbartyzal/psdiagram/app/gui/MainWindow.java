@@ -124,7 +124,7 @@ public final class MainWindow extends javax.swing.JFrame
     private final JFrameAbout jFrameAbout;
     private final JFrameUpdate jFrameUpdate;
     private static final JAXBContext jAXBcontext = createJAXBContext();
-    private final String windowTitle = "PS Diagram"; // BEWARE OF CHANGE - updater using it for process identification
+    private final String windowTitle = "PS Diagram"; // BEWARE OF CHANGE - updater is using it for process identification
     private static boolean forceUpdate = false;
     private Long daysLeft;
     private final FlowchartCrashRecovery flowchartCrashRecovery;
@@ -325,14 +325,16 @@ public final class MainWindow extends javax.swing.JFrame
                     MouseInputAdapter listener = new MouseInputAdapter()
                     {
                         // a little bit of hacking in order to achieve drag'n drop while creating symbols
-                        private boolean releasedAlready = true;
-                        private boolean dragging = false;
+                        private boolean isPressed = false;
+                        private boolean isDragging = false;
+                        private ActionListener[] removedListeners = null;
 
                         @Override
                         public void mouseExited(MouseEvent e)
                         {
-                            if (!releasedAlready) {
-                                dragging = true;
+                            if (isPressed) {
+                                isDragging = true;
+                                reAddActionListeners();
                                 String action = button.getActionCommand();
                                 for (ActionListener a : button.getActionListeners()) {
                                     a.actionPerformed(new ActionEvent(button,
@@ -344,17 +346,18 @@ public final class MainWindow extends javax.swing.JFrame
                         @Override
                         public void mouseEntered(MouseEvent e)
                         {
-                            if (dragging) {
-                                dragging = false;
+                            if (isDragging) {
+                                isDragging = false;
                                 // we returned back from canvas to button -> lets cancel symbol creation process
                                 flowchartEditManager.cancelDragCreationProcess();
+                                removeActionListeners(); // remove listeners so the button doesn't add symbol after regular click anymore
                             }
                         }
 
                         @Override
                         public void mouseDragged(MouseEvent e)
                         {
-                            if (dragging) {
+                            if (isDragging) {
                                 // we already sent the actionEvent
                                 for (MouseMotionListener listener : jPanelDiagram.getMouseMotionListeners()) {
                                     listener.mouseDragged(SwingUtilities.convertMouseEvent(button,
@@ -366,8 +369,10 @@ public final class MainWindow extends javax.swing.JFrame
                         @Override
                         public void mouseReleased(MouseEvent e)
                         {
-                            releasedAlready = true;
-                            if (dragging) {
+                            reAddActionListeners();
+                            isPressed = false;
+                            if (isDragging) {
+                                isDragging = false;
                                 // we already sent the actionEvent
                                 for (MouseListener listener : jPanelDiagram.getMouseListeners()) {
                                     listener.mouseReleased(SwingUtilities.convertMouseEvent(button,
@@ -379,7 +384,25 @@ public final class MainWindow extends javax.swing.JFrame
                         @Override
                         public void mousePressed(MouseEvent e)
                         {
-                            releasedAlready = false;
+                            isPressed = true;
+                        }
+
+                        private void removeActionListeners()
+                        {
+                            removedListeners = button.getActionListeners();
+                            for (ActionListener ac : removedListeners) {
+                                button.removeActionListener(ac);
+                            }
+                        }
+
+                        private void reAddActionListeners()
+                        {
+                            if (removedListeners != null) {
+                                for (ActionListener ac : removedListeners) {
+                                    button.addActionListener(ac);
+                                }
+                                removedListeners = null;
+                            }
                         }
                     };
 
@@ -2187,7 +2210,7 @@ public final class MainWindow extends javax.swing.JFrame
         currentTime = currentDate.getTime();
 
         daysLeft = (1414796400000l - currentTime) / 86400000l;
-        if (currentTime > 1414796400000l || currentTime < SettingsHolder.settings.getLastTrialLaunchedTime()) { // 2014.11.1. 00:00:00 = 1414796400000 (System.out.println(new GregorianCalendar(2014, 10, 1).getTimeInMillis());) - month is zero-based
+        if (currentTime > 1435701600000l || currentTime < SettingsHolder.settings.getLastTrialLaunchedTime()) { // 2015.7.1. 00:00:00 = 1435701600000 (System.out.println(new GregorianCalendar(2015, 6, 1).getTimeInMillis());) - month is zero-based
 //            System.exit(0); <- let's let the user download newer version of PS Diagram
             forceUpdate = true;
         } else {

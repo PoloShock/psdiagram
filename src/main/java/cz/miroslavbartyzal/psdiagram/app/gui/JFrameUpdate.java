@@ -234,7 +234,7 @@ public class JFrameUpdate extends javax.swing.JFrame implements PropertyChangeLi
         jTextPaneNews = new javax.swing.JTextPane();
         jLabelDescription = new javax.swing.JLabel();
 
-        setTitle("O apikaci PS Diagram");
+        setTitle("Aktualizace PS Diagramu");
         setAlwaysOnTop(true);
         setMinimumSize(new java.awt.Dimension(500, 500));
         setResizable(false);

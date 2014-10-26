@@ -1424,7 +1424,8 @@ public final class MainWindow extends javax.swing.JFrame
             if (!SettingsHolder.settings.isExportTransparency() || (!extension.equals("gif") && !extension.equals(
                     "png"))) {
                 g2d.setColor(Color.WHITE);
-                g2d.fill(new Rectangle((int) layout.getWidth(), (int) layout.getHeight()));
+                g2d.fill(new Rectangle((int) (layout.getWidth() * jPnlDiagram.getScale()),
+                        (int) (layout.getHeight() * jPnlDiagram.getScale())));
             }
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2d.scale(jPnlDiagram.getScale(), jPnlDiagram.getScale());

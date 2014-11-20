@@ -130,7 +130,7 @@ public final class SettingsHolder
     public static final String PSDIAGRAM_VERSION = ResourceBundle.getBundle("application").getString(
             "version");
     public static final String PSDIAGRAM_BUILD = ResourceBundle.getBundle("application").getString(
-            "buildInfo").replaceAll(",", ""); // get rid of comma as order separator
+            "buildInfo");
     public static final String PSDIAGRAM_BUILD_NUMBER = PSDIAGRAM_BUILD.replaceAll("\\s.*$", "");
     public static final String PSDIAGRAM_BUILD_DATE = PSDIAGRAM_BUILD.replaceAll("^[\\d\\s]+\\(", "").replaceAll(
             "\\)$", "");

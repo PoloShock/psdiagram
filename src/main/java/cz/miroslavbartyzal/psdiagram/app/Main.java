@@ -8,7 +8,7 @@ import cz.miroslavbartyzal.psdiagram.app.gui.MainWindow;
 import javax.swing.ToolTipManager;
 
 /**
- * Hlavní třída obsahující main metodu, sloužící pro spuštění hlavního
+ * Hlavní třída obsahuje main metodu, sloužící pro spuštění hlavního
  * okna aplikace.
  *
  * @author Miroslav Bartyzal (miroslavbartyzal@gmail.com)
@@ -27,9 +27,9 @@ public final class Main
     // TODO pridat info o verzi a licenci
     // TODO prepnuti focusu z platna do textboxu i pri editaci funkce symbolu
     // TODO ukolovani studentu? (seradit spravne kroky algoritmu, vyuziti jen urciteho poctu prikazu apod.)
-    // TODO možnost nastavení barev v editacnim i animacnim rezimu
+    // TODO moĹľnost nastavenĂ­ barev v editacnim i animacnim rezimu
     // TODO po dvojitem poklepani na symbol, prepnout docasne na zalozku Text (nebo toggle?) Docasne proto, aby po vlozeni dalsiho symbolu jiz byla opet vybrana Funkce
-    // TODO pro skoly nechat defaultni nastaveni jako readonly soubor xml primo u aplikace (co ale s prekopirovanim domu?) - NEBO co preferovat allusers slozku? :)
+    // TODO pro skoly nechat defaultni nastaveni jako readonly soubor xml primo u aplikace (co ale s prekopirovanim domu?) - NEBO co preferovat allusers slozku? :) + myslenka: u aplikace zkopirovat soubor do usera pouze pokud uz tam neni vlastni nastaveni
     // TODO menit i zeditovany text symbolu, pokud je zeditovany pouze o mezery ci odradkovani (nebo tak vymyslet automaticke odradkovavani?)
     // TODO moznost nastaveni prirazovaciho znamenka
     // TODO moznost prepnuti mezi Do-Until a Do-While
@@ -41,14 +41,16 @@ public final class Main
     // TODO misto blokovani syntaktickym filtrem, pouze zcervenit
     // TODO umoznit editaci vytvorenych promennych? (za behu animace)
     // TODO uvazit prebarveni pozadi animace - kouknout na to s modrym odstinem z prezentace diplomek
-    // TODO vedle exportu do obrázku a PDF, vytvořit export do HTML! :)
+    // TODO vedle exportu do obrĂˇzku a PDF, vytvoĹ™it export do HTML! :)
     // TODO dat uzivateli vedet ze pri exportu do obrazku zalezi na aktualnim zvetseni! (nebo to udelat nejak jinak)
     // TODO pridat input symbolu text, aby nebylo nutne pouzivat output symbol pro oznameni co promenna znamena..
     // TODO animace uprav layoutu
-    // TODO moznost promitani vytvořených algoritmů na webu (pro pasivní učení a prezentaci)? - Jelinek
+    // TODO moznost promitani vytvoĹ™enĂ˝ch algoritmĹŻ na webu (pro pasivnĂ­ uÄŤenĂ­ a prezentaci)? - Jelinek
     // TODO merit zakovi cas za ktery ulohu vykona, monitorovat problemy, se kterymi se setkal (co treba zachovavat vsechny stavy diagramu?) - Jelinek
-    // TODO Timer, udalosti jako procedura (interrupt či vlákno)
-    // TODO mrkni na http://jelastic.com/ a na jejich barvy, maji to cool :); http://www.noip.com/, http://www.hwinfo.com/
+    // TODO Timer, udalosti jako procedura (interrupt ÄŤi vlĂˇkno)
+    // TODO mrkni na http://jelastic.com/ a na jejich barvy, maji to cool :); http://www.noip.com/, http://www.hwinfo.com/, http://dinopoloclub.com/minimetro/, http://msysgit.github.io/
+    // 			- co takhle jako metro mit nejakou kulickovou linku, v uvodu mit edit mode barvy s pobidkou jit dolu -> preslo by se do debug/anim modu a kulicka by sledovala pozici scrollu, ukotvila by se v jednotlivych vertikalnich sekcich (a treba tam tak nejak 2D kmitala)
+    //			- mohlo by se za ni chytit jako easter egg a samozrejme prvky na strance budou opet hazet stiny
     // TODO zkontrolovat obfuskaci po upgradu proguardu
     // TODO check these: http://sourceforge.net/projects/flowcharts/?source=recommended, http://sourceforge.net/projects/simpeflowd/?source=recommended, http://sourceforge.net/projects/devflowcharter/?source=recommended, http://sourceforge.net/projects/javablock/
     // TODO sjednotit jazyk na EN (dokumentace)
@@ -67,7 +69,14 @@ public final class Main
     // TODO podivat se na logicnost posouvani diagramu pri posunu komentare mimo platno a zpet
     // TODO pridat info o poctu vykonanych prikazu po konceni algoritmu -> hezky benchmark, kriterium pro hodnoceni efektivity algoritmu :)
     // TODO mozny nazev: dialgo
-    // TODO "Soubor PS_Diagram_1.3.zip se běžně nestahuje a mohl by být nebezpečný."
+    // TODO "Soubor PS_Diagram_1.3.zip se bÄ›ĹľnÄ› nestahuje a mohl by bĂ˝t nebezpeÄŤnĂ˝."
+    //e TODO pri spusteni vice instanci PSD, bude urcite chybne fungovat zotavovani diagramu (FlowchartCrashRecovery) -> zjistovat prislusnost na zaklade PID?; co dalsiho muze blbnout?
+    //e TODO pridat dalsi watermark napovedy
+    // TODO v polich pro nazev promenne nabizet jiz existujici promenne
+    //e TODO opravit regexy treba ve foru (projde napr increment 2.1.2.00053)
+    //e TODO break by mel fungovat i v animaci..?
+    //e TODO vytvorit vlastni priponu (.psdiagram?) kterou bude mozne asociovat s psdiagram.exe. Do nove ulozky integrovat historii vytvoreni diagramu pomoci systemtime timestampu. Undo akci do teto historie zahrnovat jako beznou akci editace. Pri nacteni diagramu by se meli nacist i undoable edits, pozor ale na ty undo akce viz predchozi veta. Otestovat, jestli asociace prezije aktualizaci (zmena psd.exe). Rozhranni pro timetravel (historie) muze pockat.
+    // TODO vyresit ty netransparentni stiny v pdf
     /**
      * Metoda pro spuštění hlavního okna aplikace. Nejsou přijímány žádné
      * parametry.
@@ -76,7 +85,7 @@ public final class Main
      */
     public static void main(String[] args)
     {
-        ToolTipManager.sharedInstance().setDismissDelay(12000); // nastavení tooltipu tak, aby zustali 12 sekund
+        ToolTipManager.sharedInstance().setDismissDelay(12000); // nastavení tooltipů tak, aby zustali 12 sekund
         MainWindow.main(args);
     }
 

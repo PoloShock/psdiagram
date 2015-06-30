@@ -4,7 +4,7 @@
 
     <groupId>cz.miroslavbartyzal</groupId>
     <artifactId>psdiagram</artifactId>
-    <version>1.3.3-SNAPSHOT</version>
+    <version>1.3.2.2</version>
     <packaging>jar</packaging>
     <name>PS Diagram</name>
     <url>http://www.psdiagram.cz</url>
@@ -88,16 +88,11 @@
                                     <changelogurl></changelogurl>
                                     <releaseurl></releaseurl>
 
-                                    <headline><![CDATA[Zacyklení? Nikdy více.]]></headline>
+                                    <headline></headline>
                                     <description>
                                         <![CDATA[
                                         <html>
-                                        <p>S přáním krásných podzimních dnů vám opět přináším novou verzi <br />PS Diagramu. :)</p>
-                                        <p>Pro tentokrát jsem se na zoubek podíval především manipulaci s diagramem, která doznala
-                                        příjemných vylepšení, oprav i rozšíření. Další pilíř tohoto updatu tkví v možnosti přerušit
-                                        průchod diagramem při zobrazeném dialogu symbolu Vstup/Výstup. Konečně tak můžeme dát sbohem
-                                        situacím, kdy jsme se zacykleni nemohli dostat k tlačítku přerušení běhu rychlého procházení
-                                        diagramu.</p>
+                                        <p>Malý update před vydáním velkého.</p>
                                         </html>
                                         ]]>
                                     </description>
@@ -111,9 +106,9 @@
                                     <changes>
                                     </changes>
                                     <fixes>
-                                        <fix>opraven export přiblíženého diagramu do obrázku s netransparentním pozadím</fix>
                                     </fixes>
                                     <others>
+                                        <other>aktualizace JRE</other>
                                     </others>
                                 </configuration>
                             </execution>

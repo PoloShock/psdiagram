@@ -4,6 +4,10 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters;
 
+import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.ValidationListener;
+import cz.miroslavbartyzal.psdiagram.app.parser.EnumRule;
+import javax.swing.JTextField;
+
 /**
  * Tato třída představuje filtr numerické hodnoty.
  *
@@ -12,29 +16,50 @@ package cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilter
 public final class NumericValueFilter extends AbstractFilter
 {
 
-    @Override
-    boolean validMe(String text)
+    private static final EnumRule RULE = EnumRule.NUMERIC_EXPRESSION;
+
+    public NumericValueFilter(JTextField parentJTextField, ValidationListener validationListener)
     {
-        return isValid(text);
+        super(parentJTextField, validationListener);
+
+        if (!parentJTextField.getText().isEmpty()) {
+            super.parseInputAndUpdateGUI(parentJTextField.getText());
+        }
+    }
+
+    @Override
+    EnumRule getRule()
+    {
+        return RULE;
     }
 
     /**
      * Pokusí se daný textový řeťezec porovnat vůči tomuto filtru.
-     * <p/>
-     * @param text text, který chceme prověřit
-     * @return true, prošel-li text tímto filtrem
+     *
+     * @param input text, který chceme prověřit
+     * @return
      */
-    public static boolean isValid(String text)
+    public static boolean isValid(String input)
     {
-        if (text.length() == 0) {
-            return true;
-        }
-
-        if (text.matches(".*\"+.*")) { //|| text.matches("^\\[+.*")) {
-            return false;
-        } else {
-            return ValueFilter.isValid(text);
-        }
+        return AbstractFilter.parseInput(input, RULE);
     }
 
+//    /**
+//     * Pokusí se daný textový řeťezec porovnat vůči tomuto filtru.
+//     * <p/>
+//     * @param input text, který chceme prověřit
+//     * @return
+//     */
+//    public static ValidityCheckResult isValid(String input)
+//    {
+//        if (input.length() == 0) {
+//            return ValidityCheckResult.createValidRes(false);
+//        }
+//
+//        if (input.contains("\"")) { //|| text.matches("^\\[+.*")) {
+//            return ValidityCheckResult.createInvalidRes("Řetězcové hodnoty nejsou povoleny.");
+//        } else {
+//            return ValueFilter.isValid(input);
+//        }
+//    }
 }

@@ -8,9 +8,8 @@ import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutElement;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.EnumSymbol;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
 import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditManager;
-import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.ValueFilter;
-import cz.miroslavbartyzal.psdiagram.app.global.RegexFunctions;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
+import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.BooleanValueFilter;
 import java.util.LinkedHashMap;
 import javax.swing.JLabel;
 import javax.swing.event.DocumentEvent;
@@ -27,6 +26,7 @@ public final class Decision extends AbstractSymbolFunctionForm
 
     private final JLabel jLabelDescription;
     private final Symbol mySymbol = EnumSymbol.DECISION.getInstance(null);
+    private final DecisionValidationListener validationListener = new DecisionValidationListener();
 
     /**
      * Konstruktor, inicializující tento formulář.
@@ -67,18 +67,16 @@ public final class Decision extends AbstractSymbolFunctionForm
 
         if (element.getSymbol().getCommands() != null) {
             if (SettingsHolder.settings.isFunctionFilters()) {
-                jTextFieldCondition.setText(
-                        element.getSymbol().getCommands().get("condition").replace("==", "=").replace(
-                                "&&", "&").replace("||", "|")); // ulozeny jsou dvojite hodnoty
+                jTextFieldCondition.setText(AbstractSymbolFunctionForm.convertFromJSToPSDCommands(
+                        element.getSymbol().getCommands().get("condition"))); // ulozeny jsou dvojite hodnoty
             } else {
                 jTextFieldCondition.setText(element.getSymbol().getCommands().get("condition"));
             }
         }
 
-        if (SettingsHolder.settings.isFunctionFilters()) {
-            ((AbstractDocument) jTextFieldCondition.getDocument()).setDocumentFilter(
-                    new ValueFilter());
-        }
+        ((AbstractDocument) jTextFieldCondition.getDocument()).setDocumentFilter(
+                new BooleanValueFilter(jTextFieldCondition, validationListener));
+        AbstractSymbolFunctionForm.enhanceWithUndoRedoCapability(jTextFieldCondition);
         addDocumentListeners();
         super.trimSize();
     }
@@ -99,7 +97,7 @@ public final class Decision extends AbstractSymbolFunctionForm
         } catch (BadLocationException ex) {
         }
 
-        generateValues(super.getElement().getSymbol(), condition);
+        generateValues(super.getElement().getSymbol(), condition.trim());
     }
 
     /**
@@ -112,41 +110,21 @@ public final class Decision extends AbstractSymbolFunctionForm
      */
     public static void generateValues(Symbol symbol, String condition)
     {
-        if (!condition.equals("")) {
-            // v uvozovkach si nesmim vsimat niceho
-            String[] conditionWithoutQ = RegexFunctions.splitString(condition, "\"[^\"]*\"?");
-            for (int i = 0; i < conditionWithoutQ.length; i += 2) {
-                conditionWithoutQ[i] = conditionWithoutQ[i].replace("!=", "≠").replace("!", "¬").replace(
-                        ">=", "≥").replace("<=", "≤");
-            }
-            String defVal = "";
-            for (String commandPart : conditionWithoutQ) {
-                defVal += commandPart;
-            }
-            symbol.setDefaultValue(defVal);
-
-            LinkedHashMap<String, String> commands = new LinkedHashMap<>();
-            if (SettingsHolder.settings.isFunctionFilters()) {
-                // v uvozovkach si nesmim vsimat niceho
-                conditionWithoutQ = RegexFunctions.splitString(condition, "\"[^\"]*\"?");
-                for (int i = 0; i < conditionWithoutQ.length; i += 2) {
-                    conditionWithoutQ[i] = conditionWithoutQ[i].replace("!=", "≠").replace(">=", "≥").replace(
-                            "<=", "≤").replace("=", "==").replace("&", "&&").replace("|", "||").replace(
-                                    "≠", "!=").replace("≥", ">=").replace("≤", "<=");
-                }
-                String cndtn = "";
-                for (String commandPart : conditionWithoutQ) {
-                    cndtn += commandPart;
-                }
-                commands.put("condition", cndtn); //ulozit dvojite hodnoty
-            } else {
-                commands.put("condition", condition);
-            }
-            symbol.setCommands(commands);
+        if (!condition.isEmpty()) {
+            symbol.setDefaultValue(AbstractSymbolFunctionForm.convertToPSDDisplayCommands(
+                    condition));
         } else {
             symbol.setDefaultValue(null);
-            symbol.setCommands(null);
         }
+
+        LinkedHashMap<String, String> commands = new LinkedHashMap<>();
+        if (SettingsHolder.settings.isFunctionFilters()) {
+            commands.put("condition", AbstractSymbolFunctionForm.convertFromPSDToJSCommands(
+                    condition)); //ulozit dvojite hodnoty
+        } else {
+            commands.put("condition", condition);
+        }
+        symbol.setCommands(commands);
     }
 
     /**
@@ -222,6 +200,8 @@ public final class Decision extends AbstractSymbolFunctionForm
 
     /**
      * Metoda s prázdným tělem.
+     * <p>
+     * @param de
      */
     @Override
     public void changedUpdate(DocumentEvent de)
@@ -252,6 +232,22 @@ public final class Decision extends AbstractSymbolFunctionForm
     {
         generateValues();
         super.fireChangeEventToEditManager();
+    }
+
+    private class DecisionValidationListener implements ValidationListener
+    {
+
+        @Override
+        public void validationStateChanged()
+        {
+            Decision.super.getElement().getSymbol().setCommandsValid(
+                    (boolean) jTextFieldCondition.getDocument().getProperty("commandValid"));
+
+            if (SettingsHolder.settings.isFunctionFilters()) {
+                Decision.super.getFlowchartEditManager().repaintJPanelDiagram();
+            }
+        }
+
     }
 
 }

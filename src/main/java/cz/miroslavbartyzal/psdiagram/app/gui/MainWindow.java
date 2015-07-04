@@ -35,6 +35,7 @@ import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditUndoManager;
 import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartOverlookManager;
 import cz.miroslavbartyzal.psdiagram.app.global.GlobalFunctions;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
+import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.AbstractSymbolFunctionForm;
 import cz.miroslavbartyzal.psdiagram.app.network.TimeCollector;
 import cz.miroslavbartyzal.psdiagram.app.update.Updater;
 import java.awt.Color;
@@ -71,7 +72,6 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.ResourceBundle;
 import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
@@ -141,19 +141,19 @@ public final class MainWindow extends javax.swing.JFrame
     ;
 
     /** Creates new form MainWindow */
-    private MainWindow()
+    private MainWindow(final File flowchartToOpen)
     {
-        String buildProfile = ResourceBundle.getBundle("application").getString("buildProfile");
-        if (!buildProfile.equals("deployment") && !buildProfile.equals("development-run")) {
-            if (System.getenv("COMPUTERNAME").equals("POLOSHOCK-NB")) {
-                JOptionPane.showMessageDialog(null, buildProfile, "", JOptionPane.WARNING_MESSAGE);
-            } else {
+        if (!SettingsHolder.IS_DEPLOYMENT_MODE) {
+            if (!System.getenv("COMPUTERNAME").equals("POLOSHOCK-NB")) {
                 JOptionPane.showMessageDialog(null,
                         "<html>Tato verze PS Diagramu je určena pouze pro vývoj.<br />"
                         + "Pro obdržení správné verze navštivte www.psdiagram.cz nebo mne kontaktujte<br />"
                         + "na emailu miroslavbartyzal@gmail.com.</html>", "Chyba verze",
                         JOptionPane.ERROR_MESSAGE);
                 System.exit(0);
+            } else if (!SettingsHolder.IS_DEVELOPMENT_RUN_MODE) {
+                JOptionPane.showMessageDialog(null, SettingsHolder.BUILD_PROFILE, "",
+                        JOptionPane.WARNING_MESSAGE);
             }
         }
 
@@ -217,11 +217,6 @@ public final class MainWindow extends javax.swing.JFrame
         }
         jMenuAlgorithms.setToolTipText(ExamplesLoader.getExamplesLocationLoadToolTip());
 
-        jFrameSettings = new JFrameSettings();
-        jFrameCodeImport = new JFrameCodeImport(this);
-        jFrameCodeExport = new JFrameCodeExport(this);
-        jFrameAbout = new JFrameAbout();
-
         jPanelVariables.setVisible(false);
 
         // nastaveni velikosti okna - mj. aby nebylo vetsi nez obrazovka
@@ -255,6 +250,7 @@ public final class MainWindow extends javax.swing.JFrame
          * affineTransform.scale(getScale(), getScale());
          */
         jTextAreaTextSymbol.setFont(SettingsHolder.CODEFONT);
+        AbstractSymbolFunctionForm.enhanceWithUndoRedoCapability(jTextAreaTextSymbol);
         jTextFieldTextSegment.setFont(SettingsHolder.SMALL_CODEFONT.deriveFont(13f));
         jPanelDiagram.setFocusable(true);
         jPanelDiagram.requestFocusInWindow();
@@ -293,6 +289,11 @@ public final class MainWindow extends javax.swing.JFrame
                 jPanelVariables.getVariableModel(), jPanelDiagram, jSliderSpeed,
                 jButtonToolPlayPause, jButtonToolPrevious, jButtonToolNext, jButtonToolStop,
                 jButtonLaunch);
+
+        jFrameSettings = new JFrameSettings(flowchartEditManager);
+        jFrameCodeImport = new JFrameCodeImport(this);
+        jFrameCodeExport = new JFrameCodeExport(this);
+        jFrameAbout = new JFrameAbout();
 
         // vytvoreni Symbol popup menu.
         JPopupMenu symbolPopup = new JPopupMenu();
@@ -471,11 +472,23 @@ public final class MainWindow extends javax.swing.JFrame
             } else {
                 flowchartCrashRecovery.updateSavedFlowchart();
             }
-            setStatusText("Diagram byl po neočekávaném ukončení aplikace úspěšně zotaven.", 5000);
+            setStatusText("Diagram byl po neočekávaném ukončení aplikace úspěšně zotaven.", 8000);
         } else if (SettingsHolder.settings.getActualFlowchartFile() != null) {
             openDiagram(SettingsHolder.settings.getActualFlowchartFile());
         }
         SettingsHolder.settings.setDontSaveDirectly(dontSaveDirectly); // we want to preserve that setting
+
+        // open the flowchart we recieved via constructor parameter
+        SwingUtilities.invokeLater(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                if (flowchartToOpen != null) {
+                    openDiagram(flowchartToOpen);
+                }
+            }
+        });
 
         updater.loadInfo(null, new Updater.InfoLoadListener()
         {
@@ -1390,7 +1403,7 @@ public final class MainWindow extends javax.swing.JFrame
             graphics.endExport();
             graphics.dispose();
 
-            setStatusText("Diagram byl úspěšně exportován do " + file.getPath(), 5000);
+            setStatusText("Diagram byl úspěšně exportován do " + file.getPath(), 8000);
         }
     }//GEN-LAST:event_jMenuItemExportPDFActionPerformed
 
@@ -1446,7 +1459,7 @@ public final class MainWindow extends javax.swing.JFrame
                         "Chyba", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            setStatusText("Diagram byl úspěšně exportován do " + file.getPath(), 5000);
+            setStatusText("Diagram byl úspěšně exportován do " + file.getPath(), 8000);
         }
     }//GEN-LAST:event_jMenuItemExportImageActionPerformed
 
@@ -1549,6 +1562,22 @@ public final class MainWindow extends javax.swing.JFrame
     }//GEN-LAST:event_jMenuItemCodeImportActionPerformed
 
     private void jMenuItemCodeExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemCodeExportActionPerformed
+        outterLoop:
+        for (LayoutSegment segment : layout.getFlowchart()) {
+            if (segment != null) {
+                for (LayoutElement element : segment) {
+                    if (!element.getSymbol().areCommandsValid()) {
+                        JOptionPane.showMessageDialog(null,
+                                "<html>Export diagramu do zdrojového kódu nelze provést, protože jeden nebo <br />"
+                                + "více symbolů diagramu obsahuje chybu ve své funkci (symbol označen červeně).<br /><br />"
+                                + "Odstraňte označené chyby a akci opakujte.</html>",
+                                "Diagram obsahuje chyby", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                }
+            }
+        }
+
         jFrameCodeExport.setLocationRelativeTo(this);
         jFrameCodeExport.setVisible(true);
     }//GEN-LAST:event_jMenuItemCodeExportActionPerformed
@@ -1618,7 +1647,12 @@ public final class MainWindow extends javax.swing.JFrame
             @Override
             public void run()
             {
-                new MainWindow().setVisible(!forceUpdate);
+                File flowchartToOpen = null;
+                if (args.length > 0 && new File(args[0]).isFile()) {
+                    flowchartToOpen = new File(args[0]);
+                }
+
+                new MainWindow(flowchartToOpen).setVisible(!forceUpdate);
                 if (args.length > 0 && args[0].equals("-updated")) {
                     JOptionPane.showMessageDialog(null,
                             "PS Diagram byl úspěšně aktualizován na verzi " + SettingsHolder.PSDIAGRAM_VERSION + "-" + SettingsHolder.PSDIAGRAM_BUILD + ".",
@@ -2344,9 +2378,10 @@ public final class MainWindow extends javax.swing.JFrame
 
         SettingsHolder.settings.setActualFlowchartFile(null);
         updateTitle();
+        flowchartEditManager.revalidateSymbolCommands();
         flowchartCrashRecovery.updateSavedFlowchart();
 
-        setStatusText("Diagram byl úspěšně vygenerován ze zdrojového kódu", 5000);
+        setStatusText("Diagram byl úspěšně vygenerován ze zdrojového kódu", 8000);
         return true;
     }
 
@@ -2385,11 +2420,12 @@ public final class MainWindow extends javax.swing.JFrame
 
             SettingsHolder.settings.setActualFlowchartFile(file);
             updateTitle();
+            flowchartEditManager.revalidateSymbolCommands();
 
             flowchartCrashRecovery.updateSavedFlowchart();
             setStatusText(
                     "Diagram " + SettingsHolder.settings.getActualFlowchartFile().getPath() + " byl úspěšně otevřen.",
-                    5000);
+                    8000);
         } catch (JAXBException ex) {
             ex.printStackTrace(System.err);
             JOptionPane.showMessageDialog(this, "Při načítání diagramu nastala chyba!",

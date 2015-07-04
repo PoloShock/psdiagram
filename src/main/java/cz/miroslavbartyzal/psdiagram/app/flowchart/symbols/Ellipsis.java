@@ -48,6 +48,26 @@ public final class Ellipsis extends AbstractSymbol
     }
 
     /**
+     * Metoda s prázdným tělem - výpustka nemůže obsahovat text.
+     * <p>
+     * @param defaultValue
+     */
+    @Override
+    public void setDefaultValue(String defaultValue)
+    {
+    }
+
+    /**
+     * Metoda s prázdným tělem - výpustka nemůže obsahovat text.
+     * <p>
+     * @param customValue
+     */
+    @Override
+    public void setCustomValue(String customValue)
+    {
+    }
+
+    /**
      * Metoda pro nastavení pozice symbolu na požadovanou Xovou souřadnici
      * středu symbolu.
      *

@@ -4,6 +4,11 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters;
 
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
+import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.ValidationListener;
+import cz.miroslavbartyzal.psdiagram.app.parser.EnumRule;
+import javax.swing.JTextField;
+
 /**
  * Tato třída představuje filtr proměnné, která nepředstavuje pole.<br />
  * Takováto proměnná by tedy neměla obsahovat jiné znaky, než písmenné a
@@ -14,37 +19,60 @@ package cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilter
 public final class NoArrayVariableFilter extends AbstractFilter
 {
 
-    @Override
-    boolean validMe(String text)
+    private static final EnumRule RULE = EnumRule.NO_ARRAY_VARIABLE_TO_ASSIGN_TO;
+
+    public NoArrayVariableFilter(JTextField parentJTextField, ValidationListener validationListener)
     {
-        return isValid(text);
+        super(parentJTextField, validationListener);
+
+        if (!parentJTextField.getText().isEmpty()) {
+            super.parseInputAndUpdateGUI(parentJTextField.getText());
+        }
+    }
+
+    @Override
+    EnumRule getRule()
+    {
+        return RULE;
     }
 
     /**
      * Pokusí se daný textový řeťezec porovnat vůči tomuto filtru.
      *
-     * @param text text, který chceme prověřit
-     * @return true, prošel-li text tímto filtrem
+     * @param input text, který chceme prověřit
+     * @return
      */
-    public static boolean isValid(String text)
+    public static boolean isValid(String input)
     {
-        if (text.length() == 0) {
-            return true;
-        }
-
-        return text.matches("^[a-zA-Z\\_\\$][\\w\\$]{0,29}") && !text.toLowerCase().matches(
-                "^true$|^false$|^arguments$|^this$|^break$|^case$|^catch$|^continue$|^debugger$|^default$|^delete$|^do$|^else$|^finally$|^for$|^function$|^if$|^in$|^instanceof$|^new$|^return$|^switch$|^this$|^throw$|^try$|^typeof$|^var$|^void$|^while$|^with$");
-
-        /*
-         * if (!Character.isLetter(text.charAt(0)) || text.length() > 30) {
-         * return false;
-         * }
-         * for (int i = 1; i < text.length(); i++) {
-         * if (!Character.isLetterOrDigit(text.charAt(i))) {
-         * return false;
-         * }
-         * }
-         */
+        return AbstractFilter.parseInput(input, RULE);
     }
 
+//    /**
+//     * Pokusí se daný textový řeťezec porovnat vůči tomuto filtru.
+//     *
+//     * @param input text, který chceme prověřit
+//     * @return
+//     */
+//    public static ValidityCheckResult isValid(String input)
+//    {
+//        if (input.length() == 0) {
+//            return ValidityCheckResult.createValidRes(false);
+//        }
+//
+//        if (!input.matches("^[a-zA-Z\\_\\$][\\w\\$]{0,29}")) {
+//            if (input.matches("^[a-zA-Z\\_\\$].*")) {
+//                return ValidityCheckResult.createInvalidRes(
+//                        "Proměnná může obsahovat jen písmena bez diakritiky, číslice, podtržítka nebo znaky dolaru.");
+//            } else {
+//                return ValidityCheckResult.createInvalidRes(
+//                        "Proměnná může začínat jen písmenem bez diakritiky, podtržítkem nebo znakem dolaru.");
+//            }
+//        } else if (input.toLowerCase().matches(
+//                "^true$|^false$|^arguments$|^this$|^break$|^case$|^catch$|^continue$|^debugger$|^default$|^delete$|^do$|^else$|^finally$|^for$|^function$|^if$|^in$|^instanceof$|^new$|^return$|^switch$|^this$|^throw$|^try$|^typeof$|^var$|^void$|^while$|^with$")) {
+//            return ValidityCheckResult.createInvalidRes(
+//                    "\"" + input.toLowerCase() + "\" je rezervované klíčové slovo a nemůže být použito jako název proměnné.");
+//        } else {
+//            return ValidityCheckResult.createValidRes(true);
+//        }
+//    }
 }

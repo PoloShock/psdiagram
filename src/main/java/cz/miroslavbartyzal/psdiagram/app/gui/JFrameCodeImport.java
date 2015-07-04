@@ -23,7 +23,7 @@ import javax.swing.event.DocumentListener;
 public class JFrameCodeImport extends javax.swing.JFrame
 {
 
-    private MainWindow mainwindow;
+    private final MainWindow mainwindow;
 
     /**
      * Vytvoří nový formulář JFrameCodeImport

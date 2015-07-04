@@ -38,6 +38,9 @@ public abstract class AbstractSymbol implements Symbol
     //private Color shapeDownColor = Color.WHITE;
     @XmlElement(name = "hasShadow")
     private boolean hasShadow = true;
+    private final Color errorBorderColor = new Color(137, 20, 20);
+    private final Color errorShapeUpColor = Color.WHITE;
+    private final Color errorShapeDownColor = new Color(205, 143, 144);
     private double minWidth;
     private double minHeight;
     private Shape shape;
@@ -52,13 +55,15 @@ public abstract class AbstractSymbol implements Symbol
     private boolean overHang = false; // znaci, zda symbol obsahuje vybocujici sipku (cyklus for), ktera se napojuje na nasledujici symbol z boku (TBLR layout)
     private boolean hasPairSymbol = false; // znaci, ze symbol ma dalsi parovy symbol, v poradi za timto symbolem (cyklus loop)
     private boolean padded = false; // znaci, ze symbol se musi vyskytovat "v prostrednim ze trech bodu, z nichz vsechny tri davaji dohromady usecku"
-    private int textPadding = 6;
-    private int textLeading = 4;
+    private final int textPadding = 6;
+    private final int textLeading = 4;
     private ArrayList<TextLayout> textLayoutLines = new ArrayList<>();
     private ArrayList<Point2D> textLayoutOrigins = new ArrayList<>();
     @XmlElement(name = "commands")
     @XmlJavaTypeAdapter(LinkedHashMapAdapter.class)
     private LinkedHashMap<String, String> commands = null;
+    @XmlElement(name = "commandsValid", defaultValue = "true")
+    private boolean commandsValid = true;
 
     AbstractSymbol()
     {
@@ -893,6 +898,36 @@ public abstract class AbstractSymbol implements Symbol
     public void setCommands(LinkedHashMap<String, String> commands)
     {
         this.commands = commands;
+    }
+
+    @Override
+    public boolean areCommandsValid()
+    {
+        return commandsValid;
+    }
+
+    @Override
+    public void setCommandsValid(boolean commandsValid)
+    {
+        this.commandsValid = commandsValid;
+    }
+
+    @Override
+    public Color getErrorBorderColor()
+    {
+        return errorBorderColor;
+    }
+
+    @Override
+    public Color getErrorShapeUpColor()
+    {
+        return errorShapeUpColor;
+    }
+
+    @Override
+    public Color getErrorShapeDownColor()
+    {
+        return errorShapeDownColor;
     }
 
 }

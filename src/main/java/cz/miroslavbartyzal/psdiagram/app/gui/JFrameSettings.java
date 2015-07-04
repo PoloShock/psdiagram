@@ -5,6 +5,7 @@
 package cz.miroslavbartyzal.psdiagram.app.gui;
 
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
+import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditManager;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import javax.swing.JSpinner;
@@ -24,12 +25,16 @@ public final class JFrameSettings extends javax.swing.JFrame
 {
 
     private boolean initializing = true;
+    private final FlowchartEditManager flowchartEditManager;
 
     /**
      * Vytvoří nový formulář JFrameSettings.
+     * <p>
+     * @param flowchartEditManager
      */
-    public JFrameSettings()
+    public JFrameSettings(FlowchartEditManager flowchartEditManager)
     {
+        this.flowchartEditManager = flowchartEditManager;
         initComponents();
         jCheckBoxLoadLast.setSelected(SettingsHolder.settings.isLoadLastFlowchart());
         jCheckBoxFunctionFilters.setSelected(SettingsHolder.settings.isFunctionFilters());
@@ -621,6 +626,7 @@ public final class JFrameSettings extends javax.swing.JFrame
     private void jCheckBoxFunctionFiltersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxFunctionFiltersActionPerformed
         if (!initializing) {
             SettingsHolder.settings.setFunctionFilters(jCheckBoxFunctionFilters.isSelected());
+            flowchartEditManager.repaintJPanelDiagram();
         }
     }//GEN-LAST:event_jCheckBoxFunctionFiltersActionPerformed
 

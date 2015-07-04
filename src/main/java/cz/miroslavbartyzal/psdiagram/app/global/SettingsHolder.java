@@ -134,6 +134,10 @@ public final class SettingsHolder
     public static final String PSDIAGRAM_BUILD_NUMBER = PSDIAGRAM_BUILD.replaceAll("\\s.*$", "");
     public static final String PSDIAGRAM_BUILD_DATE = PSDIAGRAM_BUILD.replaceAll("^[\\d\\s]+\\(", "").replaceAll(
             "\\)$", "");
+    public static final String BUILD_PROFILE = ResourceBundle.getBundle("application").getString(
+            "buildProfile");
+    public static final boolean IS_DEPLOYMENT_MODE = BUILD_PROFILE.equals("deployment");
+    public static final boolean IS_DEVELOPMENT_RUN_MODE = BUILD_PROFILE.equals("development-run");
     public static final File JAVAW = getJavaw();
 
     /**

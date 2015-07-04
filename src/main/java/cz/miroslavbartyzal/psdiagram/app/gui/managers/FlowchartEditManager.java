@@ -72,8 +72,8 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
     private LinkedHashMap<ByteArrayOutputStream, Boolean> elementsToPaste;
     private LayoutElement lastMarkedElement = null; // pro identifikaci posledniho elementu, pro ktery bylo zobrazeno editovani deskripce segmentů apod. - aby se index comboboxu nevracel kdyz nema apod.
     private boolean puttingText = false; // slouzi pro signalizaci DocumentListeneru, ze prave probiha aplikacni vkladani textu
-    private boolean segmentTextBuffered = false; // pro bufferovani editcniho pole textu segmentu a jeho zalozohavni do undomanagera
-    private boolean symbolTextBuffered = false; // pro bufferovani editcniho pole textu symbolu a jeho zalozohavni do undomanagera
+    private boolean segmentTextBuffered = false; // pro bufferovani editacniho pole textu segmentu a jeho zalozohavni do undomanagera
+    private boolean symbolTextBuffered = false; // pro bufferovani editacniho pole textu symbolu a jeho zalozohavni do undomanagera
     private boolean defaultTextBeingEdited = false;
 
     /**
@@ -82,6 +82,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
      *
      * @param layout layout vývojového diagramu
      * @param mainWindow hlavní okno aplikace
+     * @param canvasPanel
      * @param flowchartEditUndoManager správce funkce undo/redo
      * @param jCheckBoxDefaultText checkbox pro přepínání
      * defaultního/uživateského textu symbolu
@@ -561,6 +562,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
                             //nacteme defaulty i v pripade ze byli prave vymazany
                             loadDefaults(element);
                         } else {
+                            // uprava probehla jen uvnitr formulare pro upravu funkce a neprojevila se na platne
                             break;
                         }
                         layout.prepareFlowchart();
@@ -1047,8 +1049,9 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
 
     private boolean defaultsEqualsValues(LayoutElement element)
     {
-        if (element.getSymbol().getValue().equals(element.getSymbol().getDefaultValue()) || element.getSymbol().getValue().equals(
-                "") && element.getSymbol().getDefaultValue() == null) {
+        if (element.getSymbol().getValue() != null && element.getSymbol().getValue().equals(
+                element.getSymbol().getDefaultValue())
+                || (element.getSymbol().getValue() == null || element.getSymbol().getValue().isEmpty()) && (element.getSymbol().getDefaultValue() == null || element.getSymbol().getDefaultValue().isEmpty())) {
             if (element.getSymbol().getInnerOutsCount() == -1) { // je-li symbol instanci podminky nebo switch, je treba otestovat i deskripci segmentů
                 for (int i = element.getSymbol().getDefaultSegmentDescriptions().length; i < element.getInnerSegments().size(); i++) {
                     String desc = element.getInnerSegment(i).getDescription();
@@ -1254,6 +1257,42 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
             }
             setPasteEnabled();
         }
+    }
+
+    public void revalidateSymbolCommands()
+    {
+        SwingUtilities.invokeLater(new Runnable() // invoke later in EWT thread so it is quaranteed that everything else is done
+        {
+            @Override
+            public void run()
+            {
+                new Thread(new Runnable() // now run validation in separate thread so EWT is not busy by that
+                {
+                    @Override
+                    public void run()
+                    {
+                        for (LayoutSegment segment : layout.getFlowchart()) {
+                            if (segment != null) {
+                                for (LayoutElement element : segment) {
+                                    Symbol symbol = element.getSymbol();
+                                    symbol.setCommandsValid(
+                                            EnumSymbol.getEnumSymbol(symbol.getClass()).areCommandsValid(
+                                                    symbol));
+                                }
+                            }
+                        }
+                        SwingUtilities.invokeLater(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                FlowchartEditManager.this.repaintJPanelDiagram();
+                            }
+                        });
+                    }
+                }).start();
+            }
+        });
     }
 
     private void setEditMenuEnablers(boolean enabled)

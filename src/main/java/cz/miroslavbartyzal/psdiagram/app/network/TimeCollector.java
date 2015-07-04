@@ -5,6 +5,7 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.network;
 
+import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -47,7 +48,11 @@ public final class TimeCollector
                     Locale.ENGLISH);
             return sdf.parse(urlConn.getHeaderField("Date"));
         } catch (NullPointerException | IOException | ParseException ex) {
-            ex.printStackTrace(System.err);
+            if (SettingsHolder.IS_DEVELOPMENT_RUN_MODE && ex instanceof java.net.ConnectException) {
+                System.err.println("Nepodařilo se získat časový údaj z " + url + ".");
+            } else {
+                ex.printStackTrace(System.err);
+            }
         }
         return null;
     }

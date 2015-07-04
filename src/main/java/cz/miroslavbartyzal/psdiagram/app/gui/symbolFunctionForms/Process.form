@@ -51,7 +51,7 @@
               <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jLabelExamples" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="65" max="32767" attributes="0"/>
+              <EmptySpace pref="49" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -102,7 +102,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabelExamples">
       <Properties>
-        <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;- A; 0&lt;br /&gt;&#xa;- B; B + A&lt;br /&gt;&#xa;- A; Math.sqrt(A*2)&lt;br /&gt;&#xa;- A; Math.floor(&lt;br /&gt;Math.random()*11)&lt;br /&gt;&#xa;- A; B % C&lt;br /&gt;&#xa;- C; &quot;text&quot;&lt;br /&gt;&#xa;- C; &quot;hodnota A: &quot; + A&lt;br /&gt;&#xa;- A; &quot;B na druhou: &quot; + Math.pow(B,2)&lt;br /&gt;&#xa;- D; true&lt;br /&gt;&#xa;- D; false&lt;br /&gt;&#xa;- pole; [1, 2, 3]&lt;br /&gt;&#xa;- pole[3]; 4&lt;br /&gt;&#xa;- pole[pole.length]; 5&#xa;&lt;/html&gt;"/>
+        <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;- A; 0&lt;br /&gt;&#xa;- B; B + A&lt;br /&gt;&#xa;- A; Math.sqrt(A*2)&lt;br /&gt;&#xa;- A; Math.floor(&lt;br /&gt;Math.random()*11)&lt;br /&gt;&#xa;- A; B % C&lt;br /&gt;&#xa;- C; &quot;text&quot;&lt;br /&gt;&#xa;- C; &quot;hodnota A: &quot; + A&lt;br /&gt;&#xa;- A; &quot;B na druhou: &quot; + Math.pow(B,2)&lt;br /&gt;&#xa;- A; &quot;retezec&quot;[2]&lt;br /&gt;&#xa;- D; true&lt;br /&gt;&#xa;- D; false&lt;br /&gt;&#xa;- pole; [1, 2, 3]&lt;br /&gt;&#xa;- pole[3]; 4&lt;br /&gt;&#xa;- pole[pole.length]; 5&lt;br /&gt;&#xa;- E; pole[2][0]&lt;br /&gt;&#xa;&lt;/html&gt;"/>
         <Property name="verticalAlignment" type="int" value="1"/>
       </Properties>
     </Component>

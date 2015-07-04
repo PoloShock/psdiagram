@@ -342,4 +342,14 @@ public interface Symbol
      */
     public void setCommands(LinkedHashMap<String, String> commands); // LinkedHashMap je nutnost kvuli ukladani do xml - aby bylo vzdy stejne, musi byt prikazy fce vzdy stejne serazeny. Kdyby nebyli, nefungovalo by overeni totoznosti ulozeneho diagramu s aktualnim a nefungovalo by spravne undo/redo
 
+    public boolean areCommandsValid();
+
+    public void setCommandsValid(boolean commandsValid);
+
+    public Color getErrorBorderColor();
+
+    public Color getErrorShapeUpColor();
+
+    public Color getErrorShapeDownColor();
+
 }

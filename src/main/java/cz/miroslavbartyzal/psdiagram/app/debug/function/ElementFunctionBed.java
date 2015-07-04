@@ -17,9 +17,11 @@ import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.LoopStart;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutElement;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutSegment;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.EnumSymbol;
 import cz.miroslavbartyzal.psdiagram.app.global.RegexFunctions;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import cz.miroslavbartyzal.psdiagram.app.gui.EnhancedJOptionPane;
+import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.AbstractSymbolFunctionForm;
 import java.awt.geom.Path2D;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -105,8 +107,25 @@ public final class ElementFunctionBed
     public static FunctionResult getResult(LayoutElement actualElement,
             HashMap<String, String> variables)
     {
-        String err = "<html>Nelze pokračovat v procházení, protože není nastavena funkce aktuálně zpracovávaného symbolu.<br />Funkci symbolu lze nastavit v editačním režimu, po kliknutí na symbol v záložce \"Funkce\" vlevo.<html>";
         FunctionResult result = new FunctionResult();
+
+        if (!EnumSymbol.getEnumSymbol(actualElement.getSymbol().getClass()).areAllCommandsPresent(
+                actualElement)) {
+            JOptionPane.showMessageDialog(null,
+                    "<html>Nelze pokračovat v procházení, protože není zcela nastavena funkce aktuálně zpracovávaného symbolu.<br />"
+                    + "Funkci symbolu lze nastavit v editačním režimu, po kliknutí na symbol v záložce \"Funkce\" vlevo.<html>",
+                    "Chybí funkce symbolu",
+                    JOptionPane.ERROR_MESSAGE);
+            return result;
+        } else if (SettingsHolder.settings.isFunctionFilters() && !actualElement.getSymbol().areCommandsValid()) {
+            JOptionPane.showMessageDialog(null,
+                    "<html>Nelze pokračovat v procházení, protože funkce aktuálně procházeného symbolu obsahuje chybu.<br />"
+                    + "Funkci symbolu lze upravit v editačním režimu, po kliknutí na symbol v záložce \"Funkce\" vlevo.<html>",
+                    "Funkce symbolu obsahuje chybu",
+                    JOptionPane.ERROR_MESSAGE);
+            return result;
+        }
+
         LayoutSegment actualSegment = actualElement.getParentSegment();
         Symbol symbol = actualElement.getSymbol();
         if (symbol instanceof StartEnd && (actualSegment.getParentElement() != null
@@ -114,17 +133,14 @@ public final class ElementFunctionBed
                         actualElement) == 1 && !(actualSegment.getElement(0).getSymbol() instanceof Comment)))) { // > 1 protoze 0ty muze byt komentar
             return result;
         }
-        HashMap<String, String> commandsCopy = null; // budu nahrazovat randomy, tak abych nenahrazoval i zdroj..
-        if (symbol.getCommands() != null) {
-            commandsCopy = new HashMap<>(symbol.getCommands());
-            setRandoms(commandsCopy);
-        }
-        if ((commandsCopy == null && (symbol instanceof Decision || symbol instanceof For || symbol instanceof IO || symbol instanceof cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Process))) {
-            JOptionPane.showMessageDialog(null, err, "Chybí funkce symbolu",
-                    JOptionPane.ERROR_MESSAGE);
-            return result;
-        } else if ((symbol instanceof Goto || symbol instanceof GotoLabel) && (symbol.getValue() == null || symbol.getValue().equals(
-                ""))) {
+//        HashMap<String, String> commandsCopy = null; // budu nahrazovat randomy, tak abych nenahrazoval i zdroj..
+//        if (symbol.getCommands() != null) {
+//            commandsCopy = new HashMap<>(symbol.getCommands());
+//            setRandoms(commandsCopy);
+//        }
+        HashMap<String, String> commands = symbol.getCommands();
+        if ((symbol instanceof Goto || symbol instanceof GotoLabel)
+                && (symbol.getValue() == null || symbol.getValue().matches("\\s*"))) {
             JOptionPane.showMessageDialog(null,
                     "<html>Nelze pokračovat v procházení, protože symbol Spojky musí mít vyplněnou svou textovou hodnotu.<br />Textovou hodnotu symbolu lze nastavit v editačním režimu, po kliknutí na symbol v záložce \"Text\" vlevo.<html>",
                     "Chybí textová hodnota symbolu", JOptionPane.ERROR_MESSAGE);
@@ -133,15 +149,15 @@ public final class ElementFunctionBed
         int innerSegment = -1;
 
         if (symbol instanceof Switch) {
-            innerSegment = caseSetProgAndUpVars(result, commandsCopy, variables);
+            innerSegment = caseSetProgAndUpVars(result, commands, variables);
         } else if (symbol instanceof Decision) {
-            innerSegment = decisionSetProgAndUpVars(result, commandsCopy, variables);
+            innerSegment = decisionSetProgAndUpVars(result, commands, variables);
         } else if (symbol instanceof For) {
-            innerSegment = forSetProgAndUpVars(result, commandsCopy, variables);
+            innerSegment = forSetProgAndUpVars(result, commands, variables);
         } else if (symbol instanceof IO) {
-            innerSegment = ioSetProgAndUpVars(result, commandsCopy, variables);
+            innerSegment = ioSetProgAndUpVars(result, commands, variables);
         } else if (symbol instanceof cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Process) {
-            innerSegment = processSetProgAndUpVars(result, commandsCopy, variables);
+            innerSegment = processSetProgAndUpVars(result, commands, variables);
         } else if (symbol instanceof LoopEnd) {
             innerSegment = 1;
             LayoutElement pairElement = null;
@@ -149,12 +165,7 @@ public final class ElementFunctionBed
                 pairElement = actualSegment.getElement(i);
                 if (pairElement.getSymbol() instanceof LoopStart) {
                     if (!pairElement.getSymbol().isOverHang()) {
-                        if (commandsCopy == null) {
-                            JOptionPane.showMessageDialog(null, err, "Chybí funkce symbolu",
-                                    JOptionPane.ERROR_MESSAGE);
-                            return result;
-                        }
-                        innerSegment = decisionSetProgAndUpVars(result, commandsCopy, variables);
+                        innerSegment = decisionSetProgAndUpVars(result, commands, variables);
                         if (innerSegment == 0) {
                             actualElement = pairElement;
                             innerSegment = -1;
@@ -170,12 +181,7 @@ public final class ElementFunctionBed
             }
         } else if (symbol instanceof LoopStart) {
             if (symbol.isOverHang()) {
-                if (commandsCopy == null) {
-                    JOptionPane.showMessageDialog(null, err, "Chybí funkce symbolu",
-                            JOptionPane.ERROR_MESSAGE);
-                    return result;
-                }
-                innerSegment = decisionSetProgAndUpVars(result, commandsCopy, variables);
+                innerSegment = decisionSetProgAndUpVars(result, commands, variables);
                 if (innerSegment == 0) {
                     innerSegment = -1;
                 }
@@ -183,7 +189,7 @@ public final class ElementFunctionBed
                 innerSegment = 1;
             }
         } else if (symbol instanceof Goto) {
-            if (commandsCopy.get("mode").equals("break") || commandsCopy.get("mode").equals(
+            if (commands.get("mode").equals("break") || commands.get("mode").equals(
                     "continue")) {
                 // nalezeni rodicovskeho elementu cyklu
                 LayoutElement parentLoop = actualElement;
@@ -191,13 +197,13 @@ public final class ElementFunctionBed
                     parentLoop = parentLoop.getParentSegment().getParentElement();
                     if (parentLoop == null) {
                         JOptionPane.showMessageDialog(null,
-                                "<html>Symbol spojky ve funkci příkazu " + commandsCopy.get("mode") + " musí být umístěn<br />přímo uvnitř těla cyklu, který má být přerušen!</html>",
+                                "<html>Symbol spojky ve funkci příkazu " + commands.get("mode") + " musí být umístěn<br />přímo uvnitř těla cyklu, který má být přerušen!</html>",
                                 "Rodičovský cyklus nenalezen", JOptionPane.ERROR_MESSAGE);
                         return result;
                     }
                 } while (!(parentLoop.getSymbol() instanceof For) && !(parentLoop.getSymbol() instanceof LoopStart));
 
-                if (commandsCopy.get("mode").equals("continue")) {
+                if (commands.get("mode").equals("continue")) {
                     if (!parentLoop.getSymbol().isOverHang()) {
                         do {
                             parentLoop = parentLoop.getParentSegment().getElement(
@@ -343,12 +349,21 @@ public final class ElementFunctionBed
         setNextElSegAndPaths(result, paths, actualElement, actualSegment, actualElIndex);
     }
 
+    /**
+     * Tato metoda byla pouzivana drive, nyni ale zacala postradat smysl (nenašel jsem důvod
+     * pro její použití). Zřejmě byla využita jen pro zobrazení výsledného náhodného čísla v textu
+     * nad symbolem, tuto funkci ale již (včetně náhodných čísel) hravě zastane funkce
+     * getCompiledProgressDesc.
+     * <p>
+     * @param commands
+     */
     private static void setRandoms(HashMap<String, String> commands)
     {
         for (String key : commands.keySet()) {
-            if (commands.get(key).matches(".*Math.random\\([^\\)]*\\).*")) { // jestli je pritomen random
+            if (commands.get(key).matches(".*Math.random\\(.*")) { // jestli je pritomen random
                 String command = commands.get(key);
-                String[] commandSplit = RegexFunctions.splitString(command, "\"[^\"]*\"?"); // jsou-li pritomny uvozovky, musim se jich nejdrive zbavit, take hrozi ze je random jen v nich
+                String[] commandSplit = RegexFunctions.splitString(command,
+                        "\"([^\"\\\\]|\\\\.)*\"?"); // jsou-li pritomny uvozovky, musim se jich nejdrive zbavit - take hrozi ze je random jen v nich
 
                 for (int i = 0; i < commandSplit.length; i += 2) {
                     while (commandSplit[i].matches(".*Math.random\\([^\\)]*\\).*")) {
@@ -380,7 +395,7 @@ public final class ElementFunctionBed
 //        String functionRegex = "([a-zA-Z\\_\\$][a-zA-Z0-9\\_\\$]*\\.)*[a-zA-Z\\_\\$][a-zA-Z0-9\\_\\$]*\\([^\\(\\)]*\\)";
 
         // sude indexy jsou prikazy, liche uvozovky
-        String[] commandsWithoutQ = RegexFunctions.splitString(command, "\"[^\"]*\"?");
+        String[] commandsWithoutQ = RegexFunctions.splitString(command, "\"([^\"\\\\]|\\\\.)*\"?");
         for (int i = 0; i < commandsWithoutQ.length; i += 2) {
 //            Matcher matcher = Pattern.compile(functionRegex).matcher(commandsWithoutQ[i]);
 //            while (matcher.find()) { // jestli prikaz obsahuje volani funkci(x.x(x)), je treba je prvne zpracovat
@@ -418,10 +433,11 @@ public final class ElementFunctionBed
         for (int i = 0; i < commandSplit.length; i++) {
             if (i % 2 == 1) {
                 if (SettingsHolder.settings.isFunctionFilters()) {
-                    commandSplit[i] = commandSplit[i].replace("==", "=").replace("&&", "&").replace(
-                            "||", "|").replace("!=", "≠").replace("!", "¬").replace(">=", "≥").replace(
-                                    "<=", "≤");
+                    commandSplit[i] = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(
+                            commandSplit[i]);
                 }
+                commandSplit[i] = AbstractSymbolFunctionForm.convertToPSDDisplayCommands(
+                        commandSplit[i]);
             } else {
                 if (!commandSplit[i].equals("") && !commandSplit[i].matches("^\\s+$")) {
                     // nahradim promennou jeji hodnotou
@@ -654,7 +670,17 @@ public final class ElementFunctionBed
         } else { // output
             String[] extraRet = new String[2];
             script = "_extraRet_[0] = myUneval(" + commands.get("value") + ");"
-                    + "_extraRet_[1] = JOptionPane.showOptionDialog(null, _extraRet_[0].replaceAll(\"\\\"\", \"\"), \"Výstup\", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, [\"OK\", \"Přerušit\"], \"OK\");";
+                    + "_extraRet_[1] = JOptionPane.showOptionDialog(null, _extraRet_[0]"
+                    + ".replaceFirst(\"^\\\"\", \"\").replaceFirst(\"\\\"$\", \"\")"
+                    + ".replaceAll(\"\\\\\\\\t\", \"\\t\")"
+                    + ".replaceAll(\"\\\\\\\\b\", \"\\b\")"
+                    + ".replaceAll(\"\\\\\\\\n\", \"\\n\")"
+                    + ".replaceAll(\"\\\\\\\\r\", \"\\r\")"
+                    + ".replaceAll(\"\\\\\\\\f\", \"\\f\")"
+                    + ".replaceAll(\"\\\\\\\\'\", \"\\\\\'\")"
+                    + ".replaceAll(\"\\\\\\\\\\\\\\\"\", \"\\\\\\\"\")"
+                    + ".replaceAll(\"\\\\\\\\\\\\\\\\\", \"\\\\\\\\\")"
+                    + ", \"Výstup\", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, [\"OK\", \"Přerušit\"], \"OK\");";
 //                    + "_extraRet_[1] = JOptionPane.showConfirmDialog(null, _extraRet_[0].replaceAll(\"\\\"\", \"\"), \"Výstup\", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);";
             //+ "JOptionPane.showMessageDialog(null, _extraRet_[0], \"Výstup\", JOptionPane.INFORMATION_MESSAGE);";
 

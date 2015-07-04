@@ -11,6 +11,7 @@ import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditManager;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.NoArrayVariableFilter;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.NumericValueFilter;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
+import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.VariableFilter;
 import java.util.LinkedHashMap;
 import javax.swing.JLabel;
 import javax.swing.event.DocumentEvent;
@@ -25,8 +26,9 @@ import javax.swing.text.BadLocationException;
 public final class For extends AbstractSymbolFunctionForm
 {
 
-    private JLabel jLabelDescription;
-    private Symbol mySymbol = EnumSymbol.FOR.getInstance(null);
+    private final JLabel jLabelDescription;
+    private final Symbol mySymbol = EnumSymbol.FOR.getInstance(null);
+    private final ForValidationListener validationListener = new ForValidationListener();
 
     /**
      * Konstruktor, inicializující tento formulář.
@@ -63,35 +65,59 @@ public final class For extends AbstractSymbolFunctionForm
         jLabelExamples2.setFont(SettingsHolder.SMALL_CODEFONT);
 
         if (element.getSymbol().getCommands() != null) {
-            jTextFieldVar.setText(element.getSymbol().getCommands().get("var"));
-            if (element.getSymbol().getCommands().containsKey("from")) {
-                jTextFieldFrom.setText(element.getSymbol().getCommands().get("from"));
-                jTextFieldForTo.setText(element.getSymbol().getCommands().get("to"));
-                jTextFieldIncrement.setText(element.getSymbol().getCommands().get("inc"));
-                jRadioButtonFor.setSelected(true);
-                setForVisible();
+            if (SettingsHolder.settings.isFunctionFilters()) {
+                jTextFieldVar.setText(AbstractSymbolFunctionForm.convertFromJSToPSDCommands(
+                        element.getSymbol().getCommands().get("var")));
+                if (element.getSymbol().getCommands().containsKey("from")) {
+                    jTextFieldFrom.setText(AbstractSymbolFunctionForm.convertFromJSToPSDCommands(
+                            element.getSymbol().getCommands().get("from")));
+                    jTextFieldForTo.setText(AbstractSymbolFunctionForm.convertFromJSToPSDCommands(
+                            element.getSymbol().getCommands().get("to")));
+                    jTextFieldIncrement.setText(
+                            AbstractSymbolFunctionForm.convertFromJSToPSDCommands(
+                                    element.getSymbol().getCommands().get("inc")));
+                    jRadioButtonFor.setSelected(true);
+                    setForVisible();
+                } else {
+                    jTextFieldForeach.setText(AbstractSymbolFunctionForm.convertFromJSToPSDCommands(
+                            element.getSymbol().getCommands().get("array")));
+                    jRadioButtonForeach.setSelected(true);
+                    setForeachVisible();
+                }
             } else {
-                jTextFieldForeach.setText(element.getSymbol().getCommands().get("array"));
-                jRadioButtonForeach.setSelected(true);
-                setForeachVisible();
+                jTextFieldVar.setText(element.getSymbol().getCommands().get("var"));
+                if (element.getSymbol().getCommands().containsKey("from")) {
+                    jTextFieldFrom.setText(element.getSymbol().getCommands().get("from"));
+                    jTextFieldForTo.setText(element.getSymbol().getCommands().get("to"));
+                    jTextFieldIncrement.setText(element.getSymbol().getCommands().get("inc"));
+                    jRadioButtonFor.setSelected(true);
+                    setForVisible();
+                } else {
+                    jTextFieldForeach.setText(element.getSymbol().getCommands().get("array"));
+                    jRadioButtonForeach.setSelected(true);
+                    setForeachVisible();
+                }
             }
         } else {
             jRadioButtonFor.setSelected(true);
             setForVisible();
         }
 
-        if (SettingsHolder.settings.isFunctionFilters()) {
-            ((AbstractDocument) jTextFieldVar.getDocument()).setDocumentFilter(
-                    new NoArrayVariableFilter());
-            ((AbstractDocument) jTextFieldFrom.getDocument()).setDocumentFilter(
-                    new NumericValueFilter());
-            ((AbstractDocument) jTextFieldForTo.getDocument()).setDocumentFilter(
-                    new NumericValueFilter());
-            ((AbstractDocument) jTextFieldIncrement.getDocument()).setDocumentFilter(
-                    new NumericValueFilter());
-            ((AbstractDocument) jTextFieldForeach.getDocument()).setDocumentFilter(
-                    new NoArrayVariableFilter());
-        }
+        ((AbstractDocument) jTextFieldVar.getDocument()).setDocumentFilter(
+                new NoArrayVariableFilter(jTextFieldVar, validationListener));
+        ((AbstractDocument) jTextFieldFrom.getDocument()).setDocumentFilter(
+                new NumericValueFilter(jTextFieldFrom, validationListener));
+        ((AbstractDocument) jTextFieldForTo.getDocument()).setDocumentFilter(
+                new NumericValueFilter(jTextFieldForTo, validationListener));
+        ((AbstractDocument) jTextFieldIncrement.getDocument()).setDocumentFilter(
+                new NumericValueFilter(jTextFieldIncrement, validationListener));
+        ((AbstractDocument) jTextFieldForeach.getDocument()).setDocumentFilter(
+                new VariableFilter(jTextFieldForeach, validationListener));
+        AbstractSymbolFunctionForm.enhanceWithUndoRedoCapability(jTextFieldVar);
+        AbstractSymbolFunctionForm.enhanceWithUndoRedoCapability(jTextFieldFrom);
+        AbstractSymbolFunctionForm.enhanceWithUndoRedoCapability(jTextFieldForTo);
+        AbstractSymbolFunctionForm.enhanceWithUndoRedoCapability(jTextFieldIncrement);
+        AbstractSymbolFunctionForm.enhanceWithUndoRedoCapability(jTextFieldForeach);
         addDocumentListeners();
         super.trimSize();
     }
@@ -126,9 +152,10 @@ public final class For extends AbstractSymbolFunctionForm
         }
 
         if (jRadioButtonFor.isSelected()) {
-            generateForValues(super.getElement().getSymbol(), var, from, to, inc);
+            generateForValues(super.getElement().getSymbol(), var.trim(), from.trim(), to.trim(),
+                    inc.trim());
         } else if (jRadioButtonForeach.isSelected()) {
-            generateForeachValues(super.getElement().getSymbol(), var, array);
+            generateForeachValues(super.getElement().getSymbol(), var.trim(), array.trim());
         }
     }
 
@@ -145,14 +172,13 @@ public final class For extends AbstractSymbolFunctionForm
     public static void generateForValues(Symbol symbol, String var, String from, String to,
             String inc)
     {
-        if (!var.equals("") && !from.equals("") && !to.equals("") && !inc.equals("")) {
+        if (!var.isEmpty() && !from.isEmpty() && !to.isEmpty() && !inc.isEmpty()) {
             boolean setIncToDef = false;
             if (!inc.equals("1")) {
                 setIncToDef = true;
             }
 
-            if (from.matches("^\\-?[0-9]+(\\.[0-9])?") && to.matches("^\\-?[0-9]+(\\.[0-9])?") && inc.matches(
-                    "^\\-?[0-9]+(\\.[0-9])?")) { // je treba zjistit, jestli increment neni nesmyslny - pak zobrazit increment
+            try {
                 double dfrom = Double.parseDouble(from);
                 double dto = Double.parseDouble(to);
                 double dinc = Double.parseDouble(inc);
@@ -164,23 +190,34 @@ public final class For extends AbstractSymbolFunctionForm
                         setIncToDef = true;
                     }
                 }
+            } catch (NumberFormatException ex) {
             }
 
-            symbol.setDefaultValue(var + " ← " + from + ".." + to);
+            symbol.setDefaultValue(
+                    AbstractSymbolFunctionForm.convertToPSDDisplayCommands(var) + " ← "
+                    + AbstractSymbolFunctionForm.convertToPSDDisplayCommands(from) + ".."
+                    + AbstractSymbolFunctionForm.convertToPSDDisplayCommands(to));
             if (setIncToDef) {
-                symbol.setDefaultValue(symbol.getDefaultValue() + "(" + inc + ")");
+                symbol.setDefaultValue(symbol.getDefaultValue() + "("
+                        + AbstractSymbolFunctionForm.convertToPSDDisplayCommands(inc) + ")");
             }
+        } else {
+            symbol.setDefaultValue(null);
+        }
 
-            LinkedHashMap<String, String> commands = new LinkedHashMap<>();
+        LinkedHashMap<String, String> commands = new LinkedHashMap<>();
+        if (SettingsHolder.settings.isFunctionFilters()) {
+            commands.put("var", AbstractSymbolFunctionForm.convertFromPSDToJSCommands(var));
+            commands.put("from", AbstractSymbolFunctionForm.convertFromPSDToJSCommands(from));
+            commands.put("to", AbstractSymbolFunctionForm.convertFromPSDToJSCommands(to));
+            commands.put("inc", AbstractSymbolFunctionForm.convertFromPSDToJSCommands(inc));
+        } else {
             commands.put("var", var);
             commands.put("from", from);
             commands.put("to", to);
             commands.put("inc", inc);
-            symbol.setCommands(commands);
-        } else {
-            symbol.setDefaultValue(null);
-            symbol.setCommands(null);
         }
+        symbol.setCommands(commands);
     }
 
     /**
@@ -193,17 +230,23 @@ public final class For extends AbstractSymbolFunctionForm
      */
     public static void generateForeachValues(Symbol symbol, String var, String array)
     {
-        if (!var.equals("") && !array.equals("")) {
-            symbol.setDefaultValue(var + " ← " + array + "[]");
-
-            LinkedHashMap<String, String> commands = new LinkedHashMap<>();
-            commands.put("var", var);
-            commands.put("array", array);
-            symbol.setCommands(commands);
+        if (!var.isEmpty() && !array.isEmpty()) {
+            symbol.setDefaultValue(
+                    AbstractSymbolFunctionForm.convertToPSDDisplayCommands(var) + " ← "
+                    + AbstractSymbolFunctionForm.convertToPSDDisplayCommands(array) + "[]");
         } else {
             symbol.setDefaultValue(null);
-            symbol.setCommands(null);
         }
+
+        LinkedHashMap<String, String> commands = new LinkedHashMap<>();
+        if (SettingsHolder.settings.isFunctionFilters()) {
+            commands.put("var", AbstractSymbolFunctionForm.convertFromPSDToJSCommands(var));
+            commands.put("array", AbstractSymbolFunctionForm.convertFromPSDToJSCommands(array));
+        } else {
+            commands.put("var", var);
+            commands.put("array", array);
+        }
+        symbol.setCommands(commands);
     }
 
     private void setForVisible()
@@ -403,6 +446,7 @@ public final class For extends AbstractSymbolFunctionForm
         setForVisible();
         super.trimSize();
         generateValues();
+        validationListener.validationStateChanged();
         super.fireChangeEventToEditManager();
     }//GEN-LAST:event_jRadioButtonForActionPerformed
 
@@ -410,6 +454,7 @@ public final class For extends AbstractSymbolFunctionForm
         setForeachVisible();
         super.trimSize();
         generateValues();
+        validationListener.validationStateChanged();
         super.fireChangeEventToEditManager();
     }//GEN-LAST:event_jRadioButtonForeachActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -437,6 +482,8 @@ public final class For extends AbstractSymbolFunctionForm
 
     /**
      * Metoda s prázdným tělem.
+     * <p>
+     * @param de
      */
     @Override
     public void changedUpdate(DocumentEvent de)
@@ -467,6 +514,51 @@ public final class For extends AbstractSymbolFunctionForm
     {
         generateValues();
         super.fireChangeEventToEditManager();
+    }
+
+    private class ForValidationListener implements ValidationListener
+    {
+
+        @Override
+        public void validationStateChanged()
+        {
+            Boolean varValid = (Boolean) jTextFieldVar.getDocument().getProperty("commandValid");
+            if (jRadioButtonFor.isSelected()) {
+                Boolean fromValid = (Boolean) jTextFieldFrom.getDocument().getProperty(
+                        "commandValid");
+                Boolean toValid = (Boolean) jTextFieldForTo.getDocument().getProperty("commandValid");
+                Boolean incValid = (Boolean) jTextFieldIncrement.getDocument().getProperty(
+                        "commandValid");
+                if (varValid == null || fromValid == null || toValid == null || incValid == null) {
+                    // validation not completed on every command yet
+                    return;
+                }
+
+                if (varValid && fromValid && toValid && incValid) {
+                    For.super.getElement().getSymbol().setCommandsValid(true);
+                } else {
+                    For.super.getElement().getSymbol().setCommandsValid(false);
+                }
+            } else if (jRadioButtonForeach.isSelected()) {
+                Boolean arrayValid = (Boolean) jTextFieldForeach.getDocument().getProperty(
+                        "commandValid");
+                if (varValid == null || arrayValid == null) {
+                    // validation not completed on every command yet
+                    return;
+                }
+
+                if (varValid && arrayValid) {
+                    For.super.getElement().getSymbol().setCommandsValid(true);
+                } else {
+                    For.super.getElement().getSymbol().setCommandsValid(false);
+                }
+            }
+
+            if (SettingsHolder.settings.isFunctionFilters()) {
+                For.super.getFlowchartEditManager().repaintJPanelDiagram();
+            }
+        }
+
     }
 
 }

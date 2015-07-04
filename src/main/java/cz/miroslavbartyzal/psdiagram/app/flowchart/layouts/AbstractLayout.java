@@ -13,6 +13,7 @@ import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Goto;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.EnumSymbol;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.Flowchart;
+import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import java.awt.*;
 import java.awt.geom.*;
 import java.util.ArrayList;
@@ -788,16 +789,35 @@ public abstract class AbstractLayout implements Layout
     void drawSymbol(Graphics2D g2d, Symbol symbol, LayoutElement element, boolean clipShadow)
     {
         AffineTransform af = g2d.getTransform();
-        Color shapeUpColor = symbol.getShapeUpColor();
-        Color shapeDownColor = symbol.getShapeDownColor();
-        Color borderColor = symbol.getBorderColor();
+        Color shapeUpColor;
+        Color shapeDownColor;
+        Color borderColor;
+        if (SettingsHolder.settings.isFunctionFilters()
+                && !symbol.areCommandsValid()
+                && EnumSymbol.getEnumSymbol(symbol.getClass()).areAllCommandsPresent(element)) {
+            shapeUpColor = symbol.getErrorShapeUpColor();
+            shapeDownColor = symbol.getErrorShapeDownColor();
+            borderColor = symbol.getErrorBorderColor();
+        } else {
+            shapeUpColor = symbol.getShapeUpColor();
+            shapeDownColor = symbol.getShapeDownColor();
+            borderColor = symbol.getBorderColor();
+        }
 
         if ((editMode && element != null && !focusJointOnly && !noFocusPaint && !(symbol instanceof Comment)
                 && (element.equals(focusedElement) || (focusedElement == null && focusedJoint != null && element.equals(
                         focusedJoint.getParentElement())))) || (symbol.equals(focusedJoint) && !noFocusPaint)) {
 
-            shapeUpColor = Layout.FOCUSED_UP_COLOR;
-            shapeDownColor = Layout.FOCUSED_DOWN_COLOR;
+            if (SettingsHolder.settings.isFunctionFilters()
+                    && !symbol.areCommandsValid()
+                    && EnumSymbol.getEnumSymbol(symbol.getClass()).areAllCommandsPresent(element)) {
+//                shapeUpColor = Layout.FOCUSED_ERROR_UP_COLOR;
+//                shapeDownColor = Layout.FOCUSED_ERROR_DOWN_COLOR;
+//                borderColor = symbol.getBorderColor();
+            } else {
+                shapeUpColor = Layout.FOCUSED_UP_COLOR;
+                shapeDownColor = Layout.FOCUSED_DOWN_COLOR;
+            }
             if (symbol.getShapeUpColor() == null) {
                 borderColor = Layout.FOCUSED_UP_COLOR;
             }

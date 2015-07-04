@@ -27,6 +27,7 @@ import cz.miroslavbartyzal.psdiagram.app.flowchart.FlowchartElement;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutElement;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutSegment;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
+import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.BooleanValueFilter;
 import java.awt.HeadlessException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -220,7 +221,7 @@ public final class Pascal
                         if (SettingsHolder.settings.isFunctionFilters()) {
                             if (!NoArrayVariableFilter.isValid(var) || !NumericValueFilter.isValid(
                                     from) || !NumericValueFilter.isValid(to) || !NumericValueFilter.isValid(
-                                    inc)) {
+                                            inc)) {
                                 // udaje neprosli filtrem
                                 actualElement.getSymbol().setValueAndSize(INVALID_COMMAND);
                                 AddComment(actualSegment, actualElement, command, true); // neni sance ze by bylo obsazeno, proto ani neupravuji actual element
@@ -240,7 +241,7 @@ public final class Pascal
                         String array = myCommand.substring(myCommand.indexOf("in ") + 3).trim();
 
                         if (SettingsHolder.settings.isFunctionFilters()) {
-                            if (!NoArrayVariableFilter.isValid(var) || !NoArrayVariableFilter.isValid(
+                            if (!NoArrayVariableFilter.isValid(var) || !VariableFilter.isValid(
                                     array)) {
                                 // udaje neprosli filtrem
                                 actualElement.getSymbol().setValueAndSize(INVALID_COMMAND);
@@ -272,7 +273,7 @@ public final class Pascal
                         condition = command.toLowerCase().replaceFirst("while\\s*", "").replaceFirst(
                                 "\\s*do$", "");
                         if (SettingsHolder.settings.isFunctionFilters()) {
-                            if (!ValueFilter.isValid(condition)) {
+                            if (!BooleanValueFilter.isValid(condition)) {
                                 // udaje neprosli filtrem
                                 actualElement.getSymbol().setValueAndSize(INVALID_COMMAND);
                                 AddComment(actualSegment, actualElement, command, true); // neni sance ze by bylo obsazeno, proto ani neupravuji actual element
@@ -301,7 +302,7 @@ public final class Pascal
                     String condition = "!(" + command.toLowerCase().replaceFirst("until\\s*", "").trim() + ")";
 
                     if (SettingsHolder.settings.isFunctionFilters()) {
-                        if (!ValueFilter.isValid(condition)) {
+                        if (!BooleanValueFilter.isValid(condition)) {
                             // udaje neprosli filtrem
                             actualNoCommentElement.getSymbol().setValueAndSize(INVALID_COMMAND);
                             if (actualElement.equals(actualNoCommentElement)) {
@@ -354,7 +355,7 @@ public final class Pascal
                             "\\s*then$", "");
 
                     if (SettingsHolder.settings.isFunctionFilters()) {
-                        if (!ValueFilter.isValid(condition)) {
+                        if (!BooleanValueFilter.isValid(condition)) {
                             // udaje neprosli filtrem
                             actualElement.getSymbol().setValueAndSize(INVALID_COMMAND);
                             AddComment(actualSegment, actualElement, command, true); // neni sance ze by bylo obsazeno, proto ani neupravuji actual element
@@ -388,12 +389,11 @@ public final class Pascal
                     //                        break;
                     //                    }
                     //                }
-
                     actualElement = AddComment(actualSegment, actualElement, getCommentCommand(
                             command), paired);
                 } else if (Pattern.compile("^\\s*goto [\\S\\s]+", FLAGS).matcher(command).matches() || Pattern.compile(
                         "^\\s*break[\\S\\s]*", FLAGS).matcher(command).matches() || Pattern.compile(
-                        "^\\s*continue[\\S\\s]*", FLAGS).matcher(command).matches()) {
+                                "^\\s*continue[\\S\\s]*", FLAGS).matcher(command).matches()) {
                     // GOTO, BREAK, CONTINUE
                     actualElement = actualSegment.addSymbol(actualElement,
                             EnumSymbol.GOTO.getInstance(""));
@@ -421,7 +421,7 @@ public final class Pascal
                     // GOTOLABEL
                     actualElement = actualSegment.addSymbol(actualElement,
                             EnumSymbol.GOTOLABEL.getInstance(command.trim().replaceFirst(
-                            "\\s*\\:\\s*", "")));
+                                            "\\s*\\:\\s*", "")));
                 } else if (command.toLowerCase().matches("exit\\s*")) {
                     // STARTEND
                     actualElement = actualSegment.addSymbol(actualElement,
@@ -473,8 +473,8 @@ public final class Pascal
                             // value napsat jen do aktualniho segmentu, v ostatnich uz je
                             actualNoCommentElement.getInnerSegment(
                                     actualNoCommentElement.getInnerSegmentsCount() - 1).setDescription(
-                                    actualNoCommentElement.getInnerSegment(
-                                    actualNoCommentElement.getInnerSegmentsCount() - 1).getDefaultDescription());
+                                            actualNoCommentElement.getInnerSegment(
+                                                    actualNoCommentElement.getInnerSegmentsCount() - 1).getDefaultDescription());
                         } else {
                             for (int i = 0; i < segmentConstants.length - 1; i++) {
                                 actualNoCommentElement.getInnerSegment(i + 1).setDescription(null);
@@ -505,7 +505,7 @@ public final class Pascal
                             } else {
                                 actualElement = AddComment(actualSegment, actualElement,
                                         getCommentCommand(commands.get(i)), commands.get(i).matches(
-                                        "[ \\t]*[^\\s][\\s\\S]+"));
+                                                "[ \\t]*[^\\s][\\s\\S]+"));
                                 commands.remove(i);
                                 i--;
                             }
@@ -519,14 +519,14 @@ public final class Pascal
                 }
                 if (onlyOneCommand
                         && (!(actualElement.getSymbol() instanceof LoopEnd) || commands.isEmpty() || !commands.get(
-                        0).startsWith("until"))
+                                0).startsWith("until"))
                         && (!(actualElement.getSymbol() instanceof Decision) || actualElement.getSymbol() instanceof Switch || commands.isEmpty() || !commands.get(
-                        0).equals("else"))
+                                0).equals("else"))
                         && ((!isComment(command) || !actualSegment.getParentElement().equals(
-                        actualNoCommentElement)) && (commands.isEmpty() || !isComment(
-                        commands.get(0))))
+                                actualNoCommentElement)) && (commands.isEmpty() || !isComment(
+                                commands.get(0))))
                         && !(actualElement.getSymbol() instanceof Switch) && (!(actualNoCommentElement.getSymbol() instanceof Switch) || actualSegment.getParentElement().equals(
-                        actualNoCommentElement))) { // switch je jako jeden prikaz, nemuzu predcasne opustit
+                                actualNoCommentElement))) { // switch je jako jeden prikaz, nemuzu predcasne opustit
                     return;
                 }
             } catch (Exception e) {
@@ -642,7 +642,6 @@ public final class Pascal
 //            }
 //        }
 //        return var;
-
         // method(kol, arr[met((2),1),1]) -> method(kol, arr[met((2),1)][1])
         // arr[1,me(zu[0,1],5)] := 5; -> arr[1][me(zu[0][1],5)]
         ArrayDeque<Boolean> method = new ArrayDeque<>();
@@ -700,7 +699,7 @@ public final class Pascal
                     int indx = actualElement.getParentSegment().indexOfElement(actualElement);
                     if (indx != -1 && (indx == 0 || !(actualElement.getParentSegment().getElement(
                             indx - 1).getSymbol() instanceof Comment) || !actualElement.getParentSegment().getElement(
-                            indx - 1).getSymbol().hasPairSymbol())) {
+                                    indx - 1).getSymbol().hasPairSymbol())) {
                         // jestli rodic uz nema parovy komentar, pridelim mu ho ted, protoze tim nezmenim actual element
                         actualSegment = actualElement.getParentSegment();
                         if (indx == 0) {
@@ -732,9 +731,6 @@ public final class Pascal
     {
         ArrayDeque<String> quotes = new ArrayDeque<>();
         ArrayDeque<String> comments = new ArrayDeque<>();
-
-        // zbaverni se nastalo " - interferovali by s mym konceptem, ktery bohuzel pro uvozovky nema escape znak (\")
-        code = code.replaceAll("\"", "*");
 
         // zbaveni se uvozovek (klicova slova muzou byt i v nich)
         code = parseQuotes(code, quotes);
@@ -883,6 +879,7 @@ public final class Pascal
         int bracketC = 0;
 
         boolean quoteEnabled = false;
+        boolean escapedQuoteAhead = false;
 
         String newCode = "";
         int lastEndIndex = 0;
@@ -892,11 +889,27 @@ public final class Pascal
             }
             switch (code.substring(i - 1, i)) {
                 case "'": {
-                    if (!lineC && bracketStarC == 0 && bracketC == 0 && !code.substring(i - 2, i - 1).equals(
-                            "\\")) {
+                    if (!lineC && bracketStarC == 0 && bracketC == 0) {
                         if (quoteEnabled) {
+                            if (!escapedQuoteAhead) {
+                                if (i + 1 <= code.length() && code.substring(i, i + 1).equals("'")) {
+                                    // nasledujici znak je take ', coz znamena ze je to escape sekvence ''
+                                    escapedQuoteAhead = true;
+                                    continue;
+                                }
+                            } else {
+                                // ignoruji tento znak protoze je to druha cast escape sekvence
+                                escapedQuoteAhead = false;
+                                continue;
+                            }
+
                             quoteEnabled = false;
-                            arrayToSaveQuotes.add("\"" + code.substring(lastEndIndex, i - 1) + "\"");
+                            String stringInsides = code.substring(lastEndIndex, i - 1);
+                            // nahradit dvojite uvozovky v pascalovskych stringach za escapovane dvojite uvozovky; napr: 'slovo "ahoj" je pozdrav' -> 'slovo \"ahoj\" je pozdrav'
+                            stringInsides = stringInsides.replaceAll("\"", "\\\\\\\\\\\"");
+                            // nahradit dvojite jednouvozovky za jedno jednouvozovky - escape v PSD neni potreba
+                            stringInsides = stringInsides.replaceAll("''", "'");
+                            arrayToSaveQuotes.add("\"" + stringInsides + "\"");
                             lastEndIndex = i - 1;
                         } else {
                             quoteEnabled = true;
@@ -1211,7 +1224,7 @@ public final class Pascal
                     if (symbol.getCommands() != null) {
                         sourceCode += convertCodeToPascal(
                                 symbol.getCommands().get("var") + " := " + symbol.getCommands().get(
-                                "value") + maybeInsSemicolon(segment, index));
+                                        "value") + maybeInsSemicolon(segment, index));
                     } else {
                         sourceCode += "{symbol Zpracování bez vyplnene funkce!}";
                         missingCommandWarning = true;
@@ -1224,7 +1237,7 @@ public final class Pascal
                         } else {
                             sourceCode += convertCodeToPascal("writeln(" + symbol.getCommands().get(
                                     "value").replaceAll("\"\\s*\\+", "\",").replaceAll("\\+\\s*\"",
-                                    ",\"") + ")" + maybeInsSemicolon(segment, index));
+                                            ",\"") + ")" + maybeInsSemicolon(segment, index));
                         }
                     } else {
                         sourceCode += "{symbol Vstup/Vystup bez vyplnene funkce!}";
@@ -1304,11 +1317,11 @@ public final class Pascal
                             if (increment == 1) {
                                 sourceCode += convertCodeToPascal("for " + symbol.getCommands().get(
                                         "var") + " := " + symbol.getCommands().get("from") + " to " + symbol.getCommands().get(
-                                        "to") + " do");
+                                                "to") + " do");
                             } else {
                                 sourceCode += convertCodeToPascal("for " + symbol.getCommands().get(
                                         "var") + " := " + symbol.getCommands().get("from") + " downto " + symbol.getCommands().get(
-                                        "to") + " do");
+                                                "to") + " do");
                             }
                         } else {
                             sourceCode += convertCodeToPascal("for " + symbol.getCommands().get(
@@ -1369,7 +1382,7 @@ public final class Pascal
                                     tabsDepth + "\t");
                             sourceCode += LINE_SEP + tabsDepth + convertCodeToPascal(
                                     "until " + getNegatedCondition(condition) + maybeInsSemicolon(
-                                    segment, index));
+                                            segment, index));
                         }
                     }
                 } else if (symbol instanceof Comment) {
@@ -1469,10 +1482,10 @@ public final class Pascal
                 && segment.getParentElement().getSymbol() instanceof Decision && !(segment.getParentElement().getSymbol() instanceof Switch)
                 && segment.getParentElement().indexOfInnerSegment(segment) == 0
                 && ((segment.size() == 1 && segment.getElement(0).getSymbol() instanceof Decision && !(segment.getElement(
-                0).getSymbol() instanceof Switch))
+                        0).getSymbol() instanceof Switch))
                 || (segment.size() == 2 && segment.getElement(0).getSymbol() instanceof Comment && segment.getElement(
-                0).getSymbol().hasPairSymbol() && segment.getElement(1).getSymbol() instanceof Decision && !(segment.getElement(
-                1).getSymbol() instanceof Switch)))) {
+                        0).getSymbol().hasPairSymbol() && segment.getElement(1).getSymbol() instanceof Decision && !(segment.getElement(
+                        1).getSymbol() instanceof Switch)))) {
             return true;
         }
         return false;
@@ -1547,7 +1560,9 @@ public final class Pascal
     private static String convertCodeToPascal(String code)
     {
         code = code.replaceAll("\\]\\[", ","); // multidim. pole
-        code = code.replaceAll("\\'", "*").replaceAll("\"", "'");
+        code = code.replaceAll("\\\\?\\'", "''") // v pascalu je nutne escapovat znak ' (v jave se escapuje volitelne)
+                .replaceAll("(?<!\\\\)\"", "'") // vsechny neescapovane dvojite uvozovky zmen na jednoduchou uvozovku
+                .replaceAll("\\\\\"", "\""); // vsechny escapovane dvojite uvozovky odescapuj - v pascalu je netreba escapovat
         code = code.replaceAll("\\!\\=", "<>");
         code = code.replaceAll("\\s*\\!\\s*", " not ");
         code = code.replaceAll("\\s*\\%\\s*", " mod ");

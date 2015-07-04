@@ -18,10 +18,12 @@ public final class RegexFunctions
 {
 
     /**
-     * <p>Metoda rozdělí vstupní řetězec pomocí daného regulárního výrazu.
+     * <p>
+     * Metoda rozdělí vstupní řetězec pomocí daného regulárního výrazu.
      * Rozdíl oproti běžné funkci String.split() je ten, že neztrácíme údaje,
      * které se rovnali danému regulárnímu výrazu.</p>
-     * <p>Výstup je formátován tak, že liché indexy jsou ty části řetězce, které
+     * <p>
+     * Výstup je formátován tak, že liché indexy jsou ty části řetězce, které
      * se rovnali regulárnímu výrazu, a sudé indexy odpovídají lomenému
      * textu.</p>
      *
@@ -64,7 +66,7 @@ public final class RegexFunctions
     {
         // liche indexy jsou matche
         ArrayList<String> strSplit = new ArrayList<>();
-        String[] withoutQ = splitString(str, "\"[^\"]*\"?");
+        String[] withoutQ = splitString(str, "\"([^\"\\\\]|\\\\.)*\"?");
         String part = "";
         for (int i = 0; i < withoutQ.length; i++) {
             if (i % 2 == 1) {
@@ -89,8 +91,10 @@ public final class RegexFunctions
     }
 
     /**
-     * <p>Metoda vrátí vnitřky hranatých závorek z vstupního textu proměnné.</p>
-     * <p>Výstup je formátován tak, že na lichých indexech jsou vnitřky závorek
+     * <p>
+     * Metoda vrátí vnitřky hranatých závorek z vstupního textu proměnné.</p>
+     * <p>
+     * Výstup je formátován tak, že na lichých indexech jsou vnitřky závorek
      * a sudé indexy představují zbytek řetězce.</p>
      *
      * @param variable vstupní text proměnné
@@ -128,10 +132,53 @@ public final class RegexFunctions
     }
 
     /**
-     * <p>Metoda vrátí pole obsahující vnitřní elementy hranatých závorek,
+     * <p>
+     * Metoda vrátí vnitřky libovolných závorek z vstupního textu proměnné.</p>
+     * <p>
+     * Výstup je formátován tak, že na lichých indexech jsou vnitřky závorek
+     * a sudé indexy představují zbytek řetězce.</p>
+     *
+     * @param variable vstupní text proměnné
+     * @param openingBracket volitelná otevírací závorka
+     * @param closingingBracket volitelná zavírací závorka
+     * @return Pole s rozdělěným řetezcem. Liché indexy jsou vnitřky závorek,
+     * sudé lomený text.
+     */
+    public static String[] varBracketsInsides(String variable, String openingBracket,
+            String closingingBracket)
+    {
+        // vnitrek zavorek na lichych indexech
+        ArrayList<String> strOut = new ArrayList<>();
+        int brackets = 0;
+        int lastEndIndex = 0;
+        for (int i = 1; i <= variable.length(); i++) {
+            if (variable.substring(i - 1, i).equals(openingBracket)) {
+                if (brackets == 0) {
+                    strOut.add(variable.substring(lastEndIndex, i));
+                    lastEndIndex = i;
+                }
+                brackets++;
+            } else if (variable.substring(i - 1, i).equals(closingingBracket)) {
+                brackets--;
+                if (brackets == 0) {
+                    strOut.add(variable.substring(lastEndIndex, i - 1));
+                    lastEndIndex = i - 1;
+                }
+            }
+        }
+        if (lastEndIndex < variable.length()) {
+            strOut.add(variable.substring(lastEndIndex, variable.length()));
+        }
+        return strOut.toArray(new String[0]);
+    }
+
+    /**
+     * <p>
+     * Metoda vrátí pole obsahující vnitřní elementy hranatých závorek,
      * oddělené
      * čárkami.</p>
-     * <p>Metoda prochází vstupní řetězec do doby než narazí na první otevírací
+     * <p>
+     * Metoda prochází vstupní řetězec do doby než narazí na první otevírací
      * hranatou závorku ("[") a pokračuje ve skenování řetězce dokud nenarazí na
      * uzavírací znak té samé závorky ("]"). Metoda počítá s případným vnořením
      * závorek.</p>
@@ -182,8 +229,10 @@ public final class RegexFunctions
     }
 
     /**
-     * <p>Metoda rozdělí vstupní řetězec kolem případných metod.</p>
-     * <p>Výstup je formátován tak, že liché indexy jsou ty části řetězce, které
+     * <p>
+     * Metoda rozdělí vstupní řetězec kolem případných metod.</p>
+     * <p>
+     * Výstup je formátován tak, že liché indexy jsou ty části řetězce, které
      * obsahují metody, a sudé indexy odpovídají lomenému textu.</p>
      * <p/>
      * @param value vstupní text, obsahující potencionální metody

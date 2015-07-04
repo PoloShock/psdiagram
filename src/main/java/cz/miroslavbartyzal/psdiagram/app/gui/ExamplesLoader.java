@@ -54,12 +54,7 @@ public class ExamplesLoader
                 }
             }
         });
-        if (WORKING_DIR_EXAMPLES.exists() || WORKING_DIR_EXAMPLES.mkdirs()) {
-            examples.addAll(loadFiles(WORKING_DIR_EXAMPLES));
-        }
-        if (MYDIR_DIR_EXAMPLES.exists()) {
-            examples.addAll(loadFiles(MYDIR_DIR_EXAMPLES));
-        }
+        examples.addAll(loadFiles());
 
         if (!examples.isEmpty()) {
             return loadExamples(examples, exampleActionListener);
@@ -73,7 +68,19 @@ public class ExamplesLoader
         }
     }
 
-    private static ArrayList<File> loadFiles(File parentDirectory)
+    public static ArrayList<File> loadFiles()
+    {
+        ArrayList<File> files = new ArrayList<>();
+        if (WORKING_DIR_EXAMPLES.exists() || WORKING_DIR_EXAMPLES.mkdirs()) {
+            files.addAll(loadFiles(WORKING_DIR_EXAMPLES));
+        }
+        if (MYDIR_DIR_EXAMPLES.exists()) {
+            files.addAll(loadFiles(MYDIR_DIR_EXAMPLES));
+        }
+        return files;
+    }
+
+    public static ArrayList<File> loadFiles(File parentDirectory)
     {
         ArrayList<File> files = new ArrayList<>();
         for (File f : parentDirectory.listFiles()) {

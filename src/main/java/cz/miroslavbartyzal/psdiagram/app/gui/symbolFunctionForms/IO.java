@@ -25,8 +25,9 @@ import javax.swing.text.BadLocationException;
 public final class IO extends AbstractSymbolFunctionForm
 {
 
-    private JLabel jLabelDescription;
-    private Symbol mySymbol = EnumSymbol.IO.getInstance(null);
+    private final JLabel jLabelDescription;
+    private final Symbol mySymbol = EnumSymbol.IO.getInstance(null);
+    private final IOValidationListener validationListener = new IOValidationListener();
 
     /**
      * Konstruktor, inicializující tento formulář.
@@ -58,11 +59,21 @@ public final class IO extends AbstractSymbolFunctionForm
 
         if (element.getSymbol().getCommands() != null) {
             if (element.getSymbol().getCommands().containsKey("var")) {
-                jTextFieldVar.setText(element.getSymbol().getCommands().get("var"));
+                if (SettingsHolder.settings.isFunctionFilters()) {
+                    jTextFieldVar.setText(AbstractSymbolFunctionForm.convertFromJSToPSDCommands(
+                            element.getSymbol().getCommands().get("var")));
+                } else {
+                    jTextFieldVar.setText(element.getSymbol().getCommands().get("var"));
+                }
                 jRadioButtonInput.setSelected(true);
                 setInputVisible();
             } else {
-                jTextFieldValue.setText(element.getSymbol().getCommands().get("value"));
+                if (SettingsHolder.settings.isFunctionFilters()) {
+                    jTextFieldValue.setText(AbstractSymbolFunctionForm.convertFromJSToPSDCommands(
+                            element.getSymbol().getCommands().get("value")));
+                } else {
+                    jTextFieldValue.setText(element.getSymbol().getCommands().get("value"));
+                }
                 jRadioButtonOutput.setSelected(true);
                 setOutputVisible();
             }
@@ -71,10 +82,12 @@ public final class IO extends AbstractSymbolFunctionForm
             setInputVisible();
         }
 
-        if (SettingsHolder.settings.isFunctionFilters()) {
-            ((AbstractDocument) jTextFieldVar.getDocument()).setDocumentFilter(new VariableFilter());
-            ((AbstractDocument) jTextFieldValue.getDocument()).setDocumentFilter(new ValueFilter());
-        }
+        ((AbstractDocument) jTextFieldVar.getDocument()).setDocumentFilter(new VariableFilter(
+                jTextFieldVar, validationListener));
+        ((AbstractDocument) jTextFieldValue.getDocument()).setDocumentFilter(new ValueFilter(
+                jTextFieldValue, validationListener));
+        AbstractSymbolFunctionForm.enhanceWithUndoRedoCapability(jTextFieldVar);
+        AbstractSymbolFunctionForm.enhanceWithUndoRedoCapability(jTextFieldValue);
         addDocumentListeners();
         super.trimSize();
     }
@@ -99,9 +112,9 @@ public final class IO extends AbstractSymbolFunctionForm
         }
 
         if (jRadioButtonInput.isSelected()) {
-            generateIValues(super.getElement().getSymbol(), var);
+            generateIValues(super.getElement().getSymbol(), var.trim());
         } else if (jRadioButtonOutput.isSelected()) {
-            generateOValues(super.getElement().getSymbol(), value);
+            generateOValues(super.getElement().getSymbol(), value.trim());
         }
     }
 
@@ -114,16 +127,20 @@ public final class IO extends AbstractSymbolFunctionForm
      */
     public static void generateIValues(Symbol symbol, String var)
     {
-        if (!var.equals("")) {
-            symbol.setDefaultValue(var + " ←");
-
-            LinkedHashMap<String, String> commands = new LinkedHashMap<>();
-            commands.put("var", var);
-            symbol.setCommands(commands);
+        if (!var.isEmpty()) {
+            symbol.setDefaultValue(
+                    AbstractSymbolFunctionForm.convertToPSDDisplayCommands(var) + " ←");
         } else {
             symbol.setDefaultValue(null);
-            symbol.setCommands(null);
         }
+
+        LinkedHashMap<String, String> commands = new LinkedHashMap<>();
+        if (SettingsHolder.settings.isFunctionFilters()) {
+            commands.put("var", AbstractSymbolFunctionForm.convertFromPSDToJSCommands(var));
+        } else {
+            commands.put("var", var);
+        }
+        symbol.setCommands(commands);
     }
 
     /**
@@ -135,16 +152,20 @@ public final class IO extends AbstractSymbolFunctionForm
      */
     public static void generateOValues(Symbol symbol, String value)
     {
-        if (!value.equals("")) {
-            symbol.setDefaultValue(value + " →");
-
-            LinkedHashMap<String, String> commands = new LinkedHashMap<>();
-            commands.put("value", value);
-            symbol.setCommands(commands);
+        if (!value.isEmpty()) {
+            symbol.setDefaultValue(AbstractSymbolFunctionForm.convertToPSDDisplayCommands(
+                    value) + " →");
         } else {
             symbol.setDefaultValue(null);
-            symbol.setCommands(null);
         }
+
+        LinkedHashMap<String, String> commands = new LinkedHashMap<>();
+        if (SettingsHolder.settings.isFunctionFilters()) {
+            commands.put("value", AbstractSymbolFunctionForm.convertFromPSDToJSCommands(value));
+        } else {
+            commands.put("value", value);
+        }
+        symbol.setCommands(commands);
     }
 
     private void setInputVisible()
@@ -207,12 +228,12 @@ public final class IO extends AbstractSymbolFunctionForm
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 10, Short.MAX_VALUE)
+            .addGap(0, 2, Short.MAX_VALUE)
         );
 
         jLabelExampleLabel.setText("Příklady:");
 
-        jLabelExamples.setText("<html>\n- A<br />\n- \"nějaký text\"<br />\n- \"hodnota A: \" + A<br />\n- \"A+B = \" + (A+B)<br />\n</html>");
+        jLabelExamples.setText("<html>\n- A<br />\n- \"nějaký text\"<br />\n- \"hodnota A: \" + A<br />\n- \"A+B = \" + (A+B)<br />\n- pole[2][0]<br />\n</html>");
         jLabelExamples.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
         buttonGroup.add(jRadioButtonInput);
@@ -269,7 +290,7 @@ public final class IO extends AbstractSymbolFunctionForm
                 .addComponent(jLabelExampleLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabelExamples, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(177, Short.MAX_VALUE))
+                .addContainerGap(169, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -277,6 +298,7 @@ public final class IO extends AbstractSymbolFunctionForm
         setInputVisible();
         super.trimSize();
         generateValues();
+        validationListener.validationStateChanged();
         super.fireChangeEventToEditManager();
     }//GEN-LAST:event_jRadioButtonInputActionPerformed
 
@@ -284,6 +306,7 @@ public final class IO extends AbstractSymbolFunctionForm
         setOutputVisible();
         super.trimSize();
         generateValues();
+        validationListener.validationStateChanged();
         super.fireChangeEventToEditManager();
     }//GEN-LAST:event_jRadioButtonOutputActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -301,6 +324,8 @@ public final class IO extends AbstractSymbolFunctionForm
 
     /**
      * Metoda s prázdným tělem.
+     * <p>
+     * @param de
      */
     @Override
     public void changedUpdate(DocumentEvent de)
@@ -331,6 +356,32 @@ public final class IO extends AbstractSymbolFunctionForm
     {
         generateValues();
         super.fireChangeEventToEditManager();
+    }
+
+    private class IOValidationListener implements ValidationListener
+    {
+
+        @Override
+        public void validationStateChanged()
+        {
+            Boolean varValid = (Boolean) jTextFieldVar.getDocument().getProperty("commandValid");
+            Boolean valueValid = (Boolean) jTextFieldValue.getDocument().getProperty("commandValid");
+            if (varValid == null || valueValid == null) {
+                // validation not completed on every command yet
+                return;
+            }
+
+            if (jRadioButtonInput.isSelected()) {
+                IO.super.getElement().getSymbol().setCommandsValid(varValid);
+            } else if (jRadioButtonOutput.isSelected()) {
+                IO.super.getElement().getSymbol().setCommandsValid(valueValid);
+            }
+
+            if (SettingsHolder.settings.isFunctionFilters()) {
+                IO.super.getFlowchartEditManager().repaintJPanelDiagram();
+            }
+        }
+
     }
 
 }

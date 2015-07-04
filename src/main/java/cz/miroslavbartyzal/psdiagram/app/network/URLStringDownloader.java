@@ -4,6 +4,7 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.network;
 
+import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -95,7 +96,11 @@ public class URLStringDownloader extends SwingWorker<String, Void>
         try {
             rd = new BufferedReader(new InputStreamReader(conn.getInputStream(), charset));
         } catch (IOException ex) {
-            ex.printStackTrace(System.err);
+            if (SettingsHolder.IS_DEVELOPMENT_RUN_MODE && ex instanceof java.net.ConnectException) {
+                System.err.println("Nepodařilo se navázat spojení s " + url + ".");
+            } else {
+                ex.printStackTrace(System.err);
+            }
             super.firePropertyChange("error", null, "chyba při otevírání vstupního streamu");
             return null;
         }

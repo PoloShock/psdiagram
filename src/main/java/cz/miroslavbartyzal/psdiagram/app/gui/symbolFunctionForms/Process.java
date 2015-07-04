@@ -25,8 +25,9 @@ import javax.swing.text.BadLocationException;
 public final class Process extends AbstractSymbolFunctionForm
 {
 
-    private JLabel jLabelDescription;
-    private Symbol mySymbol = EnumSymbol.PROCESS.getInstance(null);
+    private final JLabel jLabelDescription;
+    private final Symbol mySymbol = EnumSymbol.PROCESS.getInstance(null);
+    private final ProcessValidationListener validationListener = new ProcessValidationListener();
 
     /**
      * Konstruktor, inicializující tento formulář.
@@ -56,14 +57,23 @@ public final class Process extends AbstractSymbolFunctionForm
         jLabelExamples.setFont(SettingsHolder.SMALL_CODEFONT);
 
         if (element.getSymbol().getCommands() != null) {
-            jTextFieldVar.setText(element.getSymbol().getCommands().get("var"));
-            jTextFieldValue.setText(element.getSymbol().getCommands().get("value"));
+            if (SettingsHolder.settings.isFunctionFilters()) {
+                jTextFieldVar.setText(AbstractSymbolFunctionForm.convertFromJSToPSDCommands(
+                        element.getSymbol().getCommands().get("var")));
+                jTextFieldValue.setText(AbstractSymbolFunctionForm.convertFromJSToPSDCommands(
+                        element.getSymbol().getCommands().get("value")));
+            } else {
+                jTextFieldVar.setText(element.getSymbol().getCommands().get("var"));
+                jTextFieldValue.setText(element.getSymbol().getCommands().get("value"));
+            }
         }
 
-        if (SettingsHolder.settings.isFunctionFilters()) {
-            ((AbstractDocument) jTextFieldVar.getDocument()).setDocumentFilter(new VariableFilter());
-            ((AbstractDocument) jTextFieldValue.getDocument()).setDocumentFilter(new ValueFilter());
-        }
+        ((AbstractDocument) jTextFieldVar.getDocument()).setDocumentFilter(new VariableFilter(
+                jTextFieldVar, validationListener));
+        ((AbstractDocument) jTextFieldValue.getDocument()).setDocumentFilter(new ValueFilter(
+                jTextFieldValue, validationListener));
+        AbstractSymbolFunctionForm.enhanceWithUndoRedoCapability(jTextFieldVar);
+        AbstractSymbolFunctionForm.enhanceWithUndoRedoCapability(jTextFieldValue);
         addDocumentListeners();
         super.trimSize();
     }
@@ -87,7 +97,7 @@ public final class Process extends AbstractSymbolFunctionForm
         } catch (BadLocationException ex) {
         }
 
-        generateValues(super.getElement().getSymbol(), var, value);
+        generateValues(super.getElement().getSymbol(), var.trim(), value.trim());
     }
 
     /**
@@ -100,17 +110,23 @@ public final class Process extends AbstractSymbolFunctionForm
      */
     public static void generateValues(Symbol symbol, String var, String value)
     {
-        if (!var.equals("") && !value.equals("")) {
-            symbol.setDefaultValue(var + " ← " + value);
-
-            LinkedHashMap<String, String> commands = new LinkedHashMap<>();
-            commands.put("var", var);
-            commands.put("value", value);
-            symbol.setCommands(commands);
+        if (!var.isEmpty() && !value.isEmpty()) {
+            symbol.setDefaultValue(
+                    AbstractSymbolFunctionForm.convertToPSDDisplayCommands(var) + " ← "
+                    + AbstractSymbolFunctionForm.convertToPSDDisplayCommands(value));
         } else {
             symbol.setDefaultValue(null);
-            symbol.setCommands(null);
         }
+
+        LinkedHashMap<String, String> commands = new LinkedHashMap<>();
+        if (SettingsHolder.settings.isFunctionFilters()) {
+            commands.put("var", AbstractSymbolFunctionForm.convertFromPSDToJSCommands(var));
+            commands.put("value", AbstractSymbolFunctionForm.convertFromPSDToJSCommands(value));
+        } else {
+            commands.put("var", var);
+            commands.put("value", value);
+        }
+        symbol.setCommands(commands);
     }
 
     /**
@@ -155,7 +171,7 @@ public final class Process extends AbstractSymbolFunctionForm
 
         jLabel3.setText("Příklady:");
 
-        jLabelExamples.setText("<html>\n- A; 0<br />\n- B; B + A<br />\n- A; Math.sqrt(A*2)<br />\n- A; Math.floor(<br />Math.random()*11)<br />\n- A; B % C<br />\n- C; \"text\"<br />\n- C; \"hodnota A: \" + A<br />\n- A; \"B na druhou: \" + Math.pow(B,2)<br />\n- D; true<br />\n- D; false<br />\n- pole; [1, 2, 3]<br />\n- pole[3]; 4<br />\n- pole[pole.length]; 5\n</html>");
+        jLabelExamples.setText("<html>\n- A; 0<br />\n- B; B + A<br />\n- A; Math.sqrt(A*2)<br />\n- A; Math.floor(<br />Math.random()*11)<br />\n- A; B % C<br />\n- C; \"text\"<br />\n- C; \"hodnota A: \" + A<br />\n- A; \"B na druhou: \" + Math.pow(B,2)<br />\n- A; \"retezec\"[2]<br />\n- D; true<br />\n- D; false<br />\n- pole; [1, 2, 3]<br />\n- pole[3]; 4<br />\n- pole[pole.length]; 5<br />\n- E; pole[2][0]<br />\n</html>");
         jLabelExamples.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -186,7 +202,7 @@ public final class Process extends AbstractSymbolFunctionForm
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabelExamples, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(65, Short.MAX_VALUE))
+                .addContainerGap(49, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -201,6 +217,8 @@ public final class Process extends AbstractSymbolFunctionForm
 
     /**
      * Metoda s prázdným tělem.
+     * <p>
+     * @param de
      */
     @Override
     public void changedUpdate(DocumentEvent de)
@@ -231,6 +249,32 @@ public final class Process extends AbstractSymbolFunctionForm
     {
         generateValues();
         super.fireChangeEventToEditManager();
+    }
+
+    private class ProcessValidationListener implements ValidationListener
+    {
+
+        @Override
+        public void validationStateChanged()
+        {
+            Boolean varValid = (Boolean) jTextFieldVar.getDocument().getProperty("commandValid");
+            Boolean valueValid = (Boolean) jTextFieldValue.getDocument().getProperty("commandValid");
+            if (varValid == null || valueValid == null) {
+                // validation not completed on every command yet
+                return;
+            }
+
+            if (varValid && valueValid) {
+                Process.super.getElement().getSymbol().setCommandsValid(true);
+            } else {
+                Process.super.getElement().getSymbol().setCommandsValid(false);
+            }
+
+            if (SettingsHolder.settings.isFunctionFilters()) {
+                Process.super.getFlowchartEditManager().repaintJPanelDiagram();
+            }
+        }
+
     }
 
 }

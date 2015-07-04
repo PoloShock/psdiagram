@@ -34,7 +34,7 @@ public final class FlowchartEditUndoManager extends UndoManager
     private final JButton jButtonToolRedo;
     private int[] beforeFocusedPath;
     private boolean beforeIsJoint;
-    private ByteArrayOutputStream before;
+    private ByteArrayOutputStream lastSeenFlowchart;
 
     /**
      * Konstruktor, zajišťující základní spojení s klíčovými prvky uživatelského
@@ -60,9 +60,10 @@ public final class FlowchartEditUndoManager extends UndoManager
     {
         beforeFocusedPath = getFocusedPath(layout);
         beforeIsJoint = layout.getFocusedJoint() != null;
-        before = new ByteArrayOutputStream();
+        lastSeenFlowchart = new ByteArrayOutputStream();
         try {
-            MainWindow.getJAXBcontext().createMarshaller().marshal(layout.getFlowchart(), before);
+            MainWindow.getJAXBcontext().createMarshaller().marshal(layout.getFlowchart(),
+                    lastSeenFlowchart);
         } catch (JAXBException ex) {
             ex.printStackTrace(System.err);
         }
@@ -71,27 +72,67 @@ public final class FlowchartEditUndoManager extends UndoManager
     protected void addEdit(Layout layout, FlowchartEditManager flowchartEditManager,
             String presentationName)
     {
-        if (before != null) {
-            ByteArrayOutputStream current = new ByteArrayOutputStream();
+        if (lastSeenFlowchart != null) {
+            ByteArrayOutputStream currentFlowchart = new ByteArrayOutputStream();
             try {
                 MainWindow.getJAXBcontext().createMarshaller().marshal(layout.getFlowchart(),
-                        current);
+                        currentFlowchart);
             } catch (JAXBException ex) {
                 ex.printStackTrace(System.err);
             }
-            if (!Arrays.equals(before.toByteArray(), current.toByteArray())) {
+            if (!Arrays.equals(lastSeenFlowchart.toByteArray(), currentFlowchart.toByteArray())) {
                 int[] currentFocusedPath = getFocusedPath(layout);
                 boolean currentIsJoint = layout.getFocusedJoint() != null;
 
-                addEdit(new UniversalEdit(flowchartEditManager, before, current, beforeFocusedPath,
-                        beforeIsJoint, currentFocusedPath, currentIsJoint, presentationName));
+                addEdit(new UniversalEdit(flowchartEditManager, this, lastSeenFlowchart,
+                        currentFlowchart, beforeFocusedPath, beforeIsJoint, currentFocusedPath,
+                        currentIsJoint, presentationName));
 
                 beforeFocusedPath = currentFocusedPath;
                 beforeIsJoint = currentIsJoint;
-                before = current;
+                lastSeenFlowchart = currentFlowchart;
             }
         } else {
             discardAllEdits();
+        }
+    }
+
+    private void replaceLastEdit(FlowchartEditManager flowchartEditManager)
+    {
+        if (!super.canUndo() || super.canRedo()) {
+            /*
+             * - Poslední edit nemohu nahradit když neexistuje.
+             * - Poslední edit nebudu nahrazovat pokud by pak bylo možné dát redo a toho duvodu,
+             * ze by jsem musel podobně upravit i vsechny redo akce nasledujici tuto undo akci.
+             * Neudelal-li bych to, byly by redo nesynchronizovane a nebylo by mozne je pouzit.
+             * Dalsi moznost by byla shovat si tento edit pro pripad bezprostredniho pridani symbolu
+             * ktery by vlastne vsechny redo akce rusil, nebo rovnou undo akci upravit a vsechny
+             * redo akce ihned zrusit.
+             */
+            return;
+        }
+        Layout layout = flowchartEditManager.getLayout();
+
+        UniversalEdit uedit = (UniversalEdit) super.editToBeUndone();
+        ByteArrayOutputStream undoFlowchart = uedit.getUndoFlowchart();
+        if (undoFlowchart.size() > 0) {
+            ByteArrayOutputStream currentFlowchart = new ByteArrayOutputStream();
+            try {
+                MainWindow.getJAXBcontext().createMarshaller().marshal(layout.getFlowchart(),
+                        currentFlowchart);
+            } catch (JAXBException ex) {
+                ex.printStackTrace(System.err);
+            }
+            if (!Arrays.equals(undoFlowchart.toByteArray(), currentFlowchart.toByteArray())) {
+                int[] undoFocusedPath = uedit.getBeforeFocusedPath();
+                boolean undoIsJoint = uedit.isBeforeIsJoint();
+
+                UniversalEdit ueditNew = new UniversalEdit(flowchartEditManager, this, undoFlowchart,
+                        currentFlowchart, undoFocusedPath, undoIsJoint, beforeFocusedPath,
+                        beforeIsJoint, uedit.getPresentationName());
+                super.edits.set(super.edits.indexOf(uedit), ueditNew);
+                lastSeenFlowchart = currentFlowchart;
+            }
         }
     }
 
@@ -142,6 +183,9 @@ public final class FlowchartEditUndoManager extends UndoManager
     /**
      * Metoda volá metodu rodičovskou, navíc nastaví odpovídající stav tlačítkům
      * pro undo/redo akci v uživatelském prostředí.
+     * <p>
+     * @param ue
+     * @return
      */
     @Override
     public synchronized boolean addEdit(UndoableEdit ue)
@@ -181,26 +225,36 @@ public final class FlowchartEditUndoManager extends UndoManager
     @Override
     public synchronized void redo() throws CannotRedoException
     {
-        UniversalEdit UEdit = (UniversalEdit) super.editToBeRedone();
-        super.redo();
-        init(UEdit.getFlowchartEditManager().getLayout());
+        if (super.canRedo()) {
+            UniversalEdit UEdit = (UniversalEdit) super.editToBeRedone();
+            super.redo();
+            init(UEdit.getFlowchartEditManager().getLayout());
+        }
         setButtons();
     }
 
     /**
      * Metoda volá metodu rodičovskou, navíc nastaví odpovídající stav tlačítkům
      * pro undo/redo akci v uživatelském prostředí.
+     * <p>
+     * @param ue
      */
     @Override
     protected void redoTo(UndoableEdit ue) throws CannotRedoException
     {
-        super.redoTo(ue);
+        if (super.canRedo()) {
+            super.redoTo(ue);
+            init(((UniversalEdit) ue).getFlowchartEditManager().getLayout());
+        }
         setButtons();
     }
 
     /**
      * Metoda volá metodu rodičovskou, navíc nastaví odpovídající stav tlačítkům
      * pro undo/redo akci v uživatelském prostředí.
+     * <p>
+     * @param i
+     * @param i1
      */
     @Override
     protected void trimEdits(int i, int i1)
@@ -216,21 +270,34 @@ public final class FlowchartEditUndoManager extends UndoManager
     @Override
     public synchronized void undo() throws CannotUndoException
     {
-        UniversalEdit UEdit = (UniversalEdit) super.editToBeUndone();
-        super.undo();
-        init(UEdit.getFlowchartEditManager().getLayout());
+        if (super.canUndo()) {
+            UniversalEdit UEdit = (UniversalEdit) super.editToBeUndone();
+            replaceLastEdit(UEdit.getFlowchartEditManager()); // preserve any changes that were not persisted yet in order to be possible to get back to that state later
+            super.undo();
+            init(UEdit.getFlowchartEditManager().getLayout());
+        }
         setButtons();
     }
 
     /**
      * Metoda volá metodu rodičovskou, navíc nastaví odpovídající stav tlačítkům
      * pro undo/redo akci v uživatelském prostředí.
+     * <p>
+     * @param ue
      */
     @Override
     protected void undoTo(UndoableEdit ue) throws CannotUndoException
     {
-        super.undoTo(ue);
+        if (super.canUndo()) {
+            super.undoTo(ue);
+            init(((UniversalEdit) ue).getFlowchartEditManager().getLayout());
+        }
         setButtons();
+    }
+
+    public ByteArrayOutputStream getLastSeenFlowchart()
+    {
+        return lastSeenFlowchart;
     }
 
 }

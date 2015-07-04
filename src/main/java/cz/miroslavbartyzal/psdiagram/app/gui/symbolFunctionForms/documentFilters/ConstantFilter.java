@@ -4,7 +4,9 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters;
 
-import java.util.regex.Pattern;
+import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.ValidationListener;
+import cz.miroslavbartyzal.psdiagram.app.parser.EnumRule;
+import javax.swing.JTextField;
 
 /**
  * Tato třída představuje filtr konstanty.<br />
@@ -17,55 +19,95 @@ import java.util.regex.Pattern;
 public final class ConstantFilter extends AbstractFilter
 {
 
-    @Override
-    boolean validMe(String text)
+    private static final EnumRule RULE = EnumRule.LIST_OF_CONSTANTS;
+
+    public ConstantFilter(JTextField parentJTextField, ValidationListener validationListener)
     {
-        return isValid(text);
+        super(parentJTextField, validationListener);
+
+        if (!parentJTextField.getText().isEmpty()) {
+            super.parseInputAndUpdateGUI(parentJTextField.getText());
+        }
+    }
+
+    @Override
+    EnumRule getRule()
+    {
+        return RULE;
     }
 
     /**
      * Pokusí se daný textový řeťezec porovnat vůči tomuto filtru.
-     * <p/>
-     * @param text text, který chceme prověřit
-     * @return true, prošel-li text tímto filtrem
+     *
+     * @param input text, který chceme prověřit
+     * @return
      */
-    public static boolean isValid(String text)
+    public static boolean isValid(String input)
     {
-        if (text.length() == 0) {
-            return true;
-        }
-
-        if (!text.matches("(^[0-9\\-]+[^\'\"]*)|(^[\"]+[^\']*)")) { // prvni musi byt num, minus, nebo uvozovky;   retezec nesmi obsahovat znak '
-            return false;
-        }
-
-        String withoutQuotes = text.replaceAll("\"[^\"]*\"?", "\"");
-        if (withoutQuotes.length() == 0) {
-            return true;
-        }
-
-        boolean quotes = false;
-        Pattern allowedChars;
-        Pattern doubles;
-        if (text.matches(".*\"+.*")) { // jestlize jsou obsazeny "
-            allowedChars = Pattern.compile("[^\\,\"]");
-            quotes = true;
-        } else {
-            allowedChars = Pattern.compile("[^0-9\\-\\,\\.]");
-        }
-        doubles = Pattern.compile("\\,{2,}"
-                + "|\\-{2,}"
-                + "|\\.{2,}"
-                + "|[0-9]\\-"
-                + "|[^0-9]\\.");
-
-        if (quotes && allowedChars.matcher(withoutQuotes).find() || doubles.matcher(withoutQuotes).find()) {
-            return false;
-        }
-        if (!quotes && allowedChars.matcher(withoutQuotes).find() || doubles.matcher(withoutQuotes).find()) {
-            return false;
-        }
-        return true;
+        return AbstractFilter.parseInput(input, RULE);
     }
 
+//    /**
+//     * Pokusí se daný textový řeťezec porovnat vůči tomuto filtru.
+//     * <p/>
+//     * @param input text, který chceme prověřit
+//     * @return
+//     */
+//    public static ValidityCheckResult isValid(String input)
+//    {
+//        if (input.contains("'")) { // retezec nesmi obsahovat znak '
+//            return ValidityCheckResult.createInvalidRes("Znak ' není povolen.");
+//        }
+//        String textToVerifyOn = input.replaceAll("\"([^\"\\\\]|\\\\.)*\"?", "\"\"").replaceFirst(
+//                "^\\,|\\,$|\\,(?=\\,)", ""); // let's tolerate single empty slot -> example: ,1 |  1, | 1,,1
+//        if (textToVerifyOn.length() == 0) {
+//            return ValidityCheckResult.createValidRes(false);
+//        }
+//        if (textToVerifyOn.matches("^\\,.*|.*\\,\\,.*")) {
+//            return ValidityCheckResult.createInvalidRes(
+//                    "Detekováno příliš mnoho prázdných míst ve výčtu kontant.");
+//        }
+//
+//        // I'm allowing mixed strings and numbers after all since JavaScipt is tolerant too
+//        String allowedMatch = "("
+//                + "((\\+(\\-\\+)*\\-?)|(\\-(\\+\\-)*\\+?))|"
+//                + "(((\\+(\\-\\+)*\\-?)|(\\-(\\+\\-)*\\+?))?([1-9]|0(?=[\\.\\,]|$))[0-9]*(\\.[0-9]*)?)"
+//                + ")"; // with editing convenience taken into account
+//        allowedMatch = allowedMatch + "|(\"\")";
+//        allowedMatch = allowedMatch + "|(t(r(ue?)?)?|f(a(l(se?)?)?)?)";
+//        allowedMatch = "(" + allowedMatch + ")";
+//
+//        boolean result = textToVerifyOn.matches(allowedMatch + "(\\," + allowedMatch + ")*\\,?"); // with editing convenience taken into account
+//        if (result) {
+//            return ValidityCheckResult.createValidRes(canBeLeftAsIs(input));
+//        } else {
+//            if (textToVerifyOn.contains("--") || textToVerifyOn.contains("++")) {
+//                return ValidityCheckResult.createInvalidRes(
+//                        "Zdvojené znaménko není povoleno.");
+//            } else {
+//                return ValidityCheckResult.createInvalidRes(
+//                        "Neplatná konstantní hodnota.");
+//            }
+//        }
+//    }
+//
+//    private static boolean canBeLeftAsIs(String input)
+//    {
+////        // create new textToVerifyOn in order to reveal any quote related issues
+////        textToVerifyOn = input.replaceAll("\"[^\"]*\"", "\"\""); // replace only enclosed quotes
+////        textToVerifyOn = textToVerifyOn.replaceAll("(?<!\")\"(?![^\"]+\")[^\"]+", "\""); // replace only unenclosed quotes
+//
+//        int quotesCount = input.length() - input.replaceAll("\"", "").length();
+//        if (quotesCount % 2 == 1) {
+//            return false;
+//        }
+//
+//        String textToVerifyOn = input.replaceAll("\"([^\"\\\\]|\\\\.)*\"?", "\"\"");
+//        String allowedMatch = "(((\\+(\\-\\+)*\\-?)|(\\-(\\+\\-)*\\+?))?([1-9]|0(?=[\\.\\,]|$))[0-9]*(\\.[0-9]+)?)"; // without editing convenience
+//        allowedMatch = allowedMatch + "|(\"\")";
+//        allowedMatch = allowedMatch + "|(true|false)";
+//        allowedMatch = "(" + allowedMatch + ")";
+//
+//        return textToVerifyOn.matches(allowedMatch + "(\\," + allowedMatch + ")*"); // without editing convenience
+//    }
 }

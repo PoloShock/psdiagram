@@ -49,6 +49,8 @@ public interface Layout
 
     public static final Color FOCUSED_UP_COLOR = new Color(184, 209, 255);
     public static final Color FOCUSED_DOWN_COLOR = FOCUSED_UP_COLOR.darker();
+    public static final Color FOCUSED_ERROR_UP_COLOR = new Color(246, 176, 175);
+    public static final Color FOCUSED_ERROR_DOWN_COLOR = new Color(183, 49, 47);
 
 //     static final int defaultSymbolPadding = 14;
 //     public static final int defaultFlowchartPadding = 15;

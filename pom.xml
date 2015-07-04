@@ -4,7 +4,7 @@
 
     <groupId>cz.miroslavbartyzal</groupId>
     <artifactId>psdiagram</artifactId>
-    <version>1.3.2.2</version>
+    <version>1.3.3-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>PS Diagram</name>
     <url>http://www.psdiagram.cz</url>
@@ -22,6 +22,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <psdiagram.web.url>http://localhost</psdiagram.web.url>
 
         <build.profile>development</build.profile>
@@ -51,6 +52,24 @@
             <groupId>org.freehep</groupId>
             <artifactId>freehep-graphicsio-pdf</artifactId>
             <version>2.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.java.balloontip</groupId>
+            <artifactId>balloontip</artifactId>
+            <version>1.2.4.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cz.miroslavbartyzal</groupId>
+            <artifactId>grappa-mod</artifactId>
+            <version>1.0.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-runtime</artifactId>
+            <version>4.5</version>
         </dependency>
     </dependencies>
 
@@ -340,13 +359,56 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
+                <version>3.2</version>
                 <configuration>
                     <source>1.7</source>
                     <target>1.7</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
+                    <!--                    <compilerArgs>
+                        <arg>-verbose</arg>
+                        <arg>-Xlint:deprecation</arg>
+                    </compilerArgs>-->
                 </configuration>
             </plugin>
+
+            <!--
+                Tento plugin nepodporuje custom specifikaci encodingu pro vygenerovane
+                zdrojové kódy -> generuje je v defaultním charsetu! Je proto nutné nastavit
+                globální proměnnou JAVA_TOOL_OPTIONS na hodnotu -Dfile.encoding=UTF8, která
+                zajistí, že java bude mít default UTF-8.
+                Alternativa je, nastavit mavenu MAVEN_OPTS="-Dfile.encoding=UTF-8" (v Netbeans
+                v properties projektu -> Actions a pridat property
+                Env.MAVEN_OPTS="-Dfile.encoding=UTF-8").
+                Nebo spustit jakkoliv jinak spustit JVM s parametrem -Dfile.encoding=UTF-8.
+            -->
+            <plugin>
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr4-maven-plugin</artifactId>
+                <version>4.5</version>
+                <executions>
+                    <execution>
+                        <id>antlr</id>
+                        <goals>
+                            <goal>antlr4</goal>
+                        </goals>
+                        <configuration>
+                            <encoding>UTF-8</encoding>
+                            <!--<encoding>windows-1250</encoding>-->
+                            <listener>false</listener>
+                            <treatWarningsAsErrors>true</treatWarningsAsErrors>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.10</version>
+                <configuration>
+                    <argLine>-Dfile.encoding=UTF-8</argLine>
+                </configuration>
+            </plugin>-->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

@@ -13,6 +13,7 @@ import cz.miroslavbartyzal.psdiagram.app.debug.function.FunctionManager;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.Layout;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutElement;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutSegment;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.EnumSymbol;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -89,8 +90,9 @@ public final class DebugAnimator
     };
     private final Color PROGRESSDESCS_COLOR = new Color(207, 190, 255);//new Color(231, 215, 75);
     private ArrayList<Color[]> symbolColors = new ArrayList<>(); // vzdy dva index color - horni a dolni gradient
-    private final Color BREAKPOINT_COLOR = new Color(141, 46, 48);
+    private final Color BREAKPOINT_COLOR = new Color(159, 33, 32);//new Color(141, 46, 48);
     private final Color ACTIVESYMBOL_COLOR = new Color(86, 192, 233);
+    private final Color ERROR_SYMBOL_COLOR = new Color(141, 46, 48);
     private TreeMap<Integer, ArrayList<Path2D[]>> paths = new TreeMap<>(); // bez komentarovych a goto cest
     //private HashMap<Path2D[], Integer> paths = new HashMap<>(70); // bez komentarovych a goto cest
     //private LinkedHashMap<Integer, ArrayList<AnimSymbol>> symbols = new LinkedHashMap<>();
@@ -418,16 +420,16 @@ public final class DebugAnimator
         }
 
         // vykresleni stínu symbolů
-        for (DebugSymbol animSymbol : symbols.keySet()) {
+        for (DebugSymbol debugSymbol : symbols.keySet()) {
             if (reinitSymbols) {
-                int colorSchemeIndex = symbols.get(animSymbol);
+                int colorSchemeIndex = symbols.get(debugSymbol);
                 if (colorSchemeIndex >= symbolColors.size()) {
                     colorSchemeIndex = symbolColors.size() - 1;
                 }
-                initAnimSymbol(animSymbol, symbolColors.get(colorSchemeIndex)[0], symbolColors.get(
+                initAnimSymbol(debugSymbol, symbolColors.get(colorSchemeIndex)[0], symbolColors.get(
                         colorSchemeIndex)[1]);
             }
-            drawAnimSymbolShade(g2d, animSymbol);
+            drawAnimSymbolShade(g2d, debugSymbol);
         }
         /*
          * if (commentSymbols.size() > 0) {
@@ -449,8 +451,8 @@ public final class DebugAnimator
         }
 
         // vykreslení symbolů
-        for (DebugSymbol animSymbol : symbols.keySet()) {
-            drawAnimSymbolSymbol(g2d, animSymbol, symbols.get(animSymbol));
+        for (DebugSymbol debugSymbol : symbols.keySet()) {
+            drawAnimSymbolSymbol(g2d, debugSymbol, symbols.get(debugSymbol));
         }
 
         // vykresleni popisků segmentů
@@ -810,7 +812,15 @@ public final class DebugAnimator
             GotoLabel gotoLabel = (GotoLabel) animSymbol.getSymbol();
             g2d.draw(gotoLabel.getMyCircle());
         } else {
-            g2d.draw(animSymbol.getSymbol().getShape()); // vykreslení okraje symbolu
+            if (SettingsHolder.settings.isFunctionFilters() && colorSchemeIndex == 0
+                    && !animSymbol.getSymbol().areCommandsValid()
+                    && EnumSymbol.getEnumSymbol(animSymbol.getSymbol().getClass()).areAllCommandsPresent(
+                            layout.findMyElement(animSymbol.getSymbol()))) {
+                g2d.setColor(ERROR_SYMBOL_COLOR);
+                g2d.draw(animSymbol.getSymbol().getShape()); // vykreslení okraje symbolu
+            } else {
+                g2d.draw(animSymbol.getSymbol().getShape()); // vykreslení okraje symbolu
+            }
         }
         // vykresleni textu symbolu
         if (colorSchemeIndex < symbolColors.size()) {
@@ -916,7 +926,7 @@ public final class DebugAnimator
                             (int) (SHADOWCOLOR.getAlpha() * (1 - shineDist / ballShineRad))));
                     /*
                      * } else {
-                     * animSymbol.setShadeColor(null);
+                     * debugSymbol.setShadeColor(null);
                      * }
                      */
                     animSymbol.setShadeTransX(transX);

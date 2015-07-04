@@ -32,7 +32,7 @@ public final class LoopEnd extends AbstractSymbol
     }
 
     /**
-     * Kontruktor, určující vnitřní text symbolu.
+     * Konstruktor, určující vnitřní text symbolu.
      * <p/>
      * @param value vnitřní text symbolu
      */

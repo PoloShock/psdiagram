@@ -11,14 +11,17 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 
 /**
- * <p>Tato třída představuje Joint, který nelze uživatelsky vložit.<br />
+ * <p>
+ * Tato třída představuje Joint, který nelze uživatelsky vložit.<br />
  * Joint představuje a označuje takové místo ve vývojovém diagramu, kam uživatel
  * může vložit některý z ostatních symbolů, které má k dispozici.</p>
  *
- * <p>Joint musí vždy náležet rodičovskému elementu a rodičovskému segmentu. Tím
+ * <p>
+ * Joint musí vždy náležet rodičovskému elementu a rodičovskému segmentu. Tím
  * je Joint zároveň možné jedinečně rozpoznat.</p>
  * <p/>
- * <p>Barva Jointu je určena barvou svého rodičovského elementu.</p>
+ * <p>
+ * Barva Jointu je určena barvou svého rodičovského elementu.</p>
  *
  * @author Miroslav Bartyzal (miroslavbartyzal@gmail.com)
  */
@@ -79,6 +82,26 @@ public final class Joint extends AbstractSymbol
      */
     @Override
     public void setValueAndSize(String value)
+    {
+    }
+
+    /**
+     * Metoda s prázdným tělem - Joint nemůže obsahovat text.
+     * <p>
+     * @param defaultValue
+     */
+    @Override
+    public void setDefaultValue(String defaultValue)
+    {
+    }
+
+    /**
+     * Metoda s prázdným tělem - Joint nemůže obsahovat text.
+     * <p>
+     * @param customValue
+     */
+    @Override
+    public void setCustomValue(String customValue)
     {
     }
 

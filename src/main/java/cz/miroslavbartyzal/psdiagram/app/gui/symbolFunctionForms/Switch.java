@@ -31,9 +31,10 @@ import javax.swing.text.BadLocationException;
 public final class Switch extends AbstractSymbolFunctionForm
 {
 
-    private JLabel jLabelDescription;
-    private Symbol mySymbol = EnumSymbol.SWITCH.getInstance(null);
+    private final JLabel jLabelDescription;
+    private final Symbol mySymbol = EnumSymbol.SWITCH.getInstance(null);
     private JTextField[] jTextFieldSegments;
+    private final SwitchValidationListener validationListener = new SwitchValidationListener();
 
     /**
      * Konstruktor, inicializující tento formulář.
@@ -65,16 +66,27 @@ public final class Switch extends AbstractSymbolFunctionForm
         jLabelExamples.setFont(SettingsHolder.SMALL_CODEFONT);
 
         if (element.getSymbol().getCommands() != null) {
-            jTextFieldConditionVar.setText(element.getSymbol().getCommands().get("conditionVar"));
-            for (int i = 0; i < jTextFieldSegments.length; i++) {
-                jTextFieldSegments[i].setText(element.getSymbol().getCommands().get("" + (i + 1)));
+            if (SettingsHolder.settings.isFunctionFilters()) {
+                jTextFieldConditionVar.setText(
+                        AbstractSymbolFunctionForm.convertFromJSToPSDCommands(
+                                element.getSymbol().getCommands().get("conditionVar")));
+                for (int i = 0; i < jTextFieldSegments.length; i++) {
+                    jTextFieldSegments[i].setText(
+                            AbstractSymbolFunctionForm.convertFromJSToPSDCommands(
+                                    element.getSymbol().getCommands().get("" + (i + 1))));
+                }
+            } else {
+                jTextFieldConditionVar.setText(element.getSymbol().getCommands().get("conditionVar"));
+                for (int i = 0; i < jTextFieldSegments.length; i++) {
+                    jTextFieldSegments[i].setText(
+                            element.getSymbol().getCommands().get("" + (i + 1)));
+                }
             }
         }
 
-        if (SettingsHolder.settings.isFunctionFilters()) {
-            ((AbstractDocument) jTextFieldConditionVar.getDocument()).setDocumentFilter(
-                    new VariableFilter());
-        }
+        ((AbstractDocument) jTextFieldConditionVar.getDocument()).setDocumentFilter(
+                new VariableFilter(jTextFieldConditionVar, validationListener));
+        AbstractSymbolFunctionForm.enhanceWithUndoRedoCapability(jTextFieldConditionVar);
         addDocumentListeners();
         super.trimSize();
     }
@@ -98,15 +110,12 @@ public final class Switch extends AbstractSymbolFunctionForm
                     jTextFieldConditionVar.getDocument().getLength());
             for (int i = 0; i < jTextFieldSegments.length; i++) {
                 segmentConstants[i] = jTextFieldSegments[i].getDocument().getText(0,
-                        jTextFieldSegments[i].getDocument().getLength());
-                if (segmentConstants[i].equals("")) {
-                    break;
-                }
+                        jTextFieldSegments[i].getDocument().getLength()).trim();
             }
         } catch (BadLocationException ex) {
         }
 
-        generateValues(super.getElement(), conditionVar, segmentConstants);
+        generateValues(super.getElement(), conditionVar.trim(), segmentConstants);
     }
 
     /**
@@ -120,29 +129,48 @@ public final class Switch extends AbstractSymbolFunctionForm
     public static void generateValues(LayoutElement element, String conditionVar,
             String[] segmentConstants)
     {
-        if (!conditionVar.equals("") && segmentConstants.length == element.getInnerSegmentsCount() - 1) {
-            LinkedHashMap<String, String> commands = new LinkedHashMap<>();
-
-            element.getSymbol().setDefaultValue(conditionVar + "?");
-            commands.put("conditionVar", conditionVar);
-            for (int i = 0; i < segmentConstants.length; i++) {
-                if (segmentConstants[i].equals("")) {
+        boolean setDefaultDescripton = !conditionVar.isEmpty() && segmentConstants.length == element.getInnerSegmentsCount() - 1;
+        if (setDefaultDescripton) {
+            for (String segmentConstant : segmentConstants) {
+                if (segmentConstant.isEmpty()) {
+                    setDefaultDescripton = false;
                     break;
                 }
-                element.getInnerSegment(i + 1).setDefaultDescripton(segmentConstants[i]);
+            }
+        }
+
+        LinkedHashMap<String, String> commands = new LinkedHashMap<>();
+        if (setDefaultDescripton) {
+            element.getSymbol().setDefaultValue(
+                    AbstractSymbolFunctionForm.convertToPSDDisplayCommands(conditionVar) + "?");
+        } else {
+            element.getSymbol().setDefaultValue("");
+        }
+        if (SettingsHolder.settings.isFunctionFilters()) {
+            commands.put("conditionVar", AbstractSymbolFunctionForm.convertFromPSDToJSCommands(
+                    conditionVar));
+            for (int i = 0; i < segmentConstants.length; i++) {
+                if (setDefaultDescripton) {
+                    element.getInnerSegment(i + 1).setDefaultDescripton(segmentConstants[i]);
+                } else {
+                    element.getInnerSegment(i + 1).setDefaultDescripton(null);
+                }
+                commands.put("" + (i + 1),
+                        AbstractSymbolFunctionForm.convertFromPSDToJSCommands(
+                                segmentConstants[i]));
+            }
+        } else {
+            commands.put("conditionVar", conditionVar);
+            for (int i = 0; i < segmentConstants.length; i++) {
+                if (setDefaultDescripton) {
+                    element.getInnerSegment(i + 1).setDefaultDescripton(segmentConstants[i]);
+                } else {
+                    element.getInnerSegment(i + 1).setDefaultDescripton(null);
+                }
                 commands.put("" + (i + 1), segmentConstants[i]);
             }
-
-            if (commands.size() == element.getInnerSegmentsCount()) {
-                element.getSymbol().setCommands(commands);
-                return;
-            }
         }
-        element.getSymbol().setDefaultValue("");
-        for (int i = 0; i < segmentConstants.length; i++) {
-            element.getInnerSegment(i + 1).setDefaultDescripton(null);
-        }
-        element.getSymbol().setCommands(null);
+        element.getSymbol().setCommands(commands);
     }
 
     /**
@@ -235,6 +263,8 @@ public final class Switch extends AbstractSymbolFunctionForm
 
     /**
      * Metoda s prázdným tělem.
+     * <p>
+     * @param de
      */
     @Override
     public void changedUpdate(DocumentEvent de)
@@ -272,7 +302,7 @@ public final class Switch extends AbstractSymbolFunctionForm
 
         private int minWidth = 0;
         private int minHeight = 0;
-        private int componentPadding = 5;
+        private final int componentPadding = 5;
 
         public JPanelSegments(LayoutElement element)
         {
@@ -294,10 +324,10 @@ public final class Switch extends AbstractSymbolFunctionForm
                 jTextFieldSegments[i] = new JTextField();
                 jTextFieldSegments[i].setSize(jTextFieldSegments[i].getPreferredSize());
                 jTextFieldSegments[i].setAlignmentX(0);
-                if (SettingsHolder.settings.isFunctionFilters()) {
-                    ((AbstractDocument) jTextFieldSegments[i].getDocument()).setDocumentFilter(
-                            new ConstantFilter());
-                }
+                jTextFieldSegments[i].setFont(SettingsHolder.CODEFONT);
+                ((AbstractDocument) jTextFieldSegments[i].getDocument()).setDocumentFilter(
+                        new ConstantFilter(jTextFieldSegments[i], validationListener));
+                AbstractSymbolFunctionForm.enhanceWithUndoRedoCapability(jTextFieldSegments[i]);
                 //jTextFieldSegments[i].setBounds(0, minHeight, minWidth, jTextFieldSegments[i].getSize().height);
                 super.add(jTextFieldSegments[i]);
                 minHeight += jTextFieldSegments[i].getSize().height;
@@ -338,6 +368,39 @@ public final class Switch extends AbstractSymbolFunctionForm
         @Override
         public void setLayout(LayoutManager lm)
         {
+        }
+
+    }
+
+    private class SwitchValidationListener implements ValidationListener
+    {
+
+        @Override
+        public void validationStateChanged()
+        {
+            Boolean varValid = (Boolean) jTextFieldConditionVar.getDocument().getProperty(
+                    "commandValid");
+            if (varValid == null) {
+                return;
+            } else if (!varValid) {
+                Switch.super.getElement().getSymbol().setCommandsValid(false);
+                return;
+            }
+            // varValid is true
+            for (JTextField jTextFieldSegment : jTextFieldSegments) {
+                Boolean segmentValid = (Boolean) jTextFieldSegment.getDocument().getProperty(
+                        "commandValid");
+                if (segmentValid == null) {
+                    return;
+                } else if (!segmentValid) {
+                    Switch.super.getElement().getSymbol().setCommandsValid(false);
+                }
+            }
+            Switch.super.getElement().getSymbol().setCommandsValid(true);
+
+            if (SettingsHolder.settings.isFunctionFilters()) {
+                Switch.super.getFlowchartEditManager().repaintJPanelDiagram();
+            }
         }
 
     }

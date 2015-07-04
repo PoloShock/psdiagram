@@ -69,14 +69,35 @@ public final class Main
     // TODO podivat se na logicnost posouvani diagramu pri posunu komentare mimo platno a zpet
     // TODO pridat info o poctu vykonanych prikazu po konceni algoritmu -> hezky benchmark, kriterium pro hodnoceni efektivity algoritmu :)
     // TODO mozny nazev: dialgo
-    // TODO "Soubor PS_Diagram_1.3.zip se bÄ›ĹľnÄ› nestahuje a mohl by bĂ˝t nebezpeÄŤnĂ˝."
+    // TODO "Soubor PS_Diagram_1.3.zip se běžně nestahuje a mohl by být nebezpečný."
     //e TODO pri spusteni vice instanci PSD, bude urcite chybne fungovat zotavovani diagramu (FlowchartCrashRecovery) -> zjistovat prislusnost na zaklade PID?; co dalsiho muze blbnout?
     //e TODO pridat dalsi watermark napovedy
     // TODO v polich pro nazev promenne nabizet jiz existujici promenne
-    //e TODO opravit regexy treba ve foru (projde napr increment 2.1.2.00053)
     //e TODO break by mel fungovat i v animaci..?
     //e TODO vytvorit vlastni priponu (.psdiagram?) kterou bude mozne asociovat s psdiagram.exe. Do nove ulozky integrovat historii vytvoreni diagramu pomoci systemtime timestampu. Undo akci do teto historie zahrnovat jako beznou akci editace. Pri nacteni diagramu by se meli nacist i undoable edits, pozor ale na ty undo akce viz predchozi veta. Otestovat, jestli asociace prezije aktualizaci (zmena psd.exe). Rozhranni pro timetravel (historie) muze pockat.
     // TODO vyresit ty netransparentni stiny v pdf
+    // TODO predelat nalezani otevrenych PSDcek v updateru tak, aby se hledalo podle umisteni souboru a ne podle titulku jeho okna (POZOR: co kdyz to bude bezet z jineho JVMka, bude porad cesta k psd.jar nejak vyhledatelna?)
+    // TODO co se deje pri pole = [1, 2, 4][8, 9, 8]??
+    //e!! TODO otestovat windows spousteni pres cmd s cestou obsahujici mezeru
+    // TODO priblizovani k mysi porad k pravemu dolnimu rohu (max scrollbarech) blbne (preskakuje) -> co to vyresit tak, ze prepisu chovani toho scrollview aby pri enablovani scrollbaru neubiral velikost canvasu, ale jen prekryl kontent?! :))
+    // TODO resolvnout ten problem se stazenim (http://stackoverflow.com/questions/9512919/getting-around-chromes-malicious-file-warning)
+    // TODO umoznit kompilaci s ruznymi priznaky at vim, jestli je PSD stazene z ulozto nebo odjinud
+    // TODO isnpirace k helpu: http://www.bfoit.org/itp/JavaOperators.html
+    // inspirace o vytvareni IDE: http://www.ibm.com/developerworks/opensource/tutorials/os-ecl-commplgin1/index.html
+    //e TODO naseptavac JS funkci
+    //e! TODO proverit chybu pri updatovani, viz email Jan Listopad
+    //e TODO zbavit se tlacitka prerusit pri I/O symbolu tam, kde neni relevantni (krokovani -> zajistit nejak pristup k animaci kde je stav automatickeho prochazeni v booleanu?)
+    // TODO nahradit Graphics2D g2 = (Graphics2D) g.create();, protoze g se reusuje a nemuzu ho menit...
+    // TODO hezky algoritmus by byl treba odstraneni duplikatu v poli
+    // TODO stejne jako plotly se po nejake dobe zeptat uzivatele co zlepsit a co se mu libilo (viz muj gmail)
+    // TODO aktualizovat subprocess handling podle clanku: http://zeroturnaround.com/rebellabs/how-to-deal-with-subprocesses-in-java/
+    // TODO krasne javadoc tipy: http://zeroturnaround.com/rebellabs/reasons-tips-and-tricks-for-better-java-documentation/
+    // TODO zahrnout do parsovani i promenne a jejich typy na zaklade operaci s nimi - tim se zbavit nekonzistence v zakazu ciselne hodnoty jako logicke, kdyz to pritom javascript dovoluje - if(1)
+    //! TODO zmenit koncepci z & na && (| na || taky) -> at pak nevznikaji zmatene situaci pri prechodu na jiny prog. jazyk
+    //! TODO kdyz ze zotavi diagram a pak ho hned bezezmneny zase zavru, uz se neobnovi!?
+    // TODO implementovat escapovani \n\r\t... (\" a \' uz mam implementovane) uvnitr stringu do/z pascalu
+    //      - http://www.textfiles.com/bitsavers/pdf/borland/TURBO_Pascal_Reference_Manual_CPM_Version_3_Dec88.pdf
+    //      - ftp://ftp.freepascal.org/fpc/docs-pdf/ref.pdf
     /**
      * Metoda pro spuštění hlavního okna aplikace. Nejsou přijímány žádné
      * parametry.
@@ -85,7 +106,7 @@ public final class Main
      */
     public static void main(String[] args)
     {
-        ToolTipManager.sharedInstance().setDismissDelay(12000); // nastavení tooltipů tak, aby zustali 12 sekund
+        ToolTipManager.sharedInstance().setDismissDelay(12000); // nastavení tooltipů tak, aby zůstali 12 sekund
         MainWindow.main(args);
     }
 

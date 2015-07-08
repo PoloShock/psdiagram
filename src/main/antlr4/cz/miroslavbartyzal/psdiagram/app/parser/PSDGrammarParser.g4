@@ -138,7 +138,7 @@ listOf_Constants_RepeatingPart
 constant_solo
     :   constant
     // following is ambiguous but it is also the way of least resistance...
-    //|   expression {ruleNotifyErrorListeners("Neplatná konstantní hodnota. Povoleny jsou pouze konstantní hodnoty v podobě čísla, logické hodnoty (true, false) nebo řetězcové hodnoty.", null, $expression.start, $expression.stop);}
+    |   expression {ruleNotifyErrorListeners("Neplatná konstantní hodnota. Povoleny jsou pouze konstantní hodnoty v podobě čísla, logické hodnoty (true, false) nebo řetězcové hodnoty.", null, $expression.start, $expression.stop);}
     ;
 
 solo_ListOf_NumberConstants
@@ -154,7 +154,7 @@ listOf_NumberConstants_RepeatingPart
 constant_Number_solo
     :   constant_Number_Signed
     // following is ambiguous but it is also the way of least resistance...
-    //|   expression {ruleNotifyErrorListeners("Neplatná konstantní hodnota. Povolena je pouze konstantní hodnota v podobě čísla.", null, $expression.start, $expression.stop);}
+    |   expression {ruleNotifyErrorListeners("Neplatná konstantní hodnota. Povolena je pouze konstantní hodnota v podobě čísla.", null, $expression.start, $expression.stop);}
     ;
 
 solo_NoArrayVariableToAssignTo
@@ -633,7 +633,7 @@ numericOrString_Expression_Without_Numeric_Prefix
 
     |   unary_Boolean_Expression PLUS (
             multiplicative_Expression {ruleNotifyErrorListeners("Logickou hodnotu (levá strana operátoru '" + $PLUS.text + "') nelze sčítat s číselnou hodnotou (pravá označená strana).\nOperátor '" + $PLUS.text + "' lze použít také pro zřetězení textu, na jedné ze stran by pak ale musela být řetězcová hodnota.", "řetězcová hodnota, nebo číselná hodnota ne levé straně", $multiplicative_Expression.start, $multiplicative_Expression.stop);}
-        |   unary_Boolean_Expression {notifyErrorListeners($PLUS, "Logické hodnoty (levá i pravá strana operátoru '" + $PLUS.text + "') nelze vzájemně sčítat.\nOperátor '" + $PLUS.text + "' lze použít také pro zřetězení textu, na jedné ze stran by pak ale musela být řetězcová hodnota.", "'|', '&', '=', '!=', nebo řetězcová hodnota na pravé či levé straně", null);}
+        |   unary_Boolean_Expression {notifyErrorListeners($PLUS, "Logické hodnoty (levá i pravá strana operátoru '" + $PLUS.text + "') nelze vzájemně sčítat.\nOperátor '" + $PLUS.text + "' lze použít také pro zřetězení textu, na jedné ze stran by pak ale musela být řetězcová hodnota.", "'||', '&&', '=', '!=', nebo řetězcová hodnota na pravé či levé straně", null);}
         |   array_Expression {ruleNotifyErrorListeners("Logickou hodnotu (levá strana operátoru '" + $PLUS.text + "') nelze sčítat s hodnotou v podobě pole (pravá strana operátoru).\nOperátor '" + $PLUS.text + "' lze použít také pro zřetězení textu, na pravé straně by pak ale musela být řetězcová hodnota.", "řetězcová hodnota", $array_Expression.start, $array_Expression.stop);}
         |   NULL_LITERAL {notifyErrorListeners($NULL_LITERAL, "Logickou hodnotu (levá strana operátoru '" + $PLUS.text + "') nelze sčítat s hodnotou null (pravá označená strana)\nOperátor '" + $PLUS.text + "' lze použít také pro zřetězení textu, na jedné ze stran operátoru by pak ale musela být řetězcová hodnota.", "řetězcová hodnota", null);}
         |   {notifyErrorListenersOnPointAfter("Chybí řetězcová hodnota na pravé straně operátoru '" + $PLUS.text + "'.", "řetězcová hodnota", $PLUS);}
@@ -716,9 +716,6 @@ conditionalOr_Expression_LeftPart
             (conditionalAnd_Expression | unknownTypeValue)
         |   {
                 String msg = "Chybí logická hodnota na pravé straně operátoru '" + $OR.text + "'.";
-                if (_input.LA(1) == OR) {
-                    msg+= "\nPS: v PS Diagramu je pro operaci logické funkce OR používán jediný znak '|'";
-                }
                 notifyErrorListenersOnPointAfter(msg, "logická hodnota", $OR);
             }
         // wrong combinations follow
@@ -808,9 +805,6 @@ conditionalOr_Expression_RightPart
             (conditionalAnd_Expression | unknownTypeValue)
         |   {
                 String msg = "Chybí logická hodnota na pravé straně operátoru '" + $OR.text + "'.";
-                if (_input.LA(1) == OR) {
-                    msg+= "\nPS: v PS Diagramu je pro operaci logické funkce OR používán jediný znak '|'";
-                }
                 notifyErrorListenersOnPointAfter(msg, "logická hodnota", $OR);
             }
         // wrong combinations follow
@@ -838,9 +832,6 @@ conditionalAnd_Expression_LeftPart
             (equality_Expression | unknownTypeValue)
         |   {
                 String msg = "Chybí logická hodnota na pravé straně operátoru '" + $AND.text + "'.";
-                if (_input.LA(1) == AND) {
-                    msg+= "\nPS: v PS Diagramu je pro operaci logické funkce AND používán jediný znak '&'";
-                }
                 notifyErrorListenersOnPointAfter(msg, "logická hodnota", $AND);
             }
         // wrong combinations follow
@@ -930,9 +921,6 @@ conditionalAnd_Expression_RightPart
             (equality_Expression | unknownTypeValue)
         |   {
                 String msg = "Chybí logická hodnota na pravé straně operátoru '" + $AND.text + "'.";
-                if (_input.LA(1) == AND) {
-                    msg+= "\nPS: v PS Diagramu je pro operaci logické funkce AND používán jediný znak '&'";
-                }
                 notifyErrorListenersOnPointAfter(msg, "logická hodnota", $AND);
             }
         // wrong combinations follow
@@ -1153,7 +1141,7 @@ relational_Expression
             String errorHeader = "Operátor '" + $op.text + "' (" + operation + ") lze použít pouze v kombinaci s číselnými hodnotami.";
         } (
             (numericOrString_Expression | numeric_Expression | unknownTypeValue) {ruleNotifyErrorListeners(errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota logická.", "číselná hodnota", $relational_Expression_LeftPart.start, $relational_Expression_LeftPart.stop);}
-        |   unary_Boolean_Expression {notifyErrorListeners($op, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota logická.\n- Na pravé straně operátoru byla nalezena hodnota logická.", "'|', '&', '=', '!='", null);}
+        |   unary_Boolean_Expression {notifyErrorListeners($op, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota logická.\n- Na pravé straně operátoru byla nalezena hodnota logická.", "'||', '&&', '=', '!='", null);}
         |   string_Expression {notifyErrorListeners($op, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota logická.\n- Na pravé straně operátoru byla nalezena hodnota řetězcová.", "'+'", null);}
         |   array_Expression {notifyErrorListeners($op, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota logická.\n- Na pravé straně operátoru byla nalezena hodnota v podobě pole.", null, null);}
         |   NULL_LITERAL {notifyErrorListeners($op, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota logická.\n- Na pravé straně operátoru byla nalezena hodnota null.", null, null);}
@@ -1387,10 +1375,10 @@ additive_Expression_LeftPart returns [Double value]
             String errorHeader = "Operátor '" + $MINUS.text + "' (odčítání) lze použít pouze v kombinaci s číselnými hodnotami.";
         } (
             multiplicative_Expression {ruleNotifyErrorListeners(errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota logická.", "číselná hodnota", $unary_Boolean_Expression.start, $unary_Boolean_Expression.stop);}
-        |   unary_Boolean_Expression {notifyErrorListeners($MINUS, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota logická.\n- Na pravé straně operátoru byla nalezena hodnota logická.", "'|', '&', '=', '!='", null);}
+        |   unary_Boolean_Expression {notifyErrorListeners($MINUS, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota logická.\n- Na pravé straně operátoru byla nalezena hodnota logická.", "'||', '&&', '=', '!='", null);}
         |   atomic_String_Expression {notifyErrorListeners($MINUS, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota logická.\n- Na pravé straně operátoru byla nalezena hodnota řetězcová.\nLogickou hodnotu však lze s řetězcovou hodnotou spojit operátorem '+'.", "'+'", null);}
         |   array_Expression {notifyErrorListeners($MINUS, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota logická.\n- Na pravé straně operátoru byla nalezena hodnota v podobě pole.", null, null);}
-        |   unknownTypeValue {notifyErrorListeners($MINUS, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota logická.", "'|', '&', '=', '!=', '+'", null);}
+        |   unknownTypeValue {notifyErrorListeners($MINUS, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota logická.", "'||', '&&', '=', '!=', '+'", null);}
         |   numericOrString_Expression_WithParetheses {notifyErrorListeners($MINUS, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota logická.", "'+', nebo číselná hodnota na levé straně", null);}
         |   NULL_LITERAL {notifyErrorListeners($MINUS, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota logická.\n- Na pravé straně operátoru byla nalezena hodnota null.", null, null);}
         |   {
@@ -1442,7 +1430,7 @@ additive_Expression_LeftPart returns [Double value]
                 notifyErrorListenersOnPointAfter("Chybí číselná hodnota na pravé straně operátoru '" + $MINUS.text + "'.", "číselná hodnota", $MINUS);
             }
         ) {$value = null;}
-    |   MINUS array_Expression  // Will not be used because PLUS can't exist because of the UNARY_PLUS_OR_MINUS_OPERATOR token. Leaving it here anyway....
+    |   MINUS array_Expression // Will not be used because PLUS can't exist because of the UNARY_PLUS_OR_MINUS_OPERATOR token. Leaving it here anyway....
         {
             $value = null;
             String errorHeader = "Operátor '" + $MINUS.text + "' (odčítání) lze použít pouze v kombinaci s číselnými hodnotami.";
@@ -1465,7 +1453,7 @@ additive_Expression_LeftPart returns [Double value]
                 notifyErrorListenersOnPointAfter("Chybí číselná hodnota na pravé straně operátoru '" + $MINUS.text + "'.", "číselná hodnota", $MINUS);
             }
         ) {$value = null;}
-    |   MINUS NULL_LITERAL  // Will not be used because PLUS can't exist because of the UNARY_PLUS_OR_MINUS_OPERATOR token. Leaving it here anyway....
+    |   MINUS NULL_LITERAL // Will not be used because PLUS can't exist because of the UNARY_PLUS_OR_MINUS_OPERATOR token. Leaving it here anyway....
         {
             $value = null;
             String errorHeader = "Operátor '" + $MINUS.text + "' (odčítání) lze použít pouze v kombinaci s číselnými hodnotami.";
@@ -1580,10 +1568,10 @@ multiplicative_Expression_LeftPart returns [Double value]
             String errorHeader = "Operátor '" + $op.text + "' (" + operation + ") lze použít pouze v kombinaci s číselnými hodnotami.";
         } (
             unary_Numeric_Expression {ruleNotifyErrorListeners(errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota logická.", "číselná hodnota", $unary_Boolean_Expression.start, $unary_Boolean_Expression.stop);}
-        |   unary_Boolean_Expression {notifyErrorListeners($op, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota logická.\n- Na pravé straně operátoru byla nalezena hodnota logická.", "'|', '&', '=', '!='", null);}
+        |   unary_Boolean_Expression {notifyErrorListeners($op, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota logická.\n- Na pravé straně operátoru byla nalezena hodnota logická.", "'||', '&&', '=', '!='", null);}
         |   atomic_String_Expression {notifyErrorListeners($op, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota logická.\n- Na pravé straně operátoru byla nalezena hodnota řetězcová.\nLogickou hodnotu však lze s řetězcovou hodnotou spojit operátorem '+'.", "'+'", null);}
         |   array_Expression {notifyErrorListeners($op, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota logická.\n- Na pravé straně operátoru byla nalezena hodnota v podobě pole.", null, null);}
-        |   unknownTypeValue {notifyErrorListeners($op, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota logická.", "'|', '&', '=', '!=', '+'", null);}
+        |   unknownTypeValue {notifyErrorListeners($op, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota logická.", "'||', '&&', '=', '!=', '+'", null);}
         |   numericOrString_Expression_WithParetheses {notifyErrorListeners($op, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota logická.", "'+', nebo číselná hodnota na levé straně", null);}
         |   NULL_LITERAL {notifyErrorListeners($op, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota logická.\n- Na pravé straně operátoru byla nalezena hodnota null.", null, null);}
         |   {
@@ -1669,7 +1657,7 @@ multiplicative_Expression_LeftPart returns [Double value]
                 notifyErrorListenersOnPointAfter("Chybí číselná hodnota na pravé straně operátoru '" + $op.text + "'.", "číselná hodnota", $op);
             }
         ) {$value = null;}
-    |   op=(MUL | DIV | MOD) array_Expression  // Will not be used because PLUS can't exist because of the UNARY_PLUS_OR_MINUS_OPERATOR token. Leaving it here anyway....
+    |   op=(MUL | DIV | MOD) array_Expression // Will not be used because PLUS can't exist because of the UNARY_PLUS_OR_MINUS_OPERATOR token. Leaving it here anyway....
         {
             $value = null;
             String operation = "chyba!";
@@ -1709,7 +1697,7 @@ multiplicative_Expression_LeftPart returns [Double value]
                 notifyErrorListenersOnPointAfter("Chybí číselná hodnota na pravé straně operátoru '" + $op.text + "'.", "číselná hodnota", $op);
             }
         ) {$value = null;}
-    |   op=(MUL | DIV | MOD) NULL_LITERAL  // Will not be used because PLUS can't exist because of the UNARY_PLUS_OR_MINUS_OPERATOR token. Leaving it here anyway....
+    |   op=(MUL | DIV | MOD) NULL_LITERAL // Will not be used because PLUS can't exist because of the UNARY_PLUS_OR_MINUS_OPERATOR token. Leaving it here anyway....
         {
             $value = null;
             String operation = "chyba!";

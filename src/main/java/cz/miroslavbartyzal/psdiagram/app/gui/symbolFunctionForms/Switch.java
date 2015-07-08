@@ -11,6 +11,7 @@ import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditManager;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.ConstantFilter;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.VariableFilter;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
+import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.MaxBalloonSizeCallback;
 import java.awt.Dimension;
 import java.awt.LayoutManager;
 import java.util.LinkedHashMap;
@@ -35,6 +36,7 @@ public final class Switch extends AbstractSymbolFunctionForm
     private final Symbol mySymbol = EnumSymbol.SWITCH.getInstance(null);
     private JTextField[] jTextFieldSegments;
     private final SwitchValidationListener validationListener = new SwitchValidationListener();
+    private final MaxBalloonSizeCallback maxBalloonSizeCallback;
 
     /**
      * Konstruktor, inicializující tento formulář.
@@ -42,10 +44,13 @@ public final class Switch extends AbstractSymbolFunctionForm
      * @param element element, kterého se tento formulář týká
      * @param flowchartEditManager FlowchartEditManager, spravující editační
      * režim aplikace
+     * @param maxBalloonSizeCallback
      */
-    public Switch(LayoutElement element, FlowchartEditManager flowchartEditManager)
+    public Switch(LayoutElement element, FlowchartEditManager flowchartEditManager,
+            MaxBalloonSizeCallback maxBalloonSizeCallback)
     {
         super(element, flowchartEditManager);
+        this.maxBalloonSizeCallback = maxBalloonSizeCallback;
         /*
          * jLabelDescription = new JLabel("<html>"
          * + "- řízení toku programu na<br />základě rovnosti vstupního<br
@@ -85,7 +90,8 @@ public final class Switch extends AbstractSymbolFunctionForm
         }
 
         ((AbstractDocument) jTextFieldConditionVar.getDocument()).setDocumentFilter(
-                new VariableFilter(jTextFieldConditionVar, validationListener));
+                new VariableFilter(jTextFieldConditionVar, validationListener,
+                        maxBalloonSizeCallback));
         AbstractSymbolFunctionForm.enhanceWithUndoRedoCapability(jTextFieldConditionVar);
         addDocumentListeners();
         super.trimSize();
@@ -297,6 +303,12 @@ public final class Switch extends AbstractSymbolFunctionForm
         super.fireChangeEventToEditManager();
     }
 
+    @Override
+    public JTextField getJTextFieldToDispatchKeyEventsAt()
+    {
+        return jTextFieldConditionVar;
+    }
+
     private class JPanelSegments extends javax.swing.JPanel
     {
 
@@ -326,7 +338,8 @@ public final class Switch extends AbstractSymbolFunctionForm
                 jTextFieldSegments[i].setAlignmentX(0);
                 jTextFieldSegments[i].setFont(SettingsHolder.CODEFONT);
                 ((AbstractDocument) jTextFieldSegments[i].getDocument()).setDocumentFilter(
-                        new ConstantFilter(jTextFieldSegments[i], validationListener));
+                        new ConstantFilter(jTextFieldSegments[i], validationListener,
+                                maxBalloonSizeCallback));
                 AbstractSymbolFunctionForm.enhanceWithUndoRedoCapability(jTextFieldSegments[i]);
                 //jTextFieldSegments[i].setBounds(0, minHeight, minWidth, jTextFieldSegments[i].getSize().height);
                 super.add(jTextFieldSegments[i]);

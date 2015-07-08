@@ -11,11 +11,14 @@ import java.awt.geom.Point2D;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
- * <p>Tato třída představuje symbol výstupní Spojky (návěští).</p>
+ * <p>
+ * Tato třída představuje symbol výstupní Spojky (návěští).</p>
  *
- * <p>Tento symbol je svým způsobem unikátní, obsahuje totiž svou vlastní
+ * <p>
+ * Tento symbol je svým způsobem unikátní, obsahuje totiž svou vlastní
  * spojnici (proměnná myHair), která se napojuje na hlavní tok segmentu
  * layoutu. Tento symbol je tedy v segmentu umístěn vždy na jeho levé straně,
  * nikoliv ve svém středu.<br />
@@ -26,10 +29,11 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name = "gotoLabel")
 @XmlAccessorType(XmlAccessType.NONE)
+@XmlType(name = "gotoLabel")
 public final class GotoLabel extends AbstractSymbol
 {
 
-    private Path2D myShape = new Path2D.Double(Path2D.WIND_NON_ZERO);
+    private final Path2D myShape = new Path2D.Double(Path2D.WIND_NON_ZERO);
     private Ellipse2D circle;
     private int myHair = 14;
 

@@ -33,14 +33,15 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
+            <version>4.12</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>org.eclipse.persistence.moxy</artifactId>
-            <version>2.5.1</version>
+            <version>2.5.2</version>
+            <!--for later versions it needs java 1.8-->
         </dependency>
 
         <dependency>
@@ -61,15 +62,15 @@
         </dependency>
 
         <dependency>
-            <groupId>cz.miroslavbartyzal</groupId>
-            <artifactId>grappa-mod</artifactId>
-            <version>1.0.4</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
             <version>4.5</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.abego.treelayout</groupId>
+                    <artifactId>org.abego.treelayout.core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
@@ -148,7 +149,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-antrun-plugin</artifactId>
-                        <version>1.7</version>
+                        <version>1.8</version>
                         <executions>
                             <execution>
                                 <id>mktemp-OPENSHIFTdir</id>
@@ -261,6 +262,7 @@
         </profile>
     </profiles>
 
+
     <build>
 
         <resources>
@@ -289,8 +291,24 @@
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.2</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>display-dependency-updates</goal>
+                            <goal>display-plugin-updates</goal>
+                            <goal>display-property-updates</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
                 <artifactId>buildnumber-maven-plugin</artifactId>
-                <version>1.2</version>
+                <version>1.3</version>
                 <executions>
                     <execution>
                         <phase>validate</phase>
@@ -413,7 +431,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>2.4</version>
+                <version>2.6</version>
                 <configuration>
                     <archive>
                         <addMavenDescriptor>false</addMavenDescriptor>
@@ -432,7 +450,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>2.2</version>
+                <version>2.4</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -480,12 +498,12 @@
             <plugin>
                 <groupId>com.github.wvengen</groupId>
                 <artifactId>proguard-maven-plugin</artifactId>
-                <version>2.0.7</version>
+                <version>2.0.10</version>
                 <dependencies>
                     <dependency>
                         <groupId>net.sf.proguard</groupId>
                         <artifactId>proguard-base</artifactId>
-                        <version>4.11</version>
+                        <version>5.2.1</version>
                         <scope>runtime</scope>
                     </dependency>
                 </dependencies>
@@ -565,6 +583,18 @@
                                         <library>true</library>
                                         <!--<filter>META-INF/ECLIPSE_.RSA,META-INF/ECLIPSE_.SF</filter> NEFUNGUJE!!!-->
                                     </inclusion>
+
+                                    <inclusion>
+                                        <groupId>org.antlr</groupId>
+                                        <artifactId>antlr4-runtime</artifactId>
+                                        <library>true</library>
+                                    </inclusion>
+
+                                    <inclusion>
+                                        <groupId>net.java.balloontip</groupId>
+                                        <artifactId>balloontip</artifactId>
+                                        <library>true</library>
+                                    </inclusion>
                                 </inclusions>
                             </assembly>
                             <!--                    <options>
@@ -574,7 +604,7 @@
                             <injar>${project.build.finalName}.jar</injar>
                             <outjar>${project.build.finalName}-obfuscated-with_dependencies.jar</outjar>
                             <outputDirectory>${project.build.directory}</outputDirectory>
-                            <proguardInclude>${basedir}/proguard.conf</proguardInclude>
+                            <proguardInclude>${basedir}/proguard.pro</proguardInclude>
                             <!--                    <libs>
                                 <lib>c:\Users\Miroslav\.m2\repository\junit\junit\4.11\junit-4.11.jar</lib>
                             </libs>-->
@@ -586,7 +616,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.7</version>
+                <version>1.8</version>
                 <executions>
                     <execution>
                         <id>delete-signature</id>

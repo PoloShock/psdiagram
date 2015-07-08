@@ -12,18 +12,21 @@ import java.util.TreeSet;
 import javax.xml.bind.annotation.*;
 
 /**
- * <p>Tato abstraktní třída reprezentuje logický segment diagramu - logickou
+ * <p>
+ * Tato abstraktní třída reprezentuje logický segment diagramu - logickou
  * jednotku, která sama dále obsahuje elementy (samotné symboly diagramu).
  * Každý element musí být obsažen právě v takovém segmentu.</p>
  *
- * <p>První segment je vždy kořenový a je uložen ve třídě Flowchart.
+ * <p>
+ * První segment je vždy kořenový a je uložen ve třídě Flowchart.
  * Segment pak obsahuje libovolný počet elementů - symbolů diagramu. Některé
  * elementy pak umožňují i vložení vlastního segmentu (například symbol
  * podmínky). Takový segment pak představuje samostatnou větev elementu,
  * kdy tento segment zároveň obsahuje i záznam o jeho rodičovském elementu -
  * elementu, který tento segment vlastní (řečený element podmínky).</p>
  *
- * <p>Třída disponuje některými základními operacemi pro manipulaci s jejími
+ * <p>
+ * Třída disponuje některými základními operacemi pro manipulaci s jejími
  * elementy, jako například přidat element, přesunout element, smazat element
  * atd., navíc obsahuje deskripci segmnetu (např. Ano/Ne/Jinak). Třída
  * zároveň implementuje rozhraní Iterable, jejími elementy tak lze standartně
@@ -32,6 +35,7 @@ import javax.xml.bind.annotation.*;
  * @author Miroslav Bartyzal (miroslavbartyzal@gmail.com)
  */
 @XmlAccessorType(XmlAccessType.NONE)
+@XmlType(name = "flowchartSegment")
 public abstract class FlowchartSegment<S extends FlowchartSegment<S, E>, E extends FlowchartElement<S, E>>
         implements Iterable<E>
 {

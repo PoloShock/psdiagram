@@ -4,6 +4,7 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters;
 
+import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.MaxBalloonSizeCallback;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.ValidationListener;
 import cz.miroslavbartyzal.psdiagram.app.parser.EnumRule;
 import javax.swing.JTextField;
@@ -20,9 +21,10 @@ public final class ConstantNumberFilter extends AbstractFilter
 
     private static final EnumRule RULE = EnumRule.LIST_OF_NUMERIC_CONSTANTS;
 
-    public ConstantNumberFilter(JTextField parentJTextField, ValidationListener validationListener)
+    public ConstantNumberFilter(JTextField parentJTextField, ValidationListener validationListener,
+            MaxBalloonSizeCallback maxBalloonSizeCallback)
     {
-        super(parentJTextField, validationListener);
+        super(parentJTextField, validationListener, maxBalloonSizeCallback);
 
         if (!parentJTextField.getText().isEmpty()) {
             super.parseInputAndUpdateGUI(parentJTextField.getText());

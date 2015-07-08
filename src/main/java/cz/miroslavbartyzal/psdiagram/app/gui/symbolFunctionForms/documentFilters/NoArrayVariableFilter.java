@@ -4,7 +4,7 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters;
 
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
+import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.MaxBalloonSizeCallback;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.ValidationListener;
 import cz.miroslavbartyzal.psdiagram.app.parser.EnumRule;
 import javax.swing.JTextField;
@@ -21,9 +21,10 @@ public final class NoArrayVariableFilter extends AbstractFilter
 
     private static final EnumRule RULE = EnumRule.NO_ARRAY_VARIABLE_TO_ASSIGN_TO;
 
-    public NoArrayVariableFilter(JTextField parentJTextField, ValidationListener validationListener)
+    public NoArrayVariableFilter(JTextField parentJTextField, ValidationListener validationListener,
+            MaxBalloonSizeCallback maxBalloonSizeCallback)
     {
-        super(parentJTextField, validationListener);
+        super(parentJTextField, validationListener, maxBalloonSizeCallback);
 
         if (!parentJTextField.getText().isEmpty()) {
             super.parseInputAndUpdateGUI(parentJTextField.getText());

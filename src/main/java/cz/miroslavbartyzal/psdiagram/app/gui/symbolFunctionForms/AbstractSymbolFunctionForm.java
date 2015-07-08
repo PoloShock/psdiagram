@@ -10,6 +10,7 @@ import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditManager;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
+import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.UndoableEditEvent;
@@ -44,6 +45,8 @@ public abstract class AbstractSymbolFunctionForm extends javax.swing.JPanel impl
     abstract void addDocumentListeners();
 
     abstract void generateValues();
+
+    public abstract JTextField getJTextFieldToDispatchKeyEventsAt();
 
     /*
      * FlowchartEditManager getFlowchartEditManager() {
@@ -173,8 +176,8 @@ public abstract class AbstractSymbolFunctionForm extends javax.swing.JPanel impl
         for (int i = 0; i < commandWithoutQ.length; i += 2) {
             // convert doublechar operators to their unicode equivalent and back so the chars that were part of the doublechars are not misclasified
             commandWithoutQ[i] = commandWithoutQ[i].replace("!=", "≠").replace(">=", "≥").replace(
-                    "<=", "≤").replace("=", "==").replace("&", "&&").replace("|", "||").replace("≠",
-                            "!=").replace("≥", ">=").replace("≤", "<=");
+                    "<=", "≤").replace("=", "==").replace("≠", "!=").replace("≥", ">=").replace("≤",
+                            "<=");
         }
 
         String cmnd = "";
@@ -199,9 +202,7 @@ public abstract class AbstractSymbolFunctionForm extends javax.swing.JPanel impl
         // v uvozovkach si nesmim vsimat niceho
         String[] commandWithoutQ = RegexFunctions.splitString(command, "\"([^\"\\\\]|\\\\.)*\"?");
         for (int i = 0; i < commandWithoutQ.length; i += 2) {
-            // convert doublechar operators to their unicode equivalent and back so the chars that were part of the doublechars are not misclasified
-            commandWithoutQ[i] = commandWithoutQ[i].replace("==", "=").replace("&&", "&").replace(
-                    "||", "|");
+            commandWithoutQ[i] = commandWithoutQ[i].replace("==", "=");
         }
 
         String cmnd = "";
@@ -226,7 +227,6 @@ public abstract class AbstractSymbolFunctionForm extends javax.swing.JPanel impl
         // v uvozovkach si nesmim vsimat niceho
         String[] commandWithoutQ = RegexFunctions.splitString(command, "\"([^\"\\\\]|\\\\.)*\"?");
         for (int i = 0; i < commandWithoutQ.length; i += 2) {
-            // convert doublechar operators to their unicode equivalent and back so the chars that were part of the doublechars are not misclasified
             commandWithoutQ[i] = commandWithoutQ[i].replace("!=", "≠").replace("!", "¬").replace(
                     ">=", "≥").replace("<=", "≤");
         }

@@ -5,6 +5,8 @@
 package cz.miroslavbartyzal.psdiagram.app.flowchart.symbols;
 
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutElement;
+import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
+import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.MaxBalloonSizeCallback;
 import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditManager;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.AbstractSymbolFunctionForm;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.BooleanValueFilter;
@@ -36,15 +38,16 @@ public enum EnumSymbol
                 @Override
                 public String getToolTipText()
                 {
-                    return "Zpracování";
+                    return "Zpracování - přiřazení hodnoty do proměnné";
                 }
 
                 @Override
                 public AbstractSymbolFunctionForm getFunctionFormInstance(LayoutElement element,
-                        FlowchartEditManager flowchartEditManager)
+                        FlowchartEditManager flowchartEditManager,
+                        MaxBalloonSizeCallback maxBalloonSizeCallback)
                 {
                     return new cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.Process(
-                            element, flowchartEditManager);
+                            element, flowchartEditManager, maxBalloonSizeCallback);
                 }
 
                 @Override
@@ -106,6 +109,29 @@ public enum EnumSymbol
                     return commands.get("var") != null && !commands.get("var").matches("\\s*")
                     && commands.get("value") != null && !commands.get("value").matches("\\s*");
                 }
+
+                @Override
+                public void regenerateSymbolValues(LayoutElement element)
+                {
+                    Symbol symbol = element.getSymbol();
+                    if (!(symbol instanceof Process)) {
+                        throw new IllegalArgumentException(
+                                "The symbol passed to this method should be instance of Process symbol.");
+                    }
+                    LinkedHashMap<String, String> commands = symbol.getCommands();
+                    if (commands == null || commands.isEmpty() || !commands.containsKey("var") || !commands.containsKey(
+                            "value")) {
+                        return;
+                    }
+                    String var = commands.get("var");
+                    String value = commands.get("value");
+                    if (SettingsHolder.settings.isFunctionFilters()) {
+                        var = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(var);
+                        value = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(value);
+                    }
+                    cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.Process.generateValues(
+                            symbol, var, value);
+                }
             },
     IO
             {
@@ -123,10 +149,11 @@ public enum EnumSymbol
 
                 @Override
                 public AbstractSymbolFunctionForm getFunctionFormInstance(LayoutElement element,
-                        FlowchartEditManager flowchartEditManager)
+                        FlowchartEditManager flowchartEditManager,
+                        MaxBalloonSizeCallback maxBalloonSizeCallback)
                 {
                     return new cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.IO(element,
-                            flowchartEditManager);
+                            flowchartEditManager, maxBalloonSizeCallback);
                 }
 
                 @Override
@@ -188,6 +215,36 @@ public enum EnumSymbol
                     return commands.get("var") != null && !commands.get("var").matches("\\s*")
                     || commands.get("value") != null && !commands.get("value").matches("\\s*");
                 }
+
+                @Override
+                public void regenerateSymbolValues(LayoutElement element)
+                {
+                    Symbol symbol = element.getSymbol();
+                    if (!(symbol instanceof IO)) {
+                        throw new IllegalArgumentException(
+                                "The symbol passed to this method should be instance of IO symbol.");
+                    }
+                    LinkedHashMap<String, String> commands = symbol.getCommands();
+                    if (commands == null || commands.isEmpty() || !commands.containsKey("var") && !commands.containsKey(
+                            "value")) {
+                        return;
+                    }
+                    if (commands.containsKey("var")) {
+                        String var = commands.get("var");
+                        if (SettingsHolder.settings.isFunctionFilters()) {
+                            var = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(var);
+                        }
+                        cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.IO.generateIValues(
+                                symbol, var);
+                    } else {
+                        String value = commands.get("value");
+                        if (SettingsHolder.settings.isFunctionFilters()) {
+                            value = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(value);
+                        }
+                        cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.IO.generateOValues(
+                                symbol, value);
+                    }
+                }
             },
     DECISION
             {
@@ -205,10 +262,11 @@ public enum EnumSymbol
 
                 @Override
                 public AbstractSymbolFunctionForm getFunctionFormInstance(LayoutElement element,
-                        FlowchartEditManager flowchartEditManager)
+                        FlowchartEditManager flowchartEditManager,
+                        MaxBalloonSizeCallback maxBalloonSizeCallback)
                 {
                     return new cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.Decision(
-                            element, flowchartEditManager);
+                            element, flowchartEditManager, maxBalloonSizeCallback);
                 }
 
                 @Override
@@ -265,6 +323,26 @@ public enum EnumSymbol
                     return commands.get("condition") != null && !commands.get("condition").matches(
                             "\\s*");
                 }
+
+                @Override
+                public void regenerateSymbolValues(LayoutElement element)
+                {
+                    Symbol symbol = element.getSymbol();
+                    if (!(symbol instanceof Decision)) {
+                        throw new IllegalArgumentException(
+                                "The symbol passed to this method should be instance of Decision symbol.");
+                    }
+                    LinkedHashMap<String, String> commands = symbol.getCommands();
+                    if (commands == null || commands.isEmpty() || !commands.containsKey("condition")) {
+                        return;
+                    }
+                    String condition = commands.get("condition");
+                    if (SettingsHolder.settings.isFunctionFilters()) {
+                        condition = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(condition);
+                    }
+                    cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.Decision.generateValues(
+                            symbol, condition);
+                }
             },
     SWITCH
             {
@@ -282,10 +360,11 @@ public enum EnumSymbol
 
                 @Override
                 public AbstractSymbolFunctionForm getFunctionFormInstance(LayoutElement element,
-                        FlowchartEditManager flowchartEditManager)
+                        FlowchartEditManager flowchartEditManager,
+                        MaxBalloonSizeCallback maxBalloonSizeCallback)
                 {
                     return new cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.Switch(
-                            element, flowchartEditManager);
+                            element, flowchartEditManager, maxBalloonSizeCallback);
                 }
 
                 @Override
@@ -354,6 +433,40 @@ public enum EnumSymbol
                         return false;
                     }
                 }
+
+                @Override
+                public void regenerateSymbolValues(LayoutElement element)
+                {
+                    Symbol symbol = element.getSymbol();
+                    if (!(symbol instanceof Switch)) {
+                        throw new IllegalArgumentException(
+                                "The symbol passed to this method should be instance of Switch symbol.");
+                    }
+                    LinkedHashMap<String, String> commands = symbol.getCommands();
+                    if (commands == null || commands.isEmpty() || !commands.containsKey(
+                            "conditionVar")) {
+                        return;
+                    }
+                    String[] segmentConstants = new String[element.getInnerSegmentsCount() - 1];
+                    for (int i = 1; i < element.getInnerSegmentsCount(); i++) {
+                        if (!commands.containsKey("" + i)) {
+                            return;
+                        } else {
+                            segmentConstants[i - 1] = commands.get("" + i);
+                            if (SettingsHolder.settings.isFunctionFilters()) {
+                                segmentConstants[i - 1] = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(
+                                        segmentConstants[i - 1]);
+                            }
+                        }
+                    }
+                    String conditionVar = commands.get("conditionVar");
+                    if (SettingsHolder.settings.isFunctionFilters()) {
+                        conditionVar = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(
+                                conditionVar);
+                    }
+                    cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.Switch.generateValues(
+                            element, conditionVar, segmentConstants);
+                }
             },
     FOR
             {
@@ -371,10 +484,11 @@ public enum EnumSymbol
 
                 @Override
                 public AbstractSymbolFunctionForm getFunctionFormInstance(LayoutElement element,
-                        FlowchartEditManager flowchartEditManager)
+                        FlowchartEditManager flowchartEditManager,
+                        MaxBalloonSizeCallback maxBalloonSizeCallback)
                 {
                     return new cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.For(element,
-                            flowchartEditManager);
+                            flowchartEditManager, maxBalloonSizeCallback);
                 }
 
                 @Override
@@ -454,6 +568,45 @@ public enum EnumSymbol
                     && commands.get("inc") != null && !commands.get("inc").matches("\\s*"))
                     || (commands.get("array") != null && !commands.get("array").matches("\\s*")));
                 }
+
+                @Override
+                public void regenerateSymbolValues(LayoutElement element)
+                {
+                    Symbol symbol = element.getSymbol();
+                    if (!(symbol instanceof For)) {
+                        throw new IllegalArgumentException(
+                                "The symbol passed to this method should be instance of For symbol.");
+                    }
+                    LinkedHashMap<String, String> commands = symbol.getCommands();
+                    if (commands == null || commands.isEmpty() || !commands.containsKey("var") || !commands.containsKey(
+                            "array") && (!commands.containsKey("from") || !commands.containsKey("to") || !commands.containsKey(
+                            "inc"))) {
+                        return;
+                    }
+                    if (commands.containsKey("array")) {
+                        String var = commands.get("var");
+                        String array = commands.get("array");
+                        if (SettingsHolder.settings.isFunctionFilters()) {
+                            var = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(var);
+                            array = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(array);
+                        }
+                        cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.For.generateForeachValues(
+                                symbol, var, array);
+                    } else {
+                        String var = commands.get("var");
+                        String from = commands.get("from");
+                        String to = commands.get("to");
+                        String inc = commands.get("conditionVar");
+                        if (SettingsHolder.settings.isFunctionFilters()) {
+                            var = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(var);
+                            from = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(from);
+                            to = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(to);
+                            inc = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(inc);
+                        }
+                        cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.For.generateForValues(
+                                symbol, var, from, to, inc);
+                    }
+                }
             },
     LOOPCONDITIONUP
             {
@@ -471,11 +624,12 @@ public enum EnumSymbol
 
                 @Override
                 public AbstractSymbolFunctionForm getFunctionFormInstance(LayoutElement element,
-                        FlowchartEditManager flowchartEditManager)
+                        FlowchartEditManager flowchartEditManager,
+                        MaxBalloonSizeCallback maxBalloonSizeCallback)
                 {
                     if (element.getSymbol().isOverHang()) {
                         return new cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.LoopStart(
-                                element, flowchartEditManager);
+                                element, flowchartEditManager, maxBalloonSizeCallback);
                     } else {
                         return null; // pripadne jen popis
                     }
@@ -538,6 +692,26 @@ public enum EnumSymbol
                     return commands.get("condition") != null && !commands.get("condition").matches(
                             "\\s*");
                 }
+
+                @Override
+                public void regenerateSymbolValues(LayoutElement element)
+                {
+                    Symbol symbol = element.getSymbol();
+                    if (!(symbol instanceof LoopStart)) {
+                        throw new IllegalArgumentException(
+                                "The symbol passed to this method should be instance of LoopStart symbol.");
+                    }
+                    LinkedHashMap<String, String> commands = symbol.getCommands();
+                    if (commands == null || commands.isEmpty() || !commands.containsKey("condition")) {
+                        return;
+                    }
+                    String condition = commands.get("condition");
+                    if (SettingsHolder.settings.isFunctionFilters()) {
+                        condition = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(condition);
+                    }
+                    cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.LoopStart.generateValues(
+                            symbol, condition);
+                }
             },
     LOOPCONDITIONDOWN
             {
@@ -555,15 +729,15 @@ public enum EnumSymbol
 
                 @Override
                 public AbstractSymbolFunctionForm getFunctionFormInstance(LayoutElement element,
-                        FlowchartEditManager flowchartEditManager)
+                        FlowchartEditManager flowchartEditManager,
+                        MaxBalloonSizeCallback maxBalloonSizeCallback)
                 {
                     for (int i = element.getParentSegment().indexOfElement(element) - 1; i >= 0; i--) {
                         LayoutElement pairElement = element.getParentSegment().getElement(i);
                         if (pairElement.getSymbol() instanceof LoopStart) {
                             if (!pairElement.getSymbol().isOverHang()) {
                                 return new cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.LoopEnd(
-                                        element,
-                                        flowchartEditManager);
+                                        element, flowchartEditManager, maxBalloonSizeCallback);
                             } else {
                                 return null; // pripadne jen popis
                             }
@@ -634,6 +808,26 @@ public enum EnumSymbol
                     return commands.get("condition") != null && !commands.get("condition").matches(
                             "\\s*");
                 }
+
+                @Override
+                public void regenerateSymbolValues(LayoutElement element)
+                {
+                    Symbol symbol = element.getSymbol();
+                    if (!(symbol instanceof LoopEnd)) {
+                        throw new IllegalArgumentException(
+                                "The symbol passed to this method should be instance of LoopEnd symbol.");
+                    }
+                    LinkedHashMap<String, String> commands = symbol.getCommands();
+                    if (commands == null || commands.isEmpty() || !commands.containsKey("condition")) {
+                        return;
+                    }
+                    String condition = commands.get("condition");
+                    if (SettingsHolder.settings.isFunctionFilters()) {
+                        condition = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(condition);
+                    }
+                    cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.LoopEnd.generateValues(
+                            symbol, condition);
+                }
             },
     COMMENT
             {
@@ -651,7 +845,8 @@ public enum EnumSymbol
 
                 @Override
                 public AbstractSymbolFunctionForm getFunctionFormInstance(LayoutElement element,
-                        FlowchartEditManager flowchartEditManager)
+                        FlowchartEditManager flowchartEditManager,
+                        MaxBalloonSizeCallback maxBalloonSizeCallback)
                 {
                     return null;
                 }
@@ -684,6 +879,16 @@ public enum EnumSymbol
 
                     return true;
                 }
+
+                @Override
+                public void regenerateSymbolValues(LayoutElement element)
+                {
+                    Symbol symbol = element.getSymbol();
+                    if (!(symbol instanceof Comment)) {
+                        throw new IllegalArgumentException(
+                                "The symbol passed to this method should be instance of Comment symbol.");
+                    }
+                }
             },
     SUBROUTINE
             {
@@ -701,7 +906,8 @@ public enum EnumSymbol
 
                 @Override
                 public AbstractSymbolFunctionForm getFunctionFormInstance(LayoutElement element,
-                        FlowchartEditManager flowchartEditManager)
+                        FlowchartEditManager flowchartEditManager,
+                        MaxBalloonSizeCallback maxBalloonSizeCallback)
                 {
                     return null;
                 }
@@ -734,6 +940,16 @@ public enum EnumSymbol
 
                     return true;
                 }
+
+                @Override
+                public void regenerateSymbolValues(LayoutElement element)
+                {
+                    Symbol symbol = element.getSymbol();
+                    if (!(symbol instanceof SubRoutine)) {
+                        throw new IllegalArgumentException(
+                                "The symbol passed to this method should be instance of SubRoutine symbol.");
+                    }
+                }
             },
     GOTO
             {
@@ -751,10 +967,11 @@ public enum EnumSymbol
 
                 @Override
                 public AbstractSymbolFunctionForm getFunctionFormInstance(LayoutElement element,
-                        FlowchartEditManager flowchartEditManager)
+                        FlowchartEditManager flowchartEditManager,
+                        MaxBalloonSizeCallback maxBalloonSizeCallback)
                 {
                     return new cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.Goto(
-                            element, flowchartEditManager);
+                            element, flowchartEditManager, maxBalloonSizeCallback);
                 }
 
                 @Override
@@ -785,6 +1002,34 @@ public enum EnumSymbol
 
                     return true;
                 }
+
+                @Override
+                public void regenerateSymbolValues(LayoutElement element)
+                {
+                    Symbol symbol = element.getSymbol();
+                    if (!(symbol instanceof Goto)) {
+                        throw new IllegalArgumentException(
+                                "The symbol passed to this method should be instance of Goto symbol.");
+                    }
+                    LinkedHashMap<String, String> commands = symbol.getCommands();
+                    if (commands == null || commands.isEmpty() || !commands.containsKey("mode")) {
+                        return;
+                    }
+                    switch (commands.get("mode")) {
+                        case "break":
+                            cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.Goto.generateBreakValues(
+                                    symbol);
+                            break;
+                        case "continue":
+                            cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.Goto.generateContinueValues(
+                                    symbol);
+                            break;
+                        case "goto":
+                            cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.Goto.generateGotoValues(
+                                    symbol);
+                            break;
+                    }
+                }
             },
     GOTOLABEL
             {
@@ -802,10 +1047,11 @@ public enum EnumSymbol
 
                 @Override
                 public AbstractSymbolFunctionForm getFunctionFormInstance(LayoutElement element,
-                        FlowchartEditManager flowchartEditManager)
+                        FlowchartEditManager flowchartEditManager,
+                        MaxBalloonSizeCallback maxBalloonSizeCallback)
                 {
                     return new cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.GotoLabel(
-                            element, flowchartEditManager);
+                            element, flowchartEditManager, maxBalloonSizeCallback);
                 }
 
                 @Override
@@ -836,6 +1082,16 @@ public enum EnumSymbol
 
                     return true;
                 }
+
+                @Override
+                public void regenerateSymbolValues(LayoutElement element)
+                {
+                    Symbol symbol = element.getSymbol();
+                    if (!(symbol instanceof GotoLabel)) {
+                        throw new IllegalArgumentException(
+                                "The symbol passed to this method should be instance of GotoLabel symbol.");
+                    }
+                }
             },
     STARTEND
             {
@@ -853,7 +1109,8 @@ public enum EnumSymbol
 
                 @Override
                 public AbstractSymbolFunctionForm getFunctionFormInstance(LayoutElement element,
-                        FlowchartEditManager flowchartEditManager)
+                        FlowchartEditManager flowchartEditManager,
+                        MaxBalloonSizeCallback maxBalloonSizeCallback)
                 {
                     return null;
                 }
@@ -886,6 +1143,16 @@ public enum EnumSymbol
 
                     return true;
                 }
+
+                @Override
+                public void regenerateSymbolValues(LayoutElement element)
+                {
+                    Symbol symbol = element.getSymbol();
+                    if (!(symbol instanceof StartEnd)) {
+                        throw new IllegalArgumentException(
+                                "The symbol passed to this method should be instance of StartEnd symbol.");
+                    }
+                }
             },
     ELLIPSIS
             {
@@ -898,12 +1165,13 @@ public enum EnumSymbol
                 @Override
                 public String getToolTipText()
                 {
-                    return "Výpustka";
+                    return "Výpustka - doslova pár teček";
                 }
 
                 @Override
                 public AbstractSymbolFunctionForm getFunctionFormInstance(LayoutElement element,
-                        FlowchartEditManager flowchartEditManager)
+                        FlowchartEditManager flowchartEditManager,
+                        MaxBalloonSizeCallback maxBalloonSizeCallback)
                 {
                     return null;
                 }
@@ -936,6 +1204,16 @@ public enum EnumSymbol
 
                     return true;
                 }
+
+                @Override
+                public void regenerateSymbolValues(LayoutElement element)
+                {
+                    Symbol symbol = element.getSymbol();
+                    if (!(symbol instanceof Ellipsis)) {
+                        throw new IllegalArgumentException(
+                                "The symbol passed to this method should be instance of Ellipsis symbol.");
+                    }
+                }
             };
 
     /**
@@ -967,14 +1245,18 @@ public enum EnumSymbol
      * @param element element, jemuž grafické rozhraní má náležet
      * @param flowchartEditManager instance EditManageru, která má s grafickým
      * rozhraním funkcí interaktovat
+     * @param maxBalloonSizeCallback
      * @return grafické rozhraní nastavení funkce symbolu
      */
     public abstract AbstractSymbolFunctionForm getFunctionFormInstance(LayoutElement element,
-            FlowchartEditManager flowchartEditManager);
+            FlowchartEditManager flowchartEditManager,
+            MaxBalloonSizeCallback maxBalloonSizeCallback);
 
     public abstract boolean areCommandsValid(Symbol symbol);
 
     public abstract boolean areAllCommandsPresent(LayoutElement element);
+
+    public abstract void regenerateSymbolValues(LayoutElement element);
 
     /**
      * Vrací instanci této enumerační třídy, která reprezentuje symbol

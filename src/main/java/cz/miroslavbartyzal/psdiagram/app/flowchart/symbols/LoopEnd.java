@@ -8,6 +8,7 @@ import java.awt.geom.Path2D;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Tato třída představuje symbol konce cyklu. Tento symbol je vždy spárován se
@@ -17,10 +18,11 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name = "loopEnd")
 @XmlAccessorType(XmlAccessType.NONE)
+@XmlType(name = "loopEnd")
 public final class LoopEnd extends AbstractSymbol
 {
 
-    private Path2D myShape = new Path2D.Double(Path2D.WIND_NON_ZERO, 6);
+    private final Path2D myShape = new Path2D.Double(Path2D.WIND_NON_ZERO, 6);
 
     /**
      * Základní kontruktor této třídy. Vytvoří instanci konce cyklu s prázdným

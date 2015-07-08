@@ -10,7 +10,7 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.gui;
 
-import cz.miroslavbartyzal.psdiagram.app.edit.FlowchartCrashRecovery;
+import cz.miroslavbartyzal.psdiagram.app.recovery.FlowchartCrashRecovery;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.Flowchart;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.EnumLayout;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.Layout;
@@ -35,8 +35,10 @@ import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditUndoManager;
 import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartOverlookManager;
 import cz.miroslavbartyzal.psdiagram.app.global.GlobalFunctions;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
+import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.MaxBalloonSizeCallback;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.AbstractSymbolFunctionForm;
 import cz.miroslavbartyzal.psdiagram.app.network.TimeCollector;
+import cz.miroslavbartyzal.psdiagram.app.recovery.FlowchartRecovery;
 import cz.miroslavbartyzal.psdiagram.app.update.Updater;
 import java.awt.Color;
 import java.awt.Component;
@@ -72,6 +74,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
@@ -107,6 +110,7 @@ import org.freehep.graphicsio.pdf.PDFGraphics2D;
 public final class MainWindow extends javax.swing.JFrame
 {
 
+    private final String WINDOW_TITLE = "PS Diagram"; // BEWARE OF CHANGE - updater is using it for process identification
     private Layout layout;
     private boolean editMode = true;
     private boolean animationMode = false;
@@ -124,7 +128,6 @@ public final class MainWindow extends javax.swing.JFrame
     private final JFrameAbout jFrameAbout;
     private final JFrameUpdate jFrameUpdate;
     private static final JAXBContext jAXBcontext = createJAXBContext();
-    private final String windowTitle = "PS Diagram"; // BEWARE OF CHANGE - updater is using it for process identification
     private static boolean forceUpdate = false;
     private Long daysLeft;
     private final FlowchartCrashRecovery flowchartCrashRecovery;
@@ -444,51 +447,12 @@ public final class MainWindow extends javax.swing.JFrame
         } catch (JAXBException ex) {
             ex.printStackTrace(System.err);
         }
-        flowchartCrashRecovery = new FlowchartCrashRecovery(layout, new File(
-                SettingsHolder.WORKING_DIR, "tmp.xml"), jAXBmarshaller);
+        flowchartCrashRecovery = new FlowchartCrashRecovery(layout, jAXBmarshaller);
 
         editMode = !editMode;
         setEditMode(!editMode);
 
-        boolean dontSaveDirectly = SettingsHolder.settings.isDontSaveDirectly();
-        if (flowchartCrashRecovery.fileToSaveTo.exists()) {
-            File f = SettingsHolder.settings.getActualFlowchartFile();
-            openDiagram(flowchartCrashRecovery.fileToSaveTo);
-            SettingsHolder.settings.setActualFlowchartFile(f);
-            updateTitle();
-            super.setTitle(super.getTitle() + " (zotaveno)");
-            if (f != null) {
-                try {
-                    Flowchart<LayoutSegment, LayoutElement> currentFlowchart = layout.getFlowchart();
-                    Flowchart<LayoutSegment, LayoutElement> savedFlowchart = GlobalFunctions.unsafeCast(
-                            getJAXBcontext().createUnmarshaller().unmarshal(f));
-                    layout.setFlowchart(savedFlowchart);
-                    flowchartCrashRecovery.updateSavedFlowchart();
-                    layout.setFlowchart(currentFlowchart);
-                    flowchartCrashRecovery.backupFlowchart();
-                } catch (JAXBException ex) {
-                    ex.printStackTrace(System.err);
-                }
-            } else {
-                flowchartCrashRecovery.updateSavedFlowchart();
-            }
-            setStatusText("Diagram byl po neočekávaném ukončení aplikace úspěšně zotaven.", 8000);
-        } else if (SettingsHolder.settings.getActualFlowchartFile() != null) {
-            openDiagram(SettingsHolder.settings.getActualFlowchartFile());
-        }
-        SettingsHolder.settings.setDontSaveDirectly(dontSaveDirectly); // we want to preserve that setting
-
-        // open the flowchart we recieved via constructor parameter
-        SwingUtilities.invokeLater(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                if (flowchartToOpen != null) {
-                    openDiagram(flowchartToOpen);
-                }
-            }
-        });
+        startupFlowchartLoad(flowchartToOpen);
 
         updater.loadInfo(null, new Updater.InfoLoadListener()
         {
@@ -561,6 +525,66 @@ public final class MainWindow extends javax.swing.JFrame
                 }
             }
         });
+    }
+
+    private void startupFlowchartLoad(File flowchartToOpen)
+    {
+        boolean dontSaveDirectly = SettingsHolder.settings.isDontSaveDirectly();
+        if (flowchartCrashRecovery.isFlowchartRestorationAvailable()) {
+            List<File> recoveryFiles = flowchartCrashRecovery.getFilesToRestore();
+            File recoveryFile = recoveryFiles.get(0);
+            try {
+                FlowchartRecovery flowchartRecovery = GlobalFunctions.unsafeCast(
+                        getJAXBcontext().createUnmarshaller().unmarshal(recoveryFile));
+                openDiagram(flowchartRecovery.flowchart, flowchartRecovery.actualFlowchartFile);
+                SettingsHolder.settings.setDontSaveDirectly(flowchartRecovery.dontSaveDirectly); // we want to preserve that setting (there could be library algorithm opened)
+                flowchartCrashRecovery.realocateBackupFile(recoveryFile.getName());
+                updateTitle();
+                super.setTitle(super.getTitle() + " (zotaveno)");
+                setStatusText("Diagram byl po neočekávaném ukončení aplikace úspěšně zotaven.", 8000);
+            } catch (JAXBException ex) {
+                ex.printStackTrace(System.err);
+            }
+
+            String args[];
+            if (flowchartToOpen != null) {
+                args = new String[]{"\"" + flowchartToOpen.getAbsolutePath() + "\""};
+            } else {
+                args = new String[0];
+            }
+            if (recoveryFiles.size() > 1 || flowchartToOpen != null) {
+                // load the rest of the files to be restored and flowchart from commandline too (if present)
+                runAnotherInstance(args);
+            }
+        } else if (flowchartToOpen != null) {
+            // open the flowchart we recieved via constructor parameter
+            openDiagram(flowchartToOpen);
+        } else if (SettingsHolder.settings.isLoadLastFlowchart() && SettingsHolder.settings.getActualFlowchartFile() != null) {
+            openDiagram(SettingsHolder.settings.getActualFlowchartFile());
+            SettingsHolder.settings.setDontSaveDirectly(dontSaveDirectly); // we want to preserve that setting (there could be library algorithm opened)
+        }
+    }
+
+    private void runAnotherInstance(String args[])
+    {
+        try {
+            String command;
+            if (SettingsHolder.JAVAW == null) {
+                command = "start \"" + WINDOW_TITLE + "\" /d \"" + SettingsHolder.MY_DIR.getAbsolutePath() + "\""
+                        + " \"" + SettingsHolder.MY_FILE.getAbsolutePath() + "\"";
+            } else {
+                command = "start \"" + WINDOW_TITLE + "\" /d \"" + SettingsHolder.MY_DIR.getAbsolutePath() + "\""
+                        + " \"" + SettingsHolder.JAVAW.getAbsolutePath() + "\""
+                        + " -jar \"" + SettingsHolder.MY_FILE.getAbsolutePath() + "\"";
+            }
+            for (String arg : args) {
+                command += " \"" + arg + "\"";
+            }
+            Runtime.getRuntime().exec(new String[]{"cmd", "/s", "/c",
+                "\"" + command + "\""});
+        } catch (IOException ex) {
+            ex.printStackTrace(System.err);
+        }
     }
 
     /**
@@ -659,7 +683,7 @@ public final class MainWindow extends javax.swing.JFrame
         jMenuItemAbout = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        setTitle(windowTitle);
+        setTitle(WINDOW_TITLE);
         setIconImages(Arrays.asList(
             java.awt.Toolkit.getDefaultToolkit().createImage(getClass().getResource("/img/icon_16.png")),
             java.awt.Toolkit.getDefaultToolkit().createImage(getClass().getResource("/img/icon_32.png")),
@@ -1506,8 +1530,8 @@ public final class MainWindow extends javax.swing.JFrame
         flowchartEditManager.resetUndoManager();
         jPanelDiagram.repaint();
         SettingsHolder.settings.setActualFlowchartFile(null);
-        updateTitle();
         flowchartCrashRecovery.updateSavedFlowchart();
+        updateTitle();
     }//GEN-LAST:event_jMenuItemNewActionPerformed
 
     private void jMenuItemSaveAsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemSaveAsActionPerformed
@@ -1526,9 +1550,9 @@ public final class MainWindow extends javax.swing.JFrame
 
                 SettingsHolder.settings.setDontSaveDirectly(false);
                 SettingsHolder.settings.setActualFlowchartFile(file);
+                flowchartCrashRecovery.updateSavedFlowchart();
                 updateTitle();
 
-                flowchartCrashRecovery.updateSavedFlowchart();
                 setStatusText(
                         "Diagram byl úspěšně uložen do " + SettingsHolder.settings.getActualFlowchartFile().getPath(),
                         3500);
@@ -1562,7 +1586,6 @@ public final class MainWindow extends javax.swing.JFrame
     }//GEN-LAST:event_jMenuItemCodeImportActionPerformed
 
     private void jMenuItemCodeExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemCodeExportActionPerformed
-        outterLoop:
         for (LayoutSegment segment : layout.getFlowchart()) {
             if (segment != null) {
                 for (LayoutElement element : segment) {
@@ -2294,12 +2317,12 @@ public final class MainWindow extends javax.swing.JFrame
     private static JAXBContext createJAXBContext()
     {
         try {
-            return JAXBContext.newInstance(Flowchart.class, LayoutSegment.class, LayoutElement.class,
-                    Comment.class, Decision.class, Ellipsis.class, For.class, Goto.class,
-                    GotoLabel.class, IO.class, LoopEnd.class, LoopStart.class,
+            return JAXBContext.newInstance(FlowchartRecovery.class, Flowchart.class,
+                    LayoutSegment.class, LayoutElement.class, Comment.class, Decision.class,
+                    Ellipsis.class, For.class, Goto.class, GotoLabel.class, IO.class, LoopEnd.class,
+                    LoopStart.class,
                     cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Process.class,
-                    StartEnd.class, SubRoutine.class,
-                    Switch.class);
+                    StartEnd.class, SubRoutine.class, Switch.class);
         } catch (JAXBException ex) {
             ex.printStackTrace(System.err);
         }
@@ -2377,9 +2400,9 @@ public final class MainWindow extends javax.swing.JFrame
         jPanelDiagram.repaint();
 
         SettingsHolder.settings.setActualFlowchartFile(null);
+        flowchartCrashRecovery.updateSavedFlowchart();
         updateTitle();
         flowchartEditManager.revalidateSymbolCommands();
-        flowchartCrashRecovery.updateSavedFlowchart();
 
         setStatusText("Diagram byl úspěšně vygenerován ze zdrojového kódu", 8000);
         return true;
@@ -2388,10 +2411,10 @@ public final class MainWindow extends javax.swing.JFrame
     private void updateTitle()
     {
         if (SettingsHolder.settings.getActualFlowchartFile() == null) {
-            super.setTitle(windowTitle);
+            super.setTitle(WINDOW_TITLE);
         } else {
             super.setTitle(SettingsHolder.settings.getActualFlowchartFile().getName().substring(0,
-                    SettingsHolder.settings.getActualFlowchartFile().getName().length() - 4) + " - " + windowTitle);
+                    SettingsHolder.settings.getActualFlowchartFile().getName().length() - 4) + " - " + WINDOW_TITLE);
         }
     }
 
@@ -2401,31 +2424,9 @@ public final class MainWindow extends javax.swing.JFrame
             return;
         }
         try {
-            SettingsHolder.settings.setDontSaveDirectly(false);
             Flowchart<LayoutSegment, LayoutElement> flowchart = GlobalFunctions.unsafeCast(
                     getJAXBcontext().createUnmarshaller().unmarshal(file));
-
-            // prepnu do nahledoveho modu
-            if (editMode) {
-                flowchartEditManager.actionPerformed(new ActionEvent(jButtonToolEdit,
-                        jButtonToolEdit.hashCode(), "mode/editMode"));
-            } else if (animationMode) {
-                flowchartDebugManager.actionPerformed(new ActionEvent(jButtonToolAnimation,
-                        jButtonToolAnimation.hashCode(), "mode/animationMode"));
-            }
-
-            layout.setFlowchart(flowchart);
-            flowchartEditManager.resetUndoManager();
-            jPanelDiagram.repaint();
-
-            SettingsHolder.settings.setActualFlowchartFile(file);
-            updateTitle();
-            flowchartEditManager.revalidateSymbolCommands();
-
-            flowchartCrashRecovery.updateSavedFlowchart();
-            setStatusText(
-                    "Diagram " + SettingsHolder.settings.getActualFlowchartFile().getPath() + " byl úspěšně otevřen.",
-                    8000);
+            openDiagram(flowchart, file);
         } catch (JAXBException ex) {
             ex.printStackTrace(System.err);
             JOptionPane.showMessageDialog(this, "Při načítání diagramu nastala chyba!",
@@ -2435,6 +2436,35 @@ public final class MainWindow extends javax.swing.JFrame
                 SettingsHolder.settings.setActualFlowchartFile(null);
                 flowchartCrashRecovery.updateSavedFlowchart();
             }
+        }
+    }
+
+    // Do not use thi method unless you know what you are doing. openDiagram(File file) method is prefered.
+    private void openDiagram(Flowchart<LayoutSegment, LayoutElement> flowchart, File file)
+    {
+        SettingsHolder.settings.setDontSaveDirectly(false);
+        // prepnu do nahledoveho modu
+        if (editMode) {
+            flowchartEditManager.actionPerformed(new ActionEvent(jButtonToolEdit,
+                    jButtonToolEdit.hashCode(), "mode/editMode"));
+        } else if (animationMode) {
+            flowchartDebugManager.actionPerformed(new ActionEvent(jButtonToolAnimation,
+                    jButtonToolAnimation.hashCode(), "mode/animationMode"));
+        }
+
+        layout.setFlowchart(flowchart);
+        flowchartEditManager.resetUndoManager();
+        jPanelDiagram.repaint();
+
+        SettingsHolder.settings.setActualFlowchartFile(file);
+        flowchartCrashRecovery.updateSavedFlowchart();
+        updateTitle();
+        flowchartEditManager.revalidateSymbolCommands();
+
+        if (file != null) {
+            setStatusText(
+                    "Diagram " + SettingsHolder.settings.getActualFlowchartFile().getPath() + " byl úspěšně otevřen.",
+                    8000);
         }
     }
 
@@ -2481,6 +2511,18 @@ public final class MainWindow extends javax.swing.JFrame
         }
     }
 
+    public MaxBalloonSizeCallback getMaxBalloonSizeCallback()
+    {
+        return new MaxBalloonSizeCallback()
+        {
+            @Override
+            public Dimension getMaxBalloonSize()
+            {
+                return MainWindow.this.jSplitPane.getSize();
+            }
+        };
+    }
+
     private void exit()
     {
         if (!checkIfSaved(true)) {
@@ -2488,6 +2530,7 @@ public final class MainWindow extends javax.swing.JFrame
         }
         flowchartCrashRecovery.stopPolling();
         flowchartCrashRecovery.deleteBackup();
+        SettingsHolder.saveSettings(); // save settings in order to have the last PSD's settings to load back up if multiple instances were running
         System.exit(0);
     }
 

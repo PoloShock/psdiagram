@@ -8,6 +8,7 @@ import java.awt.geom.Path2D;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Tato třída představuje symbol For(each) cyklu.
@@ -16,10 +17,11 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name = "for")
 @XmlAccessorType(XmlAccessType.NONE)
+@XmlType(name = "for")
 public final class For extends AbstractSymbol
 {
 
-    private Path2D myShape = new Path2D.Double(Path2D.WIND_NON_ZERO, 6);
+    private final Path2D myShape = new Path2D.Double(Path2D.WIND_NON_ZERO, 6);
 
     private For()
     {

@@ -41,11 +41,11 @@ public final class Main
     // TODO misto blokovani syntaktickym filtrem, pouze zcervenit
     // TODO umoznit editaci vytvorenych promennych? (za behu animace)
     // TODO uvazit prebarveni pozadi animace - kouknout na to s modrym odstinem z prezentace diplomek
-    // TODO vedle exportu do obrĂˇzku a PDF, vytvoĹ™it export do HTML! :)
+    // TODO vedle exportu do obrázku a PDF, vytvořit export do HTML! :)
     // TODO dat uzivateli vedet ze pri exportu do obrazku zalezi na aktualnim zvetseni! (nebo to udelat nejak jinak)
     // TODO pridat input symbolu text, aby nebylo nutne pouzivat output symbol pro oznameni co promenna znamena..
     // TODO animace uprav layoutu
-    // TODO moznost promitani vytvoĹ™enĂ˝ch algoritmĹŻ na webu (pro pasivnĂ­ uÄŤenĂ­ a prezentaci)? - Jelinek
+    // TODO moznost promitani vytvořených algoritmů na webu (pro pasivní učení a prezentaci)? - Jelinek
     // TODO merit zakovi cas za ktery ulohu vykona, monitorovat problemy, se kterymi se setkal (co treba zachovavat vsechny stavy diagramu?) - Jelinek
     // TODO Timer, udalosti jako procedura (interrupt ÄŤi vlĂˇkno)
     // TODO mrkni na http://jelastic.com/ a na jejich barvy, maji to cool :); http://www.noip.com/, http://www.hwinfo.com/, http://dinopoloclub.com/minimetro/, http://msysgit.github.io/
@@ -70,11 +70,11 @@ public final class Main
     // TODO pridat info o poctu vykonanych prikazu po konceni algoritmu -> hezky benchmark, kriterium pro hodnoceni efektivity algoritmu :)
     // TODO mozny nazev: dialgo
     // TODO "Soubor PS_Diagram_1.3.zip se běžně nestahuje a mohl by být nebezpečný."
-    //e TODO pri spusteni vice instanci PSD, bude urcite chybne fungovat zotavovani diagramu (FlowchartCrashRecovery) -> zjistovat prislusnost na zaklade PID?; co dalsiho muze blbnout?
     //e TODO pridat dalsi watermark napovedy
     // TODO v polich pro nazev promenne nabizet jiz existujici promenne
-    //e TODO break by mel fungovat i v animaci..?
+    //e TODO break by mel fungovat i pri animaci..?
     //e TODO vytvorit vlastni priponu (.psdiagram?) kterou bude mozne asociovat s psdiagram.exe. Do nove ulozky integrovat historii vytvoreni diagramu pomoci systemtime timestampu. Undo akci do teto historie zahrnovat jako beznou akci editace. Pri nacteni diagramu by se meli nacist i undoable edits, pozor ale na ty undo akce viz predchozi veta. Otestovat, jestli asociace prezije aktualizaci (zmena psd.exe). Rozhranni pro timetravel (historie) muze pockat.
+    //      - budu pak muset upravit i podminky pro ukladani a prompty pro ulozeni diagramu - diagram Start-End jiz stoji za ukladani pokud ma historii...
     // TODO vyresit ty netransparentni stiny v pdf
     // TODO predelat nalezani otevrenych PSDcek v updateru tak, aby se hledalo podle umisteni souboru a ne podle titulku jeho okna (POZOR: co kdyz to bude bezet z jineho JVMka, bude porad cesta k psd.jar nejak vyhledatelna?)
     // TODO co se deje pri pole = [1, 2, 4][8, 9, 8]??
@@ -93,8 +93,6 @@ public final class Main
     // TODO aktualizovat subprocess handling podle clanku: http://zeroturnaround.com/rebellabs/how-to-deal-with-subprocesses-in-java/
     // TODO krasne javadoc tipy: http://zeroturnaround.com/rebellabs/reasons-tips-and-tricks-for-better-java-documentation/
     // TODO zahrnout do parsovani i promenne a jejich typy na zaklade operaci s nimi - tim se zbavit nekonzistence v zakazu ciselne hodnoty jako logicke, kdyz to pritom javascript dovoluje - if(1)
-    //! TODO zmenit koncepci z & na && (| na || taky) -> at pak nevznikaji zmatene situaci pri prechodu na jiny prog. jazyk
-    //! TODO kdyz ze zotavi diagram a pak ho hned bezezmneny zase zavru, uz se neobnovi!?
     // TODO implementovat escapovani \n\r\t... (\" a \' uz mam implementovane) uvnitr stringu do/z pascalu
     //      - http://www.textfiles.com/bitsavers/pdf/borland/TURBO_Pascal_Reference_Manual_CPM_Version_3_Dec88.pdf
     //      - ftp://ftp.freepascal.org/fpc/docs-pdf/ref.pdf

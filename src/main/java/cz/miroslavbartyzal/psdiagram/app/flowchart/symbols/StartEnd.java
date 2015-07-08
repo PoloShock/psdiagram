@@ -10,6 +10,7 @@ import java.awt.geom.PathIterator;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Tato třída představuje symbol mezní značky.
@@ -18,10 +19,11 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name = "startEnd")
 @XmlAccessorType(XmlAccessType.NONE)
+@XmlType(name = "startEnd")
 public final class StartEnd extends AbstractSymbol
 {
 
-    private Path2D myShape = new Path2D.Double(Path2D.WIND_NON_ZERO);
+    private final Path2D myShape = new Path2D.Double(Path2D.WIND_NON_ZERO);
 
     private StartEnd()
     {

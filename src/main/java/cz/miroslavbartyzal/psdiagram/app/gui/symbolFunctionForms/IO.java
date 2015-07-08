@@ -11,8 +11,10 @@ import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditManager;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.ValueFilter;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.VariableFilter;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
+import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.MaxBalloonSizeCallback;
 import java.util.LinkedHashMap;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.BadLocationException;
@@ -35,8 +37,10 @@ public final class IO extends AbstractSymbolFunctionForm
      * @param element element, kterého se tento formulář týká
      * @param flowchartEditManager FlowchartEditManager, spravující editační
      * režim aplikace
+     * @param maxBalloonSizeCallback
      */
-    public IO(LayoutElement element, FlowchartEditManager flowchartEditManager)
+    public IO(LayoutElement element, FlowchartEditManager flowchartEditManager,
+            MaxBalloonSizeCallback maxBalloonSizeCallback)
     {
         super(element, flowchartEditManager);
         /*
@@ -83,9 +87,9 @@ public final class IO extends AbstractSymbolFunctionForm
         }
 
         ((AbstractDocument) jTextFieldVar.getDocument()).setDocumentFilter(new VariableFilter(
-                jTextFieldVar, validationListener));
+                jTextFieldVar, validationListener, maxBalloonSizeCallback));
         ((AbstractDocument) jTextFieldValue.getDocument()).setDocumentFilter(new ValueFilter(
-                jTextFieldValue, validationListener));
+                jTextFieldValue, validationListener, maxBalloonSizeCallback));
         AbstractSymbolFunctionForm.enhanceWithUndoRedoCapability(jTextFieldVar);
         AbstractSymbolFunctionForm.enhanceWithUndoRedoCapability(jTextFieldValue);
         addDocumentListeners();
@@ -356,6 +360,17 @@ public final class IO extends AbstractSymbolFunctionForm
     {
         generateValues();
         super.fireChangeEventToEditManager();
+    }
+
+    @Override
+    public JTextField getJTextFieldToDispatchKeyEventsAt()
+    {
+        if (jRadioButtonInput.isSelected()) {
+            return jTextFieldVar;
+        } else if (jRadioButtonOutput.isSelected()) {
+            return jTextFieldValue;
+        }
+        return null;
     }
 
     private class IOValidationListener implements ValidationListener

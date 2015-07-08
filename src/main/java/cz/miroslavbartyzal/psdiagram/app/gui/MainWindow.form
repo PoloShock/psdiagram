@@ -308,7 +308,7 @@
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="0"/>
     <Property name="title" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-      <Connection code="windowTitle" type="code"/>
+      <Connection code="WINDOW_TITLE" type="code"/>
     </Property>
     <Property name="iconImages" type="java.util.List" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
       <Connection code="Arrays.asList(&#xd;&#xa;java.awt.Toolkit.getDefaultToolkit().createImage(getClass().getResource(&quot;/img/icon_16.png&quot;)),&#xd;&#xa;java.awt.Toolkit.getDefaultToolkit().createImage(getClass().getResource(&quot;/img/icon_32.png&quot;)),&#xd;&#xa;java.awt.Toolkit.getDefaultToolkit().createImage(getClass().getResource(&quot;/img/icon_48.png&quot;)),&#xd;&#xa;java.awt.Toolkit.getDefaultToolkit().createImage(getClass().getResource(&quot;/img/icon_64.png&quot;)),&#xd;&#xa;java.awt.Toolkit.getDefaultToolkit().createImage(getClass().getResource(&quot;/img/icon_128.png&quot;)),&#xd;&#xa;java.awt.Toolkit.getDefaultToolkit().createImage(getClass().getResource(&quot;/img/icon_256.png&quot;)))&#xd;&#xa;" type="code"/>

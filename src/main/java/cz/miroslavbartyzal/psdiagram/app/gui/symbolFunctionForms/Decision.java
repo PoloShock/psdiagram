@@ -9,9 +9,11 @@ import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.EnumSymbol;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
 import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditManager;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
+import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.MaxBalloonSizeCallback;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.BooleanValueFilter;
 import java.util.LinkedHashMap;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.BadLocationException;
@@ -34,8 +36,10 @@ public final class Decision extends AbstractSymbolFunctionForm
      * @param element element, kterého se tento formulář týká
      * @param flowchartEditManager FlowchartEditManager, spravující editační
      * režim aplikace
+     * @param maxBalloonSizeCallback
      */
-    public Decision(LayoutElement element, FlowchartEditManager flowchartEditManager)
+    public Decision(LayoutElement element, FlowchartEditManager flowchartEditManager,
+            MaxBalloonSizeCallback maxBalloonSizeCallback)
     {
         super(element, flowchartEditManager);
         /*
@@ -50,10 +54,11 @@ public final class Decision extends AbstractSymbolFunctionForm
         String operators;
         if (SettingsHolder.settings.isFunctionFilters()) {
             operators = "- dostupné relační operátory: =,!=,&gt;,&lt;,&gt;=,&lt;=<br />"
-                    + "- dostupné logické operátory: &(and),|(or),!(negace)";
+                    + "- dostupné logické operátory: &&(and),||(or),!(negace)";
         } else {
             operators = "- dostupné relační operátory: ==, !=, &gt;, &lt;, &gt;=, &lt;=<br />"
-                    + "- dostupné logické operátory: &&, &, ||, |, !(negace)";
+                    + "- dostupné logické operátory: &&(and), ||(or), !(negace)"
+                    + "- dostupné bitové operátory: &, |, ^(xor), ~, <<, >>";
         }
         operators += "</p></html>";
         jLabelDescription = new JLabel("<html><p>"
@@ -75,7 +80,8 @@ public final class Decision extends AbstractSymbolFunctionForm
         }
 
         ((AbstractDocument) jTextFieldCondition.getDocument()).setDocumentFilter(
-                new BooleanValueFilter(jTextFieldCondition, validationListener));
+                new BooleanValueFilter(jTextFieldCondition, validationListener,
+                        maxBalloonSizeCallback));
         AbstractSymbolFunctionForm.enhanceWithUndoRedoCapability(jTextFieldCondition);
         addDocumentListeners();
         super.trimSize();
@@ -162,7 +168,7 @@ public final class Decision extends AbstractSymbolFunctionForm
 
         jLabel3.setText("Příklady:");
 
-        jLabelExamples.setText("<html>\n- A = 5<br />\n- C = \"text\"<br />\n- A > 0<br />\n- A >= B<br />\n- (A != B) & (A > 0)<br />\n- bool<br />\n- !bool<br />\n- !((A+B=C) | (B-A=C))\n</html>");
+        jLabelExamples.setText("<html>\n- A = 5<br />\n- C = \"text\"<br />\n- A > 0<br />\n- A >= B<br />\n- (A != B) && (A > 0)<br />\n- bool<br />\n- !bool<br />\n- !((A+B=C) || (B-A=C))\n</html>");
         jLabelExamples.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -232,6 +238,12 @@ public final class Decision extends AbstractSymbolFunctionForm
     {
         generateValues();
         super.fireChangeEventToEditManager();
+    }
+
+    @Override
+    public JTextField getJTextFieldToDispatchKeyEventsAt()
+    {
+        return jTextFieldCondition;
     }
 
     private class DecisionValidationListener implements ValidationListener

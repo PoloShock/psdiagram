@@ -8,6 +8,7 @@ import java.awt.geom.Rectangle2D;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Tato třída představuje symbol zpracování.
@@ -16,10 +17,11 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name = "process")
 @XmlAccessorType(XmlAccessType.NONE)
+@XmlType(name = "process")
 public final class Process extends AbstractSymbol
 {
 
-    private Rectangle2D.Double myShape = new Rectangle2D.Double();
+    private final Rectangle2D.Double myShape = new Rectangle2D.Double();
 
     private Process()
     {

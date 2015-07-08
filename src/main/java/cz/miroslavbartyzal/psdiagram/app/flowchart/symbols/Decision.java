@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlType;
 public class Decision extends AbstractSymbol
 {
 
-    private Path2D myShape = new Path2D.Double(Path2D.WIND_NON_ZERO, 4);
+    private final Path2D myShape = new Path2D.Double(Path2D.WIND_NON_ZERO, 4);
 
     private Decision()
     {

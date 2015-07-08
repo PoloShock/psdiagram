@@ -626,7 +626,7 @@ public final class JFrameSettings extends javax.swing.JFrame
     private void jCheckBoxFunctionFiltersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxFunctionFiltersActionPerformed
         if (!initializing) {
             SettingsHolder.settings.setFunctionFilters(jCheckBoxFunctionFilters.isSelected());
-            flowchartEditManager.repaintJPanelDiagram();
+            flowchartEditManager.refreshSymbolTextsDueToChangeOfFunctionFiltersState();
         }
     }//GEN-LAST:event_jCheckBoxFunctionFiltersActionPerformed
 

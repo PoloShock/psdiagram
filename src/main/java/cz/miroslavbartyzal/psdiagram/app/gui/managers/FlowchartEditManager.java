@@ -33,6 +33,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.JTextComponent;
 import javax.xml.bind.JAXBException;
 
 /**
@@ -105,7 +106,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
 
         commentsManager = new FlowchartCommentSymbolManager(layout);
         symbolDragManager = new FlowchartSymbolDragManager(layout, canvasPanel);
-        loadMarkedSymbol();
+        loadMarkedSymbol(false);
         flowchartEditUndoManager.init(layout);
     }
 
@@ -181,7 +182,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
     public void loadMarkedSymbolText()
     {
         puttingText = true;
-        loadMarkedSymbol();
+        loadMarkedSymbol(false);
         puttingText = false;
     }
 
@@ -292,6 +293,34 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
         }
     }
 
+    public void refreshSymbolTextsDueToChangeOfFunctionFiltersState()
+    {
+        // regenerate values so for example the '=' translates to '==' corectly in default texts
+        for (LayoutSegment segment : layout.getFlowchart()) {
+            if (segment != null) {
+                for (LayoutElement element : segment) {
+                    boolean setDefaults = defaultsEqualsValues(element);
+                    EnumSymbol.getEnumSymbol(element.getSymbol().getClass()).regenerateSymbolValues(
+                            element);
+                    if (setDefaults) {
+                        // there was defaults set previously, so I will set them again
+                        element.getSymbol().setValueAndSize(element.getSymbol().getDefaultValue());
+                    } else if (jCheckBoxDefaultText.isVisible() && !jCheckBoxDefaultText.isSelected() && defaultsEqualsValues(
+                            element)) {
+                        // there was a custom value set previously which is now same as the default value -> the checkbox indicating defaults should be changed
+                        jCheckBoxDefaultText.removeActionListener(this);
+                        jCheckBoxDefaultText.setSelected(true);
+                        jCheckBoxDefaultText.addActionListener(this);
+                    }
+                }
+            }
+        }
+        puttingText = true;
+        loadMarkedSymbol(true);
+        puttingText = false;
+        repaintJPanelDiagram();
+    }
+
     // **********************ActionListener**********************
     /**
      * Metoda pro příjem událostí, týkající se editace vývojového diagramu.
@@ -308,7 +337,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
                 if (action[1].equals("editMode")) {
                     if (!mainWindow.getEditMode()) {
                         lastMarkedElement = null;
-                        loadMarkedSymbol();
+                        loadMarkedSymbol(false);
                     }
                     mainWindow.setEditMode(!mainWindow.getEditMode());
                     repaintJPanelDiagram();
@@ -451,7 +480,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
 
                 repaintJPanelDiagram();
                 puttingText = true;
-                loadMarkedSymbol();
+                loadMarkedSymbol(false);
                 puttingText = false;
 
                 flowchartEditUndoManager.addEdit(layout, this, "Přidání symbolu");
@@ -562,7 +591,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
                             //nacteme defaulty i v pripade ze byli prave vymazany
                             loadDefaults(element);
                         } else {
-                            // uprava probehla jen uvnitr formulare pro upravu funkce a neprojevila se na platne
+                            // uprava probehla jen uvnitr formulare pro upravu funkce symbolu a neprojevila se na platne
                             break;
                         }
                         layout.prepareFlowchart();
@@ -573,7 +602,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
                     }
                 }
                 puttingText = true;
-                loadMarkedSymbol();
+                loadMarkedSymbol(false);
                 puttingText = false;
                 break;
             }
@@ -636,7 +665,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
         if (joint != null) {
             layout.setFocusedJoint(joint);
             puttingText = true;
-            loadMarkedSymbol();
+            loadMarkedSymbol(false);
             puttingText = false;
             repaintJPanelDiagram();
             maybeShowPopup(me);
@@ -647,7 +676,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
         if (element != null) {
             layout.setFocusedElement(element);
             puttingText = true;
-            loadMarkedSymbol();
+            loadMarkedSymbol(false);
             puttingText = false;
             repaintJPanelDiagram();
             if (element.getSymbol() instanceof Comment) {
@@ -832,7 +861,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
     {
         updateEditMenuEnablers(); // update it so the shortcuts (delete, ctrl+c, ...) are handled correctly
         if (ke.getKeyCode() == KeyEvent.VK_BACK_SPACE) {// || ke.getKeyCode() == KeyEvent.VK_ENTER) {
-            dispatchKeyEventToSymbolTextArea(ke); // predani KeyEventu editaci textu symbolu
+            dispatchKeyEventToSymbolTextComponent(ke); // predani KeyEventu editaci textu symbolu
         } else if (symbolDragManager.isDragging() && ke.getKeyCode() == KeyEvent.VK_CONTROL) {
             if (symbolDragManager.controlKeyUpdate(true)) {
                 repaintJPanelDiagram();
@@ -851,7 +880,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
     public void keyReleased(KeyEvent ke)
     {
         if (ke.getKeyCode() == KeyEvent.VK_BACK_SPACE) {// || ke.getKeyCode() == KeyEvent.VK_ENTER) {
-            dispatchKeyEventToSymbolTextArea(ke); // predani KeyEventu editaci textu symbolu
+            dispatchKeyEventToSymbolTextComponent(ke); // predani KeyEventu editaci textu symbolu
         } else if (symbolDragManager.isDragging() && ke.getKeyCode() == KeyEvent.VK_CONTROL) {
             if (symbolDragManager.controlKeyUpdate(false)) {
                 repaintJPanelDiagram();
@@ -870,7 +899,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
     public void keyTyped(KeyEvent ke)
     {
         if (!ke.isControlDown() && !ke.isAltDown() && (int) ke.getKeyChar() != KeyEvent.VK_DELETE && (int) ke.getKeyChar() != KeyEvent.VK_ENTER) {
-            dispatchKeyEventToSymbolTextArea(ke); // predani KeyEventu editaci textu symbolu
+            dispatchKeyEventToSymbolTextComponent(ke); // predani KeyEventu editaci textu symbolu
         }
     }
 
@@ -910,38 +939,52 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
     // ***********************************************************
     // **********************PRIVATE METHODS**********************
     // ***********************************************************
-    private void dispatchKeyEventToSymbolTextArea(final KeyEvent ke)
+    private void dispatchKeyEventToSymbolTextComponent(final KeyEvent ke)
     {
-        boolean focusSuccess = jTextAreaTextSymbol.requestFocusInWindow();
-        if (!focusSuccess
-                && (mainWindow.getJTabbedPaneEdit().getSelectedIndex() != 0
-                || (mainWindow.getJScrollPaneFunctionViewportView() instanceof AbstractSymbolFunctionForm && ((AbstractSymbolFunctionForm) mainWindow.getJScrollPaneFunctionViewportView()).hasCommandsToSet()))) {
-            // nebylo mozne nastavit focus, zrejme je sepnuta zalozka funkce.. Text symbolu vlozim jen jestli symbol nema funkce k nastavovani
-            return;
+        boolean focusSuccess;
+        final JTextComponent textCompToEditIn;
+        if (mainWindow.getJTabbedPaneEdit().getSelectedIndex() == 0
+                && mainWindow.getJScrollPaneFunctionViewportView() instanceof AbstractSymbolFunctionForm
+                && ((AbstractSymbolFunctionForm) mainWindow.getJScrollPaneFunctionViewportView()).hasCommandsToSet()) {
+            // symbol function form is selected
+            textCompToEditIn = ((AbstractSymbolFunctionForm) mainWindow.getJScrollPaneFunctionViewportView()).getJTextFieldToDispatchKeyEventsAt();
+            if (textCompToEditIn == null) {
+                return;
+            }
+            focusSuccess = textCompToEditIn.requestFocusInWindow();
+        } else {
+            // symbol function form is not selected -> it should be dispatched to custom symbol text editor
+            textCompToEditIn = jTextAreaTextSymbol;
+            focusSuccess = textCompToEditIn.requestFocusInWindow();
+            if (!focusSuccess && mainWindow.getJTabbedPaneEdit().getSelectedIndex() == 1) {
+                // focus couldn't be set even with the tab on the right index -> the textComp is probably disabled
+                return;
+            }
         }
-        jTextAreaTextSymbol.setCaretPosition(jTextAreaTextSymbol.getDocument().getLength());
+
+        textCompToEditIn.setCaretPosition(textCompToEditIn.getDocument().getLength());
         if (focusSuccess) {
             SwingUtilities.invokeLater(new Runnable()
             {
                 @Override
                 public void run()
                 {
-                    jTextAreaTextSymbol.dispatchEvent(ke); // pockam na focusgain
+                    textCompToEditIn.dispatchEvent(ke); // pockam na focus-gain
                 }
             });
         } else {
-            jTextAreaTextSymbol.dispatchEvent(ke);
+            textCompToEditIn.dispatchEvent(ke);
         }
     }
 
-    private void loadMarkedSymbol()
+    private void loadMarkedSymbol(boolean forced)
     {
         LayoutElement markedElement = getMarkedElement();
         if (!markedElement.equals(lastMarkedElement)) {
             defaultTextBeingEdited = false; // nacitam novy symbol, takze nyni uzivatel jiz defaultni texty needituje
         }
         loadMarkedSymbolText(markedElement);
-        loadMarkedSymbolFunction(markedElement);
+        loadMarkedSymbolFunction(markedElement, forced);
         lastMarkedElement = markedElement;
     }
 
@@ -1038,13 +1081,14 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
         mainWindow.packJPanelInnerText();
     }
 
-    private void loadMarkedSymbolFunction(LayoutElement markedElement)
+    private void loadMarkedSymbolFunction(LayoutElement markedElement, boolean forced)
     {
-        if (lastMarkedElement != null && lastMarkedElement.equals(markedElement)) { // je-li symbol jiz zobrazen
+        if (!forced && lastMarkedElement != null && lastMarkedElement.equals(markedElement)) { // je-li symbol jiz zobrazen
             return;
         }
         mainWindow.setJScrollPaneFunctionViewportView(EnumSymbol.getEnumSymbol(
-                markedElement.getSymbol().getClass()).getFunctionFormInstance(markedElement, this));
+                markedElement.getSymbol().getClass()).getFunctionFormInstance(markedElement, this,
+                        mainWindow.getMaxBalloonSizeCallback()));
     }
 
     private boolean defaultsEqualsValues(LayoutElement element)

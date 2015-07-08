@@ -9,8 +9,10 @@ import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.EnumSymbol;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
 import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditManager;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
+import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.MaxBalloonSizeCallback;
 import java.util.LinkedHashMap;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 
 /**
@@ -31,8 +33,10 @@ public final class Goto extends AbstractSymbolFunctionForm
      * @param element element, kterého se tento formulář týká
      * @param flowchartEditManager FlowchartEditManager, spravující editační
      * režim aplikace
+     * @param maxBalloonSizeCallback
      */
-    public Goto(LayoutElement element, FlowchartEditManager flowchartEditManager)
+    public Goto(LayoutElement element, FlowchartEditManager flowchartEditManager,
+            MaxBalloonSizeCallback maxBalloonSizeCallback)
     {
         super(element, flowchartEditManager);
         /*
@@ -251,6 +255,8 @@ public final class Goto extends AbstractSymbolFunctionForm
 
     /**
      * Metoda s prázdným tělem.
+     * <p>
+     * @param de
      */
     @Override
     public void changedUpdate(DocumentEvent de)
@@ -259,6 +265,8 @@ public final class Goto extends AbstractSymbolFunctionForm
 
     /**
      * Metoda s prázdným tělem.
+     * <p>
+     * @param de
      */
     @Override
     public void insertUpdate(DocumentEvent de)
@@ -267,10 +275,18 @@ public final class Goto extends AbstractSymbolFunctionForm
 
     /**
      * Metoda s prázdným tělem.
+     * <p>
+     * @param de
      */
     @Override
     public void removeUpdate(DocumentEvent de)
     {
+    }
+
+    @Override
+    public JTextField getJTextFieldToDispatchKeyEventsAt()
+    {
+        return null;
     }
 
 }

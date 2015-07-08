@@ -4,6 +4,7 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters;
 
+import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.MaxBalloonSizeCallback;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.ValidationListener;
 import cz.miroslavbartyzal.psdiagram.app.parser.EnumRule;
 import javax.swing.JTextField;
@@ -42,9 +43,10 @@ public final class ValueFilter extends AbstractFilter
 //            //            + "(?<=^\\s?[\\-\\+]{1,21}" + NUMBER_WITHOUT_SIGN_REGEX + ")\\s?|" // kdyz po (serii) + nebo - nasleduje cislo, nevybirej (-|+) jako operator (priradi se k cislu)
 //            + "(?<!^)\\s?(?<![\\-\\+])(?=[\\-\\+]{1,21}(" + NUMBER_WITHOUT_SIGN_REGEX + "|" + VARIABLE_REGEX + "|$))|" // kdyz po (serii) + nebo - nasleduje cislo nebo promenna, nevybirej (-|+) jako operator (priradi se k cislu)
 //            + "(?<=^(" + VARIABLE_REGEX + "|\"\"))\\s?\\.\\s?(?=" + VARIABLE_REGEX + "|$)"); // dot is considered as separator only if it is a subfunction call
-    public ValueFilter(JTextField parentJTextField, ValidationListener validationListener)
+    public ValueFilter(JTextField parentJTextField, ValidationListener validationListener,
+            MaxBalloonSizeCallback maxBalloonSizeCallback)
     {
-        super(parentJTextField, validationListener);
+        super(parentJTextField, validationListener, maxBalloonSizeCallback);
 
         if (!parentJTextField.getText().isEmpty()) {
             super.parseInputAndUpdateGUI(parentJTextField.getText());

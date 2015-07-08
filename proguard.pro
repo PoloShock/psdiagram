@@ -7,8 +7,7 @@
 -verbose
 
 
-# Also keep - Bean classes. Keep all specified classes, along with their getters
-# and setters.
+# Also keep - Bean classes. Keep all specified classes, along with their getters and setters.
 -keep class cz.miroslavbartyzal.psdiagram.app.global.xmlAdapters.**,cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.package-info
 
 # -keepclassmembers class global.xmlAdapters.** { *; }

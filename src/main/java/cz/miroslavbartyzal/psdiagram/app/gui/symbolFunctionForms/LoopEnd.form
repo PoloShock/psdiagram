@@ -86,7 +86,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabelExamples">
       <Properties>
-        <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;- A &gt; 0&lt;br /&gt;&#xa;- A &gt;= B&lt;br /&gt;&#xa;- (A != B) &amp; (A &gt; 0)&lt;br /&gt;&#xa;- bool&lt;br /&gt;&#xa;- !bool&lt;br /&gt;&#xa;- !((A+B=C) | (B-A=C))&#xa;&lt;/html&gt;"/>
+        <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;- A &gt; 0&lt;br /&gt;&#xa;- A &gt;= B&lt;br /&gt;&#xa;- (A != B) &amp;&amp; (A &gt; 0)&lt;br /&gt;&#xa;- bool&lt;br /&gt;&#xa;- !bool&lt;br /&gt;&#xa;- !((A+B=C) || (B-A=C))&#xa;&lt;/html&gt;"/>
         <Property name="verticalAlignment" type="int" value="1"/>
       </Properties>
     </Component>

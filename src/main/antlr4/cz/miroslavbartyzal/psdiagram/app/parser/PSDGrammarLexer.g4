@@ -46,6 +46,23 @@ lexer grammar PSDGrammarLexer;
 
         return false;
     }
+
+    private void myNotifyErrorListeners(String msg, String expecting) {
+        CommonToken token = new CommonToken(-1);
+        token.setStartIndex(_tokenStartCharIndex);
+        token.setStopIndex(_input.index()-1);
+
+        ANTLRErrorListener listener = getErrorListenerDispatch();
+        listener.syntaxError(this, token, _tokenStartLine, _tokenStartCharPositionInLine, mixMsgWithExpected(msg, expecting), null);
+    }
+
+    private String mixMsgWithExpected(String msg, String expecting)
+    {
+        if (expecting == null || expecting.isEmpty()) {
+            return msg;
+        }
+        return msg + "\nOčekáváné možnosti: {" + expecting + "}.";
+    }
 }
 
 // Reserved Words (forbidden to use)
@@ -256,8 +273,14 @@ EQUAL : '=';
 LE : '<=';
 GE : '>=';
 NOTEQUAL : '!=';
-AND : '&';
-OR : '|';
+OR
+    :   '||'
+    |   '|' {myNotifyErrorListeners("Pro logický operátor OR použijte dvojici znaků '|'.\nPS: pokud hledáte bitový operátor OR, v PS Diagramu jej přímo použít nelze", "'||'");}
+    ;
+AND
+    :   '&&'
+    |   '&' {myNotifyErrorListeners("Pro logický operátor AND použijte dvojici znaků '&'.\nPS: pokud hledáte bitový operátor AND, v PS Diagramu jej přímo použít nelze", "'&&'");}
+    ;
 PLUS : '+';
 MINUS : '-';
 MUL : '*';

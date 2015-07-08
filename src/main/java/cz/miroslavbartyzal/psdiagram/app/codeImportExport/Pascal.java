@@ -750,13 +750,11 @@ public final class Pascal
         code = Pattern.compile("(?<![\\w])mod(?![\\w])", FLAGS).matcher(code).replaceAll("%");
         code = Pattern.compile("(?<![\\w])not\\s+", FLAGS).matcher(code).replaceAll("!");
         code = code.replaceAll("\\<\\>", "!=");
-        if (SettingsHolder.settings.isFunctionFilters()) {
-            code = Pattern.compile("(?<![\\w])and(?![\\w])", FLAGS).matcher(code).replaceAll("&");
-            code = Pattern.compile("(?<![\\w])or(?![\\w])", FLAGS).matcher(code).replaceAll("|");
-        } else {
+
+        code = Pattern.compile("(?<![\\w])and(?![\\w])", FLAGS).matcher(code).replaceAll("&&");
+        code = Pattern.compile("(?<![\\w])or(?![\\w])", FLAGS).matcher(code).replaceAll("||");
+        if (!SettingsHolder.settings.isFunctionFilters()) {
             code = code.replaceAll("(?<![\\:\\+\\-\\*\\/\\!])\\=", "==");
-            code = Pattern.compile("(?<![\\w])and(?![\\w])", FLAGS).matcher(code).replaceAll("&&");
-            code = Pattern.compile("(?<![\\w])or(?![\\w])", FLAGS).matcher(code).replaceAll("||");
         }
         code = checkForMultidimArray(code);
 

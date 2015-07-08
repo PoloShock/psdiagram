@@ -349,44 +349,43 @@ public final class ElementFunctionBed
         setNextElSegAndPaths(result, paths, actualElement, actualSegment, actualElIndex);
     }
 
-    /**
-     * Tato metoda byla pouzivana drive, nyni ale zacala postradat smysl (nenašel jsem důvod
-     * pro její použití). Zřejmě byla využita jen pro zobrazení výsledného náhodného čísla v textu
-     * nad symbolem, tuto funkci ale již (včetně náhodných čísel) hravě zastane funkce
-     * getCompiledProgressDesc.
-     * <p>
-     * @param commands
-     */
-    private static void setRandoms(HashMap<String, String> commands)
-    {
-        for (String key : commands.keySet()) {
-            if (commands.get(key).matches(".*Math.random\\(.*")) { // jestli je pritomen random
-                String command = commands.get(key);
-                String[] commandSplit = RegexFunctions.splitString(command,
-                        "\"([^\"\\\\]|\\\\.)*\"?"); // jsou-li pritomny uvozovky, musim se jich nejdrive zbavit - take hrozi ze je random jen v nich
-
-                for (int i = 0; i < commandSplit.length; i += 2) {
-                    while (commandSplit[i].matches(".*Math.random\\([^\\)]*\\).*")) {
-                        try {
-                            commandSplit[i] = commandSplit[i].replaceFirst(
-                                    "Math.random\\([^\\)]*\\)", getJavaScriptEngine().eval(
-                                            "Math.random();").toString());
-                        } catch (ScriptException ex) {
-                            ex.printStackTrace(System.err);
-                            commandSplit[i] = commandSplit[i].replaceFirst(
-                                    "Math.random\\([^\\)]*\\)", Double.toString(Math.random()));
-                        }
-                    }
-                }
-                command = "";
-                for (String commandPart : commandSplit) {
-                    command += commandPart;
-                }
-                commands.put(key, command);
-            }
-        }
-    }
-
+//    /**
+//     * Tato metoda byla pouzivana drive, nyni ale zacala postradat smysl (nenašel jsem důvod
+//     * pro její použití). Zřejmě byla využita jen pro zobrazení výsledného náhodného čísla v textu
+//     * nad symbolem, tuto funkci ale již (včetně náhodných čísel) hravě zastane funkce
+//     * getCompiledProgressDesc.
+//     * <p>
+//     * @param commands
+//     */
+//    private static void setRandoms(HashMap<String, String> commands)
+//    {
+//        for (String key : commands.keySet()) {
+//            if (commands.get(key).matches(".*Math.random\\(.*")) { // jestli je pritomen random
+//                String command = commands.get(key);
+//                String[] commandSplit = RegexFunctions.splitString(command,
+//                        "\"([^\"\\\\]|\\\\.)*\"?"); // jsou-li pritomny uvozovky, musim se jich nejdrive zbavit - take hrozi ze je random jen v nich
+//
+//                for (int i = 0; i < commandSplit.length; i += 2) {
+//                    while (commandSplit[i].matches(".*Math.random\\([^\\)]*\\).*")) {
+//                        try {
+//                            commandSplit[i] = commandSplit[i].replaceFirst(
+//                                    "Math.random\\([^\\)]*\\)", getJavaScriptEngine().eval(
+//                                            "Math.random();").toString());
+//                        } catch (ScriptException ex) {
+//                            ex.printStackTrace(System.err);
+//                            commandSplit[i] = commandSplit[i].replaceFirst(
+//                                    "Math.random\\([^\\)]*\\)", Double.toString(Math.random()));
+//                        }
+//                    }
+//                }
+//                command = "";
+//                for (String commandPart : commandSplit) {
+//                    command += commandPart;
+//                }
+//                commands.put(key, command);
+//            }
+//        }
+//    }
     //*************************************************************************
     //*******************SYMBOLS PROGRESS AND UPDATEVARS SET*******************
     //*************************************************************************

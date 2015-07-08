@@ -7,6 +7,7 @@ package cz.miroslavbartyzal.psdiagram.app.flowchart.symbols;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Tato třída představuje symbol vícecestného rozhodování.
@@ -15,6 +16,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name = "switch")
 @XmlAccessorType(XmlAccessType.NONE)
+@XmlType(name = "switch")
 public final class Switch extends Decision
 {
     //private Path2D myShape = new Path2D.Double(Path2D.WIND_NON_ZERO, 4);

@@ -28,9 +28,9 @@ import java.awt.geom.Point2D;
 public final class Joint extends AbstractSymbol
 {
 
-    private Ellipse2D.Double myShape;
-    private LayoutElement parentElement;
-    private LayoutSegment parentSegment; // pritomen pro rozliseni vetve např u podminky (parentelement bude pritomen dvakrat totozny) a take pro urychleni pripadneho vyhledavani elementu v diagramu
+    private final Ellipse2D.Double myShape;
+    private final LayoutElement parentElement;
+    private final LayoutSegment parentSegment; // pritomen pro rozliseni vetve např u podminky (parentelement bude pritomen dvakrat totozny) a take pro urychleni pripadneho vyhledavani elementu v diagramu
 
     /**
      * Knstruktor, zajišťující inicializaci Jointu.
@@ -107,6 +107,8 @@ public final class Joint extends AbstractSymbol
 
     /**
      * Metoda vrací vždy souřadnice středu symbolu.
+     * <p>
+     * @return
      */
     @Override
     public Point2D getIntersectionPoint(double sourcePointX, double sourcePointY)

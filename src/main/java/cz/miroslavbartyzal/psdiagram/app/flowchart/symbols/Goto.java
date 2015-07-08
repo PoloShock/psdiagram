@@ -10,6 +10,7 @@ import java.util.LinkedHashMap;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Tato třída představuje symbol vstupní Spojky (goto, break, continue).
@@ -18,10 +19,11 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name = "goto")
 @XmlAccessorType(XmlAccessType.NONE)
+@XmlType(name = "goto")
 public final class Goto extends AbstractSymbol
 {
 
-    private Ellipse2D.Double myShape = new Ellipse2D.Double();
+    private final Ellipse2D.Double myShape = new Ellipse2D.Double();
 
     private Goto()
     {

@@ -30,7 +30,7 @@
           <Component id="jLabel2" max="32767" attributes="0"/>
           <Component id="jTextFieldValue" max="32767" attributes="0"/>
           <Component id="jPanel1" max="32767" attributes="0"/>
-          <Component id="jLabelExamples" alignment="0" pref="0" max="32767" attributes="0"/>
+          <Component id="jLabelExamples" alignment="0" max="32767" attributes="0"/>
           <Component id="jLabel3" alignment="0" max="32767" attributes="0"/>
           <Component id="jTextFieldVar" alignment="0" max="32767" attributes="0"/>
       </Group>
@@ -51,7 +51,7 @@
               <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jLabelExamples" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="49" max="32767" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -66,6 +66,9 @@
       <Properties>
         <Property name="toolTipText" type="java.lang.String" value="Prom&#x11b;nn&#xe1;, do kter&#xe9; se ulo&#x17e;&#xed; hodnota n&#xed;&#x17e;e."/>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new WatermarkJTextField(&quot;do jak&#xe9; prom&#x11b;nn&#xe9; ukl&#xe1;dat&quot;)"/>
+      </AuxValues>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel2">
       <Properties>
@@ -76,6 +79,9 @@
       <Properties>
         <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;&#xa;Hodnota, kter&#xe1; se ulo&#x17e;&#xed; do prom&#x11b;nn&#xe9; v&#xfd;&#x161;e.&lt;br /&gt;&#xa;&#x158;et&#x11b;zcovou hodnotu ohrani&#x10d;te uvozovkami.&#xa;&lt;/html&gt;"/>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new WatermarkJTextField(&quot;co ulo&#x17e;it&quot;)"/>
+      </AuxValues>
     </Component>
     <Container class="javax.swing.JPanel" name="jPanel1">
       <AuxValues>
@@ -85,7 +91,7 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <EmptySpace min="0" pref="159" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
@@ -102,7 +108,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabelExamples">
       <Properties>
-        <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;- A; 0&lt;br /&gt;&#xa;- B; B + A&lt;br /&gt;&#xa;- A; Math.sqrt(A*2)&lt;br /&gt;&#xa;- A; Math.floor(&lt;br /&gt;Math.random()*11)&lt;br /&gt;&#xa;- A; B % C&lt;br /&gt;&#xa;- C; &quot;text&quot;&lt;br /&gt;&#xa;- C; &quot;hodnota A: &quot; + A&lt;br /&gt;&#xa;- A; &quot;B na druhou: &quot; + Math.pow(B,2)&lt;br /&gt;&#xa;- A; &quot;retezec&quot;[2]&lt;br /&gt;&#xa;- D; true&lt;br /&gt;&#xa;- D; false&lt;br /&gt;&#xa;- pole; [1, 2, 3]&lt;br /&gt;&#xa;- pole[3]; 4&lt;br /&gt;&#xa;- pole[pole.length]; 5&lt;br /&gt;&#xa;- E; pole[2][0]&lt;br /&gt;&#xa;&lt;/html&gt;"/>
+        <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;- A; 0&lt;br /&gt;&#xa;- B; B + A&lt;br /&gt;&#xa;- A; Math.sqrt(A*2)&lt;br /&gt;&#xa;- A; Math.floor(&lt;br /&gt;Math.random()*10)+1&lt;br /&gt;&#xa;- A; B % C&lt;br /&gt;&#xa;- C; &quot;text&quot;&lt;br /&gt;&#xa;- C; &quot;hodnota A: &quot; + A&lt;br /&gt;&#xa;- A; &quot;B na druhou: &quot; + Math.pow(B,2)&lt;br /&gt;&#xa;- A; &quot;retezec&quot;[2]&lt;br /&gt;&#xa;- D; true&lt;br /&gt;&#xa;- D; false&lt;br /&gt;&#xa;- pole; [1, 2, 3]&lt;br /&gt;&#xa;- pole[3]; 4&lt;br /&gt;&#xa;- pole[pole.length]; 5&lt;br /&gt;&#xa;- E; pole[2][0]&lt;br /&gt;&#xa;&lt;/html&gt;"/>
         <Property name="verticalAlignment" type="int" value="1"/>
       </Properties>
     </Component>

@@ -9,6 +9,7 @@ import java.awt.geom.Point2D;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Tato třída představuje symbol vstupu/výstupu.
@@ -17,10 +18,11 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name = "io")
 @XmlAccessorType(XmlAccessType.NONE)
+@XmlType(name = "io")
 public final class IO extends AbstractSymbol
 {
 
-    private Path2D myShape = new Path2D.Double(Path2D.WIND_NON_ZERO, 4);
+    private final Path2D myShape = new Path2D.Double(Path2D.WIND_NON_ZERO, 4);
 
     private IO()
     {

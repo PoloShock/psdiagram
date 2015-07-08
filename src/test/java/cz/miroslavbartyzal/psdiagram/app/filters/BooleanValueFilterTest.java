@@ -36,11 +36,11 @@ public class BooleanValueFilterTest
             add("a >= b");
             add("a <= b");
             add("a != b");
-            add("a & b");
-            add("a > 0 & b");
-            add("a | func(b)");
-            add("a > 0 | !func(b-1)");
-            add("a > 0 | (!func(b*-1) & c)");
+            add("a && b");
+            add("a > 0 && b");
+            add("a || func(b)");
+            add("a > 0 || !func(b-1)");
+            add("a > 0 || (!func(b*-1) && c)");
             add("pole.length");
             add("func(a)");
             add("func(a,b)");
@@ -72,16 +72,16 @@ public class BooleanValueFilterTest
             add("func( 1)");
             add("func ( 1 ) ");
             add("1 = 2 = true = false");
-            add("(true & true) = true");
-            add("(-(1) = (1)) != (!(!true) & !false)");
-            add("false | true = false"); // interesting example of precedence
-            add("(-(1) + (1)) != (-(-1) * -2) & true");
+            add("(true && true) = true");
+            add("(-(1) = (1)) != (!(!true) && !false)");
+            add("false || true = false"); // interesting example of precedence
+            add("(-(1) + (1)) != (-(-1) * -2) && true");
             add("((\"ahoj\") + (\"b\")) + (\"c\") = \"\""); // (("ahoj") + ("b")) + ("c") = ""
             add("hege.concat(stale).length");
             add("hege.concat(stale).concat(stale)");
             add("[1,2].concat(stale).concat(stale)");
             add("[1,[2,3]][1].concat(stale).concat(stale)");
-            add("true & ((b))");
+            add("true && ((b))");
             add("a + a = \"\"");
             add("\"\" != a+a+a");
             add("a != a+a+a");
@@ -175,7 +175,7 @@ public class BooleanValueFilterTest
             add("1 + p + (pom+1)");
             add("true + 1 + p");
             add("p true");
-            add("(true & true) + \"\"");
+            add("(true && true) + \"\"");
             add("p + true + 1");
             add("-(p+1)");
             add("1 * -+-(pom+1)");
@@ -200,9 +200,9 @@ public class BooleanValueFilterTest
             add("1 != null");
             add("a - 1 != null");
             add("true = null");
-            add("1 & null");
-            add("null | null");
-            add("null | true");
+            add("1 && null");
+            add("null || null");
+            add("null || true");
             add("null > null");
             add("null >= 1");
 
@@ -228,8 +228,8 @@ public class BooleanValueFilterTest
             add("a > = b");
             add("a < = b");
             add("a ! = b");
-            add("a && b");
-            add("a > 0 || b");
+            add("a & b");
+            add("a > 0 | b");
             add("1 ++ 2");
 //            add("1  + 2"); // allow only single spaces <- this should be actually valid for syntax checker.. So let's get rid of multiple spaces somewhere else
 //            add("a  "); <- this should be actually valid for syntax checker.. So let's get rid of multiple spaces somewhere else
@@ -261,8 +261,8 @@ public class BooleanValueFilterTest
             add("true = 2 = 3");
             add("true + 1 + \"\"");
             add("1 - 2 + \"\" + 1 - 2"); // ""1 is already a string and we can't subtract 2 from it
-            add("true + \"\" + true || true");
-            add("true || true + \"\"");
+            add("true + \"\" + true | true");
+            add("true | true + \"\"");
             add("[1,2].concat(stale).\"\".concat(stale)");
             add("Class.func(a > b)"); // class is a keyword
             add("class.func(a > b)"); // class is a keyword

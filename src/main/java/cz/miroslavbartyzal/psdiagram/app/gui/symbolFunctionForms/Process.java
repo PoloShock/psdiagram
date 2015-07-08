@@ -11,8 +11,10 @@ import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditManager;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.ValueFilter;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.VariableFilter;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
+import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.MaxBalloonSizeCallback;
 import java.util.LinkedHashMap;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.BadLocationException;
@@ -35,8 +37,10 @@ public final class Process extends AbstractSymbolFunctionForm
      * @param element element, kterého se tento formulář týká
      * @param flowchartEditManager FlowchartEditManager, spravující editační
      * režim aplikace
+     * @param maxBalloonSizeCallback
      */
-    public Process(LayoutElement element, FlowchartEditManager flowchartEditManager)
+    public Process(LayoutElement element, FlowchartEditManager flowchartEditManager,
+            MaxBalloonSizeCallback maxBalloonSizeCallback)
     {
         super(element, flowchartEditManager);
         /*
@@ -69,9 +73,9 @@ public final class Process extends AbstractSymbolFunctionForm
         }
 
         ((AbstractDocument) jTextFieldVar.getDocument()).setDocumentFilter(new VariableFilter(
-                jTextFieldVar, validationListener));
+                jTextFieldVar, validationListener, maxBalloonSizeCallback));
         ((AbstractDocument) jTextFieldValue.getDocument()).setDocumentFilter(new ValueFilter(
-                jTextFieldValue, validationListener));
+                jTextFieldValue, validationListener, maxBalloonSizeCallback));
         AbstractSymbolFunctionForm.enhanceWithUndoRedoCapability(jTextFieldVar);
         AbstractSymbolFunctionForm.enhanceWithUndoRedoCapability(jTextFieldValue);
         addDocumentListeners();
@@ -140,9 +144,9 @@ public final class Process extends AbstractSymbolFunctionForm
     {
 
         jLabel1 = new javax.swing.JLabel();
-        jTextFieldVar = new javax.swing.JTextField();
+        jTextFieldVar = new WatermarkJTextField("do jaké proměnné ukládat");
         jLabel2 = new javax.swing.JLabel();
-        jTextFieldValue = new javax.swing.JTextField();
+        jTextFieldValue = new WatermarkJTextField("co uložit");
         jPanel1 = new cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.JPanelSymbol(mySymbol, jLabelDescription);
         jLabel3 = new javax.swing.JLabel();
         jLabelExamples = new javax.swing.JLabel();
@@ -162,7 +166,7 @@ public final class Process extends AbstractSymbolFunctionForm
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 159, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -171,7 +175,7 @@ public final class Process extends AbstractSymbolFunctionForm
 
         jLabel3.setText("Příklady:");
 
-        jLabelExamples.setText("<html>\n- A; 0<br />\n- B; B + A<br />\n- A; Math.sqrt(A*2)<br />\n- A; Math.floor(<br />Math.random()*11)<br />\n- A; B % C<br />\n- C; \"text\"<br />\n- C; \"hodnota A: \" + A<br />\n- A; \"B na druhou: \" + Math.pow(B,2)<br />\n- A; \"retezec\"[2]<br />\n- D; true<br />\n- D; false<br />\n- pole; [1, 2, 3]<br />\n- pole[3]; 4<br />\n- pole[pole.length]; 5<br />\n- E; pole[2][0]<br />\n</html>");
+        jLabelExamples.setText("<html>\n- A; 0<br />\n- B; B + A<br />\n- A; Math.sqrt(A*2)<br />\n- A; Math.floor(<br />Math.random()*10)+1<br />\n- A; B % C<br />\n- C; \"text\"<br />\n- C; \"hodnota A: \" + A<br />\n- A; \"B na druhou: \" + Math.pow(B,2)<br />\n- A; \"retezec\"[2]<br />\n- D; true<br />\n- D; false<br />\n- pole; [1, 2, 3]<br />\n- pole[3]; 4<br />\n- pole[pole.length]; 5<br />\n- E; pole[2][0]<br />\n</html>");
         jLabelExamples.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -182,7 +186,7 @@ public final class Process extends AbstractSymbolFunctionForm
             .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jTextFieldValue)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jLabelExamples, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addComponent(jLabelExamples)
             .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jTextFieldVar)
         );
@@ -202,7 +206,7 @@ public final class Process extends AbstractSymbolFunctionForm
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabelExamples, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(49, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -249,6 +253,12 @@ public final class Process extends AbstractSymbolFunctionForm
     {
         generateValues();
         super.fireChangeEventToEditManager();
+    }
+
+    @Override
+    public JTextField getJTextFieldToDispatchKeyEventsAt()
+    {
+        return jTextFieldVar;
     }
 
     private class ProcessValidationListener implements ValidationListener

@@ -9,6 +9,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Tato třída představuje symbol začátku cyklu. Tento symbol je vždy spárován se
@@ -18,10 +19,11 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name = "loopStart")
 @XmlAccessorType(XmlAccessType.NONE)
+@XmlType(name = "loopStart")
 public final class LoopStart extends AbstractSymbol
 {
 
-    private Path2D myShape = new Path2D.Double(Path2D.WIND_NON_ZERO, 6);
+    private final Path2D myShape = new Path2D.Double(Path2D.WIND_NON_ZERO, 6);
 
     private LoopStart()
     {

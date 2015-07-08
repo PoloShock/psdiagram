@@ -8,6 +8,7 @@ import java.awt.geom.Path2D;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Tato třída představuje symbol předdefinovaného zpracování.
@@ -16,11 +17,12 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name = "subRoutine")
 @XmlAccessorType(XmlAccessType.NONE)
+@XmlType(name = "subRoutine")
 public final class SubRoutine extends AbstractSymbol
 {
     //TODO umoznit prime vlozeni javascriptu(nebo i jinych?) v metode s navratovym typem - vystup ulozit do promenne
 
-    private Path2D myShape = new Path2D.Double(Path2D.WIND_NON_ZERO, 11);
+    private final Path2D myShape = new Path2D.Double(Path2D.WIND_NON_ZERO, 11);
 
     private SubRoutine()
     {

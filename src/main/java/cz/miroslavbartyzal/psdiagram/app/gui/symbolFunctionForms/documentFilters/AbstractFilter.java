@@ -6,7 +6,9 @@ package cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilter
 
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import cz.miroslavbartyzal.psdiagram.app.global.StringFunctions;
+import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.MaxBalloonSizeCallback;
 import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.PSDBalloonToolTip;
+import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.AbstractSymbolFunctionForm;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.BadSyntaxJTextFieldBorder;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.SquiggleHighlighter;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.UnknownSyntaxJTextFieldBorder;
@@ -42,7 +44,7 @@ import javax.swing.text.DocumentFilter;
  * informační lišty v hlavním okně aplikace.</p>
  * <p/>
  * <p>
- * Filtry jsou řešeny pomocí regulárních výrazů.</p>
+ * Filtry jsou řešeny pomocí gramatiky.</p>
  *
  * @author Miroslav Bartyzal (miroslavbartyzal@gmail.com)
  */
@@ -62,7 +64,8 @@ public abstract class AbstractFilter extends DocumentFilter
 //    private final PSDParser PARSER = new ParboiledParser();
     private final PSDParser PARSER = new ANTLRParser();
 
-    public AbstractFilter(JTextField parentJTextField, ValidationListener validationListener)
+    public AbstractFilter(JTextField parentJTextField, ValidationListener validationListener,
+            MaxBalloonSizeCallback maxBalloonSizeCallback)
     {
         this.parentJTextField = parentJTextField;
         this.validationListener = validationListener;
@@ -72,7 +75,7 @@ public abstract class AbstractFilter extends DocumentFilter
         errorBorder = new BadSyntaxJTextFieldBorder((AbstractBorder) validBorder);
         unknownSyntaxBorder = new UnknownSyntaxJTextFieldBorder((AbstractBorder) validBorder);
 
-        balloonToolTip = new PSDBalloonToolTip(parentJTextField);
+        balloonToolTip = new PSDBalloonToolTip(parentJTextField, maxBalloonSizeCallback);
     }
 
     protected static boolean parseInput(String input, EnumRule rule)
@@ -88,6 +91,10 @@ public abstract class AbstractFilter extends DocumentFilter
     {
         discardParseErrorInfos();
 
+        if (!SettingsHolder.settings.isFunctionFilters()) {
+            // when filters are off, input has to be converted from javascript to PS Diagram's equivalent
+            input = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(input);
+        }
         boolean isEmpty = input.matches("^\\s*$");
         if (!isEmpty) {
             getRule().parseReportErrors(PARSER, input, syntaxErrorListener);
@@ -290,7 +297,7 @@ public abstract class AbstractFilter extends DocumentFilter
                 message += "Detekována syntaktická chyba!";
             } else {
                 message += StringFunctions.escapeHTML(errorInfo.getErrorMessage())
-                        .replaceAll(" ", "&nbsp;")
+                        //.replaceAll(" ", "&nbsp;") <- don't use &nbsp; because it disables multiline handling when string is too long to fit container
                         .replaceAll("\\n", "<br/>");
             }
             String command = parseResult.getInput();
@@ -317,7 +324,7 @@ public abstract class AbstractFilter extends DocumentFilter
             messagesAndCommands.add(message);
         }
 
-        balloonToolTip.showMessages(messagesAndCommands, 2000);
+        balloonToolTip.showMessages(messagesAndCommands, -1);
     }
 
     private void discardParseErrorInfos()

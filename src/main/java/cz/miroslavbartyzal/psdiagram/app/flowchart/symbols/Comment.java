@@ -18,18 +18,21 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * <p>Tato třída představuje symbol komentáře.<br />
+ * <p>
+ * Tato třída představuje symbol komentáře.<br />
  * Komentář může být párový, čili vázaný na nějaký jiný nekomentářový symbol,
  * nebo nepárový, stojící sám na vlastním řádku.</p>
  *
- * <p>Komentář dále obsahuje relativní souřadnice spojnice, která vede od
+ * <p>
+ * Komentář dále obsahuje relativní souřadnice spojnice, která vede od
  * počátku, k tomuto symbolu. Tato spojnice může být lomená libovolným počtem
  * bodů.<br />
  * Podle posledního relativního bodu spojnice je komentář také automaticky
  * orientován doprava, či doleva tak, aby spojnice nezasahovala do prostoru
  * symbolu samotného.</p>
  *
- * <p>Je-li komentář zapouzdřen jako Element, cesta k dalšímu elementu obsahuje
+ * <p>
+ * Je-li komentář zapouzdřen jako Element, cesta k dalšímu elementu obsahuje
  * právě komentářovou spojnici k samotnému komentářovému symbolu. Komentářový
  * element tak stojí se svou spojnicí sám, a je na layoutu, aby spojnici vedoucí
  * přes tento komentář od předchozího nekomentářového elementu k
@@ -43,7 +46,7 @@ import javax.xml.bind.annotation.XmlType;
 public final class Comment extends AbstractSymbol
 {
 
-    private Path2D myShape = new Path2D.Double(Path2D.WIND_NON_ZERO, 3);
+    private final Path2D myShape = new Path2D.Double(Path2D.WIND_NON_ZERO, 3);
     @XmlElement(name = "relativePointToSymbol")
     private ArrayList<Point2D> lRelativeMiddlePointsToSymbol = new ArrayList<>();
     private boolean toRightSite = true;
@@ -280,7 +283,6 @@ public final class Comment extends AbstractSymbol
          * }
          * return new Point2D.Double(getCenterX(), super.getCenterY());
          */
-
     }
 
     @Override

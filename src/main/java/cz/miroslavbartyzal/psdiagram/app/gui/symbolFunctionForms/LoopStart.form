@@ -45,7 +45,7 @@
               <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jLabelExamples" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="263" max="32767" attributes="0"/>
+              <EmptySpace pref="249" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -74,7 +74,7 @@
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <EmptySpace min="0" pref="2" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
       </Layout>
@@ -86,7 +86,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabelExamples">
       <Properties>
-        <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;- A &gt; 0&lt;br /&gt;&#xa;- A &gt;= B&lt;br /&gt;&#xa;- (A != B) &amp; (A &gt; 0)&lt;br /&gt;&#xa;- bool&lt;br /&gt;&#xa;- !bool&lt;br /&gt;&#xa;- !((A+B=C) | (B-A=C))&#xa;&lt;/html&gt;"/>
+        <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;- A &gt; 0&lt;br /&gt;&#xa;- A &gt;= B&lt;br /&gt;&#xa;- (A != B) &amp;&amp; (A &gt; 0)&lt;br /&gt;&#xa;- bool&lt;br /&gt;&#xa;- !bool&lt;br /&gt;&#xa;- !((A+B=C) || (B-A=C))&#xa;&lt;/html&gt;"/>
         <Property name="verticalAlignment" type="int" value="1"/>
       </Properties>
     </Component>

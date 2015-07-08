@@ -9,9 +9,11 @@ import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.EnumSymbol;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
 import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditManager;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
+import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.MaxBalloonSizeCallback;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.BooleanValueFilter;
 import java.util.LinkedHashMap;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.BadLocationException;
@@ -35,8 +37,10 @@ public final class LoopStart extends AbstractSymbolFunctionForm
      * @param element element, kterého se tento formulář týká
      * @param flowchartEditManager FlowchartEditManager, spravující editační
      * režim aplikace
+     * @param maxBalloonSizeCallback
      */
-    public LoopStart(LayoutElement element, FlowchartEditManager flowchartEditManager)
+    public LoopStart(LayoutElement element, FlowchartEditManager flowchartEditManager,
+            MaxBalloonSizeCallback maxBalloonSizeCallback)
     {
         super(element, flowchartEditManager);
         /*
@@ -51,7 +55,7 @@ public final class LoopStart extends AbstractSymbolFunctionForm
         String operators;
         if (SettingsHolder.settings.isFunctionFilters()) {
             operators = "- dostupné relační operátory: =,!=,&gt;,&lt;,&gt;=,&lt;=<br />"
-                    + "- dostupné logické operátory: &(and),|(or),!(negace)";
+                    + "- dostupné logické operátory: &&(and),||(or),!(negace)";
         } else {
             operators = "- dostupné relační operátory: ==, !=, &gt;, &lt;, &gt;=, &lt;=<br />"
                     + "- dostupné logické operátory: &&, &, ||, |, !(negace)";
@@ -76,7 +80,8 @@ public final class LoopStart extends AbstractSymbolFunctionForm
         }
 
         ((AbstractDocument) jTextFieldCondition.getDocument()).setDocumentFilter(
-                new BooleanValueFilter(jTextFieldCondition, validationListener));
+                new BooleanValueFilter(jTextFieldCondition, validationListener,
+                        maxBalloonSizeCallback));
         AbstractSymbolFunctionForm.enhanceWithUndoRedoCapability(jTextFieldCondition);
         addDocumentListeners();
         super.trimSize();
@@ -158,12 +163,12 @@ public final class LoopStart extends AbstractSymbolFunctionForm
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 2, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         jLabel3.setText("Příklady:");
 
-        jLabelExamples.setText("<html>\n- A > 0<br />\n- A >= B<br />\n- (A != B) & (A > 0)<br />\n- bool<br />\n- !bool<br />\n- !((A+B=C) | (B-A=C))\n</html>");
+        jLabelExamples.setText("<html>\n- A > 0<br />\n- A >= B<br />\n- (A != B) && (A > 0)<br />\n- bool<br />\n- !bool<br />\n- !((A+B=C) || (B-A=C))\n</html>");
         jLabelExamples.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -188,7 +193,7 @@ public final class LoopStart extends AbstractSymbolFunctionForm
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabelExamples, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(263, Short.MAX_VALUE))
+                .addContainerGap(249, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -233,6 +238,12 @@ public final class LoopStart extends AbstractSymbolFunctionForm
     {
         generateValues();
         super.fireChangeEventToEditManager();
+    }
+
+    @Override
+    public JTextField getJTextFieldToDispatchKeyEventsAt()
+    {
+        return jTextFieldCondition;
     }
 
     private class LoopStartValidationListener implements ValidationListener

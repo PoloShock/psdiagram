@@ -11,9 +11,11 @@ import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditManager;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.NoArrayVariableFilter;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.NumericValueFilter;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
+import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.MaxBalloonSizeCallback;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.VariableFilter;
 import java.util.LinkedHashMap;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.BadLocationException;
@@ -36,8 +38,10 @@ public final class For extends AbstractSymbolFunctionForm
      * @param element element, kterého se tento formulář týká
      * @param flowchartEditManager FlowchartEditManager, spravující editační
      * režim aplikace
+     * @param maxBalloonSizeCallback
      */
-    public For(LayoutElement element, FlowchartEditManager flowchartEditManager)
+    public For(LayoutElement element, FlowchartEditManager flowchartEditManager,
+            MaxBalloonSizeCallback maxBalloonSizeCallback)
     {
         super(element, flowchartEditManager);
         /*
@@ -104,15 +108,20 @@ public final class For extends AbstractSymbolFunctionForm
         }
 
         ((AbstractDocument) jTextFieldVar.getDocument()).setDocumentFilter(
-                new NoArrayVariableFilter(jTextFieldVar, validationListener));
-        ((AbstractDocument) jTextFieldFrom.getDocument()).setDocumentFilter(
-                new NumericValueFilter(jTextFieldFrom, validationListener));
-        ((AbstractDocument) jTextFieldForTo.getDocument()).setDocumentFilter(
-                new NumericValueFilter(jTextFieldForTo, validationListener));
+                new NoArrayVariableFilter(jTextFieldVar, validationListener,
+                        maxBalloonSizeCallback));
+        ((AbstractDocument) jTextFieldFrom.getDocument()).setDocumentFilter(new NumericValueFilter(
+                jTextFieldFrom, validationListener,
+                maxBalloonSizeCallback));
+        ((AbstractDocument) jTextFieldForTo.getDocument()).setDocumentFilter(new NumericValueFilter(
+                jTextFieldForTo, validationListener,
+                maxBalloonSizeCallback));
         ((AbstractDocument) jTextFieldIncrement.getDocument()).setDocumentFilter(
-                new NumericValueFilter(jTextFieldIncrement, validationListener));
-        ((AbstractDocument) jTextFieldForeach.getDocument()).setDocumentFilter(
-                new VariableFilter(jTextFieldForeach, validationListener));
+                new NumericValueFilter(jTextFieldIncrement, validationListener,
+                        maxBalloonSizeCallback));
+        ((AbstractDocument) jTextFieldForeach.getDocument()).setDocumentFilter(new VariableFilter(
+                jTextFieldForeach, validationListener,
+                maxBalloonSizeCallback));
         AbstractSymbolFunctionForm.enhanceWithUndoRedoCapability(jTextFieldVar);
         AbstractSymbolFunctionForm.enhanceWithUndoRedoCapability(jTextFieldFrom);
         AbstractSymbolFunctionForm.enhanceWithUndoRedoCapability(jTextFieldForTo);
@@ -514,6 +523,12 @@ public final class For extends AbstractSymbolFunctionForm
     {
         generateValues();
         super.fireChangeEventToEditManager();
+    }
+
+    @Override
+    public JTextField getJTextFieldToDispatchKeyEventsAt()
+    {
+        return jTextFieldVar;
     }
 
     private class ForValidationListener implements ValidationListener

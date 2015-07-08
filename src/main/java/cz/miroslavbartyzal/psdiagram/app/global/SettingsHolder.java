@@ -4,6 +4,7 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.global;
 
+import cz.miroslavbartyzal.psdiagram.app.Main;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.AbstractLayout;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.EnumLayout;
 import java.awt.Font;
@@ -13,6 +14,7 @@ import java.awt.RenderingHints;
 import java.awt.font.FontRenderContext;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.ResourceBundle;
 import javax.xml.bind.JAXBContext;
@@ -22,6 +24,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>
@@ -46,6 +49,7 @@ public final class SettingsHolder
     private static final Marshaller jAXBmarshaller; // Marshaller se bude vyuzivat frekventovane
     public static final File WORKING_DIR = new File(System.getProperty("user.home"), ".psdiagram");
     public static final File MY_DIR;
+    public static final File MY_FILE;
     private static final File settingsFile = new File(WORKING_DIR, "settings.xml");
 
     // automaticke loadovani nastaveni
@@ -84,12 +88,18 @@ public final class SettingsHolder
         }
 
         // resolve self location
-//        try {
-//            MY_DIR = new File(
-//                    Main.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParentFile();
+        File myFile = null;
+        try {
+            myFile = new File(
+                    Main.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
+        } catch (URISyntaxException ex) {
+            ex.printStackTrace(System.err);
+        }
+        MY_FILE = myFile;
+//        if (MY_FILE != null) {
+//            MY_DIR = MY_FILE.getParentFile();
+//        } else {
         MY_DIR = Paths.get("").toAbsolutePath().toFile();
-//        } catch (URISyntaxException ex) {
-//            ex.printStackTrace(System.err);
 //        }
     }
 
@@ -143,7 +153,7 @@ public final class SettingsHolder
     /**
      * Uloží aktuální nastavení do souboru (user.home)/.psdiagram/settings.xml.
      */
-    private static void saveSettings()
+    public static void saveSettings()
     {
         if (jAXBcontext == null || jAXBmarshaller == null) {
             return; // nelze vytvořit xml :(
@@ -238,6 +248,7 @@ public final class SettingsHolder
      */
     @XmlRootElement(name = "settings")
     @XmlAccessorType(XmlAccessType.NONE)
+    @XmlType(name = "settings")
     public final static class Settings
     {
 
@@ -265,6 +276,7 @@ public final class SettingsHolder
         // aktuální, uložený soubor diagramu - slouží také k načtení při příštím spuštění
         @XmlElement(name = "actualFlowchartFile")
         private File actualFlowchartFile;
+        //Used when diagram from library or backup is opened so it is not saved in its original file destination.
         @XmlElement(name = "dontSaveDirectly")
         private boolean dontSaveDirectly = false;
         @XmlElement(name = "exportTransparency")

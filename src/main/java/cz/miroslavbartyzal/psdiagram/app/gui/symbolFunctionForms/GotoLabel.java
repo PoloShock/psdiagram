@@ -9,7 +9,9 @@ import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.EnumSymbol;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
 import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditManager;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
+import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.MaxBalloonSizeCallback;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 
 /**
@@ -20,8 +22,8 @@ import javax.swing.event.DocumentEvent;
 public final class GotoLabel extends AbstractSymbolFunctionForm
 {
 
-    private JLabel jLabelDescription;
-    private Symbol mySymbol = EnumSymbol.GOTOLABEL.getInstance(null);
+    private final JLabel jLabelDescription;
+    private final Symbol mySymbol = EnumSymbol.GOTOLABEL.getInstance(null);
 
     /**
      * Konstruktor, inicializující tento formulář.
@@ -29,8 +31,10 @@ public final class GotoLabel extends AbstractSymbolFunctionForm
      * @param element element, kterého se tento formulář týká
      * @param flowchartEditManager FlowchartEditManager, spravující editační
      * režim aplikace
+     * @param maxBalloonSizeCallback
      */
-    public GotoLabel(LayoutElement element, FlowchartEditManager flowchartEditManager)
+    public GotoLabel(LayoutElement element, FlowchartEditManager flowchartEditManager,
+            MaxBalloonSizeCallback maxBalloonSizeCallback)
     {
         super(element, flowchartEditManager);
         super.setHasCommandsToSet(false);
@@ -104,6 +108,8 @@ public final class GotoLabel extends AbstractSymbolFunctionForm
 
     /**
      * Metoda s prázdným tělem.
+     * <p>
+     * @param de
      */
     @Override
     public void changedUpdate(DocumentEvent de)
@@ -112,6 +118,8 @@ public final class GotoLabel extends AbstractSymbolFunctionForm
 
     /**
      * Metoda s prázdným tělem.
+     * <p>
+     * @param de
      */
     @Override
     public void insertUpdate(DocumentEvent de)
@@ -120,10 +128,18 @@ public final class GotoLabel extends AbstractSymbolFunctionForm
 
     /**
      * Metoda s prázdným tělem.
+     * <p>
+     * @param de
      */
     @Override
     public void removeUpdate(DocumentEvent de)
     {
+    }
+
+    @Override
+    public JTextField getJTextFieldToDispatchKeyEventsAt()
+    {
+        return null;
     }
 
 }

@@ -7,6 +7,7 @@ package cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip;
 
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -36,13 +37,17 @@ public class PSDBalloonToolTip
     private final FadeOutTimer fadeOutTimer;
     private static final int ARC_SIZE = 5;
     private int lastInitialDelay = -1;
+    private boolean displayMessages = false;
     private final JPanel balloonTipTempContent;
     private final JLabel balloonTipTempMessage;
     private final JComponent parentComponent;
+    private final MaxBalloonSizeCallback maxBalloonSizeCallback;
 
-    public PSDBalloonToolTip(JComponent parentComponent)
+    public PSDBalloonToolTip(JComponent parentComponent,
+            MaxBalloonSizeCallback maxBalloonSizeCallback)
     {
         this.parentComponent = parentComponent;
+        this.maxBalloonSizeCallback = maxBalloonSizeCallback;
         JLabel balloonTipMessage = new JLabel();
         JLabel balloonTipCommand = new JLabel();
         balloonTipMessage.setFont(SettingsHolder.CODEFONT);
@@ -61,14 +66,29 @@ public class PSDBalloonToolTip
         balloonTipTempContent.add(balloonTipTempMessage);
 
         balloonTipStyle = new RoundedBalloonStyle(ARC_SIZE, ARC_SIZE, Color.WHITE, Color.BLACK);
-        balloonTip = new BalloonTip(parentComponent, balloonTipContent, balloonTipStyle, false);
+        balloonTip = new BalloonTip(parentComponent, balloonTipContent, balloonTipStyle, false)
+        {
+            @Override
+            public Dimension getPreferredSize()
+            {
+                Dimension dimension = new Dimension(super.getPreferredSize());
+                Dimension dimMax = PSDBalloonToolTip.this.maxBalloonSizeCallback.getMaxBalloonSize();
+                if (dimension.width > dimMax.width) {
+                    dimension.width = dimMax.width;
+                }
+                if (dimension.height > dimMax.height) {
+                    dimension.height = dimMax.height;
+                }
+                return dimension;
+            }
+        };
         balloonTip.setVisible(false);
 
         MyMouseMotionListener myMouseMotionListener = new MyMouseMotionListener();
         balloonTip.addMouseListener(myMouseMotionListener);
         balloonTip.addMouseMotionListener(myMouseMotionListener);
 
-        fadeOutTimer = new FadeOutTimer(500, 2000, 25);
+        fadeOutTimer = new FadeOutTimer(500, 3000, 25);
 
         parentComponent.addFocusListener(new FocusListener()
         {
@@ -81,17 +101,19 @@ public class PSDBalloonToolTip
             @Override
             public void focusGained(FocusEvent e)
             {
-                if (lastInitialDelay >= 0) {
-                    fadeOutTimer.setInitialDelay(lastInitialDelay);
+                if (displayMessages) {
                     fadeOutTimer.stopFadingOut();
                     balloonTip.setContents(balloonTipContent);
                     balloonTip.setVisible(true);
 
-                    if (balloonTip.getMousePosition() == null || balloonTip.getMousePosition().y > balloonTip.getHeight() - balloonTipStyle.getMinimalHorizontalOffset() + ARC_SIZE) {
-                        // mouse pointer is not inside of the balloon tool tip
-                        fadeOutTimer.startFadingOut();
+                    if (lastInitialDelay >= 0) {
+                        fadeOutTimer.setInitialDelay(lastInitialDelay);
+                        if (balloonTip.getMousePosition() == null || balloonTip.getMousePosition().y > balloonTip.getHeight() - balloonTipStyle.getMinimalHorizontalOffset() + ARC_SIZE) {
+                            // mouse pointer is not inside of the balloon tool tip
+                            fadeOutTimer.startFadingOut();
+                        }
+                        fadeOutTimer.setInitialDelay(100); // for the cases after the first fading out
                     }
-                    fadeOutTimer.setInitialDelay(100); // for the cases after the first fading out
                 }
             }
         });
@@ -100,16 +122,22 @@ public class PSDBalloonToolTip
     public void wipeMessage()
     {
         lastInitialDelay = -1;
+        displayMessages = false;
         dismiss();
     }
 
-    public void showMessages(List<String> messages, int initialDelay)
+    /**
+     * Shows messages from by top to bottom layout for given milliseconds.
+     * <p>
+     * @param messages
+     * @param timeMilliseconds can be negative number - in that case messages never disappear on their own
+     */
+    public void showMessages(List<String> messages, int timeMilliseconds)
     {
-        lastInitialDelay = initialDelay;
+        displayMessages = true;
+        lastInitialDelay = timeMilliseconds;
 
-        fadeOutTimer.setInitialDelay(initialDelay);
         fadeOutTimer.stopFadingOut();
-
         balloonTipContent.removeAll();
         for (String message : messages) {
             JLabel jLabel = new JLabel(message);
@@ -119,13 +147,15 @@ public class PSDBalloonToolTip
         balloonTip.setContents(balloonTipContent);
         if (parentComponent.hasFocus()) {
             balloonTip.setVisible(true);
-
-            if (balloonTip.getMousePosition() == null || balloonTip.getMousePosition().y > balloonTip.getHeight() - balloonTipStyle.getMinimalHorizontalOffset() + ARC_SIZE) {
-                // mouse pointer is not inside of the balloon tool tip
-                fadeOutTimer.startFadingOut();
+            if (lastInitialDelay >= 0) {
+                fadeOutTimer.setInitialDelay(timeMilliseconds);
+                if (balloonTip.getMousePosition() == null || balloonTip.getMousePosition().y > balloonTip.getHeight() - balloonTipStyle.getMinimalHorizontalOffset() + ARC_SIZE) {
+                    // mouse pointer is not inside of the balloon tool tip
+                    fadeOutTimer.startFadingOut();
+                }
+                fadeOutTimer.setInitialDelay(100); // for the cases after the first fading out
             }
         }
-        fadeOutTimer.setInitialDelay(100); // for the cases after the first fading out
     }
 
     /**
@@ -133,11 +163,11 @@ public class PSDBalloonToolTip
      * Instead, the previous one will pop up if present.
      * <p>
      * @param message
-     * @param initialDelay
+     * @param timeMilliseconds
      */
-    public void showTemporaryMessage(String message, int initialDelay)
+    public void showTemporaryMessage(String message, int timeMilliseconds)
     {
-        fadeOutTimer.setInitialDelay(initialDelay);
+        fadeOutTimer.setInitialDelay(timeMilliseconds);
         fadeOutTimer.stopFadingOut();
 
         balloonTipTempMessage.setText(message);
@@ -162,17 +192,21 @@ public class PSDBalloonToolTip
         @Override
         public void mouseMoved(MouseEvent e)
         {
-            if (e.getY() <= e.getComponent().getHeight() - balloonTipStyle.getMinimalHorizontalOffset() + ARC_SIZE) { // the ARC_SIZE is there just because RoundedBalloonStyle returns bad offset
-                fadeOutTimer.stopFadingOut();
-            } else {
-                fadeOutTimer.startFadingOut();
+            if (lastInitialDelay >= 0) {
+                if (e.getY() <= e.getComponent().getHeight() - balloonTipStyle.getMinimalHorizontalOffset() + ARC_SIZE) { // the ARC_SIZE is there just because RoundedBalloonStyle returns bad offset
+                    fadeOutTimer.stopFadingOut();
+                } else {
+                    fadeOutTimer.startFadingOut();
+                }
             }
         }
 
         @Override
         public void mouseExited(MouseEvent e)
         {
-            fadeOutTimer.startFadingOut();
+            if (lastInitialDelay >= 0) {
+                fadeOutTimer.startFadingOut();
+            }
         }
 
         @Override

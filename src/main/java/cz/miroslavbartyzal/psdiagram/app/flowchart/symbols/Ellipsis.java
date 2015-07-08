@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlType;
 public final class Ellipsis extends AbstractSymbol
 {
 
-    private Path2D myShape = new Path2D.Double(Path2D.WIND_NON_ZERO, 7);
+    private final Path2D myShape = new Path2D.Double(Path2D.WIND_NON_ZERO, 7);
 
     private Ellipsis()
     {

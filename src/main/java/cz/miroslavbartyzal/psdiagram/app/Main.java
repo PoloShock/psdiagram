@@ -27,7 +27,7 @@ public final class Main
     // TODO pridat info o verzi a licenci
     // TODO prepnuti focusu z platna do textboxu i pri editaci funkce symbolu
     // TODO ukolovani studentu? (seradit spravne kroky algoritmu, vyuziti jen urciteho poctu prikazu apod.)
-    // TODO moĹľnost nastavenĂ­ barev v editacnim i animacnim rezimu
+    // TODO možnost nastavení barev v editacnim i animacnim rezimu
     // TODO po dvojitem poklepani na symbol, prepnout docasne na zalozku Text (nebo toggle?) Docasne proto, aby po vlozeni dalsiho symbolu jiz byla opet vybrana Funkce
     // TODO pro skoly nechat defaultni nastaveni jako readonly soubor xml primo u aplikace (co ale s prekopirovanim domu?) - NEBO co preferovat allusers slozku? :) + myslenka: u aplikace zkopirovat soubor do usera pouze pokud uz tam neni vlastni nastaveni
     // TODO menit i zeditovany text symbolu, pokud je zeditovany pouze o mezery ci odradkovani (nebo tak vymyslet automaticke odradkovavani?)
@@ -47,7 +47,7 @@ public final class Main
     // TODO animace uprav layoutu
     // TODO moznost promitani vytvořených algoritmů na webu (pro pasivní učení a prezentaci)? - Jelinek
     // TODO merit zakovi cas za ktery ulohu vykona, monitorovat problemy, se kterymi se setkal (co treba zachovavat vsechny stavy diagramu?) - Jelinek
-    // TODO Timer, udalosti jako procedura (interrupt ÄŤi vlĂˇkno)
+    // TODO Timer, udalosti jako procedura (interrupt či vlákno)
     // TODO mrkni na http://jelastic.com/ a na jejich barvy, maji to cool :); http://www.noip.com/, http://www.hwinfo.com/, http://dinopoloclub.com/minimetro/, http://msysgit.github.io/
     // 			- co takhle jako metro mit nejakou kulickovou linku, v uvodu mit edit mode barvy s pobidkou jit dolu -> preslo by se do debug/anim modu a kulicka by sledovala pozici scrollu, ukotvila by se v jednotlivych vertikalnich sekcich (a treba tam tak nejak 2D kmitala)
     //			- mohlo by se za ni chytit jako easter egg a samozrejme prvky na strance budou opet hazet stiny
@@ -73,8 +73,9 @@ public final class Main
     //e TODO pridat dalsi watermark napovedy
     // TODO v polich pro nazev promenne nabizet jiz existujici promenne
     //e TODO break by mel fungovat i pri animaci..?
-    //e TODO vytvorit vlastni priponu (.psdiagram?) kterou bude mozne asociovat s psdiagram.exe. Do nove ulozky integrovat historii vytvoreni diagramu pomoci systemtime timestampu. Undo akci do teto historie zahrnovat jako beznou akci editace. Pri nacteni diagramu by se meli nacist i undoable edits, pozor ale na ty undo akce viz predchozi veta. Otestovat, jestli asociace prezije aktualizaci (zmena psd.exe). Rozhranni pro timetravel (historie) muze pockat.
-    //      - budu pak muset upravit i podminky pro ukladani a prompty pro ulozeni diagramu - diagram Start-End jiz stoji za ukladani pokud ma historii...
+    // TODO Do ulozky integrovat historii vytvoreni diagramu pomoci systemtime timestampu. Undo akci do teto historie zahrnovat jako beznou akci editace. Pri nacteni diagramu by se meli nacist i undoable edits, pozor ale na ty undo akce viz predchozi veta. Rozhranni pro timetravel (historie) muze pockat.
+    //      - budu pak muset upravit i podminky pro ukladani a prompty pro ulozeni diagramu - diagram s jedinymi symboly Start-End jiz stoji za ukladani pokud ma historii...
+    //      - taky asi bude potreba snizit interval ukladani zalohy kvuli objemnejsimu savu?
     // TODO vyresit ty netransparentni stiny v pdf
     // TODO predelat nalezani otevrenych PSDcek v updateru tak, aby se hledalo podle umisteni souboru a ne podle titulku jeho okna (POZOR: co kdyz to bude bezet z jineho JVMka, bude porad cesta k psd.jar nejak vyhledatelna?)
     // TODO co se deje pri pole = [1, 2, 4][8, 9, 8]??
@@ -96,6 +97,7 @@ public final class Main
     // TODO implementovat escapovani \n\r\t... (\" a \' uz mam implementovane) uvnitr stringu do/z pascalu
     //      - http://www.textfiles.com/bitsavers/pdf/borland/TURBO_Pascal_Reference_Manual_CPM_Version_3_Dec88.pdf
     //      - ftp://ftp.freepascal.org/fpc/docs-pdf/ref.pdf
+    //e!!! TODO donace napr http://defaultprogramseditor.com/
     /**
      * Metoda pro spuštění hlavního okna aplikace. Nejsou přijímány žádné
      * parametry.

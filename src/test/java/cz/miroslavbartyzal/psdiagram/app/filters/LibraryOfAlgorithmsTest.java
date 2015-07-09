@@ -13,6 +13,7 @@ import cz.miroslavbartyzal.psdiagram.app.global.GlobalFunctions;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import cz.miroslavbartyzal.psdiagram.app.gui.ExamplesLoader;
 import cz.miroslavbartyzal.psdiagram.app.gui.MainWindow;
+import cz.miroslavbartyzal.psdiagram.app.persistence.FlowchartSaveContainer;
 import java.io.File;
 import java.util.ArrayList;
 import javax.xml.bind.JAXBException;
@@ -29,13 +30,20 @@ public class LibraryOfAlgorithmsTest
     @Test
     public void libraryTest() throws JAXBException
     {
-        ArrayList<File> libraryItems = ExamplesLoader.loadFiles(new File(SettingsHolder.MY_DIR,
-                "src/main/resources/examples"));
+        ArrayList<File> libraryItems = ExamplesLoader.loadFiles(new File(
+                SettingsHolder.MY_WORKING_DIR, "src/main/resources/intozip/examples"));
         Assert.assertTrue("Library of algorithms appears to be empty.", !libraryItems.isEmpty());
         for (File libraryItem : libraryItems) {
             if (!libraryItem.isDirectory()) {
-                Flowchart<LayoutSegment, LayoutElement> flowchart = GlobalFunctions.unsafeCast(
-                        MainWindow.getJAXBcontext().createUnmarshaller().unmarshal(libraryItem));
+                Flowchart<LayoutSegment, LayoutElement> flowchart;
+                if (libraryItem.getName().endsWith(".xml")) {
+                    flowchart = GlobalFunctions.unsafeCast(
+                            MainWindow.getJAXBcontext().createUnmarshaller().unmarshal(libraryItem));
+                } else {
+                    FlowchartSaveContainer flowchartSaveContainer = GlobalFunctions.unsafeCast(
+                            MainWindow.getJAXBcontext().createUnmarshaller().unmarshal(libraryItem));
+                    flowchart = flowchartSaveContainer.flowchart;
+                }
                 for (LayoutSegment segment : flowchart) {
                     if (segment != null) {
                         for (LayoutElement element : segment) {

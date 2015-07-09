@@ -10,7 +10,7 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.gui;
 
-import cz.miroslavbartyzal.psdiagram.app.recovery.FlowchartCrashRecovery;
+import cz.miroslavbartyzal.psdiagram.app.persistence.recovery.FlowchartCrashRecovery;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.Flowchart;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.EnumLayout;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.Layout;
@@ -38,7 +38,8 @@ import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.MaxBalloonSizeCallback;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.AbstractSymbolFunctionForm;
 import cz.miroslavbartyzal.psdiagram.app.network.TimeCollector;
-import cz.miroslavbartyzal.psdiagram.app.recovery.FlowchartRecovery;
+import cz.miroslavbartyzal.psdiagram.app.persistence.FlowchartSaveContainer;
+import cz.miroslavbartyzal.psdiagram.app.persistence.recovery.FlowchartRecovery;
 import cz.miroslavbartyzal.psdiagram.app.update.Updater;
 import java.awt.Color;
 import java.awt.Component;
@@ -536,7 +537,8 @@ public final class MainWindow extends javax.swing.JFrame
             try {
                 FlowchartRecovery flowchartRecovery = GlobalFunctions.unsafeCast(
                         getJAXBcontext().createUnmarshaller().unmarshal(recoveryFile));
-                openDiagram(flowchartRecovery.flowchart, flowchartRecovery.actualFlowchartFile);
+                openDiagram(flowchartRecovery.flowchartSaveContainer.flowchart,
+                        flowchartRecovery.actualFlowchartFile);
                 SettingsHolder.settings.setDontSaveDirectly(flowchartRecovery.dontSaveDirectly); // we want to preserve that setting (there could be library algorithm opened)
                 flowchartCrashRecovery.realocateBackupFile(recoveryFile.getName());
                 updateTitle();
@@ -1488,7 +1490,8 @@ public final class MainWindow extends javax.swing.JFrame
     }//GEN-LAST:event_jMenuItemExportImageActionPerformed
 
     private void jMenuItemOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemOpenActionPerformed
-        File file = MyFileChooser.openFileDialog(MyFileChooser.FilterType.XML, "Otevřít diagram");
+        File file = MyFileChooser.openFileDialog(MyFileChooser.FilterType.XML_AND_PSDIAGRAM,
+                "Otevřít diagram");
         if (file != null) {
             openDiagram(file);
         }
@@ -1501,8 +1504,13 @@ public final class MainWindow extends javax.swing.JFrame
             try {
                 Marshaller jAXBmarshaller = getJAXBcontext().createMarshaller();
                 jAXBmarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-                jAXBmarshaller.marshal(layout.getFlowchart(),
-                        SettingsHolder.settings.getActualFlowchartFile());
+                if (SettingsHolder.settings.getActualFlowchartFile().getName().endsWith(".xml")) {
+                    jAXBmarshaller.marshal(layout.getFlowchart(),
+                            SettingsHolder.settings.getActualFlowchartFile());
+                } else {
+                    jAXBmarshaller.marshal(new FlowchartSaveContainer(layout.getFlowchart()),
+                            SettingsHolder.settings.getActualFlowchartFile());
+                }
                 flowchartCrashRecovery.updateSavedFlowchart();
                 setStatusText(
                         "Diagram byl úspěšně uložen do " + SettingsHolder.settings.getActualFlowchartFile().getPath(),
@@ -1540,13 +1548,14 @@ public final class MainWindow extends javax.swing.JFrame
             defname = SettingsHolder.settings.getActualFlowchartFile().getName().substring(0,
                     SettingsHolder.settings.getActualFlowchartFile().getName().length() - 4);
         }
-        File file = MyFileChooser.saveFileDialog(MyFileChooser.FilterType.XML, "Uložit diagram",
+        File file = MyFileChooser.saveFileDialog(MyFileChooser.FilterType.PSDIAGRAM,
+                "Uložit diagram",
                 defname);
         if (file != null) {
             try {
                 Marshaller jAXBmarshaller = getJAXBcontext().createMarshaller();
                 jAXBmarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-                jAXBmarshaller.marshal(layout.getFlowchart(), file);
+                jAXBmarshaller.marshal(new FlowchartSaveContainer(layout.getFlowchart()), file);
 
                 SettingsHolder.settings.setDontSaveDirectly(false);
                 SettingsHolder.settings.setActualFlowchartFile(file);
@@ -2300,7 +2309,7 @@ public final class MainWindow extends javax.swing.JFrame
                         java.util.List<File> fileList = GlobalFunctions.unsafeCast(
                                 ts.getTransferable().getTransferData(DataFlavor.javaFileListFlavor));
                         if (fileList != null && fileList.size() == 1 && fileList.get(0).getName().endsWith(
-                                ".xml")) {
+                                ".xml") || fileList.get(0).getName().endsWith(".psdiagram")) {
                             return true;
                         }
                     } catch (InvalidDnDOperationException ex) {
@@ -2317,7 +2326,8 @@ public final class MainWindow extends javax.swing.JFrame
     private static JAXBContext createJAXBContext()
     {
         try {
-            return JAXBContext.newInstance(FlowchartRecovery.class, Flowchart.class,
+            return JAXBContext.newInstance(FlowchartSaveContainer.class, FlowchartRecovery.class,
+                    Flowchart.class,
                     LayoutSegment.class, LayoutElement.class, Comment.class, Decision.class,
                     Ellipsis.class, For.class, Goto.class, GotoLabel.class, IO.class, LoopEnd.class,
                     LoopStart.class,
@@ -2343,7 +2353,12 @@ public final class MainWindow extends javax.swing.JFrame
                 try {
                     Marshaller jAXBmarshaller = getJAXBcontext().createMarshaller();
                     jAXBmarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-                    jAXBmarshaller.marshal(layout.getFlowchart(), baos);
+                    if (SettingsHolder.settings.getActualFlowchartFile().getName().endsWith(".xml")) {
+                        jAXBmarshaller.marshal(layout.getFlowchart(), baos);
+                    } else {
+                        jAXBmarshaller.marshal(new FlowchartSaveContainer(layout.getFlowchart()),
+                                baos);
+                    }
                     if (!Arrays.equals(baos.toByteArray(), Files.readAllBytes(
                             SettingsHolder.settings.getActualFlowchartFile().toPath()))) {
                         if (askAboutIt) {
@@ -2413,8 +2428,8 @@ public final class MainWindow extends javax.swing.JFrame
         if (SettingsHolder.settings.getActualFlowchartFile() == null) {
             super.setTitle(WINDOW_TITLE);
         } else {
-            super.setTitle(SettingsHolder.settings.getActualFlowchartFile().getName().substring(0,
-                    SettingsHolder.settings.getActualFlowchartFile().getName().length() - 4) + " - " + WINDOW_TITLE);
+            String fileName = SettingsHolder.settings.getActualFlowchartFile().getName();
+            super.setTitle(fileName.substring(0, fileName.lastIndexOf(".")) + " - " + WINDOW_TITLE);
         }
     }
 
@@ -2424,8 +2439,15 @@ public final class MainWindow extends javax.swing.JFrame
             return;
         }
         try {
-            Flowchart<LayoutSegment, LayoutElement> flowchart = GlobalFunctions.unsafeCast(
-                    getJAXBcontext().createUnmarshaller().unmarshal(file));
+            Flowchart<LayoutSegment, LayoutElement> flowchart;
+            if (file.getName().endsWith(".xml")) {
+                flowchart = GlobalFunctions.unsafeCast(
+                        getJAXBcontext().createUnmarshaller().unmarshal(file));
+            } else {
+                FlowchartSaveContainer flowchartSaveContainer = GlobalFunctions.unsafeCast(
+                        getJAXBcontext().createUnmarshaller().unmarshal(file));
+                flowchart = flowchartSaveContainer.flowchart;
+            }
             openDiagram(flowchart, file);
         } catch (JAXBException ex) {
             ex.printStackTrace(System.err);

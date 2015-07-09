@@ -48,8 +48,9 @@ public final class SettingsHolder
     private static final JAXBContext jAXBcontext;
     private static final Marshaller jAXBmarshaller; // Marshaller se bude vyuzivat frekventovane
     public static final File WORKING_DIR = new File(System.getProperty("user.home"), ".psdiagram");
-    public static final File MY_DIR;
     public static final File MY_FILE;
+    public static final File MY_DIR;
+    public static final File MY_WORKING_DIR; // dir in which this instance of PS Diagram was launched at
     private static final File settingsFile = new File(WORKING_DIR, "settings.xml");
 
     // automaticke loadovani nastaveni
@@ -96,11 +97,12 @@ public final class SettingsHolder
             ex.printStackTrace(System.err);
         }
         MY_FILE = myFile;
-//        if (MY_FILE != null) {
-//            MY_DIR = MY_FILE.getParentFile();
-//        } else {
-        MY_DIR = Paths.get("").toAbsolutePath().toFile();
-//        }
+        MY_WORKING_DIR = Paths.get("").toAbsolutePath().toFile();
+        if (MY_FILE != null) {
+            MY_DIR = MY_FILE.getParentFile();
+        } else {
+            MY_DIR = MY_WORKING_DIR; // assign at least working dir so MY_DIR is not null
+        }
     }
 
     private SettingsHolder()
@@ -289,6 +291,8 @@ public final class SettingsHolder
         private String proxyHost = "";
         @XmlElement(name = "proxyPort")
         private int proxyPort = -1;
+        @XmlElement(name = "associateExtension")
+        private Boolean associateExtension;
 
         /**
          * Vrátí, zda má animační kulička zářit, či nikoliv.
@@ -589,6 +593,16 @@ public final class SettingsHolder
         {
             this.proxyPort = proxyPort;
             saveSettings();
+        }
+
+        public Boolean getAssociateExtension()
+        {
+            return associateExtension;
+        }
+
+        public void setAssociateExtension(Boolean associateExtension)
+        {
+            this.associateExtension = associateExtension;
         }
 
     }

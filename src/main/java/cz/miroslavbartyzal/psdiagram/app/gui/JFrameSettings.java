@@ -4,10 +4,15 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.gui;
 
+import com.sun.jna.platform.win32.Advapi32Util;
+import com.sun.jna.platform.win32.Win32Exception;
+import com.sun.jna.platform.win32.WinReg;
+import cz.miroslavbartyzal.psdiagram.app.global.GlobalFunctions;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditManager;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.io.File;
 import javax.swing.JSpinner;
 import javax.swing.JViewport;
 import javax.swing.text.AbstractDocument;
@@ -37,6 +42,23 @@ public final class JFrameSettings extends javax.swing.JFrame
         this.flowchartEditManager = flowchartEditManager;
         initComponents();
         jCheckBoxLoadLast.setSelected(SettingsHolder.settings.isLoadLastFlowchart());
+
+        if (GlobalFunctions.isWindows()) {
+            if (SettingsHolder.settings.getAssociateExtension() == null) {
+                // application launched with settings not specifing association -> lets try to set it with care of possible other defaults to *.psdiagram
+                boolean success = ensureAssociationState(true, true);
+                jCheckBoxAssoc.setSelected(success);
+                if (success) {
+                    SettingsHolder.settings.setAssociateExtension(true); // association was successfuly assigned -> lets save it
+                }
+            } else {
+                jCheckBoxAssoc.setSelected(ensureAssociationState(
+                        SettingsHolder.settings.getAssociateExtension(), true));
+            }
+        } else {
+            jCheckBoxAssoc.setEnabled(false);
+        }
+
         jCheckBoxFunctionFilters.setSelected(SettingsHolder.settings.isFunctionFilters());
         jCheckBoxBallShine.setSelected(SettingsHolder.settings.isBallShine());
         jSliderRadius.setEnabled(jCheckBoxBallShine.isSelected());
@@ -158,6 +180,8 @@ public final class JFrameSettings extends javax.swing.JFrame
         jPanel10 = new javax.swing.JPanel();
         jCheckBoxLoadLast = new javax.swing.JCheckBox();
         jLabel8 = new javax.swing.JLabel();
+        jCheckBoxAssoc = new javax.swing.JCheckBox();
+        jLabel11 = new javax.swing.JLabel();
         jPanelEditMode = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jPanel1 = new javax.swing.JPanel();
@@ -213,14 +237,28 @@ public final class JFrameSettings extends javax.swing.JFrame
 
         jLabel8.setText("<html>\nJe-li volba povolena a pokud při minulém zavření aplikace byl otevřen uložený diagram, při opětovném spuštění aplikace se tento diagram znovu načte.\n</html>");
 
+        jCheckBoxAssoc.setText("Asociovat s příponou *.psdiagram");
+        jCheckBoxAssoc.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                jCheckBoxAssocActionPerformed(evt);
+            }
+        });
+
+        jLabel11.setText("<html>\nJe-li volba povolena a ve Windows je poklepáno na uložený soubor diagramu, otevře se automaticky v PS Diagramu.\n</html>");
+
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
         jPanel10.setLayout(jPanel10Layout);
         jPanel10Layout.setHorizontalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel8)
+            .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
             .addGroup(jPanel10Layout.createSequentialGroup()
-                .addComponent(jCheckBoxLoadLast)
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jCheckBoxLoadLast)
+                    .addComponent(jCheckBoxAssoc))
                 .addGap(0, 204, Short.MAX_VALUE))
-            .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
         );
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -228,7 +266,11 @@ public final class JFrameSettings extends javax.swing.JFrame
                 .addComponent(jCheckBoxLoadLast)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 222, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jCheckBoxAssoc)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 122, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
@@ -667,14 +709,32 @@ public final class JFrameSettings extends javax.swing.JFrame
             SettingsHolder.settings.setFps((int) jSpinnerFPS.getValue());
         }
     }//GEN-LAST:event_jSpinnerFPSStateChanged
+
+    private void jCheckBoxAssocActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jCheckBoxAssocActionPerformed
+    {//GEN-HEADEREND:event_jCheckBoxAssocActionPerformed
+        if (!initializing) {
+            boolean realState = ensureAssociationState(jCheckBoxAssoc.isSelected(), false);
+            if (jCheckBoxAssoc.isSelected() != realState) {
+                initializing = true;
+                jCheckBoxAssoc.setSelected(realState);
+                initializing = false;
+            } else {
+                // state successfuly changed
+                SettingsHolder.settings.setAssociateExtension(jCheckBoxAssoc.isSelected());
+            }
+        }
+    }//GEN-LAST:event_jCheckBoxAssocActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroupScopes;
+    private javax.swing.JCheckBox jCheckBoxAssoc;
     private javax.swing.JCheckBox jCheckBoxBallShine;
     private javax.swing.JCheckBox jCheckBoxExportTransparency;
     private javax.swing.JCheckBox jCheckBoxFunctionFilters;
     private javax.swing.JCheckBox jCheckBoxLoadLast;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -709,6 +769,105 @@ public final class JFrameSettings extends javax.swing.JFrame
     private javax.swing.JTabbedPane jTabbedPaneSettings;
     private javax.swing.JTextField jTextFieldPadding;
     // End of variables declaration//GEN-END:variables
+
+    private final File psdiagramExeFile = new File(SettingsHolder.MY_DIR, "PS Diagram.exe");
+    private final String[] appKeysToRemove = new String[]{
+        "Software\\Classes\\cz.miroslavbartyzal.psdiagram\\shell\\open\\command",
+        "Software\\Classes\\cz.miroslavbartyzal.psdiagram\\shell\\open",
+        "Software\\Classes\\cz.miroslavbartyzal.psdiagram\\shell",
+        "Software\\Classes\\cz.miroslavbartyzal.psdiagram"};
+    private final String appCallKey = "Software\\Classes\\cz.miroslavbartyzal.psdiagram\\shell\\open\\command";
+    private final String appCallValue = "\"" + psdiagramExeFile.getAbsolutePath() + "\" \"%1\"";
+    private final String extensionKey = "Software\\Classes\\.psdiagram";
+    private final String extensionValue = "cz.miroslavbartyzal.psdiagram";
+
+    /**
+     * Assigns *.psdiagram file extension association through Windows registry with this
+     * version and location of PS Diagram.
+     * <p>
+     * @param requestAssoc true if association should be enabled
+     * @param preserveOtherValuesIfPresent if true and there is different application assigned with
+     * .*psdiagram file extension, enabling / disabling operation will be canceled. Note that
+     * different application does not mean different path to executable but shortcut key name in the
+     * registry (PS Diagram has "cz.miroslavbartyzal.psdiagram").
+     * @return true if extension is assigned
+     */
+    private boolean ensureAssociationState(boolean requestAssoc,
+            boolean preserveOtherValuesIfPresent)
+    {
+        if (!GlobalFunctions.isWindows() || !psdiagramExeFile.exists()) {
+            return false;
+        }
+
+        if (requestAssoc) {
+            // ensure there is a record in registry so the extension is handled correctly
+            if (preserveOtherValuesIfPresent && !isAirClean()) {
+                return false;
+            }
+
+            Advapi32Util.registryCreateKey(WinReg.HKEY_CURRENT_USER, appCallKey);
+            Advapi32Util.registrySetStringValue(WinReg.HKEY_CURRENT_USER, appCallKey, "",
+                    appCallValue);
+            Advapi32Util.registryCreateKey(WinReg.HKEY_CURRENT_USER, extensionKey);
+            Advapi32Util.registrySetStringValue(WinReg.HKEY_CURRENT_USER, extensionKey, "",
+                    extensionValue);
+        } else {
+            // ensure there is no record in registry
+            if (preserveOtherValuesIfPresent && !isAirClean()) {
+                return false;
+            }
+
+            if (Advapi32Util.registryKeyExists(WinReg.HKEY_CURRENT_USER, extensionKey)) {
+                try {
+                    Advapi32Util.registryDeleteKey(WinReg.HKEY_CURRENT_USER, extensionKey);
+                } catch (Win32Exception ex) {
+                    ex.printStackTrace(System.err);
+                }
+            }
+            // apparently keys with key inside can't be removed directly
+            for (String appKeyToRemove : appKeysToRemove) {
+                if (Advapi32Util.registryKeyExists(WinReg.HKEY_CURRENT_USER, appKeyToRemove)) {
+                    try {
+                        Advapi32Util.registryDeleteKey(WinReg.HKEY_CURRENT_USER, appKeyToRemove);
+                    } catch (Win32Exception ex) {
+                        ex.printStackTrace(System.err);
+                    }
+                }
+            }
+        }
+
+        return Advapi32Util.registryKeyExists(WinReg.HKEY_CURRENT_USER, extensionKey)
+                && Advapi32Util.registryValueExists(WinReg.HKEY_CURRENT_USER, extensionKey, "")
+                && Advapi32Util.registryGetStringValue(WinReg.HKEY_CURRENT_USER, extensionKey, "").equals(
+                        extensionValue)
+                && Advapi32Util.registryKeyExists(WinReg.HKEY_CURRENT_USER, appCallKey)
+                && Advapi32Util.registryValueExists(WinReg.HKEY_CURRENT_USER, appCallKey, "")
+                && Advapi32Util.registryGetStringValue(WinReg.HKEY_CURRENT_USER, appCallKey, "").equals(
+                        appCallValue);
+    }
+
+    private boolean isAirClean()
+    {
+        if (Advapi32Util.registryKeyExists(WinReg.HKEY_CURRENT_USER, extensionKey) // if there is the extensionKey
+                && Advapi32Util.registryValueExists(WinReg.HKEY_CURRENT_USER, extensionKey,
+                        "") // if there is a value in the extensionKey
+                && !Advapi32Util.registryGetStringValue(WinReg.HKEY_CURRENT_USER,
+                        extensionKey, "").equals(extensionValue)) { // if the value is not what is should be, that's it - extension is assign for something else
+            return false;
+        } else if (Advapi32Util.registryKeyExists(WinReg.HKEY_CURRENT_USER, appCallKey) // if there is the appCallKey
+                && Advapi32Util.registryValueExists(WinReg.HKEY_CURRENT_USER, appCallKey, "") // if there is a value in the appCallKey
+                && !Advapi32Util.registryGetStringValue(WinReg.HKEY_CURRENT_USER, appCallKey,
+                        "").equals(appCallValue)) { // if the value is not matching with the supposed value
+            String theValue = Advapi32Util.registryGetStringValue(WinReg.HKEY_CURRENT_USER,
+                    appCallKey, "");
+            if (theValue.endsWith(psdiagramExeFile.getName() + "\" \"%1\"") // and the value is a path to another PS Diagram.exe
+                    && new File(theValue.substring(1,
+                                    theValue.length() - "\" \"%1\"".length())).exists()) { // and the path to another PS Diagram.exe leads to an existing file, that's it - we don't want to change other PSD's associations if preserveOtherValuesIfPresent is set
+                return false;
+            }
+        }
+        return true;
+    }
 
     private void setPreferedSizes()
     {

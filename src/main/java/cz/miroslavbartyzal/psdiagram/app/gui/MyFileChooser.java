@@ -15,9 +15,11 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
- * <p>Tato třída představuje obecný formulář pro ukládání/otevírání souborů.</p>
+ * <p>
+ * Tato třída představuje obecný formulář pro ukládání/otevírání souborů.</p>
  *
- * <p>Obsahuje enumerační třídu, která popisuje sadu použitelných filtrů. Tyto
+ * <p>
+ * Obsahuje enumerační třídu, která popisuje sadu použitelných filtrů. Tyto
  * filtry pak lze aplikovat při výběru souboru, či při jeho ukládání.<br />
  * Pro uživatelův komfort třída automaticky ukládá pomocí třídy SettingsHolder
  * poslední použitý adresář, aby jej při příští invokaci dialogu mohla použít
@@ -36,77 +38,113 @@ public final class MyFileChooser
     {
 
         IMAGE
-        {
-            private FileFilter[] filters;
+                {
+                    private final FileFilter[] filters;
 
-            {
-                TreeSet<String> formats = new TreeSet<>();
-                for (String format : ImageIO.getWriterFormatNames()) {
-                    if (!format.toLowerCase().equals("wbmp")) {
-                        formats.add(format.toLowerCase());
+                    {
+                        TreeSet<String> formats = new TreeSet<>();
+                        for (String format : ImageIO.getWriterFormatNames()) {
+                            if (!format.toLowerCase().equals("wbmp")) {
+                                formats.add(format.toLowerCase());
+                            }
+                        }
+                        filters = new FileFilter[formats.size()];
+                        int i = 0;
+                        for (Iterator<String> it = formats.iterator(); it.hasNext(); i++) {
+                            String format = it.next();
+                            filters[i] = new FileNameExtensionFilter("*." + format, format);
+                        }
                     }
-                }
-                filters = new FileFilter[formats.size()];
-                int i = 0;
-                for (Iterator<String> it = formats.iterator(); it.hasNext(); i++) {
-                    String format = it.next();
-                    filters[i] = new FileNameExtensionFilter("*." + format, format);
-                }
-            }
 
-            @Override
-            FileFilter[] getFileFilters()
-            {
-                return filters;
-            }
-
-            @Override
-            FileFilter getDefaultFileFilter()
-            {
-                for (FileFilter fileFilter : filters) {
-                    if (fileFilter.getDescription().equals("*.png")) {
-                        return fileFilter;
+                    @Override
+                    FileFilter[] getFileFilters()
+                    {
+                        return filters;
                     }
-                }
-                return null;
-            }
-        },
+
+                    @Override
+                    FileFilter getDefaultFileFilter()
+                    {
+                        for (FileFilter fileFilter : filters) {
+                            if (fileFilter.getDescription().equals("*.png")) {
+                                return fileFilter;
+                            }
+                        }
+                        return null;
+                    }
+                },
         PDF
-        {
-            private FileFilter[] filters = {
-                new FileNameExtensionFilter("*.pdf", "pdf")
-            };
+                {
+                    private final FileFilter[] filters = {
+                        new FileNameExtensionFilter("*.pdf", "pdf")
+                    };
 
-            @Override
-            FileFilter[] getFileFilters()
-            {
-                return filters;
-            }
+                    @Override
+                    FileFilter[] getFileFilters()
+                    {
+                        return filters;
+                    }
 
-            @Override
-            FileFilter getDefaultFileFilter()
-            {
-                return filters[0];
-            }
-        },
+                    @Override
+                    FileFilter getDefaultFileFilter()
+                    {
+                        return filters[0];
+                    }
+                },
         XML
-        {
-            private FileFilter[] filters = {
-                new FileNameExtensionFilter("*.xml", "xml")
-            };
+                {
+                    private final FileFilter[] filters = {
+                        new FileNameExtensionFilter("*.xml", "xml")
+                    };
 
-            @Override
-            FileFilter[] getFileFilters()
-            {
-                return filters;
-            }
+                    @Override
+                    FileFilter[] getFileFilters()
+                    {
+                        return filters;
+                    }
 
-            @Override
-            FileFilter getDefaultFileFilter()
-            {
-                return filters[0];
-            }
-        };
+                    @Override
+                    FileFilter getDefaultFileFilter()
+                    {
+                        return filters[0];
+                    }
+                },
+        PSDIAGRAM
+                {
+                    private final FileFilter[] filters = {
+                        new FileNameExtensionFilter("*.psdiagram", "psdiagram")
+                    };
+
+                    @Override
+                    FileFilter[] getFileFilters()
+                    {
+                        return filters;
+                    }
+
+                    @Override
+                    FileFilter getDefaultFileFilter()
+                    {
+                        return filters[0];
+                    }
+                },
+        XML_AND_PSDIAGRAM
+                {
+                    private final FileFilter[] filters = {
+                        new FileNameExtensionFilter("*.psdiagram, *.xml", "psdiagram", "xml")
+                    };
+
+                    @Override
+                    FileFilter[] getFileFilters()
+                    {
+                        return filters;
+                    }
+
+                    @Override
+                    FileFilter getDefaultFileFilter()
+                    {
+                        return filters[0];
+                    }
+                };
 
         abstract FileFilter[] getFileFilters();
 

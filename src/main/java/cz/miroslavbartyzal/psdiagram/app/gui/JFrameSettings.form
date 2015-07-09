@@ -125,11 +125,15 @@
                       <Layout>
                         <DimensionLayout dim="0">
                           <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="jLabel8" max="32767" attributes="0"/>
+                              <Component id="jLabel11" alignment="0" pref="0" max="32767" attributes="0"/>
                               <Group type="102" attributes="0">
-                                  <Component id="jCheckBoxLoadLast" min="-2" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="jCheckBoxLoadLast" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jCheckBoxAssoc" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  </Group>
                                   <EmptySpace min="0" pref="204" max="32767" attributes="0"/>
                               </Group>
-                              <Component id="jLabel8" pref="0" max="32767" attributes="0"/>
                           </Group>
                         </DimensionLayout>
                         <DimensionLayout dim="1">
@@ -138,7 +142,11 @@
                                   <Component id="jCheckBoxLoadLast" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace min="0" pref="222" max="32767" attributes="0"/>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  <Component id="jCheckBoxAssoc" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="jLabel11" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace min="0" pref="122" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
@@ -155,6 +163,19 @@
                         <Component class="javax.swing.JLabel" name="jLabel8">
                           <Properties>
                             <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;Je-li volba povolena a pokud p&#x159;i minul&#xe9;m zav&#x159;en&#xed; aplikace byl otev&#x159;en ulo&#x17e;en&#xfd; diagram, p&#x159;i op&#x11b;tovn&#xe9;m spu&#x161;t&#x11b;n&#xed; aplikace se tento diagram znovu na&#x10d;te.&#xa;&lt;/html&gt;"/>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JCheckBox" name="jCheckBoxAssoc">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="Asociovat s p&#x159;&#xed;ponou *.psdiagram"/>
+                          </Properties>
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCheckBoxAssocActionPerformed"/>
+                          </Events>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="jLabel11">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;Je-li volba povolena a ve Windows je poklep&#xe1;no na ulo&#x17e;en&#xfd; soubor diagramu, otev&#x159;e se automaticky v PS Diagramu.&#xa;&lt;/html&gt;"/>
                           </Properties>
                         </Component>
                       </SubComponents>

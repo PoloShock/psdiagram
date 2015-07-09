@@ -10,6 +10,7 @@ import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutElement;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutSegment;
 import cz.miroslavbartyzal.psdiagram.app.global.GlobalFunctions;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
+import cz.miroslavbartyzal.psdiagram.app.persistence.FlowchartSaveContainer;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,7 +34,9 @@ public class ExamplesLoader
     public static final String EXAMPLES_DIR = "examples";
     public static final File WORKING_DIR_EXAMPLES = new File(SettingsHolder.WORKING_DIR,
             EXAMPLES_DIR);
-    public static final File MYDIR_DIR_EXAMPLES = new File(SettingsHolder.MY_DIR, EXAMPLES_DIR);
+    public static final File MY_DIR_EXAMPLES = new File(SettingsHolder.MY_DIR, EXAMPLES_DIR);
+    public static final File MY_WORKING_DIR_EXAMPLES = new File(SettingsHolder.MY_WORKING_DIR,
+            EXAMPLES_DIR);
 
     public static ArrayList<Component> getExamplesMenuItems(
             ExampleActionListener exampleActionListener)
@@ -74,8 +77,11 @@ public class ExamplesLoader
         if (WORKING_DIR_EXAMPLES.exists() || WORKING_DIR_EXAMPLES.mkdirs()) {
             files.addAll(loadFiles(WORKING_DIR_EXAMPLES));
         }
-        if (MYDIR_DIR_EXAMPLES.exists()) {
-            files.addAll(loadFiles(MYDIR_DIR_EXAMPLES));
+        if (MY_DIR_EXAMPLES.exists()) {
+            files.addAll(loadFiles(MY_DIR_EXAMPLES));
+        }
+        if (!MY_DIR_EXAMPLES.equals(MY_WORKING_DIR_EXAMPLES) && MY_WORKING_DIR_EXAMPLES.exists()) {
+            files.addAll(loadFiles(MY_WORKING_DIR_EXAMPLES));
         }
         return files;
     }
@@ -157,15 +163,21 @@ public class ExamplesLoader
 
     public static boolean isValidFlowchartFile(File file, boolean tryToLoadIt)
     {
-        if (file.getAbsolutePath().endsWith(".xml")) {
+        if (file.getName().endsWith(".xml") || file.getName().endsWith(".psdiagram")) {
             if (!tryToLoadIt) {
                 return true;
             }
             try {
-                Flowchart<LayoutSegment, LayoutElement> flowchart = GlobalFunctions.unsafeCast(
-                        MainWindow.getJAXBcontext().createUnmarshaller().unmarshal(file));
+                if (file.getName().endsWith(".xml")) {
+                    Flowchart<LayoutSegment, LayoutElement> flowchart = GlobalFunctions.unsafeCast(
+                            MainWindow.getJAXBcontext().createUnmarshaller().unmarshal(file));
+                } else {
+                    FlowchartSaveContainer flowchartSaveContainer = GlobalFunctions.unsafeCast(
+                            MainWindow.getJAXBcontext().createUnmarshaller().unmarshal(file));
+                }
                 return true;
             } catch (JAXBException ex) {
+                ex.printStackTrace(System.err);
             }
         }
         return false;
@@ -173,9 +185,14 @@ public class ExamplesLoader
 
     public static String getExamplesLocationLoadToolTip()
     {
-        return "<html>Algoritmy jsou načítány z následujících umístění: <br />"
-                + ExamplesLoader.WORKING_DIR_EXAMPLES + "<br />"
-                + ExamplesLoader.MYDIR_DIR_EXAMPLES + "</html>";
+        String toolTip = "<html>Algoritmy jsou načítány z následujících umístění: <br />"
+                + WORKING_DIR_EXAMPLES + "<br />"
+                + MY_DIR_EXAMPLES;
+        if (!MY_WORKING_DIR_EXAMPLES.equals(MY_DIR_EXAMPLES)) {
+            toolTip += "<br />" + MY_WORKING_DIR_EXAMPLES;
+        }
+        toolTip += "</html>";
+        return toolTip;
     }
 
     public interface ExampleActionListener

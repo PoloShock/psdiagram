@@ -3,10 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.miroslavbartyzal.psdiagram.app.recovery;
+package cz.miroslavbartyzal.psdiagram.app.persistence.recovery;
 
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.Layout;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
+import cz.miroslavbartyzal.psdiagram.app.persistence.FlowchartSaveContainer;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -45,6 +46,7 @@ public class FlowchartCrashRecovery
     private File backupFile = null;
     private RandomAccessFile backupRAFile = null;
     private FileLock backupFileLock = null;
+    private boolean xmlMode = false; // indicates whether we are in compatibility mode (using only flowchart class in .xml file), or if we are saving in modern .psdiagram file with metadata
 
     public FlowchartCrashRecovery(Layout layout, Marshaller jAXBmarshaller)
     {
@@ -86,6 +88,7 @@ public class FlowchartCrashRecovery
     {
         if (SettingsHolder.settings.getActualFlowchartFile() != null) {
             // current flowchart has its save file
+            xmlMode = SettingsHolder.settings.getActualFlowchartFile().getName().endsWith(".xml");
             try {
                 savedFlowchart = new ByteArrayOutputStream();
                 byte[] actualFFBytes = Files.readAllBytes(
@@ -96,6 +99,7 @@ public class FlowchartCrashRecovery
                 savedFlowchart = null;
             }
         } else {
+            xmlMode = false;
             savedFlowchart = null;
         }
         backupFlowchart();
@@ -109,7 +113,13 @@ public class FlowchartCrashRecovery
         if (layout.getFlowchart().getMainSegment().size() > 2) { // TODO here and in mainWindow - in future user could wish to save edited start / end symbols
             try {
                 ByteArrayOutputStream currentFlowchart = new ByteArrayOutputStream();
-                jAXBmarshaller.marshal(layout.getFlowchart(), currentFlowchart);
+                if (xmlMode) {
+                    jAXBmarshaller.marshal(layout.getFlowchart(), currentFlowchart);
+                } else {
+                    jAXBmarshaller.marshal(new FlowchartSaveContainer(layout.getFlowchart()),
+                            currentFlowchart);
+                }
+
                 if (savedFlowchart == null || !Arrays.equals(savedFlowchart.toByteArray(),
                         currentFlowchart.toByteArray())) {
                     // current flowchart (or its changes) is not saved -> should be backed up
@@ -119,7 +129,7 @@ public class FlowchartCrashRecovery
                                     SettingsHolder.settings.getActualFlowchartFile())
                             || !Arrays.equals(backedUpFlowchart.toByteArray(),
                                     currentFlowchart.toByteArray())) {
-                        // current flowchart is not backed up or it is backed up with obsolete actualFlowchartFile record
+                        // current flowchart is not backed up or it is backed up with obsolete actualFlowchartFile record (or any other metadata tested)
                         alocateBackupFile();
                         if (backupRAFile != null) {
                             try {
@@ -129,7 +139,8 @@ public class FlowchartCrashRecovery
 
                                 ByteArrayOutputStream flowchartRecoveryBaos = new ByteArrayOutputStream();
                                 FlowchartRecovery flowchartRecovery = new FlowchartRecovery(
-                                        layout.getFlowchart(), backedUpActualFlowchartFile,
+                                        new FlowchartSaveContainer(layout.getFlowchart()),
+                                        backedUpActualFlowchartFile,
                                         SettingsHolder.settings.isDontSaveDirectly());
                                 jAXBmarshaller.marshal(flowchartRecovery, flowchartRecoveryBaos);
                                 backupRAFile.getChannel().truncate(0);

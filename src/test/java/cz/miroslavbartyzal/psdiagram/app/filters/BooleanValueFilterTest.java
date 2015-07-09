@@ -122,7 +122,7 @@ public class BooleanValueFilterTest
             add("21.58900");
             add("0.0014");
             add("0.0100");
-            add("\"rvglkĂ­ÄŤĹ™Ăˇ51../.59\""); // = "rvglkĂ­ÄŤĹ™Ăˇ51../.59"
+            add("\"rvglkíčřá51../.59\""); // = "rvglkíčřá51../.59"
             add("\"\""); // ""
             add("a / -1");
             add("a + -1");
@@ -299,7 +299,7 @@ public class BooleanValueFilterTest
             add("98,\"1\""); // = 98,"1"
             add("\"a\",98"); // = "a",98
             add("98, 5");
-            add("\"-*/ÄŤĹˇ\", \"00\""); // = "-*/ÄŤĹˇ" "00"
+            add("\"-*/čš\", \"00\""); // = "-*/čš" "00"
             add("\"abc\",\"a\"b\""); // = "abc","a"b"
             add("\"a\"c\",\"ab\""); // = "a"c","ab"
 
@@ -309,11 +309,11 @@ public class BooleanValueFilterTest
             add(",");
             add(",12");
             add("98,,45");
-            add("\"-*/ÄŤĹˇ\",\"00,,,"); // = "-*/ÄŤĹˇ","00,,,
+            add("\"-*/čš\",\"00,,,"); // = "-*/čš","00,,,
             add(",\"ab\"");
             add("\"f\",,\"12,,,\"");
             add("98,51,91.01,0.10,0");
-            add("\"-*/ÄŤĹˇ\",\"00\""); // = "-*/ÄŤĹˇ","00"
+            add("\"-*/čš\",\"00\""); // = "-*/čš","00"
             add("98,\"1\""); // = 98,"1"
             add("\"a\",98"); // = "a",98
             add("true,false,9");
@@ -330,7 +330,7 @@ public class BooleanValueFilterTest
             add("pom[0.1]");
             add("pom[0 1]");
             add("1pom");
-            add("promÄ›nnĂˇ");
+            add("proměnná");
 //            add("dlouhynazev23456789012345678901"); <- 31 chars let's allow unlimited length variable names
             add("po,m");
             add("true[a]");

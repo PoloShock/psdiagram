@@ -3,12 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.miroslavbartyzal.psdiagram.app.recovery;
+package cz.miroslavbartyzal.psdiagram.app.persistence;
 
 import cz.miroslavbartyzal.psdiagram.app.flowchart.Flowchart;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutElement;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutSegment;
-import java.io.File;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -19,29 +18,22 @@ import javax.xml.bind.annotation.XmlType;
  *
  * @author Miroslav Bartyzal (miroslavbartyzal@gmail.com)
  */
-@XmlRootElement(name = "flowchartRecovery")
+@XmlRootElement(name = "flowchartSaveContainer")
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlType(name = "flowchartRecovery")
-public class FlowchartRecovery
+@XmlType(name = "flowchartSaveContainer")
+public class FlowchartSaveContainer
 {
 
     @XmlElement(name = "flowchart", required = true)
     public Flowchart<LayoutSegment, LayoutElement> flowchart;
-    @XmlElement(name = "actualFlowchartFile")
-    public File actualFlowchartFile;
-    @XmlElement(name = "dontSaveDirectly")
-    public boolean dontSaveDirectly;
 
-    private FlowchartRecovery()
+    private FlowchartSaveContainer()
     {
     }
 
-    public FlowchartRecovery(Flowchart<LayoutSegment, LayoutElement> flowchart,
-            File actualFlowchartFile, boolean dontSaveDirectly)
+    public FlowchartSaveContainer(Flowchart<LayoutSegment, LayoutElement> flowchart)
     {
         this.flowchart = flowchart;
-        this.actualFlowchartFile = actualFlowchartFile;
-        this.dontSaveDirectly = dontSaveDirectly;
     }
 
 }

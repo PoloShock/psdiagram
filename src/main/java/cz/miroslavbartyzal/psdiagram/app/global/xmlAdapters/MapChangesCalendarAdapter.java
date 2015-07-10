@@ -7,9 +7,9 @@ package cz.miroslavbartyzal.psdiagram.app.global.xmlAdapters;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
@@ -32,7 +32,7 @@ public final class MapChangesCalendarAdapter extends XmlAdapter<MapChangesCalend
         for (Map.Entry<String, Calendar> entry : map.entrySet()) {
             mapType.entryList.add(new MapEntry(entry.getKey(),
                     entry.getValue().get(Calendar.YEAR) + "-" + entry.getValue().get(Calendar.MONTH) + "-" + entry.getValue().get(
-                    Calendar.DAY_OF_MONTH)));
+                            Calendar.DAY_OF_MONTH)));
         }
         return mapType;
     }
@@ -40,7 +40,7 @@ public final class MapChangesCalendarAdapter extends XmlAdapter<MapChangesCalend
     @Override
     public Map<String, Calendar> unmarshal(MapType type) throws Exception
     {
-        Map<String, Calendar> map = new HashMap<>();
+        Map<String, Calendar> map = new TreeMap<>();
         for (MapEntry entry : type.entryList) {
             String[] s = entry.date.trim().split("\\-");
             map.put(entry.version, new GregorianCalendar(Integer.parseInt(s[0]), Integer.parseInt(

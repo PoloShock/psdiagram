@@ -4,7 +4,7 @@
 
     <groupId>cz.miroslavbartyzal</groupId>
     <artifactId>psdiagram</artifactId>
-    <version>1.3.3-SNAPSHOT</version>
+    <version>1.4-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>PS Diagram</name>
     <url>http://www.psdiagram.cz</url>
@@ -99,7 +99,7 @@
                     <plugin>
                         <groupId>cz.miroslavbartyzal</groupId>
                         <artifactId>versioninfo-maven-plugin</artifactId>
-                        <version>1.0</version>
+                        <version>1.1</version>
                         <executions>
                             <execution>
                                 <phase>generate-test-resources</phase> <!-- in order to test it in unit test -->
@@ -241,7 +241,7 @@
                     <plugin>
                         <groupId>cz.miroslavbartyzal</groupId>
                         <artifactId>directoryfootprint-maven-plugin</artifactId>
-                        <version>1.0</version>
+                        <version>1.1</version>
                         <executions>
                             <execution>
                                 <phase>integration-test</phase>
@@ -252,6 +252,9 @@
                                     <inputDirectory>${project.build.directory}/OPENSHIFT_DATA/PS_Diagram_${project.version}</inputDirectory>
                                     <version>${project.version}</version>
                                     <outputFile>${project.build.directory}/zip/dirfootprint.xml</outputFile>
+                                    <zipIt>true</zipIt>
+                                    <zipPassword>fuckyouavast</zipPassword>
+                                    <zipExtension>psdzip</zipExtension>
                                 </configuration>
                             </execution>
                         </executions>

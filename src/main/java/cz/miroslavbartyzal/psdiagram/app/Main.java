@@ -22,8 +22,8 @@ public final class Main
     // TODO do budoucna podprogram moznst expandovat/collapsovat :)
     // TODO nastaveni zarovnavani komentarovych textu
     // TODO odkazy na weby obrazku
-    //e TODO exception handling: http://stackoverflow.com/questions/4590295/catch-exception-high-in-the-call-stack-when-dealing-with-n-tiers
-    //e TODO logovani
+    //e TODO exception handling + updater: http://stackoverflow.com/questions/4590295/catch-exception-high-in-the-call-stack-when-dealing-with-n-tiers
+    //e TODO logovani + updater
     // TODO pridat info o verzi a licenci
     // TODO prepnuti focusu z platna do textboxu i pri editaci funkce symbolu
     // TODO ukolovani studentu? (seradit spravne kroky algoritmu, vyuziti jen urciteho poctu prikazu apod.)
@@ -62,7 +62,6 @@ public final class Main
     // TODO moznost zkompilovat diagram do spustitelneho souboru
     // TODO zvazit pouziti delty (viz opengl projekt) pri animaci
     // TODO nemel bych pro ziskani casu posilat HTTP HEAD misto GET?
-    // TODO koukni po jednotce kibibyte v updateru - nemam to prehozene s kilobytem?
     // TODO drag&drop nejen do PSD ale i z nej - presun diagramu jako export tahem do emailove prilohy apod.
     // TODO u proguardu dynamicky do manifestu priradit main podle jeho obfuskace - tak nebudu muset zachovavat balickovou cestu k mainu
     // TODO pohyb mezi symboly v editacnim rezimu pomoci kurzorovych sipek

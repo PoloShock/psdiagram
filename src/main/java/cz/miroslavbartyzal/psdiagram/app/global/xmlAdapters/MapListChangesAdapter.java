@@ -5,9 +5,9 @@
 package cz.miroslavbartyzal.psdiagram.app.global.xmlAdapters;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
@@ -38,7 +38,7 @@ public final class MapListChangesAdapter extends XmlAdapter<MapListChangesAdapte
     @Override
     public Map<String, List<String>> unmarshal(MapType type) throws Exception
     {
-        Map<String, List<String>> map = new HashMap<>();
+        Map<String, List<String>> map = new TreeMap<>();
         for (MapEntry entry : type.entryList) {
             for (int i = 0; i < entry.entries.size(); i++) {
                 entry.entries.set(i, entry.entries.get(i).trim());

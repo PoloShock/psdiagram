@@ -74,32 +74,28 @@ public class ANTLRParser implements PSDParser
     {
         PSDGrammarBailLexer lexer = new PSDGrammarBailLexer(new ANTLRInputStream(input));
         lexer.removeErrorListeners();
-        if (SettingsHolder.IS_DEVELOPMENT_RUN_MODE) {
-            lexer.addErrorListener(new ANTLRMySyntaxErrorListener()
+        lexer.addErrorListener(new ANTLRMySyntaxErrorListener()
+        {
+            @Override
+            public void onSyntaxError(String errorMessage, int beginIndex, int endIndex)
             {
-                @Override
-                public void onSyntaxError(String errorMessage, int beginIndex, int endIndex)
-                {
-                    // don't report syntaxErrors, just the ambiguity and others of that kind
-                    throw new RuntimeException(); // Bail out
-                }
-            });
-        }
+                // syntaxErrors will end up here, the ambiguity and others of that minor kind will be reported (by nonoverriden methods)
+                throw new RuntimeException(); // Bail out
+            }
+        });
 
         PSDGrammarParser parser = new PSDGrammarParser(new CommonTokenStream(lexer));
         parser.setBuildParseTree(false);
         parser.removeErrorListeners();
-        if (SettingsHolder.IS_DEVELOPMENT_RUN_MODE) {
-            parser.addErrorListener(new ANTLRMySyntaxErrorListener()
+        parser.addErrorListener(new ANTLRMySyntaxErrorListener()
+        {
+            @Override
+            public void onSyntaxError(String errorMessage, int beginIndex, int endIndex)
             {
-                @Override
-                public void onSyntaxError(String errorMessage, int beginIndex, int endIndex)
-                {
-                    // don't report syntaxErrors, just the ambiguity and others of that kind
-                    throw new RuntimeException(); // Bail out
-                }
-            });
-        }
+                // syntaxErrors will end up here, the ambiguity and others of that minor kind will be reported (by nonoverriden methods)
+                throw new RuntimeException(); // Bail out
+            }
+        });
 
         parser.setErrorHandler(new BailErrorStrategy());
 

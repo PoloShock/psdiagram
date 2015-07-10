@@ -464,38 +464,39 @@ public final class MainWindow extends javax.swing.JFrame
                     if (forceUpdate) {
                         JOptionPane.showMessageDialog(null, new String(new byte[]{60, 104, 116, 109,
                             108, 62, 80, 108, 97, 116, 110, 111, 115, 116, 32, 116, -61, -87, 116,
-                            111, 32, 122, 107, 117, -59, -95, 101, 98, 110, -61, -83, 32, 118, 101,
-                            114, 122, 101, 32, 97, 112, 108, 105, 107, 97, 99, 101, 32, 118, 121,
-                            112, 114, -59, -95, 101, 108, 97, 46, 60, 98, 114, 32, 47, 62, 80, 114,
-                            111, 32, 106, 101, 106, -61, -83, 32, 97, 107, 116, 117, 97, 108, 105,
-                            122, 97, 99, 105, 32, 118, 121, 117, -59, -66, 105, 106, 116, 101, 32,
-                            112, 114, 111, 115, -61, -83, 109, 32, 110, -61, -95, 115, 108, 101, 100,
-                            117, 106, -61, -83, 99, -61, -83, 104, 111, 32, 102, 111, 114, 109, 117,
-                            108, -61, -95, -59, -103, 101, 46, 60, 47, 104, 116, 109, 108, 62},
+                            111, 32, 118, 101, 114, 122, 101, 32, 97, 112, 108, 105, 107, 97, 99,
+                            101, 32, 118, 121, 112, 114, -59, -95, 101, 108, 97, 46, 60, 98, 114, 32,
+                            47, 62, 80, 114, 111, 32, 100, 97, 108, -59, -95, -61, -83, 32, 112, 111,
+                            117, -59, -66, -61, -83, 118, -61, -95, 110, -61, -83, 32, 80, 83, 32,
+                            68, 105, 97, 103, 114, 97, 109, 117, 32, 106, 101, 106, 32, 112, 114,
+                            111, 115, -61, -83, 109, 32, 97, 107, 116, 117, 97, 108, 105, 122, 117,
+                            106, 116, 101, 32, 112, 111, 109, 111, 99, -61, -83, 32, 110, -61, -95,
+                            115, 108, 101, 100, 117, 106, -61, -83, 99, -61, -83, 104, 111, 32, 102,
+                            111, 114, 109, 117, 108, -61, -95, -59, -103, 101, 46, 60, 47, 104, 116,
+                            109, 108, 62},
                                 StandardCharsets.UTF_8), new String(
                                         new byte[]{75, 111, 110, 101, 99, 32, 112, 108, 97, 116, 110,
-                                            111, 115, 116, 105, 32, 122, 107, 117, -59, -95, 101, 98,
-                                            110, -61, -83, 32, 118, 101, 114, 122, 101},
-                                        StandardCharsets.UTF_8), JOptionPane.WARNING_MESSAGE); // Konec platnosti zkušební verze; <html>Platnost této zkušební verze aplikace vypršela.<br />Pro její aktualizaci využijte prosím následujícího formuláře.</html>
+                                            111, 115, 116, 105, 32, 118, 101, 114, 122, 101, 32, 97,
+                                            112, 108, 105, 107, 97, 99, 101},
+                                        StandardCharsets.UTF_8), JOptionPane.WARNING_MESSAGE); // Konec platnosti verze aplikace; <html>Platnost této verze aplikace vypršela.<br />Pro další používání PS Diagramu jej prosím aktualizujte pomocí následujícího formuláře.</html>
                     }
                     jMenuItemUpdateActionPerformed(null);
                 } else if (forceUpdate) {
                     // html content
                     JEditorPane ep = new JEditorPane("text/html", new String(
                             new byte[]{60, 104, 116, 109, 108, 62, 80, 108, 97, 116, 110, 111, 115,
-                                116, 32, 116, -61, -87, 116, 111, 32, 122, 107, 117, -59, -95, 101,
-                                98, 110, -61, -83, 32, 118, 101, 114, 122, 101, 32, 97, 112, 108,
-                                105, 107, 97, 99, 101, 32, 118, 121, 112, 114, -59, -95, 101, 108,
-                                97, 46, 60, 98, 114, 32, 47, 62, 80, 114, 111, 32, 122, -61, -83,
-                                115, 107, -61, -95, 110, -61, -83, 32, 110, 111, 118, -61, -87, 44,
-                                32, 97, 107, 116, 117, -61, -95, 108, 110, -61, -83, 32, 118, 101,
-                                114, 122, 101, 44, 32, 110, 97, 118, -59, -95, 116, 105, 118, 116,
-                                101, 32, 112, 114, 111, 115, -61, -83, 109, 32, 115, 116, 114, -61,
-                                -95, 110, 107, 121, 32, 60, 97, 32, 104, 114, 101, 102, 61, 34, 104,
-                                116, 116, 112, 58, 47, 47, 119, 119, 119, 46, 112, 115, 100, 105, 97,
-                                103, 114, 97, 109, 46, 99, 122, 34, 62, 112, 115, 100, 105, 97, 103,
-                                114, 97, 109, 46, 99, 122, 60, 47, 97, 62, 46, 60, 47, 104, 116, 109,
-                                108, 62}, StandardCharsets.UTF_8)); // <html>Platnost této zkušební verze aplikace vypršela.<br />Pro získání nové, aktuální verze, navštivte prosím stránky <a href="http://www.psdiagram.cz">psdiagram.cz</a>.</html>
+                                116, 32, 116, -61, -87, 116, 111, 32, 118, 101, 114, 122, 101, 32,
+                                97, 112, 108, 105, 107, 97, 99, 101, 32, 118, 121, 112, 114, -59,
+                                -95, 101, 108, 97, 46, 60, 98, 114, 32, 47, 62, 80, 114, 111, 32,
+                                122, -61, -83, 115, 107, -61, -95, 110, -61, -83, 32, 110, 111, 118,
+                                -61, -87, 44, 32, 97, 107, 116, 117, -61, -95, 108, 110, -61, -83,
+                                32, 118, 101, 114, 122, 101, 44, 32, 110, 97, 118, -59, -95, 116,
+                                105, 118, 116, 101, 32, 112, 114, 111, 115, -61, -83, 109, 32, 115,
+                                116, 114, -61, -95, 110, 107, 121, 32, 60, 97, 32, 104, 114, 101,
+                                102, 61, 34, 104, 116, 116, 112, 58, 47, 47, 119, 119, 119, 46, 112,
+                                115, 100, 105, 97, 103, 114, 97, 109, 46, 99, 122, 34, 62, 112, 115,
+                                100, 105, 97, 103, 114, 97, 109, 46, 99, 122, 60, 47, 97, 62, 46, 60,
+                                47, 104, 116, 109, 108, 62}, StandardCharsets.UTF_8)); // <html>Platnost této verze aplikace vypršela.<br />Pro získání nové, aktuální verze, navštivte prosím stránky <a href="http://www.psdiagram.cz">psdiagram.cz</a>.</html>
                     // handle link events
                     ep.addHyperlinkListener(new HyperlinkListener()
                     {
@@ -517,9 +518,9 @@ public final class MainWindow extends javax.swing.JFrame
                     ep.setBackground(new Color(0, 0, 0, 0));
                     // show
                     JOptionPane.showMessageDialog(null, ep, new String(new byte[]{75, 111, 110, 101,
-                        99, 32, 112, 108, 97, 116, 110, 111, 115, 116, 105, 32, 122, 107, 117, -59,
-                        -95, 101, 98, 110, -61, -83, 32, 118, 101, 114, 122, 101},
-                            StandardCharsets.UTF_8), JOptionPane.WARNING_MESSAGE); // Konec platnosti zkušební verze
+                        99, 32, 112, 108, 97, 116, 110, 111, 115, 116, 105, 32, 118, 101, 114, 122,
+                        101, 32, 97, 112, 108, 105, 107, 97, 99, 101},
+                            StandardCharsets.UTF_8), JOptionPane.WARNING_MESSAGE); // Konec platnosti verze aplikace
 
                     flowchartCrashRecovery.backupFlowchart();
                     System.exit(0);
@@ -2221,8 +2222,6 @@ public final class MainWindow extends javax.swing.JFrame
      */
     private TransferHandler createTransferHandler()
     {
-        long currentTime; //= System.currentTimeMillis();
-
 //        Proxy proxyHTTP = Proxy.NO_PROXY;
 //        Proxy proxySOCKS = Proxy.NO_PROXY;
 //        if (global.SettingsHolder.settings.getProxyHost() != null && !global.SettingsHolder.settings.getProxyHost().equals("") && global.SettingsHolder.settings.getProxyPort() > 0) {
@@ -2249,34 +2248,39 @@ public final class MainWindow extends javax.swing.JFrame
         if (currentDate == null) {
             currentDate = TimeCollector.getTimeAndDate(
                     cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder.TIMESERVER);
-            if (currentDate == null) {
-                JOptionPane.showMessageDialog(null, new String(
-                        new byte[]{60, 104, 116, 109, 108, 62, 84, 97, 116, 111, 32, 122, 107,
-                            117, -59, -95, 101, 98, 110, -61, -83, 32, 118, 101, 114, 122, 101,
-                            32, 97, 112, 108, 105, 107, 97, 99, 101, 32, 112, 111, 116, -59,
-                            -103, 101, 98, 117, 106, 101, 32, 112, 114, 111, 32, 115, 118, -59,
-                            -81, 106, 32, 98, -60, -101, 104, 32, 112, -59, -103, 105, 112, 111,
-                            106, 101, 110, -61, -83, 32, 107, 32, 105, 110, 116, 101, 114, 110,
-                            101, 116, 117, 46, 60, 98, 114, 32, 47, 62, 77, -61, -95, 116, 101,
-                            45, 108, 105, 32, 112, 111, 116, -61, -83, -59, -66, 101, 44, 32,
-                            107, 111, 110, 116, 97, 107, 116, 117, 106, 116, 101, 32, 109, 110,
-                            101, 32, 112, 114, 111, 115, -61, -83, 109, 32, 110, 97, 32, 109,
-                            105, 114, 111, 115, 108, 97, 118, 98, 97, 114, 116, 121, 122, 97,
-                            108, 64, 103, 109, 97, 105, 108, 46, 99, 111, 109, 46, 60, 98, 114,
-                            32, 47, 62, 78, 121, 110, -61, -83, 32, 115, 101, 32, 80, 83, 32, 68,
-                            105, 97, 103, 114, 97, 109, 32, 117, 107, 111, 110, -60, -115, -61,
-                            -83, 46, 46, 46, 60, 47, 104, 116, 109, 108, 62},
-                        StandardCharsets.UTF_8), new String(new byte[]{78, 101, 112, 111, 100,
-                            97, -59, -103, 105, 108, 111, 32, 115, 101, 32, 110, 97, 118, -61, -95,
-                            122, 97, 116, 32, 115, 112, 111, 106, 101, 110, -61, -83, 32, 115, 101,
-                            32, 115, 101, 114, 118, 101, 114, 101, 109}, StandardCharsets.UTF_8),
-                        JOptionPane.WARNING_MESSAGE); // Nepodařilo se navázat spojení se serverem; <html>Tato zkušební verze aplikace potřebuje pro svůj běh připojení k internetu.<br />Máte-li potíže, kontaktujte mne prosím na miroslavbartyzal@gmail.com.<br />Nyní se PS Diagram ukončí...</html>
-                System.exit(0);
-            }
+//            if (currentDate == null) {
+//                JOptionPane.showMessageDialog(null, new String(
+//                        new byte[]{60, 104, 116, 109, 108, 62, 84, 97, 116, 111, 32, 122, 107,
+//                            117, -59, -95, 101, 98, 110, -61, -83, 32, 118, 101, 114, 122, 101,
+//                            32, 97, 112, 108, 105, 107, 97, 99, 101, 32, 112, 111, 116, -59,
+//                            -103, 101, 98, 117, 106, 101, 32, 112, 114, 111, 32, 115, 118, -59,
+//                            -81, 106, 32, 98, -60, -101, 104, 32, 112, -59, -103, 105, 112, 111,
+//                            106, 101, 110, -61, -83, 32, 107, 32, 105, 110, 116, 101, 114, 110,
+//                            101, 116, 117, 46, 60, 98, 114, 32, 47, 62, 77, -61, -95, 116, 101,
+//                            45, 108, 105, 32, 112, 111, 116, -61, -83, -59, -66, 101, 44, 32,
+//                            107, 111, 110, 116, 97, 107, 116, 117, 106, 116, 101, 32, 109, 110,
+//                            101, 32, 112, 114, 111, 115, -61, -83, 109, 32, 110, 97, 32, 109,
+//                            105, 114, 111, 115, 108, 97, 118, 98, 97, 114, 116, 121, 122, 97,
+//                            108, 64, 103, 109, 97, 105, 108, 46, 99, 111, 109, 46, 60, 98, 114,
+//                            32, 47, 62, 78, 121, 110, -61, -83, 32, 115, 101, 32, 80, 83, 32, 68,
+//                            105, 97, 103, 114, 97, 109, 32, 117, 107, 111, 110, -60, -115, -61,
+//                            -83, 46, 46, 46, 60, 47, 104, 116, 109, 108, 62},
+//                        StandardCharsets.UTF_8), new String(new byte[]{78, 101, 112, 111, 100,
+//                            97, -59, -103, 105, 108, 111, 32, 115, 101, 32, 110, 97, 118, -61, -95,
+//                            122, 97, 116, 32, 115, 112, 111, 106, 101, 110, -61, -83, 32, 115, 101,
+//                            32, 115, 101, 114, 118, 101, 114, 101, 109}, StandardCharsets.UTF_8),
+//                        JOptionPane.WARNING_MESSAGE); // Nepodařilo se navázat spojení se serverem; <html>Tato zkušební verze aplikace potřebuje pro svůj běh připojení k internetu.<br />Máte-li potíže, kontaktujte mne prosím na miroslavbartyzal@gmail.com.<br />Nyní se PS Diagram ukončí...</html>
+//                System.exit(0);
+//            }
         }
-        currentTime = currentDate.getTime();
+        long currentTime;
+        if (currentDate != null) {
+            currentTime = currentDate.getTime();
+        } else {
+            currentTime = System.currentTimeMillis();
+        }
 
-        final Long expiration = 1441058400000l; // 2015.9.1. 00:00:00 = 1441058400000 (System.out.println(new GregorianCalendar(2015, 8, 1).getTimeInMillis());) - month is zero-based
+        final Long expiration = 1467324000000l; // 2016.7.1. 00:00:00 = 1467324000000 (System.out.println(new GregorianCalendar(2016, 6, 1).getTimeInMillis());) - month is zero-based
         daysLeft = (expiration - currentTime) / 86400000l;
         if (currentTime > expiration || currentTime < SettingsHolder.settings.getLastTrialLaunchedTime()) {
 //            System.exit(0); <- let's let the user download newer version of PS Diagram

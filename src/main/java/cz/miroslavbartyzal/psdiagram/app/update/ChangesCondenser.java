@@ -9,11 +9,13 @@ import cz.miroslavbartyzal.psdiagram.app.global.xmlAdapters.MapChangesAdapter;
 import cz.miroslavbartyzal.psdiagram.app.global.xmlAdapters.MapChangesCalendarAdapter;
 import cz.miroslavbartyzal.psdiagram.app.global.xmlAdapters.MapListChangesAdapter;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -213,11 +215,19 @@ public class ChangesCondenser
         return Float.parseFloat(ver.substring(0, 1) + "." + ver.substring(1));
     }
 
-    private void setTopBottomVersions()
+    public TreeSet<String> getAllVersions()
     {
-        float top = Long.MIN_VALUE;
-        float bottom = Long.MAX_VALUE;
-        HashSet<String> versions = new HashSet<>();
+        TreeSet<String> versions = new TreeSet<>(new Comparator<String>()
+        {
+            @Override
+            public int compare(String o1, String o2)
+            {
+                Float versionNumber1 = parseVersion(o1);
+                Float versionNumber2 = parseVersion(o2);
+
+                return versionNumber2.compareTo(versionNumber1);
+            }
+        });
 
         if (releaseDates != null) {
             versions.addAll(releaseDates.keySet());
@@ -249,6 +259,16 @@ public class ChangesCondenser
         if (other != null) {
             versions.addAll(other.keySet());
         }
+
+        return versions;
+    }
+
+    private void setTopBottomVersions()
+    {
+        float top = Long.MIN_VALUE;
+        float bottom = Long.MAX_VALUE;
+        TreeSet<String> versions = getAllVersions();
+
         for (String version : versions) {
             float versionNumber = parseVersion(version);
             if (versionNumber > top) {

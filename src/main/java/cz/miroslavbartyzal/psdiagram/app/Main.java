@@ -96,7 +96,8 @@ public final class Main
     // TODO implementovat escapovani \n\r\t... (\" a \' uz mam implementovane) uvnitr stringu do/z pascalu
     //      - http://www.textfiles.com/bitsavers/pdf/borland/TURBO_Pascal_Reference_Manual_CPM_Version_3_Dec88.pdf
     //      - ftp://ftp.freepascal.org/fpc/docs-pdf/ref.pdf
-    //e!!! TODO donace napr http://defaultprogramseditor.com/
+    // TODO pri otevreni napr. nejvetsiho spol. del. v maximalizovanem okne a naslednem zmenseni okna, scrollbary indikuji vytsi diagram nez je (prestoze je zobrazen cely). Po pohnuti s platnem je to ok.
+    //! TODO pri novem diagramu se neresetuje jeho poloha takze to zustane nascrolovane mimo obraz + crollbary se neaktualizuji
     /**
      * Metoda pro spuštění hlavního okna aplikace. Nejsou přijímány žádné
      * parametry.

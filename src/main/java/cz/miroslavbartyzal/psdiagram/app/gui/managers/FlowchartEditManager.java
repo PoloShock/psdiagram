@@ -132,13 +132,13 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
 
     public void undo()
     {
-        doPendingUndoRedos();
+        doPendingUndoRedos(true);
         flowchartEditUndoManager.undo();
     }
 
     public void redo()
     {
-        doPendingUndoRedos();
+        doPendingUndoRedos(true);
         flowchartEditUndoManager.redo();
     }
 
@@ -147,7 +147,14 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
      */
     public void resetVariables()
     {
-        commentsManager.resetVariables();
+        resetVariables(true);
+    }
+
+    private void resetVariables(boolean resetCommentsManager)
+    {
+        if (resetCommentsManager) {
+            commentsManager.resetVariables();
+        }
         defaultTextBeingEdited = false;
     }
 
@@ -214,6 +221,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
                         this.symbolPopup.remove(jMenuItem);
                         break;
                 }
+                jMenuItem.setActionCommand(jMenuItem.getActionCommand() + "/popup");
             }
         }
 
@@ -257,7 +265,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
     /**
      * Metoda zpracuje všechny čekající operace k zápisu do UndoManagera.
      */
-    private void doPendingUndoRedos()
+    private void doPendingUndoRedos(boolean resetCommentsManager)
     {
         if (segmentTextBuffered) {
             segmentTextBuffered = false;
@@ -281,7 +289,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
             repaintJPanelDiagram();
         }
 
-        resetVariables();
+        resetVariables(resetCommentsManager);
 
     }
 
@@ -330,8 +338,10 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
     @Override
     public void actionPerformed(final ActionEvent ae)
     {
-        doPendingUndoRedos();
         String[] action = ae.getActionCommand().split("/");
+        boolean resetCommentsManager = !(action.length == 3 && commentsManager.isCommentPathConnectorVisible() && action[0].equals(
+                "edit") && action[1].equals("delete") && action[2].equals("popup")); // resetuj comments manager jenom kdyz neni mozne smazat kolinko.. jinak ho nech byt at ma stav ke smazani kolena k dispozici
+        doPendingUndoRedos(resetCommentsManager);
         switch (action[0]) {
             case "mode": {
                 if (action[1].equals("editMode")) {
@@ -654,7 +664,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
     public void mousePressed(MouseEvent me)
     {
         Point2D p = getTransformedPoint(me.getPoint(), new Point2D.Double());
-        doPendingUndoRedos();
+        doPendingUndoRedos(true);
 
         if (commentsManager.wasMousePressedEventRelevantForConnector(p)) {
             maybeShowPopup(me);
@@ -736,6 +746,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
         if (commentsManager.isCommentPathConnectorVisible()) {
             if (commentsManager.wereMouseReleasedCoordsInsideConnector(p)) {
                 if (maybeShowPopup(me)) {
+                    //commentsManager.wasMousePressedEventRelevantForConnector(p);
                     return;
                 }
             }

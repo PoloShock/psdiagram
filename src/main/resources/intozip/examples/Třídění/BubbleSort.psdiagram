@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<flowchartSaveContainer>
+    <flowchart>
+        <mainSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="layoutSegment" xmlID="0">
+            <element xsi:type="layoutElement" xmlID="25" parentSegment="0">
+                <comment>
+                    <borderColor>0,0,0,255</borderColor>
+                    <shapeDownColor>230,230,230,255</shapeDownColor>
+                    <hasShadow>true</hasShadow>
+                    <customValue>BubbleSort (bublinkové třídění) je jednoduchý stabilní řadící
+algoritmus se složitostí O(n^2)
+
+
+
+Pro vzestupně uspořádanou posloupnost N prvků platí, že každý
+prvek je menší než následující prvek v posloupnosti
+(P[j]&lt;P[j+1] pro j=1,2,3,..N-1). Projdeme tedy neuspořádanou
+posloupnost od prvního do N-1 prvku a zkontrolujeme tento
+předpoklad. Pokud neplatí, že j-tý prvek je menší než prvek
+na pozici j+1, tak je mezi sebou vyměníme. Tím vlastně největší
+prvek &quot;probublá&quot; až na N-tou pozici. V dalším kroku procházíme
+posloupnost do pozice N-2. Takto pokračujeme až do kontroly
+posledních dvou prvků.</customValue>
+                    <commandsValid>true</commandsValid>
+                    <value>BubbleSort (bublinkové třídění) je jednoduchý stabilní řadící
+algoritmus se složitostí O(n^2)
+
+
+
+Pro vzestupně uspořádanou posloupnost N prvků platí, že každý
+prvek je menší než následující prvek v posloupnosti
+(P[j]&lt;P[j+1] pro j=1,2,3,..N-1). Projdeme tedy neuspořádanou
+posloupnost od prvního do N-1 prvku a zkontrolujeme tento
+předpoklad. Pokud neplatí, že j-tý prvek je menší než prvek
+na pozici j+1, tak je mezi sebou vyměníme. Tím vlastně největší
+prvek &quot;probublá&quot; až na N-tou pozici. V dalším kroku procházíme
+posloupnost do pozice N-2. Takto pokračujeme až do kontroly
+posledních dvou prvků.</value>
+                    <relativePointToSymbol x="138.5" y="0.0"/>
+                    <alwaysLeftAlign>false</alwaysLeftAlign>
+                    <relativeX>176.0</relativeX>
+                    <relativeY>52.0</relativeY>
+                    <paired>true</paired>
+                </comment>
+            </element>
+            <element xsi:type="layoutElement" xmlID="1" parentSegment="0">
+                <startEnd>
+                    <borderColor>0,0,0,255</borderColor>
+                    <shapeUpColor>255,255,255,255</shapeUpColor>
+                    <shapeDownColor>230,230,230,255</shapeDownColor>
+                    <hasShadow>true</hasShadow>
+                    <commandsValid>true</commandsValid>
+                    <value>Start</value>
+                </startEnd>
+            </element>
+            <element xsi:type="layoutElement" xmlID="24" parentSegment="0">
+                <io>
+                    <borderColor>0,0,0,255</borderColor>
+                    <shapeUpColor>255,255,255,255</shapeUpColor>
+                    <shapeDownColor>230,230,230,255</shapeDownColor>
+                    <hasShadow>true</hasShadow>
+                    <customValue>&quot;zadejte
+pozadovany
+pocet prvku
+pole&quot; →</customValue>
+                    <defaultValue>&quot;zadejte pozadovany pocet prvku pole&quot; →</defaultValue>
+                    <commands>
+                        <entry key="value">&quot;zadejte pozadovany pocet prvku pole&quot;</entry>
+                    </commands>
+                    <commandsValid>true</commandsValid>
+                    <value>&quot;zadejte
+pozadovany
+pocet prvku
+pole&quot; →</value>
+                </io>
+            </element>
+            <element xsi:type="layoutElement" xmlID="12" parentSegment="0">
+                <io>
+                    <borderColor>0,0,0,255</borderColor>
+                    <shapeUpColor>255,255,255,255</shapeUpColor>
+                    <shapeDownColor>230,230,230,255</shapeDownColor>
+                    <hasShadow>true</hasShadow>
+                    <defaultValue>prvku ←</defaultValue>
+                    <commands>
+                        <entry key="var">prvku</entry>
+                    </commands>
+                    <commandsValid>true</commandsValid>
+                    <value>prvku ←</value>
+                </io>
+            </element>
+            <element xsi:type="layoutElement" xmlID="26" parentSegment="0">
+                <comment>
+                    <borderColor>0,0,0,255</borderColor>
+                    <shapeDownColor>230,230,230,255</shapeDownColor>
+                    <hasShadow>true</hasShadow>
+                    <customValue>Prvky pole budou automaticky
+populovány náhodnymi čísly ve
+stanoveném intervalu.</customValue>
+                    <commandsValid>true</commandsValid>
+                    <value>Prvky pole budou automaticky
+populovány náhodnymi čísly ve
+stanoveném intervalu.</value>
+                    <relativePointToSymbol x="92.5" y="0.0"/>
+                    <alwaysLeftAlign>false</alwaysLeftAlign>
+                    <relativeX>156.0</relativeX>
+                    <relativeY>54.0</relativeY>
+                    <paired>false</paired>
+                </comment>
+            </element>
+            <element xsi:type="layoutElement" xmlID="23" parentSegment="0">
+                <io>
+                    <borderColor>0,0,0,255</borderColor>
+                    <shapeUpColor>255,255,255,255</shapeUpColor>
+                    <shapeDownColor>230,230,230,255</shapeDownColor>
+                    <hasShadow>true</hasShadow>
+                    <customValue>&quot;zadejte
+minimalni
+hranici pro
+nahodne cislo&quot; →</customValue>
+                    <defaultValue>&quot;zadejte minimalni hranici pro nahodne cislo&quot; →</defaultValue>
+                    <commands>
+                        <entry key="value">&quot;zadejte minimalni hranici pro nahodne cislo&quot;</entry>
+                    </commands>
+                    <commandsValid>true</commandsValid>
+                    <value>&quot;zadejte
+minimalni
+hranici pro
+nahodne cislo&quot; →</value>
+                </io>
+            </element>
+            <element xsi:type="layoutElement" xmlID="14" parentSegment="0">
+                <io>
+                    <borderColor>0,0,0,255</borderColor>
+                    <shapeUpColor>255,255,255,255</shapeUpColor>
+                    <shapeDownColor>230,230,230,255</shapeDownColor>
+                    <hasShadow>true</hasShadow>
+                    <defaultValue>min ←</defaultValue>
+                    <commands>
+                        <entry key="var">min</entry>
+                    </commands>
+                    <commandsValid>true</commandsValid>
+                    <value>min ←</value>
+                </io>
+            </element>
+            <element xsi:type="layoutElement" xmlID="27" parentSegment="0">
+                <io>
+                    <borderColor>0,0,0,255</borderColor>
+                    <shapeUpColor>255,255,255,255</shapeUpColor>
+                    <shapeDownColor>230,230,230,255</shapeDownColor>
+                    <hasShadow>true</hasShadow>
+                    <customValue>&quot;zadejte
+maximalni
+hranici pro
+nahodne cislo&quot; →</customValue>
+                    <defaultValue>&quot;zadejte maximalni hranici pro nahodne cislo&quot; →</defaultValue>
+                    <commands>
+                        <entry key="value">&quot;zadejte maximalni hranici pro nahodne cislo&quot;</entry>
+                    </commands>
+                    <commandsValid>true</commandsValid>
+                    <value>&quot;zadejte
+maximalni
+hranici pro
+nahodne cislo&quot; →</value>
+                </io>
+            </element>
+            <element xsi:type="layoutElement" xmlID="15" parentSegment="0">
+                <io>
+                    <borderColor>0,0,0,255</borderColor>
+                    <shapeUpColor>255,255,255,255</shapeUpColor>
+                    <shapeDownColor>230,230,230,255</shapeDownColor>
+                    <hasShadow>true</hasShadow>
+                    <defaultValue>max ←</defaultValue>
+                    <commands>
+                        <entry key="var">max</entry>
+                    </commands>
+                    <commandsValid>true</commandsValid>
+                    <value>max ←</value>
+                </io>
+            </element>
+            <element xsi:type="layoutElement" xmlID="16" parentSegment="0">
+                <process>
+                    <borderColor>0,0,0,255</borderColor>
+                    <shapeUpColor>255,255,255,255</shapeUpColor>
+                    <shapeDownColor>230,230,230,255</shapeDownColor>
+                    <hasShadow>true</hasShadow>
+                    <defaultValue>pole ← []</defaultValue>
+                    <commands>
+                        <entry key="var">pole</entry>
+                        <entry key="value">[]</entry>
+                    </commands>
+                    <commandsValid>true</commandsValid>
+                    <value>pole ← []</value>
+                </process>
+            </element>
+            <element xsi:type="layoutElement" xmlID="17" parentSegment="0">
+                <for>
+                    <borderColor>0,0,0,255</borderColor>
+                    <shapeUpColor>255,255,255,255</shapeUpColor>
+                    <shapeDownColor>230,230,230,255</shapeDownColor>
+                    <hasShadow>true</hasShadow>
+                    <defaultValue>i ← 0..prvku-1</defaultValue>
+                    <commands>
+                        <entry key="var">i</entry>
+                        <entry key="from">0</entry>
+                        <entry key="to">prvku-1</entry>
+                        <entry key="inc">1</entry>
+                    </commands>
+                    <commandsValid>true</commandsValid>
+                    <value>i ← 0..prvku-1</value>
+                </for>
+                <segment xsi:nil="true"/>
+                <segment xsi:type="layoutSegment" xmlID="18" parentElement="17">
+                    <element xsi:type="layoutElement" xmlID="28" parentSegment="18">
+                        <comment>
+                            <borderColor>0,0,0,255</borderColor>
+                            <shapeDownColor>230,230,230,255</shapeDownColor>
+                            <hasShadow>true</hasShadow>
+                            <customValue>Generování náhodného čísla
+ve stanoveném intervalu.</customValue>
+                            <commandsValid>true</commandsValid>
+                            <value>Generování náhodného čísla
+ve stanoveném intervalu.</value>
+                            <alwaysLeftAlign>false</alwaysLeftAlign>
+                            <relativeX>127.0</relativeX>
+                            <relativeY>-3.0</relativeY>
+                            <paired>true</paired>
+                        </comment>
+                    </element>
+                    <element xsi:type="layoutElement" xmlID="20" parentSegment="18">
+                        <process>
+                            <borderColor>0,0,0,255</borderColor>
+                            <shapeUpColor>255,255,255,255</shapeUpColor>
+                            <shapeDownColor>230,230,230,255</shapeDownColor>
+                            <hasShadow>true</hasShadow>
+                            <customValue>cislo ← Math.floor(
+Math.random()*(max-min+1)
+)+min</customValue>
+                            <defaultValue>cislo ← Math.floor(Math.random()*(max-min+1))+min</defaultValue>
+                            <commands>
+<entry key="var">cislo</entry>
+<entry key="value">Math.floor(Math.random()*(max-min+1))+min</entry>
+                            </commands>
+                            <commandsValid>true</commandsValid>
+                            <value>cislo ← Math.floor(
+Math.random()*(max-min+1)
+)+min</value>
+                        </process>
+                    </element>
+                    <element xsi:type="layoutElement" xmlID="19" parentSegment="18">
+                        <process>
+                            <borderColor>0,0,0,255</borderColor>
+                            <shapeUpColor>255,255,255,255</shapeUpColor>
+                            <shapeDownColor>230,230,230,255</shapeDownColor>
+                            <hasShadow>true</hasShadow>
+                            <customValue>pole[pole.length] 
+← cislo</customValue>
+                            <defaultValue>pole[i] ← cislo</defaultValue>
+                            <commands>
+<entry key="var">pole[i]</entry>
+<entry key="value">cislo</entry>
+                            </commands>
+                            <commandsValid>true</commandsValid>
+                            <value>pole[i] ← cislo</value>
+                        </process>
+                    </element>
+                </segment>
+            </element>
+            <element xsi:type="layoutElement" xmlID="21" parentSegment="0">
+                <io>
+                    <borderColor>0,0,0,255</borderColor>
+                    <shapeUpColor>255,255,255,255</shapeUpColor>
+                    <shapeDownColor>230,230,230,255</shapeDownColor>
+                    <hasShadow>true</hasShadow>
+                    <defaultValue>pole →</defaultValue>
+                    <commands>
+                        <entry key="value">pole</entry>
+                    </commands>
+                    <commandsValid>true</commandsValid>
+                    <value>pole →</value>
+                </io>
+            </element>
+            <element xsi:type="layoutElement" xmlID="3" parentSegment="0">
+                <for>
+                    <borderColor>0,0,0,255</borderColor>
+                    <shapeUpColor>255,255,255,255</shapeUpColor>
+                    <shapeDownColor>230,230,230,255</shapeDownColor>
+                    <hasShadow>true</hasShadow>
+                    <defaultValue>i ← 0..prvku-1</defaultValue>
+                    <commands>
+                        <entry key="var">i</entry>
+                        <entry key="from">0</entry>
+                        <entry key="to">prvku-1</entry>
+                        <entry key="inc">1</entry>
+                    </commands>
+                    <commandsValid>true</commandsValid>
+                    <value>i ← 0..prvku-1</value>
+                </for>
+                <segment xsi:nil="true"/>
+                <segment xsi:type="layoutSegment" xmlID="4" parentElement="3">
+                    <element xsi:type="layoutElement" xmlID="5" parentSegment="4">
+                        <for>
+                            <borderColor>0,0,0,255</borderColor>
+                            <shapeUpColor>255,255,255,255</shapeUpColor>
+                            <shapeDownColor>230,230,230,255</shapeDownColor>
+                            <hasShadow>true</hasShadow>
+                            <defaultValue>j ← 0..prvku-1-i</defaultValue>
+                            <commands>
+<entry key="var">j</entry>
+<entry key="from">0</entry>
+<entry key="to">prvku-1-i</entry>
+<entry key="inc">1</entry>
+                            </commands>
+                            <commandsValid>true</commandsValid>
+                            <value>j ← 0..prvku-1-i</value>
+                        </for>
+                        <segment xsi:nil="true"/>
+                        <segment xsi:type="layoutSegment" xmlID="6" parentElement="5">
+                            <element xsi:type="layoutElement" xmlID="7" parentSegment="6">
+<decision>
+    <borderColor>0,0,0,255</borderColor>
+    <shapeUpColor>255,255,255,255</shapeUpColor>
+    <shapeDownColor>230,230,230,255</shapeDownColor>
+    <hasShadow>true</hasShadow>
+    <defaultValue>pole[j]&gt;pole[j+1]</defaultValue>
+    <commands>
+        <entry key="condition">pole[j]&gt;pole[j+1]</entry>
+    </commands>
+    <commandsValid>true</commandsValid>
+    <value>pole[j]&gt;pole[j+1]</value>
+</decision>
+<segment xsi:type="layoutSegment" xmlID="8" parentElement="7">
+    <description>Ne</description>
+</segment>
+<segment xsi:type="layoutSegment" xmlID="9" parentElement="7">
+    <element xsi:type="layoutElement" xmlID="10" parentSegment="9">
+        <process>
+            <borderColor>0,0,0,255</borderColor>
+            <shapeUpColor>255,255,255,255</shapeUpColor>
+            <shapeDownColor>230,230,230,255</shapeDownColor>
+            <hasShadow>true</hasShadow>
+            <defaultValue>pom ← pole[j]</defaultValue>
+            <commands>
+                <entry key="var">pom</entry>
+                <entry key="value">pole[j]</entry>
+            </commands>
+            <commandsValid>true</commandsValid>
+            <value>pom ← pole[j]</value>
+        </process>
+    </element>
+    <element xsi:type="layoutElement" xmlID="11" parentSegment="9">
+        <process>
+            <borderColor>0,0,0,255</borderColor>
+            <shapeUpColor>255,255,255,255</shapeUpColor>
+            <shapeDownColor>230,230,230,255</shapeDownColor>
+            <hasShadow>true</hasShadow>
+            <defaultValue>pole[j] ← pole[j+1]</defaultValue>
+            <commands>
+                <entry key="var">pole[j]</entry>
+                <entry key="value">pole[j+1]</entry>
+            </commands>
+            <commandsValid>true</commandsValid>
+            <value>pole[j] ← pole[j+1]</value>
+        </process>
+    </element>
+    <element xsi:type="layoutElement" xmlID="13" parentSegment="9">
+        <process>
+            <borderColor>0,0,0,255</borderColor>
+            <shapeUpColor>255,255,255,255</shapeUpColor>
+            <shapeDownColor>230,230,230,255</shapeDownColor>
+            <hasShadow>true</hasShadow>
+            <defaultValue>pole[j+1] ← pom</defaultValue>
+            <commands>
+                <entry key="var">pole[j+1]</entry>
+                <entry key="value">pom</entry>
+            </commands>
+            <commandsValid>true</commandsValid>
+            <value>pole[j+1] ← pom</value>
+        </process>
+    </element>
+    <description>Ano</description>
+</segment>
+                            </element>
+                        </segment>
+                    </element>
+                </segment>
+            </element>
+            <element xsi:type="layoutElement" xmlID="22" parentSegment="0">
+                <io>
+                    <borderColor>0,0,0,255</borderColor>
+                    <shapeUpColor>255,255,255,255</shapeUpColor>
+                    <shapeDownColor>230,230,230,255</shapeDownColor>
+                    <hasShadow>true</hasShadow>
+                    <defaultValue>pole →</defaultValue>
+                    <commands>
+                        <entry key="value">pole</entry>
+                    </commands>
+                    <commandsValid>true</commandsValid>
+                    <value>pole →</value>
+                </io>
+            </element>
+            <element xsi:type="layoutElement" xmlID="2" parentSegment="0">
+                <startEnd>
+                    <borderColor>0,0,0,255</borderColor>
+                    <shapeUpColor>255,255,255,255</shapeUpColor>
+                    <shapeDownColor>230,230,230,255</shapeDownColor>
+                    <hasShadow>true</hasShadow>
+                    <commandsValid>true</commandsValid>
+                    <value>Konec</value>
+                </startEnd>
+            </element>
+        </mainSegment>
+    </flowchart>
+</flowchartSaveContainer>

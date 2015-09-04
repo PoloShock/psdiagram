@@ -1,0 +1,522 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<flowchartSaveContainer>
+    <flowchart>
+        <mainSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="layoutSegment" xmlID="0">
+            <element xsi:type="layoutElement" xmlID="24" parentSegment="0">
+                <comment>
+                    <borderColor>0,0,0,255</borderColor>
+                    <shapeDownColor>230,230,230,255</shapeDownColor>
+                    <hasShadow>true</hasShadow>
+                    <customValue>Algoritmus výpočtu kořenů
+kvadratické rovnice je shodný
+s postupem, který se učí na
+středních školách v hodinách
+matematiky.</customValue>
+                    <commandsValid>true</commandsValid>
+                    <value>Algoritmus výpočtu kořenů
+kvadratické rovnice je shodný
+s postupem, který se učí na
+středních školách v hodinách
+matematiky.</value>
+                    <alwaysLeftAlign>false</alwaysLeftAlign>
+                    <relativeX>158.0</relativeX>
+                    <relativeY>27.0</relativeY>
+                    <paired>true</paired>
+                </comment>
+            </element>
+            <element xsi:type="layoutElement" xmlID="1" parentSegment="0">
+                <startEnd>
+                    <borderColor>0,0,0,255</borderColor>
+                    <shapeUpColor>255,255,255,255</shapeUpColor>
+                    <shapeDownColor>230,230,230,255</shapeDownColor>
+                    <hasShadow>true</hasShadow>
+                    <commandsValid>true</commandsValid>
+                    <value>Start</value>
+                </startEnd>
+            </element>
+            <element xsi:type="layoutElement" xmlID="23" parentSegment="0">
+                <io>
+                    <borderColor>0,0,0,255</borderColor>
+                    <shapeUpColor>255,255,255,255</shapeUpColor>
+                    <shapeDownColor>230,230,230,255</shapeDownColor>
+                    <hasShadow>true</hasShadow>
+                    <customValue>&quot;zadejte a, b, c
+koeficienty
+kvadraticke
+rovnice&quot; →</customValue>
+                    <defaultValue>&quot;zadejte a, b, c koeficienty kvadraticke rovnice&quot; →</defaultValue>
+                    <commands>
+                        <entry key="value">&quot;zadejte a, b, c koeficienty kvadraticke rovnice&quot;</entry>
+                    </commands>
+                    <commandsValid>true</commandsValid>
+                    <value>&quot;zadejte a, b, c
+koeficienty
+kvadraticke
+rovnice&quot; →</value>
+                </io>
+            </element>
+            <element xsi:type="layoutElement" xmlID="3" parentSegment="0">
+                <io>
+                    <borderColor>0,0,0,255</borderColor>
+                    <shapeUpColor>255,255,255,255</shapeUpColor>
+                    <shapeDownColor>230,230,230,255</shapeDownColor>
+                    <hasShadow>true</hasShadow>
+                    <defaultValue>a ←</defaultValue>
+                    <commands>
+                        <entry key="var">a</entry>
+                    </commands>
+                    <commandsValid>true</commandsValid>
+                    <value>a ←</value>
+                </io>
+            </element>
+            <element xsi:type="layoutElement" xmlID="4" parentSegment="0">
+                <io>
+                    <borderColor>0,0,0,255</borderColor>
+                    <shapeUpColor>255,255,255,255</shapeUpColor>
+                    <shapeDownColor>230,230,230,255</shapeDownColor>
+                    <hasShadow>true</hasShadow>
+                    <defaultValue>b ←</defaultValue>
+                    <commands>
+                        <entry key="var">b</entry>
+                    </commands>
+                    <commandsValid>true</commandsValid>
+                    <value>b ←</value>
+                </io>
+            </element>
+            <element xsi:type="layoutElement" xmlID="5" parentSegment="0">
+                <io>
+                    <borderColor>0,0,0,255</borderColor>
+                    <shapeUpColor>255,255,255,255</shapeUpColor>
+                    <shapeDownColor>230,230,230,255</shapeDownColor>
+                    <hasShadow>true</hasShadow>
+                    <defaultValue>c ←</defaultValue>
+                    <commands>
+                        <entry key="var">c</entry>
+                    </commands>
+                    <commandsValid>true</commandsValid>
+                    <value>c ←</value>
+                </io>
+            </element>
+            <element xsi:type="layoutElement" xmlID="6" parentSegment="0">
+                <decision>
+                    <borderColor>0,0,0,255</borderColor>
+                    <shapeUpColor>255,255,255,255</shapeUpColor>
+                    <shapeDownColor>230,230,230,255</shapeDownColor>
+                    <hasShadow>true</hasShadow>
+                    <defaultValue>a ≠ 0</defaultValue>
+                    <commands>
+                        <entry key="condition">a != 0</entry>
+                    </commands>
+                    <commandsValid>true</commandsValid>
+                    <value>a ≠ 0</value>
+                </decision>
+                <segment xsi:type="layoutSegment" xmlID="7" parentElement="6">
+                    <element xsi:type="layoutElement" xmlID="25" parentSegment="7">
+                        <comment>
+                            <borderColor>0,0,0,255</borderColor>
+                            <shapeDownColor>230,230,230,255</shapeDownColor>
+                            <hasShadow>true</hasShadow>
+                            <customValue>Pokud je a = 0, nejedná
+se o rovnici kvadratickou,
+ale lineární, vypočtěte
+kořen lineární rovnice
+a skončete.
+</customValue>
+                            <commandsValid>true</commandsValid>
+                            <value>Pokud je a = 0, nejedná
+se o rovnici kvadratickou,
+ale lineární, vypočtěte
+kořen lineární rovnice
+a skončete.
+</value>
+                            <alwaysLeftAlign>false</alwaysLeftAlign>
+                            <relativeX>-75.0</relativeX>
+                            <relativeY>0.0</relativeY>
+                            <paired>false</paired>
+                        </comment>
+                    </element>
+                    <element xsi:type="layoutElement" xmlID="31" parentSegment="7">
+                        <decision>
+                            <borderColor>0,0,0,255</borderColor>
+                            <shapeUpColor>255,255,255,255</shapeUpColor>
+                            <shapeDownColor>230,230,230,255</shapeDownColor>
+                            <hasShadow>true</hasShadow>
+                            <defaultValue>b ≠ 0</defaultValue>
+                            <commands>
+<entry key="condition">b != 0</entry>
+                            </commands>
+                            <commandsValid>true</commandsValid>
+                            <value>b ≠ 0</value>
+                        </decision>
+                        <segment xsi:type="layoutSegment" xmlID="32" parentElement="31">
+                            <element xsi:type="layoutElement" xmlID="34" parentSegment="32">
+<decision>
+    <borderColor>0,0,0,255</borderColor>
+    <shapeUpColor>255,255,255,255</shapeUpColor>
+    <shapeDownColor>230,230,230,255</shapeDownColor>
+    <hasShadow>true</hasShadow>
+    <defaultValue>c = 0</defaultValue>
+    <commands>
+        <entry key="condition">c == 0</entry>
+    </commands>
+    <commandsValid>true</commandsValid>
+    <value>c = 0</value>
+</decision>
+<segment xsi:type="layoutSegment" xmlID="35" parentElement="34">
+    <element xsi:type="layoutElement" xmlID="38" parentSegment="35">
+        <io>
+            <borderColor>0,0,0,255</borderColor>
+            <shapeUpColor>255,255,255,255</shapeUpColor>
+            <shapeDownColor>230,230,230,255</shapeDownColor>
+            <hasShadow>true</hasShadow>
+            <customValue>&quot;nema 
+reseni&quot; →</customValue>
+            <defaultValue>&quot;nema reseni&quot; →</defaultValue>
+            <commands>
+                <entry key="value">&quot;nema reseni&quot;</entry>
+            </commands>
+            <commandsValid>true</commandsValid>
+            <value>&quot;nema 
+reseni&quot; →</value>
+        </io>
+    </element>
+    <description>Ne</description>
+</segment>
+<segment xsi:type="layoutSegment" xmlID="36" parentElement="34">
+    <element xsi:type="layoutElement" xmlID="37" parentSegment="36">
+        <io>
+            <borderColor>0,0,0,255</borderColor>
+            <shapeUpColor>255,255,255,255</shapeUpColor>
+            <shapeDownColor>230,230,230,255</shapeDownColor>
+            <hasShadow>true</hasShadow>
+            <customValue>&quot;nekonecne 
+mnoho 
+reseni&quot; →</customValue>
+            <defaultValue>&quot;nekonecne mnoho reseni&quot; →</defaultValue>
+            <commands>
+                <entry key="value">&quot;nekonecne mnoho reseni&quot;</entry>
+            </commands>
+            <commandsValid>true</commandsValid>
+            <value>&quot;nekonecne 
+mnoho 
+reseni&quot; →</value>
+        </io>
+    </element>
+    <description>Ano</description>
+</segment>
+                            </element>
+                            <description>Ne</description>
+                        </segment>
+                        <segment xsi:type="layoutSegment" xmlID="33" parentElement="31">
+                            <element xsi:type="layoutElement" xmlID="9" parentSegment="33">
+<io>
+    <borderColor>0,0,0,255</borderColor>
+    <shapeUpColor>255,255,255,255</shapeUpColor>
+    <shapeDownColor>230,230,230,255</shapeDownColor>
+    <hasShadow>true</hasShadow>
+    <customValue>&quot;rovnice je
+linearni&quot; →</customValue>
+    <defaultValue>&quot;rovnice je linearni&quot; →</defaultValue>
+    <commands>
+        <entry key="value">&quot;rovnice je linearni&quot;</entry>
+    </commands>
+    <commandsValid>true</commandsValid>
+    <value>&quot;rovnice je
+linearni&quot; →</value>
+</io>
+                            </element>
+                            <element xsi:type="layoutElement" xmlID="10" parentSegment="33">
+<process>
+    <borderColor>0,0,0,255</borderColor>
+    <shapeUpColor>255,255,255,255</shapeUpColor>
+    <shapeDownColor>230,230,230,255</shapeDownColor>
+    <hasShadow>true</hasShadow>
+    <defaultValue>x ← -c / b</defaultValue>
+    <commands>
+        <entry key="var">x</entry>
+        <entry key="value">-c / b</entry>
+    </commands>
+    <commandsValid>true</commandsValid>
+    <value>x ← -c / b</value>
+</process>
+                            </element>
+                            <element xsi:type="layoutElement" xmlID="11" parentSegment="33">
+<io>
+    <borderColor>0,0,0,255</borderColor>
+    <shapeUpColor>255,255,255,255</shapeUpColor>
+    <shapeDownColor>230,230,230,255</shapeDownColor>
+    <hasShadow>true</hasShadow>
+    <defaultValue>&quot;x = &quot; + x →</defaultValue>
+    <commands>
+        <entry key="value">&quot;x = &quot; + x</entry>
+    </commands>
+    <commandsValid>true</commandsValid>
+    <value>&quot;x = &quot; + x →</value>
+</io>
+                            </element>
+                            <description>Ano</description>
+                        </segment>
+                    </element>
+                    <description>Ne</description>
+                </segment>
+                <segment xsi:type="layoutSegment" xmlID="8" parentElement="6">
+                    <element xsi:type="layoutElement" xmlID="26" parentSegment="8">
+                        <comment>
+                            <borderColor>0,0,0,255</borderColor>
+                            <shapeDownColor>230,230,230,255</shapeDownColor>
+                            <hasShadow>true</hasShadow>
+                            <customValue>Je-li a ≠ 0, vypočte se
+diskriminant podle vzorce 
+D = b^2 - 4*a*c.</customValue>
+                            <commandsValid>true</commandsValid>
+                            <value>Je-li a ≠ 0, vypočte se
+diskriminant podle vzorce 
+D = b^2 - 4*a*c.</value>
+                            <alwaysLeftAlign>false</alwaysLeftAlign>
+                            <relativeX>48.0</relativeX>
+                            <relativeY>-62.0</relativeY>
+                            <paired>false</paired>
+                        </comment>
+                    </element>
+                    <element xsi:type="layoutElement" xmlID="12" parentSegment="8">
+                        <process>
+                            <borderColor>0,0,0,255</borderColor>
+                            <shapeUpColor>255,255,255,255</shapeUpColor>
+                            <shapeDownColor>230,230,230,255</shapeDownColor>
+                            <hasShadow>true</hasShadow>
+                            <customValue>D ← 
+Math.pow(b,2)-4*a*c</customValue>
+                            <defaultValue>D ← Math.pow(b,2)-4*a*c</defaultValue>
+                            <commands>
+<entry key="var">D</entry>
+<entry key="value">Math.pow(b,2)-4*a*c</entry>
+                            </commands>
+                            <commandsValid>true</commandsValid>
+                            <value>D ← 
+Math.pow(b,2)-4*a*c</value>
+                        </process>
+                    </element>
+                    <element xsi:type="layoutElement" xmlID="13" parentSegment="8">
+                        <decision>
+                            <borderColor>0,0,0,255</borderColor>
+                            <shapeUpColor>255,255,255,255</shapeUpColor>
+                            <shapeDownColor>230,230,230,255</shapeDownColor>
+                            <hasShadow>true</hasShadow>
+                            <defaultValue>D ≠ 0</defaultValue>
+                            <commands>
+<entry key="condition">D != 0</entry>
+                            </commands>
+                            <commandsValid>true</commandsValid>
+                            <value>D ≠ 0</value>
+                        </decision>
+                        <segment xsi:type="layoutSegment" xmlID="14" parentElement="13">
+                            <element xsi:type="layoutElement" xmlID="28" parentSegment="14">
+<comment>
+    <borderColor>0,0,0,255</borderColor>
+    <shapeDownColor>230,230,230,255</shapeDownColor>
+    <hasShadow>true</hasShadow>
+    <customValue>Pokud je D = 0, rovnice
+má jedno řešení.</customValue>
+    <commandsValid>true</commandsValid>
+    <value>Pokud je D = 0, rovnice
+má jedno řešení.</value>
+    <relativePointToSymbol x="86.5" y="-0.5"/>
+    <relativePointToSymbol x="106.5" y="-178.5"/>
+    <alwaysLeftAlign>false</alwaysLeftAlign>
+    <relativeX>151.0</relativeX>
+    <relativeY>-178.0</relativeY>
+    <paired>false</paired>
+</comment>
+                            </element>
+                            <element xsi:type="layoutElement" xmlID="16" parentSegment="14">
+<process>
+    <borderColor>0,0,0,255</borderColor>
+    <shapeUpColor>255,255,255,255</shapeUpColor>
+    <shapeDownColor>230,230,230,255</shapeDownColor>
+    <hasShadow>true</hasShadow>
+    <defaultValue>x1 ← -b / (2*a)</defaultValue>
+    <commands>
+        <entry key="var">x1</entry>
+        <entry key="value">-b / (2*a)</entry>
+    </commands>
+    <commandsValid>true</commandsValid>
+    <value>x1 ← -b / (2*a)</value>
+</process>
+                            </element>
+                            <element xsi:type="layoutElement" xmlID="39" parentSegment="14">
+<io>
+    <borderColor>0,0,0,255</borderColor>
+    <shapeUpColor>255,255,255,255</shapeUpColor>
+    <shapeDownColor>230,230,230,255</shapeDownColor>
+    <hasShadow>true</hasShadow>
+    <customValue>&quot;koren 
+dvojnasobny:
+ x1 = x2 = &quot; 
++ x1 →</customValue>
+    <defaultValue>&quot;koren dvojnasobny: x1 = x2 = &quot; + x1 →</defaultValue>
+    <commands>
+        <entry key="value">&quot;koren dvojnasobny: x1 = x2 = &quot; + x1</entry>
+    </commands>
+    <commandsValid>true</commandsValid>
+    <value>&quot;koren 
+dvojnasobny:
+ x1 = x2 = &quot; 
++ x1 →</value>
+</io>
+                            </element>
+                            <description>Ne</description>
+                        </segment>
+                        <segment xsi:type="layoutSegment" xmlID="15" parentElement="13">
+                            <element xsi:type="layoutElement" xmlID="17" parentSegment="15">
+<decision>
+    <borderColor>0,0,0,255</borderColor>
+    <shapeUpColor>255,255,255,255</shapeUpColor>
+    <shapeDownColor>230,230,230,255</shapeDownColor>
+    <hasShadow>true</hasShadow>
+    <defaultValue>D &gt; 0</defaultValue>
+    <commands>
+        <entry key="condition">D &gt; 0</entry>
+    </commands>
+    <commandsValid>true</commandsValid>
+    <value>D &gt; 0</value>
+</decision>
+<segment xsi:type="layoutSegment" xmlID="18" parentElement="17">
+    <element xsi:type="layoutElement" xmlID="27" parentSegment="18">
+        <comment>
+            <borderColor>0,0,0,255</borderColor>
+            <shapeDownColor>230,230,230,255</shapeDownColor>
+            <hasShadow>true</hasShadow>
+            <customValue>Pokud je D &lt; 0, rovnice nemá
+v oboru reálných čísel řešení.</customValue>
+            <commandsValid>true</commandsValid>
+            <value>Pokud je D &lt; 0, rovnice nemá
+v oboru reálných čísel řešení.</value>
+            <relativePointToSymbol x="60.5" y="0.0"/>
+            <relativePointToSymbol x="60.5" y="-134.0"/>
+            <alwaysLeftAlign>false</alwaysLeftAlign>
+            <relativeX>86.0</relativeX>
+            <relativeY>-134.0</relativeY>
+            <paired>false</paired>
+        </comment>
+    </element>
+    <element xsi:type="layoutElement" xmlID="22" parentSegment="18">
+        <io>
+            <borderColor>0,0,0,255</borderColor>
+            <shapeUpColor>255,255,255,255</shapeUpColor>
+            <shapeDownColor>230,230,230,255</shapeDownColor>
+            <hasShadow>true</hasShadow>
+            <customValue>&quot;rovnice nema
+ v R reseni&quot; →</customValue>
+            <defaultValue>&quot;rovnice nema v R reseni&quot; →</defaultValue>
+            <commands>
+                <entry key="value">&quot;rovnice nema v R reseni&quot;</entry>
+            </commands>
+            <commandsValid>true</commandsValid>
+            <value>&quot;rovnice nema
+ v R reseni&quot; →</value>
+        </io>
+    </element>
+    <description>Ne</description>
+</segment>
+<segment xsi:type="layoutSegment" xmlID="19" parentElement="17">
+    <element xsi:type="layoutElement" xmlID="29" parentSegment="19">
+        <comment>
+            <borderColor>0,0,0,255</borderColor>
+            <shapeDownColor>230,230,230,255</shapeDownColor>
+            <hasShadow>true</hasShadow>
+            <customValue>Pokud je D &gt; 0, rovnice
+má dvě řešení.</customValue>
+            <commandsValid>true</commandsValid>
+            <value>Pokud je D &gt; 0, rovnice
+má dvě řešení.</value>
+            <alwaysLeftAlign>false</alwaysLeftAlign>
+            <relativeX>31.0</relativeX>
+            <relativeY>-33.0</relativeY>
+            <paired>false</paired>
+        </comment>
+    </element>
+    <element xsi:type="layoutElement" xmlID="20" parentSegment="19">
+        <process>
+            <borderColor>0,0,0,255</borderColor>
+            <shapeUpColor>255,255,255,255</shapeUpColor>
+            <shapeDownColor>230,230,230,255</shapeDownColor>
+            <hasShadow>true</hasShadow>
+            <customValue>x1 ← 
+(-b+Math.sqrt(D))
+/(2*a)</customValue>
+            <defaultValue>x1 ← (-b+Math.sqrt(D))/(2*a)</defaultValue>
+            <commands>
+                <entry key="var">x1</entry>
+                <entry key="value">(-b+Math.sqrt(D))/(2*a)</entry>
+            </commands>
+            <commandsValid>true</commandsValid>
+            <value>x1 ← 
+(-b+Math.sqrt(D))
+/(2*a)</value>
+        </process>
+    </element>
+    <element xsi:type="layoutElement" xmlID="21" parentSegment="19">
+        <process>
+            <borderColor>0,0,0,255</borderColor>
+            <shapeUpColor>255,255,255,255</shapeUpColor>
+            <shapeDownColor>230,230,230,255</shapeDownColor>
+            <hasShadow>true</hasShadow>
+            <customValue>x2 ← 
+(-b-Math.sqrt(D))
+/(2*a)</customValue>
+            <defaultValue>x2 ← (-b-Math.sqrt(D))/(2*a)</defaultValue>
+            <commands>
+                <entry key="var">x2</entry>
+                <entry key="value">(-b-Math.sqrt(D))/(2*a)</entry>
+            </commands>
+            <commandsValid>true</commandsValid>
+            <value>x2 ← 
+(-b-Math.sqrt(D))
+/(2*a)</value>
+        </process>
+    </element>
+    <element xsi:type="layoutElement" xmlID="30" parentSegment="19">
+        <io>
+            <borderColor>0,0,0,255</borderColor>
+            <shapeUpColor>255,255,255,255</shapeUpColor>
+            <shapeDownColor>230,230,230,255</shapeDownColor>
+            <hasShadow>true</hasShadow>
+            <customValue>&quot;rovnice ma dva 
+koreny: x1 = &quot;
+ + x1 
++ &quot;, x2 = &quot; 
++ x2 →</customValue>
+            <defaultValue>&quot;rovnice ma dva koreny: x1 = &quot; + x1 + &quot;, x2 = &quot; + x2 →</defaultValue>
+            <commands>
+                <entry key="value">&quot;rovnice ma dva koreny: x1 = &quot; + x1 + &quot;, x2 = &quot; + x2</entry>
+            </commands>
+            <commandsValid>true</commandsValid>
+            <value>&quot;rovnice ma dva 
+koreny: x1 = &quot;
+ + x1 
++ &quot;, x2 = &quot; 
++ x2 →</value>
+        </io>
+    </element>
+    <description>Ano</description>
+</segment>
+                            </element>
+                            <description>Ano</description>
+                        </segment>
+                    </element>
+                    <description>Ano</description>
+                </segment>
+            </element>
+            <element xsi:type="layoutElement" xmlID="2" parentSegment="0">
+                <startEnd>
+                    <borderColor>0,0,0,255</borderColor>
+                    <shapeUpColor>255,255,255,255</shapeUpColor>
+                    <shapeDownColor>230,230,230,255</shapeDownColor>
+                    <hasShadow>true</hasShadow>
+                    <commandsValid>true</commandsValid>
+                    <value>Konec</value>
+                </startEnd>
+            </element>
+        </mainSegment>
+    </flowchart>
+</flowchartSaveContainer>

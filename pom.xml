@@ -4,7 +4,7 @@
 
     <groupId>cz.miroslavbartyzal</groupId>
     <artifactId>psdiagram</artifactId>
-    <version>1.4</version>
+    <version>1.4.0.1</version>
     <packaging>jar</packaging>
     <name>PS Diagram</name>
     <url>http://www.psdiagram.cz</url>
@@ -111,70 +111,26 @@
                                     <outputFile>${project.build.directory}/OPENSHIFT_DATA/versioninfo.xml</outputFile>
 
                                     <version>${project.version}</version>
-                                    <changelogurl></changelogurl>
+                                    <changelogurl>http://www.psdiagram.cz/changelog</changelogurl>
                                     <releaseurl></releaseurl>
 
-                                    <headline>10.7.2015</headline>
+                                    <headline>4.9.2015</headline>
                                     <description>
-                                        <![CDATA[
-                                        <html>
-                                        <p align="justify">Když jsem začínal pracovat na téhle aktualizaci, říkal jsem si… to dáš za týden. Prdlajs! Trvalo mi to přes půl roku. A to jsem se nikterak moc nepoflakoval. :) Nu a tak vám tímto přináším další nadílku nového. Největší práci dali samozřejmě maličkosti, ale bez nich by to přeci nebylo ono.</p>
-                                        <br/>
-                                        <p align="justify">Značného vylepšení se dostalo zejména syntaktickým analyzátorům pro validaci funkcí symbolů. Zabraňování vložení znaku za doprovodu prázdné hlášky „bylo zabráněno syntaktické chybě“ je tak konec a vyskytne-li se v zadávané funkci chyba, je nyní řádně vyznačena a okomentována. Repertoár komentářů sahá od popisu názvu proměnné, upozorňování na neuzavřené závorky a uvozovky, kontroly typů operandů vzhledem k operátorům, … až po validaci escapovaných znaků v řetězci či celosti čísla jako indexu pro přístup k poli. Celý analyzátor podléhá důkladným testům, takže by měl na rozdíl od předešlého řešení validovat opravdu bezchybně. :)</p>
-                                        <br/>
-                                        <p align="justify">Další novinka spočívá v ukládání diagramů. Diagramy se od teď ukládají do souborů s novými koncovkami „.psdiagram“, které, pokud již s nimi není spojená jiná aplikace, se s PS Diagramem automaticky asociují. Otevření předchozí práce tak bude otázka jen dvojího poklepání na soubor. Nastavení asociace můžete měnit v menu Nastavení aplikace.</p>
-                                        <br/>
-                                        <p align="justify">Dále jsem provedl změnu koncepce zápisu logického operátoru AND a OR z ‚&amp;‘ a ‚ |‘ na ‚&amp;&amp;‘ a ‚||‘. Jednoznakové varianty se totiž v jiných jazycích vyskytují jako operátory bitové a nerad bych, aby pak uživatelé PS Diagramu byly jakkoliv jejich odlišným chováním zmateni.</p>
-                                        <br/>
-                                        <p align="justify">Algoritmy vytvořené v předchozích verzích by měli být stále kompatibilní, ať už se jedná o operátory nebo o novou ukládací příponu. :)</p>
-                                        <br/>
-                                        <p align="justify">Přeji veselé diagramování!</p>
-                                        <br/>
-                                        <p align="justify">PS: ke spuštění PSDčka už není potřeba internet</p>
-                                        </html>
-                                        ]]>
                                     </description>
 
                                     <features>
-                                        <feature>diagram je nyní ukládán do souboru s koncovkou '.psdiagram', kterou lze asociovat s PS Diagramem pro pohotové otevírání</feature>
-                                        <feature>na syntaktickou chybu je nyní upozorněno podtržením a bublinou s popisem chyby a návrhy na opravu</feature>
-                                        <feature>do řetězcové hodnoty lze nyní začlenit tyto escapované hodnoty: \", \', \\, \n, \t, \b, \r, \f</feature>
-                                        <feature>k řetězcovým hodnotám lze nyní přistupovat jako k polím znaků</feature>
                                     </features>
                                     <enhancements>
-                                        <enhancement>syntaktické filtry jsou nyní mnohem vyspělejší a komunikativnější</enhancement>
-                                        <enhancement>optimalizace aplikace pro její vícenásobné spuštění</enhancement>
-                                        <enhancement>textová pole editace funkce symbolu nyní při přepínání symbolů uchovávají svůj stav i přes nekompletním vyplnění</enhancement>
-                                        <enhancement>textová pole editace symbolu nyní podporují vlastní undo/redo akce</enhancement>
-                                        <enhancement>zaznamená-li se psaní textu do plátna při otevřené záložce Funkce symbolu, je vstup přesměrován do prvního textového pole formuláře záložky</enhancement>
-                                        <enhancement>import z pascalu nyní podporuje dvojitou uvozovku (")</enhancement>
                                     </enhancements>
                                     <extensions>
-                                        <extension>v menu nastavení přibyla položka týkající se asociace souborů s příponou '.psdiagram'</extension>
                                     </extensions>
                                     <changes>
-                                        <change>od teď již není pro běh PS Diagramu nutné mít aktivní připojení k internetu</change>
-                                        <change>aby nedocházelo k zmatení ohledně logických a bitových operátorů, je pro operaci logické AND přiřazen operátor '&amp;&amp;' namísto předešlého '&amp;' a pro operaci OR přiřazen operátor '||', namísto předešlého '|'</change>
-                                        <change>při úpravách funkce symbolu již není vstup zablokován vznikla-li by jeho úpravou syntaktická chyba</change>
-                                        <change>při úpravách funkce či textu symbolu již nedojde po použití klávesové zkratky undo/redo akce k jejímu vykonání nad diagramem</change>
                                     </changes>
                                     <fixes>
-                                        <fix>načítání posledně uloženého diagramu bylo prováděno i přes jeho vypnutí v nastavení</fix>
-                                        <fix>překlad !=,>= na ≠,≥ (a dalších) již není prováděn jen u symbolů podmínek</fix>
-                                        <fix>funkce náhodného čísla uvnitř funkce náhodného čísla nyní nekončí chybou</fix>
-                                        <fix>některé konkrétní názvy proměnných nešlo použít, přestože je nezachytil syntaktický filtr</fix>
-                                        <fix>import z pascalu obsahující 'for-each' cyklus čerpající z pole v poli</fix>
-                                        <fix>import z pascalu obsahující escapovanou uvozovku ('') v řetězcové hodnotě</fix>
-                                        <fix>opraveny vzácné chyby v undo/redo akcích</fix>
-                                        <fix>po nezměněném zotaveném diagramu a následnému neočekávanému ukončení aplikace nedošlo k jeho opětovnému zotavení</fix>
+                                        <fix>nefungoval příkaz pro smazání kloubu od spojnice komentáře</fix>
+                                        <fix>při zavírání diagramu z knihovny algoritmů PS Diagram upozorňoval na neuložené změny, i když žádné provedeny nebyly</fix>
                                     </fixes>
                                     <others>
-                                        <other>aktualizace uživatelské příručky</other>
-                                        <other>k tooltipu symbolů Procesu a Výpustky v panelu symbolů byly přidány doplňující informace</other>
-                                        <other>k symbolům přidán příklad přístupu do vícerozměrného pole</other>
-                                        <other>k symbolům přidán příklad přístupu do řetězcové hodnoty jako do pole</other>
-                                        <other>optimalizace procesu aktualizace</other>
-                                        <other>další drobnosti...</other>
                                     </others>
                                 </configuration>
                             </execution>

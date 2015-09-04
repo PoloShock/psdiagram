@@ -138,9 +138,9 @@ public class JFrameUpdate extends javax.swing.JFrame implements PropertyChangeLi
 
         if (condenser.getReleaseURLs() != null && condenser.getReleaseURLs().get(newVersion) != null) {
             final String url = condenser.getReleaseURLs().get(newVersion);
-            jLabelIntro.setText("Podrobné představení nové verze:");
+            jLabelIntro.setText("Podrobné představení nové verze na ");
             jButtonWebIntro.setText(
-                    "<html><font color=\"#000099\"><u>na www.psdiagram.cz</u></font></html>");
+                    "<html><font color=\"#000099\"><u>www.psdiagram.cz</u></font></html>");
             jButtonWebIntro.setToolTipText(url);
             jButtonWebIntro.addActionListener(new ActionListener()
             {
@@ -169,7 +169,7 @@ public class JFrameUpdate extends javax.swing.JFrame implements PropertyChangeLi
             String description = condenser.getDescriptions().get(newVersion);
             if (headline == null && description != null) {
                 jLabelHeading.setText(newVersion); // set default heading if description follows
-            } else if (description != null) {
+            } else {
                 jLabelHeading.setText(headline);
             }
             jLabelDescription.setText(description);

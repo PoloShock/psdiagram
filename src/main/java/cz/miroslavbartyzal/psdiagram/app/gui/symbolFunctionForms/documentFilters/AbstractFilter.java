@@ -87,6 +87,11 @@ public abstract class AbstractFilter extends DocumentFilter
         return rule.parse(new ANTLRParser(), input);
     }
 
+    public void parseInputAndUpdateGUI()
+    {
+        parseInputAndUpdateGUI(parentJTextField.getText());
+    }
+
     protected void parseInputAndUpdateGUI(String input)
     {
         discardParseErrorInfos();

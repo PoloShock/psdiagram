@@ -107,9 +107,15 @@ public class URLStringDownloader extends SwingWorker<String, Void>
 
         StringBuilder sb = new StringBuilder();
         String line;
+        boolean firstLine = true;
         fireStatusChanged("stahuji informace...");
         try {
             while ((line = rd.readLine()) != null) {
+                if (firstLine) {
+                    firstLine = false;
+                } else {
+                    sb.append("\n");
+                }
                 sb.append(line);
             }
         } catch (IOException ex) {

@@ -98,6 +98,10 @@ public final class Main
     //      - ftp://ftp.freepascal.org/fpc/docs-pdf/ref.pdf
     // TODO pri otevreni napr. nejvetsiho spol. del. v maximalizovanem okne a naslednem zmenseni okna, scrollbary indikuji vytsi diagram nez je (prestoze je zobrazen cely). Po pohnuti s platnem je to ok.
     //! TODO pri novem diagramu se neresetuje jeho poloha takze to zustane nascrolovane mimo obraz + crollbary se neaktualizuji
+    //e!! TODO pri akumulaci vice aktualizaci, nezobrazovat zadne detaily o updatu ani nadpis -> muze to byt zavadejici pri malem hotfixu na konci a akumulovanem velkem updatu na zacatku
+    //! TODO nebalim toho do .jaru zbytecne moc? Ma skoro 10 mega...
+    // TODO implementovat moznost online dotazniku primo v PSDcku
+    // TODO konzole?
     /**
      * Metoda pro spuštění hlavního okna aplikace. Nejsou přijímány žádné
      * parametry.

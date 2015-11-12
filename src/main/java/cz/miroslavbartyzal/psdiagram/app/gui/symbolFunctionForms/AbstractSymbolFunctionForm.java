@@ -7,6 +7,7 @@ package cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutElement;
 import cz.miroslavbartyzal.psdiagram.app.global.RegexFunctions;
 import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditManager;
+import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.AbstractFilter;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
@@ -15,6 +16,8 @@ import javax.swing.KeyStroke;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.DocumentFilter;
 import javax.swing.text.JTextComponent;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
@@ -111,7 +114,7 @@ public abstract class AbstractSymbolFunctionForm extends javax.swing.JPanel impl
         this.hasCommandsToSet = hasCommandsToSet;
     }
 
-    public static void enhanceWithUndoRedoCapability(JTextComponent textcomp)
+    public static void enhanceWithUndoRedoCapability(final JTextComponent textcomp)
     {
         final UndoManager undo = new UndoManager();
         undo.setLimit(1000);
@@ -134,6 +137,10 @@ public abstract class AbstractSymbolFunctionForm extends javax.swing.JPanel impl
                         try {
                             if (undo.canUndo()) {
                                 undo.undo();
+                                DocumentFilter documentFilter = ((AbstractDocument) textcomp.getDocument()).getDocumentFilter();
+                                if (documentFilter != null && documentFilter instanceof AbstractFilter) {
+                                    ((AbstractFilter) documentFilter).parseInputAndUpdateGUI();
+                                }
                             }
                         } catch (CannotUndoException e) {
                         }
@@ -151,6 +158,10 @@ public abstract class AbstractSymbolFunctionForm extends javax.swing.JPanel impl
                         try {
                             if (undo.canRedo()) {
                                 undo.redo();
+                                DocumentFilter documentFilter = ((AbstractDocument) textcomp.getDocument()).getDocumentFilter();
+                                if (documentFilter != null && documentFilter instanceof AbstractFilter) {
+                                    ((AbstractFilter) documentFilter).parseInputAndUpdateGUI();
+                                }
                             }
                         } catch (CannotRedoException e) {
                         }

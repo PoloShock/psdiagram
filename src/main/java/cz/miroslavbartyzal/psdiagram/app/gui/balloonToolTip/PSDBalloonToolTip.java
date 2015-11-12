@@ -8,6 +8,7 @@ package cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -81,6 +82,29 @@ public class PSDBalloonToolTip
                 }
                 return dimension;
             }
+
+            @Override
+            public boolean contains(Point p)
+            {
+                /*
+                 * Here we have to verify that the point is inside the tooltip rectangle,
+                 * not just somewhere below it where the lead triangle is.
+                 */
+                return super.contains(p)
+                        && p.getY() <= super.getHeight() - balloonTipStyle.getMinimalHorizontalOffset() + ARC_SIZE; // the ARC_SIZE is there just because RoundedBalloonStyle returns bad offset
+            }
+
+            @Override
+            public boolean contains(int x, int y)
+            {
+                /*
+                 * Here we have to verify that the point is inside the tooltip rectangle,
+                 * not just somewhere below it where the lead triangle is.
+                 */
+                return super.contains(x, y)
+                        && y <= super.getHeight() - balloonTipStyle.getMinimalHorizontalOffset() + ARC_SIZE; // the ARC_SIZE is there just because RoundedBalloonStyle returns bad offset
+            }
+
         };
         balloonTip.setVisible(false);
 
@@ -108,7 +132,7 @@ public class PSDBalloonToolTip
 
                     if (lastInitialDelay >= 0) {
                         fadeOutTimer.setInitialDelay(lastInitialDelay);
-                        if (balloonTip.getMousePosition() == null || balloonTip.getMousePosition().y > balloonTip.getHeight() - balloonTipStyle.getMinimalHorizontalOffset() + ARC_SIZE) {
+                        if (balloonTip.getMousePosition() == null) {
                             // mouse pointer is not inside of the balloon tool tip
                             fadeOutTimer.startFadingOut();
                         }
@@ -149,7 +173,7 @@ public class PSDBalloonToolTip
             balloonTip.setVisible(true);
             if (lastInitialDelay >= 0) {
                 fadeOutTimer.setInitialDelay(timeMilliseconds);
-                if (balloonTip.getMousePosition() == null || balloonTip.getMousePosition().y > balloonTip.getHeight() - balloonTipStyle.getMinimalHorizontalOffset() + ARC_SIZE) {
+                if (balloonTip.getMousePosition() == null) {
                     // mouse pointer is not inside of the balloon tool tip
                     fadeOutTimer.startFadingOut();
                 }
@@ -174,7 +198,7 @@ public class PSDBalloonToolTip
         balloonTip.setContents(balloonTipTempContent);
         balloonTip.setVisible(true);
 
-        if (balloonTip.getMousePosition() == null || balloonTip.getMousePosition().y > balloonTip.getHeight() - balloonTipStyle.getMinimalHorizontalOffset() + ARC_SIZE) {
+        if (balloonTip.getMousePosition() == null) {
             // mouse pointer is not inside of the balloon tool tip
             fadeOutTimer.startFadingOut();
         }
@@ -193,11 +217,7 @@ public class PSDBalloonToolTip
         public void mouseMoved(MouseEvent e)
         {
             if (lastInitialDelay >= 0) {
-                if (e.getY() <= e.getComponent().getHeight() - balloonTipStyle.getMinimalHorizontalOffset() + ARC_SIZE) { // the ARC_SIZE is there just because RoundedBalloonStyle returns bad offset
-                    fadeOutTimer.stopFadingOut();
-                } else {
-                    fadeOutTimer.startFadingOut();
-                }
+                fadeOutTimer.stopFadingOut();
             }
         }
 
@@ -212,10 +232,8 @@ public class PSDBalloonToolTip
         @Override
         public void mousePressed(MouseEvent e)
         {
-            if (e.getY() <= e.getComponent().getHeight() - balloonTipStyle.getMinimalHorizontalOffset() + ARC_SIZE) { // the ARC_SIZE is there just because RoundedBalloonStyle returns bad offset
-                balloonTip.setVisible(false);
-                fadeOutTimer.stopFadingOut();
-            }
+            balloonTip.setVisible(false);
+            fadeOutTimer.stopFadingOut();
         }
 
     }

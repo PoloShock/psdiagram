@@ -379,16 +379,20 @@ public final class IO extends AbstractSymbolFunctionForm
         @Override
         public void validationStateChanged()
         {
-            Boolean varValid = (Boolean) jTextFieldVar.getDocument().getProperty("commandValid");
-            Boolean valueValid = (Boolean) jTextFieldValue.getDocument().getProperty("commandValid");
-            if (varValid == null || valueValid == null) {
-                // validation not completed on every command yet
-                return;
-            }
-
             if (jRadioButtonInput.isSelected()) {
+                Boolean varValid = (Boolean) jTextFieldVar.getDocument().getProperty("commandValid");
+                if (varValid == null) {
+                    // validation not completed on every command yet
+                    return;
+                }
                 IO.super.getElement().getSymbol().setCommandsValid(varValid);
             } else if (jRadioButtonOutput.isSelected()) {
+                Boolean valueValid = (Boolean) jTextFieldValue.getDocument().getProperty(
+                        "commandValid");
+                if (valueValid == null) {
+                    // validation not completed on every command yet
+                    return;
+                }
                 IO.super.getElement().getSymbol().setCommandsValid(valueValid);
             }
 

@@ -1172,7 +1172,6 @@ public abstract class AbstractLayout implements Layout
     @Override
     public void setFocusPaintToDefault()
     {
-
         focusJointOnly = false;
         noFocusPaint = false;
     }

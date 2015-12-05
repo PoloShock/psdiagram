@@ -282,6 +282,9 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
             } else if (symbolDragManager.isAbleToDrag()) {
                 if (symbolDragManager.mouseReleased()) {
                     flowchartEditUndoManager.addEdit(layout, this, symbolDragManager.getDragAction());
+                    puttingText = true;
+                    loadMarkedSymbol(false);
+                    puttingText = false;
                 }
             } else if (symbolDragManager.isCreatingSymbol()) {
                 symbolDragManager.cancelCreationProcess();
@@ -732,6 +735,9 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
         } else if (symbolDragManager.isAbleToDrag()) {
             if (symbolDragManager.mouseReleased()) {
                 flowchartEditUndoManager.addEdit(layout, this, symbolDragManager.getDragAction());
+                puttingText = true;
+                loadMarkedSymbol(false);
+                puttingText = false;
             }
             repaintJPanelDiagram();
         }

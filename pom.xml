@@ -4,7 +4,7 @@
 
     <groupId>cz.miroslavbartyzal</groupId>
     <artifactId>psdiagram</artifactId>
-    <version>1.4.1-SNAPSHOT</version>
+    <version>1.4.0.3</version>
     <packaging>jar</packaging>
     <name>PS Diagram</name>
     <url>http://www.psdiagram.cz</url>
@@ -114,8 +114,9 @@
                                     <changelogurl>http://www.psdiagram.cz/changelog</changelogurl>
                                     <releaseurl></releaseurl>
 
-                                    <headline>4.9.2015</headline>
+                                    <headline>5.12.2015</headline>
                                     <description>
+                                        doplnim
                                     </description>
 
                                     <features>
@@ -127,8 +128,7 @@
                                     <changes>
                                     </changes>
                                     <fixes>
-                                        <fix>nefungoval příkaz pro smazání kloubu od spojnice komentáře</fix>
-                                        <fix>při zavírání diagramu z knihovny algoritmů PS Diagram upozorňoval na neuložené změny, i když žádné provedeny nebyly</fix>
+                                        <fix></fix>
                                     </fixes>
                                     <others>
                                     </others>

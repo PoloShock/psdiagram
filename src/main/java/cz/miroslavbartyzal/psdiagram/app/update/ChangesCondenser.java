@@ -4,14 +4,12 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.update;
 
-import org.eclipse.persistence.oxm.annotations.XmlCDATA;
 import cz.miroslavbartyzal.psdiagram.app.global.xmlAdapters.MapChangesAdapter;
 import cz.miroslavbartyzal.psdiagram.app.global.xmlAdapters.MapChangesCalendarAdapter;
 import cz.miroslavbartyzal.psdiagram.app.global.xmlAdapters.MapListChangesAdapter;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -23,11 +21,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import org.eclipse.persistence.oxm.annotations.XmlCDATA;
 
 /**
  * In order to save bandwidth, only certain range of versions is included. This way if sent from
  * server, size of the class (or xml) is minimal.
- * <p/>
+ * 
  * @author Miroslav Bartyzal
  */
 @XmlRootElement(name = "versionsinfo")
@@ -190,7 +189,7 @@ public class ChangesCondenser
                 fv,
                 releaseURLs),
                 getFractionMap(fv, headlines), getFractionMap(fv, descriptions), getFractionMap(fv,
-                        features), getFractionMap(fv, enhancements), getFractionMap(fv, extensions),
+                features), getFractionMap(fv, enhancements), getFractionMap(fv, extensions),
                 getFractionMap(fv, changes), getFractionMap(fv, fixes), getFractionMap(fv, other));
     }
 

@@ -71,14 +71,12 @@ public final class Main
     // TODO "Soubor PS_Diagram_1.3.zip se běžně nestahuje a mohl by být nebezpečný."
     //e TODO pridat dalsi watermark napovedy
     // TODO v polich pro nazev promenne nabizet jiz existujici promenne
-    //e TODO break by mel fungovat i pri animaci..?
     // TODO Do ulozky integrovat historii vytvoreni diagramu pomoci systemtime timestampu. Undo akci do teto historie zahrnovat jako beznou akci editace. Pri nacteni diagramu by se meli nacist i undoable edits, pozor ale na ty undo akce viz predchozi veta. Rozhranni pro timetravel (historie) muze pockat.
     //      - budu pak muset upravit i podminky pro ukladani a prompty pro ulozeni diagramu - diagram s jedinymi symboly Start-End jiz stoji za ukladani pokud ma historii...
     //      - taky asi bude potreba snizit interval ukladani zalohy kvuli objemnejsimu savu?
     // TODO vyresit ty netransparentni stiny v pdf
     // TODO predelat nalezani otevrenych PSDcek v updateru tak, aby se hledalo podle umisteni souboru a ne podle titulku jeho okna (POZOR: co kdyz to bude bezet z jineho JVMka, bude porad cesta k psd.jar nejak vyhledatelna?)
     // TODO co se deje pri pole = [1, 2, 4][8, 9, 8]??
-    //e!! TODO otestovat windows spousteni pres cmd s cestou obsahujici mezeru
     // TODO priblizovani k mysi porad k pravemu dolnimu rohu (max scrollbarech) blbne (preskakuje) -> co to vyresit tak, ze prepisu chovani toho scrollview aby pri enablovani scrollbaru neubiral velikost canvasu, ale jen prekryl kontent?! :))
     // TODO resolvnout ten problem se stazenim (http://stackoverflow.com/questions/9512919/getting-around-chromes-malicious-file-warning)
     // TODO umoznit kompilaci s ruznymi priznaky at vim, jestli je PSD stazene z ulozto nebo odjinud
@@ -96,9 +94,6 @@ public final class Main
     // TODO implementovat escapovani \n\r\t... (\" a \' uz mam implementovane) uvnitr stringu do/z pascalu
     //      - http://www.textfiles.com/bitsavers/pdf/borland/TURBO_Pascal_Reference_Manual_CPM_Version_3_Dec88.pdf
     //      - ftp://ftp.freepascal.org/fpc/docs-pdf/ref.pdf
-    // TODO pri otevreni napr. nejvetsiho spol. del. v maximalizovanem okne a naslednem zmenseni okna, scrollbary indikuji vytsi diagram nez je (prestoze je zobrazen cely). Po pohnuti s platnem je to ok.
-    //! TODO pri novem diagramu se neresetuje jeho poloha takze to zustane nascrolovane mimo obraz + crollbary se neaktualizuji
-    //e!! TODO pri akumulaci vice aktualizaci, nezobrazovat zadne detaily o updatu ani nadpis -> muze to byt zavadejici pri malem hotfixu na konci a akumulovanem velkem updatu na zacatku
     //! TODO nebalim toho do .jaru zbytecne moc? Ma skoro 10 mega...
     // TODO implementovat moznost online dotazniku primo v PSDcku
     // TODO konzole?

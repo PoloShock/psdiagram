@@ -4,24 +4,24 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.debug;
 
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Comment;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.StartEnd;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.GotoLabel;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Goto;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
 import cz.miroslavbartyzal.psdiagram.app.debug.function.FunctionManager;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.Layout;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutElement;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutSegment;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Comment;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.EnumSymbol;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Goto;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.GotoLabel;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.StartEnd;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.font.TextLayout;
 import java.awt.geom.*;
-import java.util.Map.Entry;
 import java.util.*;
+import java.util.Map.Entry;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.SwingUtilities;
@@ -202,7 +202,7 @@ public final class DebugAnimator
                     }
                     boolean EndStartEnd = element.getSymbol() instanceof StartEnd && (element.getParentSegment().getParentElement() != null || element.getParentSegment().indexOfElement(
                             element) > 1 || (element.getParentSegment().indexOfElement(element) == 1 && !(element.getParentSegment().getElement(
-                                    0).getSymbol() instanceof Comment)));
+                            0).getSymbol() instanceof Comment)));
                     if (!(element.getSymbol() instanceof Comment) && !(element.getSymbol() instanceof Goto) && !(EndStartEnd)) {
                         if (!element.getPathToNextSymbol().getPathIterator(null).isDone()) {
                             paths.get(0).add(layout.shouldBeArrow(element.getPathToNextSymbol()));
@@ -227,10 +227,8 @@ public final class DebugAnimator
                 }
                 if (!lastGoto) {
                     paths.get(0).add(layout.shouldBeArrow(segment.getPathFromThisSegment()));
-                } else {
-                    if (!segment.getPathFromThisSegment().getPathIterator(null).isDone()) {
-                        gotoPaths.add(segment.getPathFromThisSegment());
-                    }
+                } else if (!segment.getPathFromThisSegment().getPathIterator(null).isDone()) {
+                    gotoPaths.add(segment.getPathFromThisSegment());
                 }
             }
         }
@@ -811,16 +809,14 @@ public final class DebugAnimator
         if (animSymbol.getSymbol() instanceof GotoLabel) { // u goto nechci vykreslit Hair
             GotoLabel gotoLabel = (GotoLabel) animSymbol.getSymbol();
             g2d.draw(gotoLabel.getMyCircle());
+        } else if (SettingsHolder.settings.isFunctionFilters() && colorSchemeIndex == 0
+                && !animSymbol.getSymbol().areCommandsValid()
+                && EnumSymbol.getEnumSymbol(animSymbol.getSymbol().getClass()).areAllCommandsPresent(
+                layout.findMyElement(animSymbol.getSymbol()))) {
+            g2d.setColor(ERROR_SYMBOL_COLOR);
+            g2d.draw(animSymbol.getSymbol().getShape()); // vykreslení okraje symbolu
         } else {
-            if (SettingsHolder.settings.isFunctionFilters() && colorSchemeIndex == 0
-                    && !animSymbol.getSymbol().areCommandsValid()
-                    && EnumSymbol.getEnumSymbol(animSymbol.getSymbol().getClass()).areAllCommandsPresent(
-                            layout.findMyElement(animSymbol.getSymbol()))) {
-                g2d.setColor(ERROR_SYMBOL_COLOR);
-                g2d.draw(animSymbol.getSymbol().getShape()); // vykreslení okraje symbolu
-            } else {
-                g2d.draw(animSymbol.getSymbol().getShape()); // vykreslení okraje symbolu
-            }
+            g2d.draw(animSymbol.getSymbol().getShape()); // vykreslení okraje symbolu
         }
         // vykresleni textu symbolu
         if (colorSchemeIndex < symbolColors.size()) {
@@ -1387,28 +1383,19 @@ public final class DebugAnimator
 
         private void callManagersNext()
         {
-            new Thread(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    try {
-                        Thread.sleep(AFTERDONE_DELAYMS);
-                    } catch (InterruptedException ex) {
-                    }
-                    SwingUtilities.invokeLater(new Runnable()
-                    { // JTreeTable ma problem s manipulovanim z jineho nez EDT threadu
-                        @Override
-                        public void run()
-                        {
-                            if (playTimer.isRunning()) {
-                                if (functionManager.next().debugShouldBeHalted) {
-                                    functionManager.globalPause();
-                                }
-                            }
-                        }
-                    });
+            new Thread(() -> {
+                try {
+                    Thread.sleep(AFTERDONE_DELAYMS);
+                } catch (InterruptedException ex) {
                 }
+                SwingUtilities.invokeLater(() -> { // JTreeTable ma problem s manipulovanim z jineho nez EDT threadu
+                    if (playTimer.isRunning()) {
+                        if (functionManager.isBreakPointReached() || functionManager.next().debugShouldBeHalted) {
+                            functionManager.globalPause();
+                        }
+                    }
+                }
+                );
             }).start();
         }
 

@@ -65,10 +65,10 @@ public class JFrameUpdate extends javax.swing.JFrame implements PropertyChangeLi
                                 99, 101, 32, 98, 117, 100, 101, 32, 109, 111, -59, -66, 110, -61,
                                 -87, 32, 117, -59, -66, 32, 106, 101, 110, 32, 60, 98, 62},
                             StandardCharsets.UTF_8) + daysLeft + new String(new byte[]{60, 47, 98,
-                                62, 32, 100, 97, 108, -59, -95, -61, -83, 99, 104, 32, 100, 110, -59,
-                                -81, 46, 60, 47, 104, 116, 109, 108, 62}, StandardCharsets.UTF_8),
+                        62, 32, 100, 97, 108, -59, -95, -61, -83, 99, 104, 32, 100, 110, -59,
+                        -81, 46, 60, 47, 104, 116, 109, 108, 62}, StandardCharsets.UTF_8),
                             new String(new byte[]{79, 100, 108, 111, -59, -66, 101, 110, -61, -83,
-                                32, 97, 107, 116, 117, 97, 108, 105, 122, 97, 99, 101},
+                        32, 97, 107, 116, 117, 97, 108, 105, 122, 97, 99, 101},
                             StandardCharsets.UTF_8), JOptionPane.WARNING_MESSAGE); // Odložení aktualizace; <html>Odložení aktualizace bude možné už jen <b>X</b> dalších dnů.</html>
                     JFrameUpdate.this.setAlwaysOnTop(true);
                 }
@@ -136,35 +136,20 @@ public class JFrameUpdate extends javax.swing.JFrame implements PropertyChangeLi
 
         resetProgress();
 
-        if (condenser.getReleaseURLs() != null && condenser.getReleaseURLs().get(newVersion) != null) {
-            final String url = condenser.getReleaseURLs().get(newVersion);
-            jLabelIntro.setText("Podrobné představení nové verze na ");
-            jButtonWebIntro.setText(
-                    "<html><font color=\"#000099\"><u>www.psdiagram.cz</u></font></html>");
-            jButtonWebIntro.setToolTipText(url);
-            jButtonWebIntro.addActionListener(new ActionListener()
-            {
-                @Override
-                public void actionPerformed(ActionEvent e)
-                {
-                    if (Desktop.isDesktopSupported()) {
-                        try {
-                            Desktop.getDesktop().browse(URI.create(url));
-                        } catch (IOException ex) {
-                            ex.printStackTrace(System.err);
-                        }
-                    } else {
-                        // TODO: error handling
-                    }
-                }
-            });
+        int newVersionsCount = condenser.getAllVersions().size();
+        if (newVersionsCount == 1 && condenser.getReleaseURLs() != null && condenser.getReleaseURLs().get(newVersion) != null) {
+            setUrlAnchor("Podrobné představení nové verze:", condenser.getReleaseURLs().get(newVersion),
+                    "www.psdiagram.cz");
+        } else if (newVersionsCount > 1 && condenser.getChanglelogURL() != null) {
+            setUrlAnchor("Kompletní seznam změn je k nalezení na:", condenser.getChanglelogURL(), null);
         } else {
             jLabelIntro.setText(null);
             jButtonWebIntro.setText(null);
             jButtonWebIntro.setToolTipText(null);
         }
         jButtonWebIntro.requestFocus();
-        if (condenser.getHeadlines() != null && condenser.getDescriptions() != null) {
+        if (newVersionsCount == 1 && condenser.getHeadlines() != null && condenser.getDescriptions() != null) {
+            // display heading and description only if there is a single (not merged) update
             String headline = condenser.getHeadlines().get(newVersion);
             String description = condenser.getDescriptions().get(newVersion);
             if (headline == null && description != null) {
@@ -187,6 +172,33 @@ public class JFrameUpdate extends javax.swing.JFrame implements PropertyChangeLi
             public void run()
             {
                 jScrollPane2.getVerticalScrollBar().setValue(0);
+            }
+        });
+    }
+
+    private void setUrlAnchor(String text, String url, String urlText)
+    {
+        jLabelIntro.setText(text);
+        if (urlText == null || urlText.isEmpty()) {
+            urlText = url.replaceAll("^http\\:\\/\\/", "");
+        }
+        jButtonWebIntro.setText(
+                "<html><font color=\"#000099\"><u>" + urlText + "</u></font></html>");
+        jButtonWebIntro.setToolTipText(url);
+        jButtonWebIntro.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                if (Desktop.isDesktopSupported()) {
+                    try {
+                        Desktop.getDesktop().browse(URI.create(url));
+                    } catch (IOException ex) {
+                        ex.printStackTrace(System.err);
+                    }
+                } else {
+                    // TODO: error handling
+                }
             }
         });
     }
@@ -280,9 +292,10 @@ public class JFrameUpdate extends javax.swing.JFrame implements PropertyChangeLi
         jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane2.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
-        jLabelIntro.setText("Podrobné představení nové verze:");
+        jLabelIntro.setText("Kompletní seznam změn je k nalezení na:");
+        jLabelIntro.setToolTipText("");
 
-        jButtonWebIntro.setText("<html>\n<FONT color=\\\"#000099\\\"><U>na www.psdiagram.cz</U></FONT>\n</html>");
+        jButtonWebIntro.setText("<html> <FONT color=\\\"#000099\\\"><U>www.psdiagram.cz/changelog</U></FONT> </html>");
         jButtonWebIntro.setAlignmentY(0.0F);
         jButtonWebIntro.setBorder(null);
         jButtonWebIntro.setBorderPainted(false);
@@ -322,15 +335,16 @@ public class JFrameUpdate extends javax.swing.JFrame implements PropertyChangeLi
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jLabelHeading, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabelDescription, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabelIntro, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabelIntro)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonWebIntro))
-                    .addComponent(jLabelHeading, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabelDescription, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(175, Short.MAX_VALUE))
+                        .addComponent(jButtonWebIntro, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(158, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -404,7 +418,7 @@ public class JFrameUpdate extends javax.swing.JFrame implements PropertyChangeLi
                     .addComponent(jButtonDoIn)
                     .addComponent(jLabelStatus))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 392, Short.MAX_VALUE)
                 .addContainerGap())
         );
 

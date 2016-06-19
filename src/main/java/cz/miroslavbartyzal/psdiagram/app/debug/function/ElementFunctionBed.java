@@ -4,20 +4,20 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.debug.function;
 
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.StartEnd;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Comment;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.For;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Decision;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.LoopEnd;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.IO;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.GotoLabel;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Goto;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Switch;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.LoopStart;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutElement;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutSegment;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Comment;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Decision;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.EnumSymbol;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.For;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Goto;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.GotoLabel;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.IO;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.LoopEnd;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.LoopStart;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.StartEnd;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Switch;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
 import cz.miroslavbartyzal.psdiagram.app.global.RegexFunctions;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import cz.miroslavbartyzal.psdiagram.app.gui.EnhancedJOptionPane;
@@ -280,7 +280,7 @@ public final class ElementFunctionBed
 
     private static ScriptEngine getJavaScriptEngine()
     {
-        return new ScriptEngineManager().getEngineByName("JavaScript");
+        return new ScriptEngineManager().getEngineByName("rhino");
     }
 
     /**

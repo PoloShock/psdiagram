@@ -3,14 +3,13 @@
  * and open the template in the editor.
  */
 
-/*
+ /*
  * MainWindow.java
  *
  * Created on 17.9.2011, 16:05:46
  */
 package cz.miroslavbartyzal.psdiagram.app.gui;
 
-import cz.miroslavbartyzal.psdiagram.app.persistence.recovery.FlowchartCrashRecovery;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.Flowchart;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.EnumLayout;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.Layout;
@@ -29,16 +28,17 @@ import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.LoopStart;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.StartEnd;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.SubRoutine;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Switch;
+import cz.miroslavbartyzal.psdiagram.app.global.GlobalFunctions;
+import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
+import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.MaxBalloonSizeCallback;
 import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartDebugManager;
 import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditManager;
 import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditUndoManager;
 import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartOverlookManager;
-import cz.miroslavbartyzal.psdiagram.app.global.GlobalFunctions;
-import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
-import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.MaxBalloonSizeCallback;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.AbstractSymbolFunctionForm;
 import cz.miroslavbartyzal.psdiagram.app.network.TimeCollector;
 import cz.miroslavbartyzal.psdiagram.app.persistence.FlowchartSaveContainer;
+import cz.miroslavbartyzal.psdiagram.app.persistence.recovery.FlowchartCrashRecovery;
 import cz.miroslavbartyzal.psdiagram.app.persistence.recovery.FlowchartRecovery;
 import cz.miroslavbartyzal.psdiagram.app.update.Updater;
 import java.awt.Color;
@@ -208,14 +208,14 @@ public final class MainWindow extends javax.swing.JFrame
         // pridani prikladu do knihovny
         ArrayList<Component> examples = ExamplesLoader.getExamplesMenuItems(
                 new ExamplesLoader.ExampleActionListener()
-                {
-                    @Override
-                    public void exampleActionPerformed(String examplePath)
-                    {
-                        openDiagram(new File(examplePath));
-                        SettingsHolder.settings.setDontSaveDirectly(true);
-                    }
-                });
+        {
+            @Override
+            public void exampleActionPerformed(String examplePath)
+            {
+                openDiagram(new File(examplePath));
+                SettingsHolder.settings.setDontSaveDirectly(true);
+            }
+        });
         for (Component component : examples) {
             jMenuAlgorithms.add(component);
         }
@@ -475,10 +475,10 @@ public final class MainWindow extends javax.swing.JFrame
                             111, 114, 109, 117, 108, -61, -95, -59, -103, 101, 46, 60, 47, 104, 116,
                             109, 108, 62},
                                 StandardCharsets.UTF_8), new String(
-                                        new byte[]{75, 111, 110, 101, 99, 32, 112, 108, 97, 116, 110,
-                                            111, 115, 116, 105, 32, 118, 101, 114, 122, 101, 32, 97,
-                                            112, 108, 105, 107, 97, 99, 101},
-                                        StandardCharsets.UTF_8), JOptionPane.WARNING_MESSAGE); // Konec platnosti verze aplikace; <html>Platnost této verze aplikace vypršela.<br />Pro další používání PS Diagramu jej prosím aktualizujte pomocí následujícího formuláře.</html>
+                                new byte[]{75, 111, 110, 101, 99, 32, 112, 108, 97, 116, 110,
+                                    111, 115, 116, 105, 32, 118, 101, 114, 122, 101, 32, 97,
+                                    112, 108, 105, 107, 97, 99, 101},
+                                StandardCharsets.UTF_8), JOptionPane.WARNING_MESSAGE); // Konec platnosti verze aplikace; <html>Platnost této verze aplikace vypršela.<br />Pro další používání PS Diagramu jej prosím aktualizujte pomocí následujícího formuláře.</html>
                     }
                     jMenuItemUpdateActionPerformed(null);
                 } else if (forceUpdate) {
@@ -1541,17 +1541,22 @@ public final class MainWindow extends javax.swing.JFrame
         SettingsHolder.settings.setActualFlowchartFile(null);
         flowchartCrashRecovery.updateSavedFlowchart();
         updateTitle();
+
+        SwingUtilities.invokeLater(() -> {
+            jScrollPaneDiagram.getVerticalScrollBar().setValue(0);
+            jScrollPaneDiagram.getHorizontalScrollBar().setValue(0);
+        });
     }//GEN-LAST:event_jMenuItemNewActionPerformed
 
     private void jMenuItemSaveAsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemSaveAsActionPerformed
-        String defname = null;
+        String defaultName = null;
         if (SettingsHolder.settings.getActualFlowchartFile() != null) {
-            defname = SettingsHolder.settings.getActualFlowchartFile().getName().substring(0,
-                    SettingsHolder.settings.getActualFlowchartFile().getName().length() - 4);
+            defaultName = SettingsHolder.settings.getActualFlowchartFile().getName().replaceFirst(
+                    "\\.[^\\" + File.separator + "]+$", "");
         }
         File file = MyFileChooser.saveFileDialog(MyFileChooser.FilterType.PSDIAGRAM,
                 "Uložit diagram",
-                defname);
+                defaultName);
         if (file != null) {
             try {
                 Marshaller jAXBmarshaller = getJAXBcontext().createMarshaller();
@@ -2215,7 +2220,7 @@ public final class MainWindow extends javax.swing.JFrame
      * jScrollPaneFunction.revalidate();
      * }
      */
-    /*
+ /*
      * public Graphics getJPanelDiagramGraphics() {
      * return jPanelDiagram.getGraphics();
      * }
@@ -2280,7 +2285,7 @@ public final class MainWindow extends javax.swing.JFrame
             currentTime = System.currentTimeMillis();
         }
 
-        final Long expiration = 1467324000000l; // 2016.7.1. 00:00:00 = 1467324000000 (System.out.println(new GregorianCalendar(2016, 6, 1).getTimeInMillis());) - month is zero-based
+        final Long expiration = 1498860000000l; // 2017.7.1. 00:00:00 = 1498860000000 (System.out.println(new GregorianCalendar(2017, 6, 1).getTimeInMillis());) - month is zero-based
         daysLeft = (expiration - currentTime) / 86400000l;
         if (currentTime > expiration || currentTime < SettingsHolder.settings.getLastTrialLaunchedTime()) {
 //            System.exit(0); <- let's let the user download newer version of PS Diagram
@@ -2363,8 +2368,11 @@ public final class MainWindow extends javax.swing.JFrame
                         jAXBmarshaller.marshal(new FlowchartSaveContainer(layout.getFlowchart()),
                                 baos);
                     }
-                    if (!Arrays.equals(baos.toByteArray(), Files.readAllBytes(
-                            SettingsHolder.settings.getActualFlowchartFile().toPath()))) {
+                    String currentFlowchart = new String(baos.toByteArray(), StandardCharsets.UTF_8);
+                    String savedFlowchart = new String(Files.readAllBytes(
+                            SettingsHolder.settings.getActualFlowchartFile().toPath()), StandardCharsets.UTF_8);
+                    if (!currentFlowchart.equals(savedFlowchart)
+                            && !currentFlowchart.equals(savedFlowchart.replaceAll("\\&quot\\;", "\""))) { // for back compatibility with java 7 JAXB
                         if (askAboutIt) {
                             return askAboutSaving();
                         } else {
@@ -2424,6 +2432,11 @@ public final class MainWindow extends javax.swing.JFrame
         flowchartEditManager.revalidateSymbolCommands();
 
         setStatusText("Diagram byl úspěšně vygenerován ze zdrojového kódu", 8000);
+
+        SwingUtilities.invokeLater(() -> {
+            jScrollPaneDiagram.getVerticalScrollBar().setValue(0);
+            jScrollPaneDiagram.getHorizontalScrollBar().setValue(0);
+        });
         return true;
     }
 
@@ -2492,6 +2505,11 @@ public final class MainWindow extends javax.swing.JFrame
                     "Diagram " + SettingsHolder.settings.getActualFlowchartFile().getPath() + " byl úspěšně otevřen.",
                     8000);
         }
+
+        SwingUtilities.invokeLater(() -> {
+            jScrollPaneDiagram.getVerticalScrollBar().setValue(0);
+            jScrollPaneDiagram.getHorizontalScrollBar().setValue(0);
+        });
     }
 
     private ArrayList<Component> getAllComponents(Container c)

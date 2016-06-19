@@ -1,6 +1,6 @@
 -libraryjars <java.home>/lib/rt.jar
 
--target 1.7
+-target 1.8
 -printmapping proguard-mapping.log
 -useuniqueclassmembernames
 -keepattributes Signature,*Annotation*

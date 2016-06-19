@@ -4,12 +4,6 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.debug.function;
 
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Comment;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.StartEnd;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.For;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.GotoLabel;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Goto;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
 import cz.miroslavbartyzal.psdiagram.app.debug.DebugAnimator;
 import cz.miroslavbartyzal.psdiagram.app.debug.function.variables.variableScopes.BlockScopeVariables;
 import cz.miroslavbartyzal.psdiagram.app.debug.function.variables.variableScopes.GlobalScopeVariables;
@@ -18,8 +12,14 @@ import cz.miroslavbartyzal.psdiagram.app.flowchart.FlowchartElement;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.FlowchartSegment;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.Layout;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutElement;
-import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartDebugManager;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Comment;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.For;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Goto;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.GotoLabel;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.StartEnd;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
+import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartDebugManager;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.geom.Path2D;
@@ -156,41 +156,40 @@ public final class FunctionManager
      */
     public void launch()
     {
-        launchThread = new Thread(new Runnable()
-        {
-            @Override
-            public void run()
+        launchThread = new Thread(() -> {
+            Runnable runnable = new Runnable()
             {
-                Runnable runnable = new Runnable()
+                private boolean paused = false;
+                
+                @Override
+                public void run()
                 {
-                    private boolean paused = false;
-
-                    @Override
-                    public void run()
-                    {
-                        if (!paused) { // don't allow further next()s if we interrupted ourselves
-                            paused = next().debugShouldBeHalted;
-                            if (paused) {
-                                globalPause();
-                                Thread.currentThread().interrupt();
-                            }
+                    if (!paused) { // don't allow further next()s if we interrupted ourselves
+                        paused = next().debugShouldBeHalted;
+                        if (paused) {
+                            globalPause();
+                            Thread.currentThread().interrupt();
                         }
                     }
-                };
-
-                do {
-                    try {
-                        SwingUtilities.invokeAndWait(runnable);
-                    } catch (InterruptedException | InvocationTargetException ex) {
-                        return;
-                    }
-                } while (nextElement != null && !breakpointSymbols.contains(nextElement.getSymbol()));
-                if (nextElement != null && breakpointSymbols.contains(nextElement.getSymbol())) {
-                    globalPause();
                 }
+            };
+            
+            do {
+                try {
+                    SwingUtilities.invokeAndWait(runnable);
+                } catch (InterruptedException | InvocationTargetException ex) {
+                    return;
+                }
+            } while (nextElement != null && !isBreakPointReached());
+            if (isBreakPointReached()) {
+                globalPause();
             }
         });
         launchThread.start();
+    }
+    
+    public boolean isBreakPointReached() {
+        return nextElement != null && breakpointSymbols.contains(nextElement.getSymbol());
     }
 
     /**
@@ -439,14 +438,10 @@ public final class FunctionManager
             } catch (InterruptedException ex) {
             }
 
-            SwingUtilities.invokeLater(new Runnable()
-            { // musim kod spustit az po sleze - v tuto chvili s nejvetsi pravdepodobnosti jsou stale spusteny metody od launch
-                @Override
-                public void run()
-                {
-                    myStop();
-                }
-            });
+            SwingUtilities.invokeLater(() -> {
+                myStop();
+            } // musim kod spustit az po sleze - v tuto chvili s nejvetsi pravdepodobnosti jsou stale spusteny metody od launch
+            );
         } else {
             myStop();
         }

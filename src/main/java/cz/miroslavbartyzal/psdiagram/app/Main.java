@@ -33,7 +33,7 @@ public final class Main
     // TODO menit i zeditovany text symbolu, pokud je zeditovany pouze o mezery ci odradkovani (nebo tak vymyslet automaticke odradkovavani?)
     // TODO moznost nastaveni prirazovaciho znamenka
     // TODO moznost prepnuti mezi Do-Until a Do-While
-    // TODO doplnit celociselny podil (DIV v pascalu) -> co treba "//" jako v pythonu?
+    // TODO doplnit celociselny podil (DIV v pascalu) -> co treba "//" jako v pythonu? Nebo "\". Take operator "^" by se mohl hodit.
     // TODO vytvor si testy na syntakticke filtry
     // TODO doplnit priklad celociselneho deleni do symbolu procesu
     // TODO pomoci tranc preklopit TBLR layout na LFTB? :)
@@ -67,8 +67,8 @@ public final class Main
     // TODO pohyb mezi symboly v editacnim rezimu pomoci kurzorovych sipek
     // TODO podivat se na logicnost posouvani diagramu pri posunu komentare mimo platno a zpet
     // TODO pridat info o poctu vykonanych prikazu po konceni algoritmu -> hezky benchmark, kriterium pro hodnoceni efektivity algoritmu :)
+    //      TODO taky by se dalo merit celkovy cas, co prikazy v JS zabrali! :))
     // TODO mozny nazev: dialgo
-    // TODO "Soubor PS_Diagram_1.3.zip se běžně nestahuje a mohl by být nebezpečný."
     //e TODO pridat dalsi watermark napovedy
     // TODO v polich pro nazev promenne nabizet jiz existujici promenne
     // TODO Do ulozky integrovat historii vytvoreni diagramu pomoci systemtime timestampu. Undo akci do teto historie zahrnovat jako beznou akci editace. Pri nacteni diagramu by se meli nacist i undoable edits, pozor ale na ty undo akce viz predchozi veta. Rozhranni pro timetravel (historie) muze pockat.
@@ -79,6 +79,7 @@ public final class Main
     // TODO co se deje pri pole = [1, 2, 4][8, 9, 8]??
     // TODO priblizovani k mysi porad k pravemu dolnimu rohu (max scrollbarech) blbne (preskakuje) -> co to vyresit tak, ze prepisu chovani toho scrollview aby pri enablovani scrollbaru neubiral velikost canvasu, ale jen prekryl kontent?! :))
     // TODO resolvnout ten problem se stazenim (http://stackoverflow.com/questions/9512919/getting-around-chromes-malicious-file-warning)
+    //      TODO "Soubor PS_Diagram_1.3.zip se běžně nestahuje a mohl by být nebezpečný."
     // TODO umoznit kompilaci s ruznymi priznaky at vim, jestli je PSD stazene z ulozto nebo odjinud
     // TODO isnpirace k helpu: http://www.bfoit.org/itp/JavaOperators.html
     // inspirace o vytvareni IDE: http://www.ibm.com/developerworks/opensource/tutorials/os-ecl-commplgin1/index.html
@@ -97,6 +98,8 @@ public final class Main
     //! TODO nebalim toho do .jaru zbytecne moc? Ma skoro 10 mega...
     // TODO implementovat moznost online dotazniku primo v PSDcku
     // TODO konzole?
+    // TODO kdybych jeste chtel dark theme, tak: https://github.com/Revivius/nb-darcula
+    // TODO zkraslit barvu tooltipu na neco jako mam balloon tooltip
     /**
      * Metoda pro spuštění hlavního okna aplikace. Nejsou přijímány žádné
      * parametry.

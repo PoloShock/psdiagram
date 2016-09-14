@@ -4,12 +4,12 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.flowchart.layouts;
 
+import cz.miroslavbartyzal.psdiagram.app.flowchart.Flowchart;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Comment;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.LoopEnd;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.GotoLabel;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Joint;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.LoopEnd;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.Flowchart;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -27,17 +27,20 @@ import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 
 /**
- * <p>Tato třída představuje Normový layout. Layout byl navržen speciálně tak,
+ * <p>
+ * Tato třída představuje Normový layout. Layout byl navržen speciálně tak,
  * aby rozložení a pospojování symbolů co nejvíce odpovídalo české normě ČSN ISO
  * 5807.<br />
  * Směr expanze vývojového diagramu je orientován doprava a dolů, což
  * norma specifikuje jako preferovaný směr.</p>
- *
- * <p>Důraz je kladen na logickou přehlednost uspořádání symbolů, proto je
+ * <p>
+ * <p>
+ * Důraz je kladen na logickou přehlednost uspořádání symbolů, proto je
  * například tělo cyklu odsazováno o úroveň doprava. Při několikanásobném
  * vnoření cyklů tak máme jasný přehled, které tělo patří kterému cyklu.</p>
- *
- * <p>Layout má k dispozici dvě položky nastavení.<br />
+ * <p>
+ * <p>
+ * Layout má k dispozici dvě položky nastavení.<br />
  * První nastavení nese název "Smršťování". Tuto možnost dobře využijeme
  * například
  * při tisku exportovaného obrázku diagramu, kdy celková velikost diagramu je
@@ -62,10 +65,16 @@ public class TBLRLayout extends AbstractLayout
     private ArrayList<Comment> lCommentSymbols = new ArrayList<>(9);
     private double width = 0;
     private double height = 0;
+
     private int incrementXSymbol = 0; // inkrementace Xove souradnice k symbolu (pouziti pri posouvani diagramu kvuli vybocujicimu komentari)
     private int incrementYSymbol = 0; // inkrementace Yove souradnice k symbolu (pouziti pri posouvani diagramu kvuli vybocujicimu komentari)
     private int incrementXCanvas = 0; // inkrementace Xove souradnice platna (pouziti pri posouvani diagramu kvuli vybocujicimu komentari)
     private int incrementYCanvas = 0; // inkrementace Yove souradnice platna (pouziti pri posouvani diagramu kvuli vybocujicimu komentari)
+    private Integer lastIncrementXSymbol = null; // ochrana proti stackoverflow kdyz layout prekresluje komentar tam a zpatky o pixel
+    private Integer lastIncrementYSymbol = null;
+    private Integer lastIncrementXCanvas = null;
+    private Integer lastIncrementYCanvas = null;
+
     private int descElseSegmentX = -9; // relativni umisteni Xove souradnice deskripce segmentu
     private int descElseSegmentY = 4; // relativni umisteni Xove souradnice deskripce segmentu
     private int descFirstSegmentX = -3; // relativni umisteni Xove souradnice deskripce segmentu vuci MaxX jeho symbolu
@@ -242,15 +251,30 @@ public class TBLRLayout extends AbstractLayout
                 }
             }
         }
-        if ((int) myIncrementXSymbol != incrementXSymbol || (int) myIncrementYSymbol != incrementYSymbol || (int) myIncrementXCanvas != incrementXCanvas || (int) myIncrementYCanvas != incrementYCanvas) {
+        if ((int) Math.round(myIncrementXSymbol) != incrementXSymbol
+                || (int) myIncrementYSymbol != incrementYSymbol
+                || (int) myIncrementXCanvas != incrementXCanvas
+                || (int) myIncrementYCanvas != incrementYCanvas) {
             // doslo k premisteni precuhujiciho komentare
-            incrementXSymbol = (int) myIncrementXSymbol;
-            incrementYSymbol = (int) myIncrementYSymbol;
-            incrementXCanvas = (int) myIncrementXCanvas;
-            incrementYCanvas = (int) myIncrementYCanvas;
-            prepareMyFlowchart();
-            return;
+            if (!isStackFilling((int) myIncrementXSymbol, (int) myIncrementYSymbol, (int) myIncrementXCanvas,
+                    (int) myIncrementYCanvas)) {
+                lastIncrementXSymbol = incrementXSymbol;
+                lastIncrementYSymbol = incrementYSymbol;
+                lastIncrementXCanvas = incrementXCanvas;
+                lastIncrementYCanvas = incrementYCanvas;
+
+                incrementXSymbol = (int) myIncrementXSymbol;
+                incrementYSymbol = (int) myIncrementYSymbol;
+                incrementXCanvas = (int) myIncrementXCanvas;
+                incrementYCanvas = (int) myIncrementYCanvas;
+                prepareMyFlowchart();
+                return;
+            }
         }
+        lastIncrementXSymbol = null;
+        lastIncrementYSymbol = null;
+        lastIncrementXCanvas = null;
+        lastIncrementYCanvas = null;
 
         JComponent canvas = super.getCanvas();
         canvas.setPreferredSize(new Dimension((int) width, (int) height)); // 2* + 1 za strokesize
@@ -265,6 +289,19 @@ public class TBLRLayout extends AbstractLayout
             lGrid.add(new Line2D.Double(lColumnPos.get(0), lRowPos.get(i), lColumnPos.get(
                     lColumnPos.size() - 1), lRowPos.get(i)));
         }
+    }
+
+    private boolean isStackFilling(int myIncrementXSymbol, int myIncrementYSymbol, int myIncrementXCanvas,
+            int myIncrementYCanvas)
+    {
+        if (lastIncrementXSymbol == null || lastIncrementYSymbol == null || lastIncrementXCanvas == null || lastIncrementYCanvas == null) {
+            return false;
+        }
+
+        return lastIncrementXSymbol == myIncrementXSymbol
+                && lastIncrementYSymbol == myIncrementYSymbol
+                && lastIncrementXCanvas == myIncrementXCanvas
+                && lastIncrementYCanvas == myIncrementYCanvas;
     }
 
     /**
@@ -593,7 +630,6 @@ public class TBLRLayout extends AbstractLayout
                 targetY = lRowPos.get(parentElement.getExtraLayoutData(0) - decrease);
             }
 
-
             if (previousElement != null) {
                 LayoutElement lastElement = previousElement;
                 if (previousElement.getSymbol() instanceof LoopEnd) {
@@ -667,7 +703,7 @@ public class TBLRLayout extends AbstractLayout
                             if (parentElement.getSymbol().isOverHang()) {
                                 Point2D p = getSymbolIntersectionPoint(parentElement.getSymbol(),
                                         lColumnPos.get(
-                                        inputColumn - indexOfSegment - segment.getExtraLayoutData(0)),
+                                                inputColumn - indexOfSegment - segment.getExtraLayoutData(0)),
                                         targetY);
                                 path.lineTo(p.getX(), p.getY());
                             }
@@ -720,7 +756,7 @@ public class TBLRLayout extends AbstractLayout
                             if (parentElement.getSymbol().isOverHang()) {
                                 Point2D p = getSymbolIntersectionPoint(parentElement.getSymbol(),
                                         lColumnPos.get(
-                                        inputColumn - indexOfSegment - segment.getExtraLayoutData(0)),
+                                                inputColumn - indexOfSegment - segment.getExtraLayoutData(0)),
                                         targetY);
                                 path.lineTo(p.getX(), p.getY());
                             }
@@ -780,7 +816,7 @@ public class TBLRLayout extends AbstractLayout
                     if (parentElement.getSymbol().isOverHang()) {
                         Point2D p = getSymbolIntersectionPoint(parentElement.getSymbol(),
                                 lColumnPos.get(
-                                inputColumn - indexOfSegment - segment.getExtraLayoutData(0)),
+                                        inputColumn - indexOfSegment - segment.getExtraLayoutData(0)),
                                 targetY);
                         path.lineTo(p.getX(), p.getY());
                     }
@@ -1020,7 +1056,6 @@ public class TBLRLayout extends AbstractLayout
          * }
          */
         //p = commentSymbol.getIntersectionPoint(centerP.getX(), centerP.getY());
-
         p = commentSymbol.getIntersectionPoint(path.getCurrentPoint().getX(),
                 path.getCurrentPoint().getY());
         path.lineTo(p.getX(), p.getY());

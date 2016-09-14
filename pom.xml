@@ -4,8 +4,8 @@
 
     <groupId>cz.miroslavbartyzal</groupId>
     <artifactId>psdiagram</artifactId>
-<!--    <version>1.4.1-SNAPSHOT</version>-->
-    <version>1.4.0.5</version>
+    <version>1.4.0.6</version>
+    <!--<version>1.4.1-SNAPSHOT</version>-->
     <packaging>jar</packaging>
     <name>PS Diagram</name>
     <url>http://www.psdiagram.cz</url>
@@ -136,13 +136,12 @@
                                     <changelogurl>http://www.psdiagram.cz/changelog</changelogurl>
                                     <releaseurl></releaseurl>
 
-                                    <headline>19.06.2016</headline>
+                                    <headline>14.09.2016</headline>
                                     <description>
                                         <![CDATA[
                                         <html>
-                                            <p align="justify">Dnešní update je opět pomenší, nicméně i tak PS Diagram posouvá zase o krůček dále. Interně nyní již pracuje s nejnovější Javou a podařilo se mi i opravit některé neduhy, které jsem od minule objevil.</p>
-                                            <br/>
-                                            <p align="justify">PS: S aktualizací prosím neváhejte, protože předchozím verzím bude končit platnost začátkem července. Tato aktualizace posouvá platnost o rok dále. Tímto nejen že motivuji sám sebe k dalšímu vylepšování, ale i vás k používání aktuální verze aplikace - myslím to jen v dobrém. :)</p>
+                                            <p align="justify">Vydávám tento malý update na základě oznámení o nepříjemné chybě, která následně vedla až k nemožnosti spustit PS Diagram. Snad její vznik byl opravdu tak vzácný, jak se jeví a nepostihla nikoho jiného.</p>
+                                            <p align="justify">Tímto velmi děkuji Milanovi za report i za peněžní příspěvek! :)</p>
                                         </html>
                                         ]]>
                                     </description>
@@ -154,14 +153,11 @@
                                     <extensions>
                                     </extensions>
                                     <changes>
-                                        <change><![CDATA[na breakpoint nyní reaguje nejen rychlé spuštění algoritmu, ale i animace průchodu diagramem]]></change>
                                     </changes>
                                     <fixes>
-                                        <fix><![CDATA[dialog 'uložit jako' v některých případech navrhoval název souboru s chybnou příponou]]></fix>
-                                        <fix><![CDATA[po otevření nového diagramu se neobnovily posuvníky plátna a nově otevřený diagram tak mohl skončit mimo obraz]]></fix>
+                                        <fix><![CDATA[při určité stavbě diagramu mohlo během jeho úprav dojít k chybnému vykreslení symbolů a zamrznutí PS Diagramu]]></fix>
                                     </fixes>
                                     <others>
-                                        <other><![CDATA[aktualizace Java JRE na verzi 8]]></other>
                                     </others>
                                 </configuration>
                             </execution>
@@ -225,7 +221,7 @@
                                             <fileset dir="${basedir}/src/main/resources/intozip"/>
                                         </copy>
                                         <copy todir="${project.build.directory}/zip/PS Diagram/jre">
-                                            <fileset dir="c:/Program Files (x86)/Java/jre1.8.0_92"/>
+                                            <fileset dir="c:/Program Files (x86)/Java/jre1.8.0_102"/>
                                         </copy>
                                         <copy file="c:/Zaloha/Programovani/Moje/Visual Studio 2013/PS Diagram Launcher/PS Diagram Launcher/bin/Release/PS Diagram.exe" todir="${project.build.directory}/zip/PS Diagram"/>
                                         <zip destfile="${project.build.directory}/OPENSHIFT_DATA/PS_Diagram_${project.version}.zip"

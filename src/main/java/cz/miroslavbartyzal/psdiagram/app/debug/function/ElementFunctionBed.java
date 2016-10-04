@@ -133,12 +133,13 @@ public final class ElementFunctionBed
                         actualElement) == 1 && !(actualSegment.getElement(0).getSymbol() instanceof Comment)))) { // > 1 protoze 0ty muze byt komentar
             return result;
         }
-//        HashMap<String, String> commandsCopy = null; // budu nahrazovat randomy, tak abych nenahrazoval i zdroj..
-//        if (symbol.getCommands() != null) {
-//            commandsCopy = new HashMap<>(symbol.getCommands());
-//            setRandoms(commandsCopy);
-//        }
-        HashMap<String, String> commands = symbol.getCommands();
+        
+        HashMap<String, String> commandsCopy = null;
+        if (symbol.getCommands() != null) {
+            commandsCopy = new HashMap<>(symbol.getCommands());
+            setRandoms(commandsCopy);
+        }
+        
         if ((symbol instanceof Goto || symbol instanceof GotoLabel)
                 && (symbol.getValue() == null || symbol.getValue().matches("\\s*"))) {
             JOptionPane.showMessageDialog(null,
@@ -149,15 +150,15 @@ public final class ElementFunctionBed
         int innerSegment = -1;
 
         if (symbol instanceof Switch) {
-            innerSegment = caseSetProgAndUpVars(result, commands, variables);
+            innerSegment = caseSetProgAndUpVars(result, commandsCopy, variables);
         } else if (symbol instanceof Decision) {
-            innerSegment = decisionSetProgAndUpVars(result, commands, variables);
+            innerSegment = decisionSetProgAndUpVars(result, commandsCopy, variables);
         } else if (symbol instanceof For) {
-            innerSegment = forSetProgAndUpVars(result, commands, variables);
+            innerSegment = forSetProgAndUpVars(result, commandsCopy, variables);
         } else if (symbol instanceof IO) {
-            innerSegment = ioSetProgAndUpVars(result, commands, variables);
+            innerSegment = ioSetProgAndUpVars(result, commandsCopy, variables);
         } else if (symbol instanceof cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Process) {
-            innerSegment = processSetProgAndUpVars(result, commands, variables);
+            innerSegment = processSetProgAndUpVars(result, commandsCopy, variables);
         } else if (symbol instanceof LoopEnd) {
             innerSegment = 1;
             LayoutElement pairElement = null;
@@ -165,7 +166,7 @@ public final class ElementFunctionBed
                 pairElement = actualSegment.getElement(i);
                 if (pairElement.getSymbol() instanceof LoopStart) {
                     if (!pairElement.getSymbol().isOverHang()) {
-                        innerSegment = decisionSetProgAndUpVars(result, commands, variables);
+                        innerSegment = decisionSetProgAndUpVars(result, commandsCopy, variables);
                         if (innerSegment == 0) {
                             actualElement = pairElement;
                             innerSegment = -1;
@@ -181,7 +182,7 @@ public final class ElementFunctionBed
             }
         } else if (symbol instanceof LoopStart) {
             if (symbol.isOverHang()) {
-                innerSegment = decisionSetProgAndUpVars(result, commands, variables);
+                innerSegment = decisionSetProgAndUpVars(result, commandsCopy, variables);
                 if (innerSegment == 0) {
                     innerSegment = -1;
                 }
@@ -189,7 +190,7 @@ public final class ElementFunctionBed
                 innerSegment = 1;
             }
         } else if (symbol instanceof Goto) {
-            if (commands.get("mode").equals("break") || commands.get("mode").equals(
+            if (commandsCopy.get("mode").equals("break") || commandsCopy.get("mode").equals(
                     "continue")) {
                 // nalezeni rodicovskeho elementu cyklu
                 LayoutElement parentLoop = actualElement;
@@ -197,13 +198,13 @@ public final class ElementFunctionBed
                     parentLoop = parentLoop.getParentSegment().getParentElement();
                     if (parentLoop == null) {
                         JOptionPane.showMessageDialog(null,
-                                "<html>Symbol spojky ve funkci příkazu " + commands.get("mode") + " musí být umístěn<br />přímo uvnitř těla cyklu, který má být přerušen!</html>",
+                                "<html>Symbol spojky ve funkci příkazu " + commandsCopy.get("mode") + " musí být umístěn<br />přímo uvnitř těla cyklu, který má být přerušen!</html>",
                                 "Rodičovský cyklus nenalezen", JOptionPane.ERROR_MESSAGE);
                         return result;
                     }
                 } while (!(parentLoop.getSymbol() instanceof For) && !(parentLoop.getSymbol() instanceof LoopStart));
 
-                if (commands.get("mode").equals("continue")) {
+                if (commandsCopy.get("mode").equals("continue")) {
                     if (!parentLoop.getSymbol().isOverHang()) {
                         do {
                             parentLoop = parentLoop.getParentSegment().getElement(
@@ -349,43 +350,44 @@ public final class ElementFunctionBed
         setNextElSegAndPaths(result, paths, actualElement, actualSegment, actualElIndex);
     }
 
-//    /**
-//     * Tato metoda byla pouzivana drive, nyni ale zacala postradat smysl (nenašel jsem důvod
-//     * pro její použití). Zřejmě byla využita jen pro zobrazení výsledného náhodného čísla v textu
-//     * nad symbolem, tuto funkci ale již (včetně náhodných čísel) hravě zastane funkce
-//     * getCompiledProgressDesc.
-//     * <p>
-//     * @param commands
-//     */
-//    private static void setRandoms(HashMap<String, String> commands)
-//    {
-//        for (String key : commands.keySet()) {
-//            if (commands.get(key).matches(".*Math.random\\(.*")) { // jestli je pritomen random
-//                String command = commands.get(key);
-//                String[] commandSplit = RegexFunctions.splitString(command,
-//                        "\"([^\"\\\\]|\\\\.)*\"?"); // jsou-li pritomny uvozovky, musim se jich nejdrive zbavit - take hrozi ze je random jen v nich
-//
-//                for (int i = 0; i < commandSplit.length; i += 2) {
-//                    while (commandSplit[i].matches(".*Math.random\\([^\\)]*\\).*")) {
-//                        try {
-//                            commandSplit[i] = commandSplit[i].replaceFirst(
-//                                    "Math.random\\([^\\)]*\\)", getJavaScriptEngine().eval(
-//                                            "Math.random();").toString());
-//                        } catch (ScriptException ex) {
-//                            ex.printStackTrace(System.err);
-//                            commandSplit[i] = commandSplit[i].replaceFirst(
-//                                    "Math.random\\([^\\)]*\\)", Double.toString(Math.random()));
-//                        }
-//                    }
-//                }
-//                command = "";
-//                for (String commandPart : commandSplit) {
-//                    command += commandPart;
-//                }
-//                commands.put(key, command);
-//            }
-//        }
-//    }
+    /**
+     * Pro správné zobrazení výsledného náhodného čísla v textu nad symbolem je nutné příkaz Math.random() a jeho
+     * variace již nyní nahradit výslednými hodnotami. Neučinili-li bychom tak, tak nad symbolem bude jiné náhodné číslo
+     * než číslo, které bude skutečně použito, protože funkce generující text nad symbolem se spouští zvlášť vůči
+     * skutečným hodnotám proměnných, které se zapamatovávají.
+     * <p>
+     * @param commands
+     */
+    private static void setRandoms(HashMap<String, String> commands)
+    {
+        for (String key : commands.keySet()) {
+            if (commands.get(key).matches(".*Math.random\\(.*")) { // jestli je pritomen random
+                String command = commands.get(key);
+                String[] commandSplit = RegexFunctions.splitString(command,
+                        "\"([^\"\\\\]|\\\\.)*\"?"); // jsou-li pritomny uvozovky, musim se jich nejdrive zbavit - take hrozi ze je random jen v nich
+
+                for (int i = 0; i < commandSplit.length; i += 2) {
+                    while (commandSplit[i].matches(".*Math.random\\([^\\)]*\\).*")) {
+                        try {
+                            commandSplit[i] = commandSplit[i].replaceFirst(
+                                    "Math.random\\([^\\)]*\\)", getJavaScriptEngine().eval(
+                                            "Math.random();").toString());
+                        } catch (ScriptException ex) {
+                            ex.printStackTrace(System.err);
+                            commandSplit[i] = commandSplit[i].replaceFirst(
+                                    "Math.random\\([^\\)]*\\)", Double.toString(Math.random()));
+                        }
+                    }
+                }
+                command = "";
+                for (String commandPart : commandSplit) {
+                    command += commandPart;
+                }
+                commands.put(key, command);
+            }
+        }
+    }
+    
     //*************************************************************************
     //*******************SYMBOLS PROGRESS AND UPDATEVARS SET*******************
     //*************************************************************************

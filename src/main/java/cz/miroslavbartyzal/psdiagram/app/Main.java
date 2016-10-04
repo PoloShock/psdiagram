@@ -100,6 +100,7 @@ public final class Main
     // TODO konzole?
     // TODO kdybych jeste chtel dark theme, tak: https://github.com/Revivius/nb-darcula
     // TODO zkraslit barvu tooltipu na neco jako mam balloon tooltip
+    //e TODO v linuxu, (kde neni pritomne consolas?) se pri syntaxcni chybe zobrazi v bubline paznak-ctverecek
     /**
      * Metoda pro spuštění hlavního okna aplikace. Nejsou přijímány žádné
      * parametry.

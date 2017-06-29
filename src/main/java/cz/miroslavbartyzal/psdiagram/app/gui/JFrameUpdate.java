@@ -57,7 +57,7 @@ public class JFrameUpdate extends javax.swing.JFrame implements PropertyChangeLi
             @Override
             public void windowClosing(WindowEvent we)
             {
-                if (!forceUpdate && daysLeft != null && daysLeft >= 0 && daysLeft < 16 && !JFrameUpdate.this.downloadHit) {
+                if (!forceUpdate && daysLeft != null && daysLeft >= 0 && daysLeft < 22 && !JFrameUpdate.this.downloadHit) {
                     JFrameUpdate.this.setAlwaysOnTop(false);
                     JOptionPane.showMessageDialog(null, new String(
                             new byte[]{60, 104, 116, 109, 108, 62, 79, 100, 108, 111, -59, -66,
@@ -87,17 +87,16 @@ public class JFrameUpdate extends javax.swing.JFrame implements PropertyChangeLi
                 updater.loadInfo(child, new Updater.InfoLoadListener()
                 {
                     @Override
-                    public void onInfoLoaded(boolean newVersionAvailable)
+                    public void onInfoLoaded(Boolean newVersionAvailable)
                     {
                         if (child.isVisible()) { // = if process wasn't canceled
-                            if (newVersionAvailable) {
+                            if (Boolean.TRUE.equals(newVersionAvailable)) {
                                 child.dispose();
                                 setVisible(true); // call to 'self'
                             } else {
                                 child.setNoUpdateState();
                             }
                         }
-
                     }
                 });
 

@@ -4,11 +4,9 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters;
 
-import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import cz.miroslavbartyzal.psdiagram.app.global.StringFunctions;
 import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.MaxBalloonSizeCallback;
 import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.PSDBalloonToolTip;
-import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.AbstractSymbolFunctionForm;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.BadSyntaxJTextFieldBorder;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.SquiggleHighlighter;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.UnknownSyntaxJTextFieldBorder;
@@ -96,10 +94,6 @@ public abstract class AbstractFilter extends DocumentFilter
     {
         discardParseErrorInfos();
 
-        if (!SettingsHolder.settings.isFunctionFilters()) {
-            // when filters are off, input has to be converted from javascript to PS Diagram's equivalent
-            input = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(input);
-        }
         boolean isEmpty = input.matches("^\\s*$");
         if (!isEmpty) {
             getRule().parseReportErrors(PARSER, input, syntaxErrorListener);
@@ -126,10 +120,8 @@ public abstract class AbstractFilter extends DocumentFilter
         public void onRecoveryFinished(PSDParseResult parseResult)
         {
             refreshSyntaxInfo(false, false);
-            if (SettingsHolder.settings.isFunctionFilters()) {
-                underlineParseErrors(parseResult);
-                showParseErrorsAsBalloonInfo(parseResult);
-            }
+            underlineParseErrors(parseResult);
+            showParseErrorsAsBalloonInfo(parseResult);
         }
 
     }
@@ -150,12 +142,10 @@ public abstract class AbstractFilter extends DocumentFilter
             StringBuilder sb = new StringBuilder();
             sb.append(fb.getDocument().getText(0, fb.getDocument().getLength()));
             sb.insert(offset, text);
-            if (SettingsHolder.settings.isFunctionFilters()) {
-                if (sb.length() > MAX_CHARS) {
-                    balloonToolTip.showTemporaryMessage(
-                            "Bylo zabráněno překročení maximální délky příkazu.", 2000);
-                    return;
-                }
+            if (sb.length() > MAX_CHARS) {
+                balloonToolTip.showTemporaryMessage(
+                        "Bylo zabráněno překročení maximální délky příkazu.", 2000);
+                return;
             }
             parseInputAndUpdateGUI(sb.toString());
 
@@ -201,12 +191,10 @@ public abstract class AbstractFilter extends DocumentFilter
             StringBuilder sb = new StringBuilder();
             sb.append(fb.getDocument().getText(0, fb.getDocument().getLength()));
             sb.replace(offset, offset + length, text);
-            if (SettingsHolder.settings.isFunctionFilters()) {
-                if (sb.length() > MAX_CHARS) {
-                    balloonToolTip.showTemporaryMessage(
-                            "Bylo zabráněno překročení maximální délky příkazu.", 2000);
-                    return;
-                }
+            if (sb.length() > MAX_CHARS) {
+                balloonToolTip.showTemporaryMessage(
+                        "Bylo zabráněno překročení maximální délky příkazu.", 2000);
+                return;
             }
             parseInputAndUpdateGUI(sb.toString());
 
@@ -217,36 +205,34 @@ public abstract class AbstractFilter extends DocumentFilter
 
     protected final void refreshSyntaxInfo(boolean isValid, boolean parsingInProgress)
     {
-        if (SettingsHolder.settings.isFunctionFilters()) {
-            if (isValid) {
-                if (!parsingInProgress) {
-                    if (currentBorder != validBorder) {
-                        parentJTextField.setBorder(validBorder);
-                        currentBorder = validBorder;
-                    }
-                } else {
-                    if (currentBorder != unknownSyntaxBorder || unknownSyntaxBorder.getDefaultBorder() != validBorder) {
-                        unknownSyntaxBorder.setDefaultBorder((AbstractBorder) validBorder,
-                                parentJTextField, true);
-                        parentJTextField.setBorder(unknownSyntaxBorder);
-                        currentBorder = unknownSyntaxBorder;
-                    } else {
-                        unknownSyntaxBorder.initFadeIn();
-                    }
+        if (isValid) {
+            if (!parsingInProgress) {
+                if (currentBorder != validBorder) {
+                    parentJTextField.setBorder(validBorder);
+                    currentBorder = validBorder;
                 }
             } else {
-                if (!parsingInProgress) {
-                    if (currentBorder != errorBorder) {
-                        parentJTextField.setBorder(errorBorder);
-                        currentBorder = errorBorder;
-                    }
-                } else if (currentBorder != unknownSyntaxBorder || unknownSyntaxBorder.getDefaultBorder() != errorBorder) {
-                    unknownSyntaxBorder.setDefaultBorder((AbstractBorder) errorBorder,
-                            parentJTextField,
-                            false);
+                if (currentBorder != unknownSyntaxBorder || unknownSyntaxBorder.getDefaultBorder() != validBorder) {
+                    unknownSyntaxBorder.setDefaultBorder((AbstractBorder) validBorder,
+                            parentJTextField, true);
                     parentJTextField.setBorder(unknownSyntaxBorder);
                     currentBorder = unknownSyntaxBorder;
+                } else {
+                    unknownSyntaxBorder.initFadeIn();
                 }
+            }
+        } else {
+            if (!parsingInProgress) {
+                if (currentBorder != errorBorder) {
+                    parentJTextField.setBorder(errorBorder);
+                    currentBorder = errorBorder;
+                }
+            } else if (currentBorder != unknownSyntaxBorder || unknownSyntaxBorder.getDefaultBorder() != errorBorder) {
+                unknownSyntaxBorder.setDefaultBorder((AbstractBorder) errorBorder,
+                        parentJTextField,
+                        false);
+                parentJTextField.setBorder(unknownSyntaxBorder);
+                currentBorder = unknownSyntaxBorder;
             }
         }
 
@@ -310,11 +296,11 @@ public abstract class AbstractFilter extends DocumentFilter
             if (errorInfo.getStartIndex() >= 0 && errorInfo.getEndIndex() >= errorInfo.getStartIndex()) {
                 message += StringFunctions.escapeHTML(
                         command.substring(0, errorInfo.getStartIndex()));
-                message += "<span style=\"color: #ff0000; font-weight: bold;";
+                message += "<span style=\"color: #ff0000;";
                 if (errorInfo.getStartIndex() == errorInfo.getEndIndex()) {
-                    message += " font-family: Arial; font-size: 18px;\">\u02F0"; // use Arial in order to make it squeeze better in between the surrounding characters
+                    message += " font-family: PSDSpecialSymbols; font-size: 18px;\">\u02F0"; // use my special font in order to make it squeeze better in between the surrounding characters
                 } else {
-                    message += "\">" + StringFunctions.escapeHTML(command.substring(
+                    message += " font-weight: bold;\">" + StringFunctions.escapeHTML(command.substring(
                             errorInfo.getStartIndex(), errorInfo.getEndIndex()));
                 }
                 message += "</span>";

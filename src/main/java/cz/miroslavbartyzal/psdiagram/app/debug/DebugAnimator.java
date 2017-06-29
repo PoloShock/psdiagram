@@ -809,7 +809,7 @@ public final class DebugAnimator
         if (animSymbol.getSymbol() instanceof GotoLabel) { // u goto nechci vykreslit Hair
             GotoLabel gotoLabel = (GotoLabel) animSymbol.getSymbol();
             g2d.draw(gotoLabel.getMyCircle());
-        } else if (SettingsHolder.settings.isFunctionFilters() && colorSchemeIndex == 0
+        } else if (colorSchemeIndex == 0
                 && !animSymbol.getSymbol().areCommandsValid()
                 && EnumSymbol.getEnumSymbol(animSymbol.getSymbol().getClass()).areAllCommandsPresent(
                 layout.findMyElement(animSymbol.getSymbol()))) {

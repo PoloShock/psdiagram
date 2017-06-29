@@ -5,7 +5,9 @@
 package cz.miroslavbartyzal.psdiagram.app;
 
 import cz.miroslavbartyzal.psdiagram.app.gui.MainWindow;
+import java.awt.Color;
 import javax.swing.ToolTipManager;
+import javax.swing.UIManager;
 
 /**
  * Hlavní třída obsahuje main metodu, sloužící pro spuštění hlavního
@@ -19,11 +21,10 @@ public final class Main
     // TODO az budu dynamicky menit layout, budu muset prepsat odkazy na layout ve vsech tridach jako by reference: AtomicReference<Object> ref = new AtomicReference<Object>("Hello");
     // TODO je-li v else vetvi jen podminka, je to pri exportu elseif!
     // TODO mozna pridat komentar do XML a exportu PDF, kodu.. o PS Diagramu
-    // TODO do budoucna podprogram moznst expandovat/collapsovat :)
+    // TODO do budoucna podprogram moznost expandovat/collapsovat :)
     // TODO nastaveni zarovnavani komentarovych textu
-    // TODO odkazy na weby obrazku
-    //e TODO exception handling + updater: http://stackoverflow.com/questions/4590295/catch-exception-high-in-the-call-stack-when-dealing-with-n-tiers
-    //e TODO logovani + updater
+    //e TODO exception handling (i v updateru): http://stackoverflow.com/questions/4590295/catch-exception-high-in-the-call-stack-when-dealing-with-n-tiers
+    //e TODO logovani (i v updateru)
     // TODO pridat info o verzi a licenci
     // TODO prepnuti focusu z platna do textboxu i pri editaci funkce symbolu
     // TODO ukolovani studentu? (seradit spravne kroky algoritmu, vyuziti jen urciteho poctu prikazu apod.)
@@ -33,12 +34,10 @@ public final class Main
     // TODO menit i zeditovany text symbolu, pokud je zeditovany pouze o mezery ci odradkovani (nebo tak vymyslet automaticke odradkovavani?)
     // TODO moznost nastaveni prirazovaciho znamenka
     // TODO moznost prepnuti mezi Do-Until a Do-While
-    // TODO doplnit celociselny podil (DIV v pascalu) -> co treba "//" jako v pythonu? Nebo "\". Take operator "^" by se mohl hodit.
     // TODO vytvor si testy na syntakticke filtry
     // TODO doplnit priklad celociselneho deleni do symbolu procesu
     // TODO pomoci tranc preklopit TBLR layout na LFTB? :)
     // TODO mail Havelkova 19.4.
-    // TODO misto blokovani syntaktickym filtrem, pouze zcervenit
     // TODO umoznit editaci vytvorenych promennych? (za behu animace)
     // TODO uvazit prebarveni pozadi animace - kouknout na to s modrym odstinem z prezentace diplomek
     // TODO vedle exportu do obrázku a PDF, vytvořit export do HTML! :)
@@ -56,7 +55,6 @@ public final class Main
     // TODO sjednotit jazyk na EN (dokumentace)
     // TODO inspiruj se, koukni na Scratch
     // TODO pamatovat si velikost oken (http://stackoverflow.com/questions/7777640/best-practice-for-setting-jframe-locations)
-    // TODO otestovat kdyz chybi consolas
     // TODO Pascal podpora vice vstupu naraz - prikaz read[ln](x,y,z)
     // TODO co to rucni propojovani sipek, kdyz bych je oznacil jinou barvou jako neoptimalni?
     // TODO moznost zkompilovat diagram do spustitelneho souboru
@@ -66,9 +64,8 @@ public final class Main
     // TODO u proguardu dynamicky do manifestu priradit main podle jeho obfuskace - tak nebudu muset zachovavat balickovou cestu k mainu
     // TODO pohyb mezi symboly v editacnim rezimu pomoci kurzorovych sipek
     // TODO podivat se na logicnost posouvani diagramu pri posunu komentare mimo platno a zpet
-    // TODO pridat info o poctu vykonanych prikazu po konceni algoritmu -> hezky benchmark, kriterium pro hodnoceni efektivity algoritmu :)
+    // TODO pridat info o poctu vykonanych prikazu po skonceni algoritmu -> hezky benchmark, kriterium pro hodnoceni efektivity algoritmu :)
     //      TODO taky by se dalo merit celkovy cas, co prikazy v JS zabrali! :))
-    // TODO mozny nazev: dialgo
     //e TODO pridat dalsi watermark napovedy
     // TODO v polich pro nazev promenne nabizet jiz existujici promenne
     // TODO Do ulozky integrovat historii vytvoreni diagramu pomoci systemtime timestampu. Undo akci do teto historie zahrnovat jako beznou akci editace. Pri nacteni diagramu by se meli nacist i undoable edits, pozor ale na ty undo akce viz predchozi veta. Rozhranni pro timetravel (historie) muze pockat.
@@ -79,7 +76,7 @@ public final class Main
     // TODO co se deje pri pole = [1, 2, 4][8, 9, 8]??
     // TODO priblizovani k mysi porad k pravemu dolnimu rohu (max scrollbarech) blbne (preskakuje) -> co to vyresit tak, ze prepisu chovani toho scrollview aby pri enablovani scrollbaru neubiral velikost canvasu, ale jen prekryl kontent?! :))
     // TODO resolvnout ten problem se stazenim (http://stackoverflow.com/questions/9512919/getting-around-chromes-malicious-file-warning)
-    //      TODO "Soubor PS_Diagram_1.3.zip se běžně nestahuje a mohl by být nebezpečný."
+    //    TODO "Soubor PS_Diagram_1.3.zip se běžně nestahuje a mohl by být nebezpečný."
     // TODO umoznit kompilaci s ruznymi priznaky at vim, jestli je PSD stazene z ulozto nebo odjinud
     // TODO isnpirace k helpu: http://www.bfoit.org/itp/JavaOperators.html
     // inspirace o vytvareni IDE: http://www.ibm.com/developerworks/opensource/tutorials/os-ecl-commplgin1/index.html
@@ -95,12 +92,15 @@ public final class Main
     // TODO implementovat escapovani \n\r\t... (\" a \' uz mam implementovane) uvnitr stringu do/z pascalu
     //      - http://www.textfiles.com/bitsavers/pdf/borland/TURBO_Pascal_Reference_Manual_CPM_Version_3_Dec88.pdf
     //      - ftp://ftp.freepascal.org/fpc/docs-pdf/ref.pdf
-    //! TODO nebalim toho do .jaru zbytecne moc? Ma skoro 10 mega...
+    // TODO implementovat DIV z a do Pascalu
     // TODO implementovat moznost online dotazniku primo v PSDcku
     // TODO konzole?
     // TODO kdybych jeste chtel dark theme, tak: https://github.com/Revivius/nb-darcula
-    // TODO zkraslit barvu tooltipu na neco jako mam balloon tooltip
-    //e TODO v linuxu, (kde neni pritomne consolas?) se pri syntaxcni chybe zobrazi v bubline paznak-ctverecek
+    //!e TODO sbirat diagramove vytvory
+    //!e TODO doplnit operator "^" pro exponovani
+    // TODO pri zadani napr. 'a%2 = = 1' to ve druhem hintu rika, ze je na leve strane logicka hodnota, pritom tam není nic!
+    // TODO pri validaci jediného '&' se v dalších validacích hlásí jako logické AND.. a pritom predtim rikam ze to neni log. AND
+    // TODO zkontrolovat chování checkboxu pro výchozí hodnoty textu symbolů -> stávalo se mi, že po kliknutí na zaškrtnutý zůstal zaškrtnutý
     /**
      * Metoda pro spuštění hlavního okna aplikace. Nejsou přijímány žádné
      * parametry.
@@ -109,7 +109,28 @@ public final class Main
      */
     public static void main(String[] args)
     {
+        /*
+         * Set the Nimbus look and feel
+         * 
+         * If Nimbus (introduced in Java SE 6) is not available, stay with the
+         * default look and feel.
+         * For details see
+         * http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
+            ex.printStackTrace(System.err);
+        }
+
         ToolTipManager.sharedInstance().setDismissDelay(12000); // nastavení tooltipů tak, aby zůstali 12 sekund
+        UIManager.put("info", Color.WHITE);
+
         MainWindow.main(args);
     }
 

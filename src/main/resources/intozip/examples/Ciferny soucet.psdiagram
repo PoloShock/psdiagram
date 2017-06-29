@@ -65,17 +65,17 @@ od poslední pozice až k první.</value>
                             <shapeUpColor>255,255,255,255</shapeUpColor>
                             <shapeDownColor>230,230,230,255</shapeDownColor>
                             <hasShadow>true</hasShadow>
-                            <customValue>&quot;zadejte cele
+                            <customValue>"zadejte cele
 nezaporne
-cislo&quot; →</customValue>
-                            <defaultValue>&quot;zadejte cele nezaporne cislo&quot; →</defaultValue>
+cislo" →</customValue>
+                            <defaultValue>"zadejte cele nezaporne cislo" →</defaultValue>
                             <commands>
-<entry key="value">&quot;zadejte cele nezaporne cislo&quot;</entry>
+<entry key="value">"zadejte cele nezaporne cislo"</entry>
                             </commands>
                             <commandsValid>true</commandsValid>
-                            <value>&quot;zadejte cele
+                            <value>"zadejte cele
 nezaporne
-cislo&quot; →</value>
+cislo" →</value>
                         </io>
                     </element>
                     <element xsi:type="layoutElement" xmlID="3" parentSegment="14">

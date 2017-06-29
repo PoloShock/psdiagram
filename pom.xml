@@ -4,8 +4,7 @@
 
     <groupId>cz.miroslavbartyzal</groupId>
     <artifactId>psdiagram</artifactId>
-    <version>1.4.0.7</version>
-    <!--<version>1.4.1-SNAPSHOT</version>-->
+    <version>1.4.1</version>
     <packaging>jar</packaging>
     <name>PS Diagram</name>
     <url>http://www.psdiagram.cz</url>
@@ -49,9 +48,8 @@
 
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
-            <artifactId>org.eclipse.persistence.moxy</artifactId>
-            <version>2.6.3</version>
-            <!--for later versions it needs java 1.8-->
+            <artifactId>org.eclipse.persistence.core</artifactId>
+            <version>2.6.4</version>
         </dependency>
 
         <dependency>
@@ -74,7 +72,7 @@
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
-            <version>4.5.3</version>
+            <version>4.7</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.abego.treelayout</groupId>
@@ -136,28 +134,33 @@
                                     <changelogurl>http://www.psdiagram.cz/changelog</changelogurl>
                                     <releaseurl></releaseurl>
 
-                                    <headline>04.10.2016</headline>
+                                    <headline>Celočíselné dělení je na světě!</headline>
                                     <description>
                                         <![CDATA[
                                         <html>
-                                            <p align="justify">Další malá oprava na základě oznámení.</p>
-                                            <p align="justify">Děkuji panu Ing. Romanovi S. za zprávu! :)</p>
+                                            <p align="justify">S přáním krásného léta vám opět přináším novou verzi PS Diagramu. :)</p>
+                                            <p align="justify">V této aktualizaci jsem se zaměřil zejména na řešení celočíslého dělení. Do teď bylo potřeba pro tento úkol použít funkci Math.floor, na jejíž vstup se vložilo dělení obyčejné. Fungovalo to, protože výsledek po obyčejném dělení tato funkce zaokrouhlila dolů. Dovedu si ale představit, že při tak běžné operaci jako je celočíselné dělení mohl být tento způsob zdlouhavého zápisu docela otrava. Proto jsem PS Diagram naučil nový operátor „//“, který vše s lehkostí napraví. :)</p>
+                                            <p align="justify">Příklad: <br/>„Math.floor(12 / 10)“ je stejné jako „12 // 10“</p>
                                         </html>
                                         ]]>
                                     </description>
 
                                     <features>
+                                        <feature>pro celočíselné dělení lze nyní využít operátor '//' (např. 9 // 2 = 4)</feature>
                                     </features>
                                     <enhancements>
+                                        <enhancement>sjednocena barva tooltipů s barvou zpráv syntaktického analyzátoru</enhancement>
                                     </enhancements>
                                     <extensions>
                                     </extensions>
                                     <changes>
+                                        <change>již není možné vypnout syntaktickou analýzu funkcí symbolů</change>
                                     </changes>
                                     <fixes>
-                                        <fix><![CDATA[náhodná čísla v textu mezivýpočtu nad symboly neodpovídala jejich skutečným hodnotám]]></fix>
+                                        <fix>v některých případech se za běhu mimo operační systém Windows špatně zobrazoval znak vyznačující pozici syntaktické chyby</fix>
                                     </fixes>
                                     <others>
+                                        <other>opraveny nalezené překlepy</other>
                                     </others>
                                 </configuration>
                             </execution>
@@ -221,7 +224,7 @@
                                             <fileset dir="${basedir}/src/main/resources/intozip"/>
                                         </copy>
                                         <copy todir="${project.build.directory}/zip/PS Diagram/jre">
-                                            <fileset dir="c:/Program Files (x86)/Java/jre1.8.0_102"/>
+                                            <fileset dir="c:/Program Files (x86)/Java/jre1.8.0_131"/>
                                         </copy>
                                         <copy file="c:/Zaloha/Programovani/Moje/Visual Studio 2013/PS Diagram Launcher/PS Diagram Launcher/bin/Release/PS Diagram.exe" todir="${project.build.directory}/zip/PS Diagram"/>
                                         <zip destfile="${project.build.directory}/OPENSHIFT_DATA/PS_Diagram_${project.version}.zip"
@@ -309,9 +312,10 @@
                 <filtering>false</filtering>
                 <directory>src/main/resources</directory>
                 <excludes>
-                    <exclude>application.properties</exclude>
+                    <exclude>deploy.properties</exclude>
                     <exclude>intozip/**</exclude>
                     <exclude>side_data/**</exclude>
+                    <exclude>fonts/PSDSpecialSymbols.sfd</exclude>
                 </excludes>
             </resource>
         </resources>
@@ -424,7 +428,7 @@
             </plugin>
 
             <!--
-                Tento plugin nepodporuje custom specifikaci encodingu pro vygenerovane
+                Tento plugin (verze 4.5) nepodporuje custom specifikaci encodingu pro vygenerovane
                 zdrojové kódy -> generuje je v defaultním charsetu! Je proto nutné nastavit
                 globální proměnnou JAVA_TOOL_OPTIONS na hodnotu -Dfile.encoding=UTF8, která
                 zajistí, že java bude mít default UTF-8.
@@ -436,7 +440,7 @@
             <plugin>
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr4-maven-plugin</artifactId>
-                <version>4.5</version>
+                <version>4.7</version>
                 <executions>
                     <execution>
                         <id>antlr</id>
@@ -447,6 +451,7 @@
                             <encoding>UTF-8</encoding>
                             <!--<encoding>windows-1250</encoding>-->
                             <listener>false</listener>
+                            <visitor>true</visitor>
                             <treatWarningsAsErrors>true</treatWarningsAsErrors>
                         </configuration>
                     </execution>
@@ -594,18 +599,6 @@
                                         <library>true</library>
                                     </inclusion>
 
-                                    <inclusion>
-                                        <groupId>org.eclipse.persistence</groupId>
-                                        <artifactId>org.eclipse.persistence.moxy</artifactId>
-                                        <library>true</library>
-                                        <!--<filter>META-INF/ECLIPSE_.RSA,META-INF/ECLIPSE_.SF</filter> NEFUNGUJE!!!-->
-                                    </inclusion>
-                                    <inclusion>
-                                        <groupId>org.eclipse.persistence</groupId>
-                                        <artifactId>org.eclipse.persistence.asm</artifactId>
-                                        <library>true</library>
-                                        <!--<filter>META-INF/ECLIPSE_.RSA,META-INF/ECLIPSE_.SF</filter> NEFUNGUJE!!!-->
-                                    </inclusion>
                                     <inclusion>
                                         <groupId>org.eclipse.persistence</groupId>
                                         <artifactId>org.eclipse.persistence.core</artifactId>

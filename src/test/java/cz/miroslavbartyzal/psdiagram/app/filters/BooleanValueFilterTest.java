@@ -87,6 +87,7 @@ public class BooleanValueFilterTest
             add("a != a+a+a");
             add("a+a > 1");
             add("a+a >= a");
+            add("a+a >= a//a");
             add("[1, [a]][1].something[0].length");
             add("(\"ahoj\" + a).length");
             add("a[1][2].length");
@@ -125,6 +126,7 @@ public class BooleanValueFilterTest
             add("\"rvglkíčřá51../.59\""); // = "rvglkíčřá51../.59"
             add("\"\""); // ""
             add("a / -1");
+            add("a // -1");
             add("a + -1");
             add("a - -1");
             add("a / +1");

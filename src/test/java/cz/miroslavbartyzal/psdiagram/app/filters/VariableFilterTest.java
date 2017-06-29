@@ -7,7 +7,6 @@ package cz.miroslavbartyzal.psdiagram.app.filters;
 
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.VariableFilter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
@@ -67,6 +66,7 @@ public class VariableFilterTest
             add("pom[[]]");
             add("pom[a]-1");
             add("pom[a] / 1");
+            add("pom[a] // 1");
             add("pom[a]>1");
             add("pom[a] != 1");
             add("pom[a] = 1");

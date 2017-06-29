@@ -19,9 +19,9 @@ import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.StartEnd;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Switch;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
 import cz.miroslavbartyzal.psdiagram.app.global.RegexFunctions;
-import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import cz.miroslavbartyzal.psdiagram.app.gui.EnhancedJOptionPane;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.AbstractSymbolFunctionForm;
+import cz.miroslavbartyzal.psdiagram.app.parser.antlr.ANTLRParser;
 import java.awt.geom.Path2D;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,6 +46,7 @@ import javax.swing.JOptionPane;
  */
 public final class ElementFunctionBed
 {
+    private static final ANTLRParser parser = new ANTLRParser();
 
     private static final String scriptStart = "importPackage(javax.swing);"
             + "var updateVariables = \"{"
@@ -117,7 +118,7 @@ public final class ElementFunctionBed
                     "Chybí funkce symbolu",
                     JOptionPane.ERROR_MESSAGE);
             return result;
-        } else if (SettingsHolder.settings.isFunctionFilters() && !actualElement.getSymbol().areCommandsValid()) {
+        } else if (!actualElement.getSymbol().areCommandsValid()) {
             JOptionPane.showMessageDialog(null,
                     "<html>Nelze pokračovat v procházení, protože funkce aktuálně procházeného symbolu obsahuje chybu.<br />"
                     + "Funkci symbolu lze upravit v editačním režimu, po kliknutí na symbol v záložce \"Funkce\" vlevo.<html>",
@@ -134,12 +135,6 @@ public final class ElementFunctionBed
             return result;
         }
         
-        HashMap<String, String> commandsCopy = null;
-        if (symbol.getCommands() != null) {
-            commandsCopy = new HashMap<>(symbol.getCommands());
-            setRandoms(commandsCopy);
-        }
-        
         if ((symbol instanceof Goto || symbol instanceof GotoLabel)
                 && (symbol.getValue() == null || symbol.getValue().matches("\\s*"))) {
             JOptionPane.showMessageDialog(null,
@@ -147,18 +142,28 @@ public final class ElementFunctionBed
                     "Chybí textová hodnota symbolu", JOptionPane.ERROR_MESSAGE);
             return result;
         }
+        
+        HashMap<String, String> commandsProcessed = null;
+        HashMap<String, String> commandsOriginal = null;
+        if (symbol.getCommands() != null) {
+            commandsOriginal = new HashMap<>(symbol.getCommands());
+            commandsProcessed = new HashMap<>(symbol.getCommands());
+            setRandoms(commandsProcessed);
+            translateToJavaScript(commandsProcessed);
+        }
+        
         int innerSegment = -1;
 
         if (symbol instanceof Switch) {
-            innerSegment = caseSetProgAndUpVars(result, commandsCopy, variables);
+            innerSegment = caseSetProgAndUpVars(result, commandsProcessed, variables);
         } else if (symbol instanceof Decision) {
-            innerSegment = decisionSetProgAndUpVars(result, commandsCopy, variables);
+            innerSegment = decisionSetProgAndUpVars(result, commandsProcessed, commandsOriginal, variables);
         } else if (symbol instanceof For) {
-            innerSegment = forSetProgAndUpVars(result, commandsCopy, variables);
+            innerSegment = forSetProgAndUpVars(result, commandsProcessed, variables);
         } else if (symbol instanceof IO) {
-            innerSegment = ioSetProgAndUpVars(result, commandsCopy, variables);
+            innerSegment = ioSetProgAndUpVars(result, commandsProcessed, variables);
         } else if (symbol instanceof cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Process) {
-            innerSegment = processSetProgAndUpVars(result, commandsCopy, variables);
+            innerSegment = processSetProgAndUpVars(result, commandsProcessed, commandsOriginal, variables);
         } else if (symbol instanceof LoopEnd) {
             innerSegment = 1;
             LayoutElement pairElement = null;
@@ -166,7 +171,7 @@ public final class ElementFunctionBed
                 pairElement = actualSegment.getElement(i);
                 if (pairElement.getSymbol() instanceof LoopStart) {
                     if (!pairElement.getSymbol().isOverHang()) {
-                        innerSegment = decisionSetProgAndUpVars(result, commandsCopy, variables);
+                        innerSegment = decisionSetProgAndUpVars(result, commandsProcessed, commandsOriginal, variables);
                         if (innerSegment == 0) {
                             actualElement = pairElement;
                             innerSegment = -1;
@@ -182,7 +187,7 @@ public final class ElementFunctionBed
             }
         } else if (symbol instanceof LoopStart) {
             if (symbol.isOverHang()) {
-                innerSegment = decisionSetProgAndUpVars(result, commandsCopy, variables);
+                innerSegment = decisionSetProgAndUpVars(result, commandsProcessed, commandsOriginal, variables);
                 if (innerSegment == 0) {
                     innerSegment = -1;
                 }
@@ -190,7 +195,7 @@ public final class ElementFunctionBed
                 innerSegment = 1;
             }
         } else if (symbol instanceof Goto) {
-            if (commandsCopy.get("mode").equals("break") || commandsCopy.get("mode").equals(
+            if (commandsProcessed.get("mode").equals("break") || commandsProcessed.get("mode").equals(
                     "continue")) {
                 // nalezeni rodicovskeho elementu cyklu
                 LayoutElement parentLoop = actualElement;
@@ -198,13 +203,13 @@ public final class ElementFunctionBed
                     parentLoop = parentLoop.getParentSegment().getParentElement();
                     if (parentLoop == null) {
                         JOptionPane.showMessageDialog(null,
-                                "<html>Symbol spojky ve funkci příkazu " + commandsCopy.get("mode") + " musí být umístěn<br />přímo uvnitř těla cyklu, který má být přerušen!</html>",
+                                "<html>Symbol spojky ve funkci příkazu " + commandsProcessed.get("mode") + " musí být umístěn<br />přímo uvnitř těla cyklu, který má být přerušen!</html>",
                                 "Rodičovský cyklus nenalezen", JOptionPane.ERROR_MESSAGE);
                         return result;
                     }
                 } while (!(parentLoop.getSymbol() instanceof For) && !(parentLoop.getSymbol() instanceof LoopStart));
 
-                if (commandsCopy.get("mode").equals("continue")) {
+                if (commandsProcessed.get("mode").equals("continue")) {
                     if (!parentLoop.getSymbol().isOverHang()) {
                         do {
                             parentLoop = parentLoop.getParentSegment().getElement(
@@ -388,15 +393,26 @@ public final class ElementFunctionBed
         }
     }
     
+    private static void translateToJavaScript(HashMap<String, String> commands)
+    {
+        for (String key : commands.keySet()) {
+            String value = parser.translatePSDToJavaScript(commands.get(key));
+            commands.put(key, value);
+        }
+    }
+    
     //*************************************************************************
     //*******************SYMBOLS PROGRESS AND UPDATEVARS SET*******************
     //*************************************************************************
-    private static String getCompiledProgressDesc(HashMap<String, String> variables, String command)
+    /**
+     * @param originalCommand has to be in form before transaltion into JS (ex. no '==' but '=')
+     */
+    private static String getCompiledProgressDesc(HashMap<String, String> variables, String originalCommand)
     {
 //        String functionRegex = "([a-zA-Z\\_\\$][a-zA-Z0-9\\_\\$]*\\.)*[a-zA-Z\\_\\$][a-zA-Z0-9\\_\\$]*\\([^\\(\\)]*\\)";
 
         // sude indexy jsou prikazy, liche uvozovky
-        String[] commandsWithoutQ = RegexFunctions.splitString(command, "\"([^\"\\\\]|\\\\.)*\"?");
+        String[] commandsWithoutQ = RegexFunctions.splitString(originalCommand, "\"([^\"\\\\]|\\\\.)*\"?");
         for (int i = 0; i < commandsWithoutQ.length; i += 2) {
 //            Matcher matcher = Pattern.compile(functionRegex).matcher(commandsWithoutQ[i]);
 //            while (matcher.find()) { // jestli prikaz obsahuje volani funkci(x.x(x)), je treba je prvne zpracovat
@@ -423,20 +439,16 @@ public final class ElementFunctionBed
                 commandsWithoutQ[i] += methodsSplit[j];
             }
         }
-        command = "";
+        originalCommand = "";
         for (String commandPart : commandsWithoutQ) {
-            command += commandPart;
+            originalCommand += commandPart;
         }
 
         // sude indexy jsou promenne
-        String[] commandSplit = RegexFunctions.splitStringIgnoreQuotesInsides(command,
+        String[] commandSplit = RegexFunctions.splitStringIgnoreQuotesInsides(originalCommand,
                 "[^a-zA-Z0-9\\_\\.]+|[a-zA-Z\\_\\$][\\w\\$]*\\[");
         for (int i = 0; i < commandSplit.length; i++) {
             if (i % 2 == 1) {
-                if (SettingsHolder.settings.isFunctionFilters()) {
-                    commandSplit[i] = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(
-                            commandSplit[i]);
-                }
                 commandSplit[i] = AbstractSymbolFunctionForm.convertToPSDDisplayCommands(
                         commandSplit[i]);
             } else {
@@ -459,12 +471,12 @@ public final class ElementFunctionBed
                 }
             }
         }
-        command = "";
+        originalCommand = "";
         for (String commandPart : commandSplit) {
-            command += commandPart;
+            originalCommand += commandPart;
         }
 
-        return command;
+        return originalCommand;
     }
 
     private static int caseSetProgAndUpVars(FunctionResult result, HashMap<String, String> commands,
@@ -523,7 +535,8 @@ public final class ElementFunctionBed
     }
 
     private static int decisionSetProgAndUpVars(FunctionResult result,
-            HashMap<String, String> commands, HashMap<String, String> variables)
+            HashMap<String, String> commands, HashMap<String, String> originalCommands, 
+            HashMap<String, String> variables)
     {
         String[] extraRet = new String[]{"-1"};
         String script = ""
@@ -538,7 +551,7 @@ public final class ElementFunctionBed
         } catch (ScriptException ex) {
             result.haltDebug = true;
         }
-        result.progressDesc = getCompiledProgressDesc(variables, commands.get("condition"));
+        result.progressDesc = getCompiledProgressDesc(variables, originalCommands.get("condition"));
         return Integer.parseInt(extraRet[0]);
     }
 
@@ -701,7 +714,8 @@ public final class ElementFunctionBed
     }
 
     private static int processSetProgAndUpVars(FunctionResult result,
-            HashMap<String, String> commands, HashMap<String, String> variables)
+            HashMap<String, String> commands, HashMap<String, String> originalCommands, 
+            HashMap<String, String> variables)
     {
         String var = "";
         String[] splitBrackets = RegexFunctions.varBracketsInsides(commands.get("var"));
@@ -735,7 +749,7 @@ public final class ElementFunctionBed
         }
         addVarToResultIfNotPresent(commands.get("var").split("\\[.*")[0], variables,
                 result.updatedVariables);
-        result.progressDesc = var + " ← " + getCompiledProgressDesc(variables, commands.get("value"));
+        result.progressDesc = var + " ← " + getCompiledProgressDesc(variables, originalCommands.get("value"));
         return -1;
     }
 

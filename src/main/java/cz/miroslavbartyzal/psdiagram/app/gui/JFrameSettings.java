@@ -59,7 +59,6 @@ public final class JFrameSettings extends javax.swing.JFrame
             jCheckBoxAssoc.setEnabled(false);
         }
 
-        jCheckBoxFunctionFilters.setSelected(SettingsHolder.settings.isFunctionFilters());
         jCheckBoxBallShine.setSelected(SettingsHolder.settings.isBallShine());
         jSliderRadius.setEnabled(jCheckBoxBallShine.isSelected());
         jSliderRadius.setValue(SettingsHolder.settings.getBallShineRadius());
@@ -74,12 +73,9 @@ public final class JFrameSettings extends javax.swing.JFrame
         jTextFieldPadding.setText(Integer.toString(
                 SettingsHolder.settings.getExportFlowchartPadding()));
 
-        jScrollPane1.getVerticalScrollBar().setUnitIncrement(10);
-        jScrollPane1.getHorizontalScrollBar().setUnitIncrement(10);
         jScrollPane2.getVerticalScrollBar().setUnitIncrement(10);
         jScrollPane2.getHorizontalScrollBar().setUnitIncrement(10);
         setPreferedSizes();
-        jScrollPane1.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE); // prevents glitches (http://andrewtill.blogspot.cz/2012/06/jscrollpane-repainting-problems.html)
         jScrollPane2.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE); // prevents glitches (http://andrewtill.blogspot.cz/2012/06/jscrollpane-repainting-problems.html)
         jScrollPane3.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE); // prevents glitches (http://andrewtill.blogspot.cz/2012/06/jscrollpane-repainting-problems.html)
         jScrollPane4.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE); // prevents glitches (http://andrewtill.blogspot.cz/2012/06/jscrollpane-repainting-problems.html)
@@ -182,12 +178,6 @@ public final class JFrameSettings extends javax.swing.JFrame
         jLabel8 = new javax.swing.JLabel();
         jCheckBoxAssoc = new javax.swing.JCheckBox();
         jLabel11 = new javax.swing.JLabel();
-        jPanelEditMode = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jPanel1 = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
-        jCheckBoxFunctionFilters = new javax.swing.JCheckBox();
-        jLabel1 = new javax.swing.JLabel();
         jPanelAnimMode = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jPanel3 = new javax.swing.JPanel();
@@ -304,74 +294,6 @@ public final class JFrameSettings extends javax.swing.JFrame
         );
 
         jTabbedPaneSettings.addTab("Obecné", jPanelGeneral);
-
-        jPanelEditMode.setPreferredSize(new java.awt.Dimension(0, 0));
-
-        jPanel1.setPreferredSize(new java.awt.Dimension(0, 0));
-
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Funkce symbolu"));
-
-        jCheckBoxFunctionFilters.setText("Používat syntaktické filtry");
-        jCheckBoxFunctionFilters.setToolTipText("<html>\nSyntaktické filtry jsou aplikovány v textových polích pro vkládání funkcí symbolu.<br />\nZabraňují nechtěnným syntaktickým chybám, jako například čárka místo desetinné tečky,<br />\nnevalidním názvům proměnných apod.\n</html>");
-        jCheckBoxFunctionFilters.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                jCheckBoxFunctionFiltersActionPerformed(evt);
-            }
-        });
-
-        jLabel1.setText("<html>\n<p style=\"font-weight:bold;\">\nPozor! Tato volba je jen pro pokročilé uživatele a měla by být vždy povolena.<br />\nJste-li nuceni tuto funkci vypnout z důvodu chyby některého z filtrů, obraťte se prosím s popisem chyby na autora aplikace.\n</p>\n</html>");
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jCheckBoxFunctionFilters)
-                .addGap(0, 259, Short.MAX_VALUE))
-            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jCheckBoxFunctionFilters)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(174, Short.MAX_VALUE))
-        );
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        jScrollPane1.setViewportView(jPanel1);
-
-        javax.swing.GroupLayout jPanelEditModeLayout = new javax.swing.GroupLayout(jPanelEditMode);
-        jPanelEditMode.setLayout(jPanelEditModeLayout);
-        jPanelEditModeLayout.setHorizontalGroup(
-            jPanelEditModeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 459, Short.MAX_VALUE)
-        );
-        jPanelEditModeLayout.setVerticalGroup(
-            jPanelEditModeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 322, Short.MAX_VALUE)
-        );
-
-        jTabbedPaneSettings.addTab("Editační režim", jPanelEditMode);
 
         jPanelAnimMode.setPreferredSize(new java.awt.Dimension(0, 0));
 
@@ -665,74 +587,80 @@ public final class JFrameSettings extends javax.swing.JFrame
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jCheckBoxFunctionFiltersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxFunctionFiltersActionPerformed
-        if (!initializing) {
-            SettingsHolder.settings.setFunctionFilters(jCheckBoxFunctionFilters.isSelected());
-            flowchartEditManager.refreshSymbolTextsDueToChangeOfFunctionFiltersState();
-        }
-    }//GEN-LAST:event_jCheckBoxFunctionFiltersActionPerformed
-
-    private void jCheckBoxBallShineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxBallShineActionPerformed
-        if (!initializing) {
-            SettingsHolder.settings.setBallShine(jCheckBoxBallShine.isSelected());
-        }
-        jSliderRadius.setEnabled(jCheckBoxBallShine.isSelected());
-    }//GEN-LAST:event_jCheckBoxBallShineActionPerformed
-
-    private void jRadioButtonBlockScopeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonBlockScopeActionPerformed
-        if (!initializing) {
-            SettingsHolder.settings.setBlockScopeVariables(jRadioButtonBlockScope.isSelected());
-        }
-    }//GEN-LAST:event_jRadioButtonBlockScopeActionPerformed
-
-    private void jCheckBoxExportTransparencyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxExportTransparencyActionPerformed
-        if (!initializing) {
+    private void jCheckBoxExportTransparencyActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jCheckBoxExportTransparencyActionPerformed
+    {//GEN-HEADEREND:event_jCheckBoxExportTransparencyActionPerformed
+        if (!initializing)
+        {
             SettingsHolder.settings.setExportTransparency(jCheckBoxExportTransparency.isSelected());
         }
     }//GEN-LAST:event_jCheckBoxExportTransparencyActionPerformed
 
-    private void jCheckBoxLoadLastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxLoadLastActionPerformed
-        if (!initializing) {
-            SettingsHolder.settings.setLoadLastFlowchart(jCheckBoxLoadLast.isSelected());
+    private void jSpinnerFPSStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_jSpinnerFPSStateChanged
+    {//GEN-HEADEREND:event_jSpinnerFPSStateChanged
+        if (!initializing)
+        {
+            SettingsHolder.settings.setFps((int) jSpinnerFPS.getValue());
         }
-    }//GEN-LAST:event_jCheckBoxLoadLastActionPerformed
+    }//GEN-LAST:event_jSpinnerFPSStateChanged
 
-    private void jSliderRadiusStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSliderRadiusStateChanged
-        if (!initializing) {
+    private void jSliderRadiusStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_jSliderRadiusStateChanged
+    {//GEN-HEADEREND:event_jSliderRadiusStateChanged
+        if (!initializing)
+        {
             SettingsHolder.settings.setBallShineRadius(jSliderRadius.getValue());
         }
         jLabelRadius.setText("Radius záře kuličky: " + jSliderRadius.getValue() + " pixelů");
     }//GEN-LAST:event_jSliderRadiusStateChanged
 
-    private void jSpinnerFPSStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerFPSStateChanged
-        if (!initializing) {
-            SettingsHolder.settings.setFps((int) jSpinnerFPS.getValue());
+    private void jCheckBoxBallShineActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jCheckBoxBallShineActionPerformed
+    {//GEN-HEADEREND:event_jCheckBoxBallShineActionPerformed
+        if (!initializing)
+        {
+            SettingsHolder.settings.setBallShine(jCheckBoxBallShine.isSelected());
         }
-    }//GEN-LAST:event_jSpinnerFPSStateChanged
+        jSliderRadius.setEnabled(jCheckBoxBallShine.isSelected());
+    }//GEN-LAST:event_jCheckBoxBallShineActionPerformed
+
+    private void jRadioButtonBlockScopeActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jRadioButtonBlockScopeActionPerformed
+    {//GEN-HEADEREND:event_jRadioButtonBlockScopeActionPerformed
+        if (!initializing)
+        {
+            SettingsHolder.settings.setBlockScopeVariables(jRadioButtonBlockScope.isSelected());
+        }
+    }//GEN-LAST:event_jRadioButtonBlockScopeActionPerformed
 
     private void jCheckBoxAssocActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jCheckBoxAssocActionPerformed
     {//GEN-HEADEREND:event_jCheckBoxAssocActionPerformed
-        if (!initializing) {
+        if (!initializing)
+        {
             boolean realState = ensureAssociationState(jCheckBoxAssoc.isSelected(), false);
-            if (jCheckBoxAssoc.isSelected() != realState) {
+            if (jCheckBoxAssoc.isSelected() != realState)
+            {
                 initializing = true;
                 jCheckBoxAssoc.setSelected(realState);
                 initializing = false;
-            } else {
+            } else
+            {
                 // state successfuly changed
                 SettingsHolder.settings.setAssociateExtension(jCheckBoxAssoc.isSelected());
             }
         }
     }//GEN-LAST:event_jCheckBoxAssocActionPerformed
 
+    private void jCheckBoxLoadLastActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jCheckBoxLoadLastActionPerformed
+    {//GEN-HEADEREND:event_jCheckBoxLoadLastActionPerformed
+        if (!initializing)
+        {
+            SettingsHolder.settings.setLoadLastFlowchart(jCheckBoxLoadLast.isSelected());
+        }
+    }//GEN-LAST:event_jCheckBoxLoadLastActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroupScopes;
     private javax.swing.JCheckBox jCheckBoxAssoc;
     private javax.swing.JCheckBox jCheckBoxBallShine;
     private javax.swing.JCheckBox jCheckBoxExportTransparency;
-    private javax.swing.JCheckBox jCheckBoxFunctionFilters;
     private javax.swing.JCheckBox jCheckBoxLoadLast;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
@@ -744,9 +672,7 @@ public final class JFrameSettings extends javax.swing.JFrame
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JLabel jLabelRadius;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
@@ -755,12 +681,10 @@ public final class JFrameSettings extends javax.swing.JFrame
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JPanel jPanelAnimMode;
-    private javax.swing.JPanel jPanelEditMode;
     private javax.swing.JPanel jPanelExport;
     private javax.swing.JPanel jPanelGeneral;
     private javax.swing.JRadioButton jRadioButtonBlockScope;
     private javax.swing.JRadioButton jRadioButtonGlobalScope;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
@@ -871,7 +795,6 @@ public final class JFrameSettings extends javax.swing.JFrame
 
     private void setPreferedSizes()
     {
-        jPanel1.setPreferredSize(jPanel1.getLayout().minimumLayoutSize(jPanel1));
         jPanel3.setPreferredSize(jPanel3.getLayout().minimumLayoutSize(jPanel3));
         jPanel6.setPreferredSize(jPanel6.getLayout().minimumLayoutSize(jPanel6));
         jPanel9.setPreferredSize(jPanel9.getLayout().minimumLayoutSize(jPanel9));

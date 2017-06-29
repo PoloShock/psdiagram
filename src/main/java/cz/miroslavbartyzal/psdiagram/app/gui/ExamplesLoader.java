@@ -15,6 +15,7 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Locale;
@@ -170,13 +171,13 @@ public class ExamplesLoader
             try {
                 if (file.getName().endsWith(".xml")) {
                     Flowchart<LayoutSegment, LayoutElement> flowchart = GlobalFunctions.unsafeCast(
-                            MainWindow.getJAXBcontext().createUnmarshaller().unmarshal(file));
+                            MainWindow.unmarshal(file));
                 } else {
                     FlowchartSaveContainer flowchartSaveContainer = GlobalFunctions.unsafeCast(
-                            MainWindow.getJAXBcontext().createUnmarshaller().unmarshal(file));
+                            MainWindow.unmarshal(file));
                 }
                 return true;
-            } catch (JAXBException ex) {
+            } catch (JAXBException | FileNotFoundException ex) {
                 ex.printStackTrace(System.err);
             }
         }

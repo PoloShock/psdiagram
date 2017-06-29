@@ -7,11 +7,11 @@ package cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutElement;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.EnumSymbol;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
+import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
+import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.MaxBalloonSizeCallback;
 import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditManager;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.ConstantFilter;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.VariableFilter;
-import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
-import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.MaxBalloonSizeCallback;
 import java.awt.Dimension;
 import java.awt.LayoutManager;
 import java.util.LinkedHashMap;
@@ -71,21 +71,9 @@ public final class Switch extends AbstractSymbolFunctionForm
         jLabelExamples.setFont(SettingsHolder.SMALL_CODEFONT);
 
         if (element.getSymbol().getCommands() != null) {
-            if (SettingsHolder.settings.isFunctionFilters()) {
-                jTextFieldConditionVar.setText(
-                        AbstractSymbolFunctionForm.convertFromJSToPSDCommands(
-                                element.getSymbol().getCommands().get("conditionVar")));
-                for (int i = 0; i < jTextFieldSegments.length; i++) {
-                    jTextFieldSegments[i].setText(
-                            AbstractSymbolFunctionForm.convertFromJSToPSDCommands(
-                                    element.getSymbol().getCommands().get("" + (i + 1))));
-                }
-            } else {
-                jTextFieldConditionVar.setText(element.getSymbol().getCommands().get("conditionVar"));
-                for (int i = 0; i < jTextFieldSegments.length; i++) {
-                    jTextFieldSegments[i].setText(
-                            element.getSymbol().getCommands().get("" + (i + 1)));
-                }
+            jTextFieldConditionVar.setText(element.getSymbol().getCommands().get("conditionVar"));
+            for (int i = 0; i < jTextFieldSegments.length; i++) {
+                jTextFieldSegments[i].setText(element.getSymbol().getCommands().get("" + (i + 1)));
             }
         }
 
@@ -152,29 +140,14 @@ public final class Switch extends AbstractSymbolFunctionForm
         } else {
             element.getSymbol().setDefaultValue("");
         }
-        if (SettingsHolder.settings.isFunctionFilters()) {
-            commands.put("conditionVar", AbstractSymbolFunctionForm.convertFromPSDToJSCommands(
-                    conditionVar));
-            for (int i = 0; i < segmentConstants.length; i++) {
-                if (setDefaultDescripton) {
-                    element.getInnerSegment(i + 1).setDefaultDescripton(segmentConstants[i]);
-                } else {
-                    element.getInnerSegment(i + 1).setDefaultDescripton(null);
-                }
-                commands.put("" + (i + 1),
-                        AbstractSymbolFunctionForm.convertFromPSDToJSCommands(
-                                segmentConstants[i]));
+        commands.put("conditionVar", conditionVar);
+        for (int i = 0; i < segmentConstants.length; i++) {
+            if (setDefaultDescripton) {
+                element.getInnerSegment(i + 1).setDefaultDescripton(segmentConstants[i]);
+            } else {
+                element.getInnerSegment(i + 1).setDefaultDescripton(null);
             }
-        } else {
-            commands.put("conditionVar", conditionVar);
-            for (int i = 0; i < segmentConstants.length; i++) {
-                if (setDefaultDescripton) {
-                    element.getInnerSegment(i + 1).setDefaultDescripton(segmentConstants[i]);
-                } else {
-                    element.getInnerSegment(i + 1).setDefaultDescripton(null);
-                }
-                commands.put("" + (i + 1), segmentConstants[i]);
-            }
+            commands.put("" + (i + 1), segmentConstants[i]);
         }
         element.getSymbol().setCommands(commands);
     }
@@ -411,9 +384,7 @@ public final class Switch extends AbstractSymbolFunctionForm
             }
             Switch.super.getElement().getSymbol().setCommandsValid(true);
 
-            if (SettingsHolder.settings.isFunctionFilters()) {
-                Switch.super.getFlowchartEditManager().repaintJPanelDiagram();
-            }
+            Switch.super.getFlowchartEditManager().repaintJPanelDiagram();
         }
 
     }

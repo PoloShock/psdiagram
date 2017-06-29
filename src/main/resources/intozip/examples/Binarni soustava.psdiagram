@@ -67,17 +67,17 @@ Výpočet skončí, až bude podíl roven hodnotě 0.</value>
                             <shapeUpColor>255,255,255,255</shapeUpColor>
                             <shapeDownColor>230,230,230,255</shapeDownColor>
                             <hasShadow>true</hasShadow>
-                            <customValue>&quot;zadejte cele
+                            <customValue>"zadejte cele
 nezaporne
-cislo&quot; →</customValue>
-                            <defaultValue>&quot;zadejte cele nezaporne cislo&quot; →</defaultValue>
+cislo" →</customValue>
+                            <defaultValue>"zadejte cele nezaporne cislo" →</defaultValue>
                             <commands>
-<entry key="value">&quot;zadejte cele nezaporne cislo&quot;</entry>
+<entry key="value">"zadejte cele nezaporne cislo"</entry>
                             </commands>
                             <commandsValid>true</commandsValid>
-                            <value>&quot;zadejte cele
+                            <value>"zadejte cele
 nezaporne
-cislo&quot; →</value>
+cislo" →</value>
                         </io>
                     </element>
                     <element xsi:type="layoutElement" xmlID="3" parentSegment="6">
@@ -142,13 +142,13 @@ nebo a není celé číslo,
                     <shapeUpColor>255,255,255,255</shapeUpColor>
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
-                    <defaultValue>bn ← &quot;&quot;</defaultValue>
+                    <defaultValue>bn ← ""</defaultValue>
                     <commands>
                         <entry key="var">bn</entry>
-                        <entry key="value">&quot;&quot;</entry>
+                        <entry key="value">""</entry>
                     </commands>
                     <commandsValid>true</commandsValid>
-                    <value>bn ← &quot;&quot;</value>
+                    <value>bn ← ""</value>
                 </process>
             </element>
             <element xsi:type="layoutElement" xmlID="17" parentSegment="0">
@@ -172,7 +172,7 @@ nebo a není celé číslo,
                             <customValue>a%2 = 1</customValue>
                             <defaultValue>a%2 = 1</defaultValue>
                             <commands>
-<entry key="condition">a%2 == 1</entry>
+<entry key="condition">a%2 = 1</entry>
                             </commands>
                             <commandsValid>true</commandsValid>
                             <value>a%2 = 1</value>
@@ -184,13 +184,13 @@ nebo a není celé číslo,
     <shapeUpColor>255,255,255,255</shapeUpColor>
     <shapeDownColor>230,230,230,255</shapeDownColor>
     <hasShadow>true</hasShadow>
-    <defaultValue>bn ← &quot;0&quot; + bn</defaultValue>
+    <defaultValue>bn ← "0" + bn</defaultValue>
     <commands>
         <entry key="var">bn</entry>
-        <entry key="value">&quot;0&quot; + bn</entry>
+        <entry key="value">"0" + bn</entry>
     </commands>
     <commandsValid>true</commandsValid>
-    <value>bn ← &quot;0&quot; + bn</value>
+    <value>bn ← "0" + bn</value>
 </process>
                             </element>
                             <description>Ne</description>
@@ -202,13 +202,13 @@ nebo a není celé číslo,
     <shapeUpColor>255,255,255,255</shapeUpColor>
     <shapeDownColor>230,230,230,255</shapeDownColor>
     <hasShadow>true</hasShadow>
-    <defaultValue>bn ← &quot;1&quot; + bn</defaultValue>
+    <defaultValue>bn ← "1" + bn</defaultValue>
     <commands>
         <entry key="var">bn</entry>
-        <entry key="value">&quot;1&quot; + bn</entry>
+        <entry key="value">"1" + bn</entry>
     </commands>
     <commandsValid>true</commandsValid>
-    <value>bn ← &quot;1&quot; + bn</value>
+    <value>bn ← "1" + bn</value>
 </process>
                             </element>
                             <element xsi:type="layoutElement" xmlID="22" parentSegment="10">
@@ -283,14 +283,14 @@ dělitelnou dvěmi bezezbytku</value>
                     <shapeUpColor>255,255,255,255</shapeUpColor>
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
-                    <customValue>&quot;vysledek je: &quot;
+                    <customValue>"vysledek je: "
  + bn →</customValue>
-                    <defaultValue>&quot;vysledek je: &quot; + bn →</defaultValue>
+                    <defaultValue>"vysledek je: " + bn →</defaultValue>
                     <commands>
-                        <entry key="value">&quot;vysledek je: &quot; + bn</entry>
+                        <entry key="value">"vysledek je: " + bn</entry>
                     </commands>
                     <commandsValid>true</commandsValid>
-                    <value>&quot;vysledek je: &quot;
+                    <value>"vysledek je: "
  + bn →</value>
                 </io>
             </element>

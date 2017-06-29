@@ -40,19 +40,19 @@ matematiky.</value>
                     <shapeUpColor>255,255,255,255</shapeUpColor>
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
-                    <customValue>&quot;zadejte a, b, c
+                    <customValue>"zadejte a, b, c
 koeficienty
 kvadraticke
-rovnice&quot; →</customValue>
-                    <defaultValue>&quot;zadejte a, b, c koeficienty kvadraticke rovnice&quot; →</defaultValue>
+rovnice" →</customValue>
+                    <defaultValue>"zadejte a, b, c koeficienty kvadraticke rovnice" →</defaultValue>
                     <commands>
-                        <entry key="value">&quot;zadejte a, b, c koeficienty kvadraticke rovnice&quot;</entry>
+                        <entry key="value">"zadejte a, b, c koeficienty kvadraticke rovnice"</entry>
                     </commands>
                     <commandsValid>true</commandsValid>
-                    <value>&quot;zadejte a, b, c
+                    <value>"zadejte a, b, c
 koeficienty
 kvadraticke
-rovnice&quot; →</value>
+rovnice" →</value>
                 </io>
             </element>
             <element xsi:type="layoutElement" xmlID="3" parentSegment="0">
@@ -157,7 +157,7 @@ a skončete.
     <hasShadow>true</hasShadow>
     <defaultValue>c = 0</defaultValue>
     <commands>
-        <entry key="condition">c == 0</entry>
+        <entry key="condition">c = 0</entry>
     </commands>
     <commandsValid>true</commandsValid>
     <value>c = 0</value>
@@ -169,15 +169,15 @@ a skončete.
             <shapeUpColor>255,255,255,255</shapeUpColor>
             <shapeDownColor>230,230,230,255</shapeDownColor>
             <hasShadow>true</hasShadow>
-            <customValue>&quot;nema 
-reseni&quot; →</customValue>
-            <defaultValue>&quot;nema reseni&quot; →</defaultValue>
+            <customValue>"nema 
+reseni" →</customValue>
+            <defaultValue>"nema reseni" →</defaultValue>
             <commands>
-                <entry key="value">&quot;nema reseni&quot;</entry>
+                <entry key="value">"nema reseni"</entry>
             </commands>
             <commandsValid>true</commandsValid>
-            <value>&quot;nema 
-reseni&quot; →</value>
+            <value>"nema 
+reseni" →</value>
         </io>
     </element>
     <description>Ne</description>
@@ -189,17 +189,17 @@ reseni&quot; →</value>
             <shapeUpColor>255,255,255,255</shapeUpColor>
             <shapeDownColor>230,230,230,255</shapeDownColor>
             <hasShadow>true</hasShadow>
-            <customValue>&quot;nekonecne 
+            <customValue>"nekonecne 
 mnoho 
-reseni&quot; →</customValue>
-            <defaultValue>&quot;nekonecne mnoho reseni&quot; →</defaultValue>
+reseni" →</customValue>
+            <defaultValue>"nekonecne mnoho reseni" →</defaultValue>
             <commands>
-                <entry key="value">&quot;nekonecne mnoho reseni&quot;</entry>
+                <entry key="value">"nekonecne mnoho reseni"</entry>
             </commands>
             <commandsValid>true</commandsValid>
-            <value>&quot;nekonecne 
+            <value>"nekonecne 
 mnoho 
-reseni&quot; →</value>
+reseni" →</value>
         </io>
     </element>
     <description>Ano</description>
@@ -214,15 +214,15 @@ reseni&quot; →</value>
     <shapeUpColor>255,255,255,255</shapeUpColor>
     <shapeDownColor>230,230,230,255</shapeDownColor>
     <hasShadow>true</hasShadow>
-    <customValue>&quot;rovnice je
-linearni&quot; →</customValue>
-    <defaultValue>&quot;rovnice je linearni&quot; →</defaultValue>
+    <customValue>"rovnice je
+linearni" →</customValue>
+    <defaultValue>"rovnice je linearni" →</defaultValue>
     <commands>
-        <entry key="value">&quot;rovnice je linearni&quot;</entry>
+        <entry key="value">"rovnice je linearni"</entry>
     </commands>
     <commandsValid>true</commandsValid>
-    <value>&quot;rovnice je
-linearni&quot; →</value>
+    <value>"rovnice je
+linearni" →</value>
 </io>
                             </element>
                             <element xsi:type="layoutElement" xmlID="10" parentSegment="33">
@@ -246,12 +246,12 @@ linearni&quot; →</value>
     <shapeUpColor>255,255,255,255</shapeUpColor>
     <shapeDownColor>230,230,230,255</shapeDownColor>
     <hasShadow>true</hasShadow>
-    <defaultValue>&quot;x = &quot; + x →</defaultValue>
+    <defaultValue>"x = " + x →</defaultValue>
     <commands>
-        <entry key="value">&quot;x = &quot; + x</entry>
+        <entry key="value">"x = " + x</entry>
     </commands>
     <commandsValid>true</commandsValid>
-    <value>&quot;x = &quot; + x →</value>
+    <value>"x = " + x →</value>
 </io>
                             </element>
                             <description>Ano</description>
@@ -349,18 +349,18 @@ má jedno řešení.</value>
     <shapeUpColor>255,255,255,255</shapeUpColor>
     <shapeDownColor>230,230,230,255</shapeDownColor>
     <hasShadow>true</hasShadow>
-    <customValue>&quot;koren 
+    <customValue>"koren 
 dvojnasobny:
- x1 = x2 = &quot; 
+ x1 = x2 = " 
 + x1 →</customValue>
-    <defaultValue>&quot;koren dvojnasobny: x1 = x2 = &quot; + x1 →</defaultValue>
+    <defaultValue>"koren dvojnasobny: x1 = x2 = " + x1 →</defaultValue>
     <commands>
-        <entry key="value">&quot;koren dvojnasobny: x1 = x2 = &quot; + x1</entry>
+        <entry key="value">"koren dvojnasobny: x1 = x2 = " + x1</entry>
     </commands>
     <commandsValid>true</commandsValid>
-    <value>&quot;koren 
+    <value>"koren 
 dvojnasobny:
- x1 = x2 = &quot; 
+ x1 = x2 = " 
 + x1 →</value>
 </io>
                             </element>
@@ -405,15 +405,15 @@ v oboru reálných čísel řešení.</value>
             <shapeUpColor>255,255,255,255</shapeUpColor>
             <shapeDownColor>230,230,230,255</shapeDownColor>
             <hasShadow>true</hasShadow>
-            <customValue>&quot;rovnice nema
- v R reseni&quot; →</customValue>
-            <defaultValue>&quot;rovnice nema v R reseni&quot; →</defaultValue>
+            <customValue>"rovnice nema
+ v R reseni" →</customValue>
+            <defaultValue>"rovnice nema v R reseni" →</defaultValue>
             <commands>
-                <entry key="value">&quot;rovnice nema v R reseni&quot;</entry>
+                <entry key="value">"rovnice nema v R reseni"</entry>
             </commands>
             <commandsValid>true</commandsValid>
-            <value>&quot;rovnice nema
- v R reseni&quot; →</value>
+            <value>"rovnice nema
+ v R reseni" →</value>
         </io>
     </element>
     <description>Ne</description>
@@ -481,20 +481,20 @@ má dvě řešení.</value>
             <shapeUpColor>255,255,255,255</shapeUpColor>
             <shapeDownColor>230,230,230,255</shapeDownColor>
             <hasShadow>true</hasShadow>
-            <customValue>&quot;rovnice ma dva 
-koreny: x1 = &quot;
+            <customValue>"rovnice ma dva 
+koreny: x1 = "
  + x1 
-+ &quot;, x2 = &quot; 
++ ", x2 = " 
 + x2 →</customValue>
-            <defaultValue>&quot;rovnice ma dva koreny: x1 = &quot; + x1 + &quot;, x2 = &quot; + x2 →</defaultValue>
+            <defaultValue>"rovnice ma dva koreny: x1 = " + x1 + ", x2 = " + x2 →</defaultValue>
             <commands>
-                <entry key="value">&quot;rovnice ma dva koreny: x1 = &quot; + x1 + &quot;, x2 = &quot; + x2</entry>
+                <entry key="value">"rovnice ma dva koreny: x1 = " + x1 + ", x2 = " + x2</entry>
             </commands>
             <commandsValid>true</commandsValid>
-            <value>&quot;rovnice ma dva 
-koreny: x1 = &quot;
+            <value>"rovnice ma dva 
+koreny: x1 = "
  + x1 
-+ &quot;, x2 = &quot; 
++ ", x2 = " 
 + x2 →</value>
         </io>
     </element>

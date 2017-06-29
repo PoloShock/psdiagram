@@ -15,6 +15,7 @@ import cz.miroslavbartyzal.psdiagram.app.gui.ExamplesLoader;
 import cz.miroslavbartyzal.psdiagram.app.gui.MainWindow;
 import cz.miroslavbartyzal.psdiagram.app.persistence.FlowchartSaveContainer;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import javax.xml.bind.JAXBException;
 import org.junit.Assert;
@@ -28,7 +29,7 @@ public class LibraryOfAlgorithmsTest
 {
 
     @Test
-    public void libraryTest() throws JAXBException
+    public void libraryTest() throws JAXBException, FileNotFoundException
     {
         ArrayList<File> libraryItems = ExamplesLoader.loadFiles(new File(
                 SettingsHolder.MY_WORKING_DIR, "src/main/resources/intozip/examples"));
@@ -38,10 +39,10 @@ public class LibraryOfAlgorithmsTest
                 Flowchart<LayoutSegment, LayoutElement> flowchart;
                 if (libraryItem.getName().endsWith(".xml")) {
                     flowchart = GlobalFunctions.unsafeCast(
-                            MainWindow.getJAXBcontext().createUnmarshaller().unmarshal(libraryItem));
+                            MainWindow.unmarshal(libraryItem));
                 } else {
                     FlowchartSaveContainer flowchartSaveContainer = GlobalFunctions.unsafeCast(
-                            MainWindow.getJAXBcontext().createUnmarshaller().unmarshal(libraryItem));
+                            MainWindow.unmarshal(libraryItem));
                     flowchart = flowchartSaveContainer.flowchart;
                 }
                 for (LayoutSegment segment : flowchart) {

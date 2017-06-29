@@ -48,21 +48,21 @@ společným dělitelem původních
                     <shapeUpColor>255,255,255,255</shapeUpColor>
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
-                    <customValue>&quot;Zadejte hodnoty
+                    <customValue>"Zadejte hodnoty
 promennych A a B,
 jejichz nejvetsi
 spolecny delitel
-chcete najit.&quot; →</customValue>
-                    <defaultValue>&quot;Zadejte hodnoty promennych A a B, jejichz nejvetsi spolecny delitel chcete najit.&quot; →</defaultValue>
+chcete najit." →</customValue>
+                    <defaultValue>"Zadejte hodnoty promennych A a B, jejichz nejvetsi spolecny delitel chcete najit." →</defaultValue>
                     <commands>
-                        <entry key="value">&quot;Zadejte hodnoty promennych A a B, jejichz nejvetsi spolecny delitel chcete najit.&quot;</entry>
+                        <entry key="value">"Zadejte hodnoty promennych A a B, jejichz nejvetsi spolecny delitel chcete najit."</entry>
                     </commands>
                     <commandsValid>true</commandsValid>
-                    <value>&quot;Zadejte hodnoty
+                    <value>"Zadejte hodnoty
 promennych A a B,
 jejichz nejvetsi
 spolecny delitel
-chcete najit.&quot; →</value>
+chcete najit." →</value>
                 </io>
             </element>
             <element xsi:type="layoutElement" xmlID="796715" parentSegment="3753303">
@@ -177,18 +177,18 @@ chcete najit.&quot; →</value>
                     <shapeUpColor>255,255,255,255</shapeUpColor>
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
-                    <customValue>&quot;nejvetsi
+                    <customValue>"nejvetsi
 spolecny
-delitel je &quot;
+delitel je "
 + a →</customValue>
-                    <defaultValue>&quot;nejvetsi spolecny delitel je &quot; + a →</defaultValue>
+                    <defaultValue>"nejvetsi spolecny delitel je " + a →</defaultValue>
                     <commands>
-                        <entry key="value">&quot;nejvetsi spolecny delitel je &quot; + a</entry>
+                        <entry key="value">"nejvetsi spolecny delitel je " + a</entry>
                     </commands>
                     <commandsValid>true</commandsValid>
-                    <value>&quot;nejvetsi
+                    <value>"nejvetsi
 spolecny
-delitel je &quot;
+delitel je "
 + a →</value>
                 </io>
             </element>

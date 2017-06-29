@@ -45,6 +45,7 @@ public class StringValueFilterTest
             add("func([1,2])[1]");
             add("\"ahoj\"[1]");
             add("\"ahoj\" [1]");
+            add("\"0123456789\"[19 // 1 // ((21 // 2) // 5)]");
             add("pole. length");
             add("pole .length");
             add("pole . length");
@@ -141,6 +142,8 @@ public class StringValueFilterTest
             add("Func.func.func(a>b) != !b");
             add("!(a > 1)");
             add("a = b+\"ahoj\"");
+            add("\"012345678\"[19 // 1 // ((21 // 2) // 5)]");
+            add("\"012345678\"[19 / 5)]");
             add("a / -1");
             add("a - -1");
             add("a / +1");
@@ -149,6 +152,7 @@ public class StringValueFilterTest
             add("a / -pom");
             add("a - -pom");
             add("a / +pom");
+            add("a // +pom");
             add("a - +pom");
             add("a -+-+pom");
             add("true");

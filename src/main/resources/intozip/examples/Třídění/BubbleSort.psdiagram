@@ -18,7 +18,7 @@ prvek je menší než následující prvek v posloupnosti
 posloupnost od prvního do N-1 prvku a zkontrolujeme tento
 předpoklad. Pokud neplatí, že j-tý prvek je menší než prvek
 na pozici j+1, tak je mezi sebou vyměníme. Tím vlastně největší
-prvek &quot;probublá&quot; až na N-tou pozici. V dalším kroku procházíme
+prvek "probublá" až na N-tou pozici. V dalším kroku procházíme
 posloupnost do pozice N-2. Takto pokračujeme až do kontroly
 posledních dvou prvků.</customValue>
                     <commandsValid>true</commandsValid>
@@ -33,7 +33,7 @@ prvek je menší než následující prvek v posloupnosti
 posloupnost od prvního do N-1 prvku a zkontrolujeme tento
 předpoklad. Pokud neplatí, že j-tý prvek je menší než prvek
 na pozici j+1, tak je mezi sebou vyměníme. Tím vlastně největší
-prvek &quot;probublá&quot; až na N-tou pozici. V dalším kroku procházíme
+prvek "probublá" až na N-tou pozici. V dalším kroku procházíme
 posloupnost do pozice N-2. Takto pokračujeme až do kontroly
 posledních dvou prvků.</value>
                     <relativePointToSymbol x="138.5" y="0.0"/>
@@ -59,19 +59,19 @@ posledních dvou prvků.</value>
                     <shapeUpColor>255,255,255,255</shapeUpColor>
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
-                    <customValue>&quot;zadejte
+                    <customValue>"zadejte
 pozadovany
 pocet prvku
-pole&quot; →</customValue>
-                    <defaultValue>&quot;zadejte pozadovany pocet prvku pole&quot; →</defaultValue>
+pole" →</customValue>
+                    <defaultValue>"zadejte pozadovany pocet prvku pole" →</defaultValue>
                     <commands>
-                        <entry key="value">&quot;zadejte pozadovany pocet prvku pole&quot;</entry>
+                        <entry key="value">"zadejte pozadovany pocet prvku pole"</entry>
                     </commands>
                     <commandsValid>true</commandsValid>
-                    <value>&quot;zadejte
+                    <value>"zadejte
 pozadovany
 pocet prvku
-pole&quot; →</value>
+pole" →</value>
                 </io>
             </element>
             <element xsi:type="layoutElement" xmlID="12" parentSegment="0">
@@ -113,19 +113,19 @@ stanoveném intervalu.</value>
                     <shapeUpColor>255,255,255,255</shapeUpColor>
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
-                    <customValue>&quot;zadejte
+                    <customValue>"zadejte
 minimalni
 hranici pro
-nahodne cislo&quot; →</customValue>
-                    <defaultValue>&quot;zadejte minimalni hranici pro nahodne cislo&quot; →</defaultValue>
+nahodne cislo" →</customValue>
+                    <defaultValue>"zadejte minimalni hranici pro nahodne cislo" →</defaultValue>
                     <commands>
-                        <entry key="value">&quot;zadejte minimalni hranici pro nahodne cislo&quot;</entry>
+                        <entry key="value">"zadejte minimalni hranici pro nahodne cislo"</entry>
                     </commands>
                     <commandsValid>true</commandsValid>
-                    <value>&quot;zadejte
+                    <value>"zadejte
 minimalni
 hranici pro
-nahodne cislo&quot; →</value>
+nahodne cislo" →</value>
                 </io>
             </element>
             <element xsi:type="layoutElement" xmlID="14" parentSegment="0">
@@ -148,19 +148,19 @@ nahodne cislo&quot; →</value>
                     <shapeUpColor>255,255,255,255</shapeUpColor>
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
-                    <customValue>&quot;zadejte
+                    <customValue>"zadejte
 maximalni
 hranici pro
-nahodne cislo&quot; →</customValue>
-                    <defaultValue>&quot;zadejte maximalni hranici pro nahodne cislo&quot; →</defaultValue>
+nahodne cislo" →</customValue>
+                    <defaultValue>"zadejte maximalni hranici pro nahodne cislo" →</defaultValue>
                     <commands>
-                        <entry key="value">&quot;zadejte maximalni hranici pro nahodne cislo&quot;</entry>
+                        <entry key="value">"zadejte maximalni hranici pro nahodne cislo"</entry>
                     </commands>
                     <commandsValid>true</commandsValid>
-                    <value>&quot;zadejte
+                    <value>"zadejte
 maximalni
 hranici pro
-nahodne cislo&quot; →</value>
+nahodne cislo" →</value>
                 </io>
             </element>
             <element xsi:type="layoutElement" xmlID="15" parentSegment="0">

@@ -7,11 +7,11 @@ package cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutElement;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.EnumSymbol;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
+import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
+import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.MaxBalloonSizeCallback;
 import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditManager;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.ValueFilter;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.VariableFilter;
-import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
-import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.MaxBalloonSizeCallback;
 import java.util.LinkedHashMap;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -61,15 +61,8 @@ public final class Process extends AbstractSymbolFunctionForm
         jLabelExamples.setFont(SettingsHolder.SMALL_CODEFONT);
 
         if (element.getSymbol().getCommands() != null) {
-            if (SettingsHolder.settings.isFunctionFilters()) {
-                jTextFieldVar.setText(AbstractSymbolFunctionForm.convertFromJSToPSDCommands(
-                        element.getSymbol().getCommands().get("var")));
-                jTextFieldValue.setText(AbstractSymbolFunctionForm.convertFromJSToPSDCommands(
-                        element.getSymbol().getCommands().get("value")));
-            } else {
-                jTextFieldVar.setText(element.getSymbol().getCommands().get("var"));
-                jTextFieldValue.setText(element.getSymbol().getCommands().get("value"));
-            }
+            jTextFieldVar.setText( element.getSymbol().getCommands().get("var"));
+            jTextFieldValue.setText(element.getSymbol().getCommands().get("value"));
         }
 
         ((AbstractDocument) jTextFieldVar.getDocument()).setDocumentFilter(new VariableFilter(
@@ -123,13 +116,8 @@ public final class Process extends AbstractSymbolFunctionForm
         }
 
         LinkedHashMap<String, String> commands = new LinkedHashMap<>();
-        if (SettingsHolder.settings.isFunctionFilters()) {
-            commands.put("var", AbstractSymbolFunctionForm.convertFromPSDToJSCommands(var));
-            commands.put("value", AbstractSymbolFunctionForm.convertFromPSDToJSCommands(value));
-        } else {
-            commands.put("var", var);
-            commands.put("value", value);
-        }
+        commands.put("var", var);
+        commands.put("value", value);
         symbol.setCommands(commands);
     }
 
@@ -175,7 +163,7 @@ public final class Process extends AbstractSymbolFunctionForm
 
         jLabel3.setText("Příklady:");
 
-        jLabelExamples.setText("<html>\n- A; 0<br />\n- B; B + A<br />\n- A; Math.sqrt(A*2)<br />\n- A; Math.floor(<br />Math.random()*10)+1<br />\n- A; B % C<br />\n- C; \"text\"<br />\n- C; \"hodnota A: \" + A<br />\n- A; \"B na druhou: \" + Math.pow(B,2)<br />\n- A; \"retezec\"[2]<br />\n- D; true<br />\n- D; false<br />\n- pole; [1, 2, 3]<br />\n- pole[3]; 4<br />\n- pole[pole.length]; 5<br />\n- E; pole[2][0]<br />\n</html>");
+        jLabelExamples.setText("<html>\n- A; 0<br />\n- B; B + A<br />\n- D; A // 5<br />\n- A; Math.sqrt(A*2)<br />\n- A; Math.floor(<br />Math.random()*10)+1<br />\n- A; B % C<br />\n- C; \"text\"<br />\n- C; \"hodnota A: \" + A<br />\n- A; \"B na druhou: \" + Math.pow(B,2)<br />\n- A; \"retezec\"[2]<br />\n- D; false<br />\n- pole; [1, 2, 3]<br />\n- pole[3]; 4<br />\n- pole[pole.length]; 5<br />\n- E; pole[2][0]<br />\n</html>");
         jLabelExamples.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -280,9 +268,7 @@ public final class Process extends AbstractSymbolFunctionForm
                 Process.super.getElement().getSymbol().setCommandsValid(false);
             }
 
-            if (SettingsHolder.settings.isFunctionFilters()) {
-                Process.super.getFlowchartEditManager().repaintJPanelDiagram();
-            }
+            Process.super.getFlowchartEditManager().repaintJPanelDiagram();
         }
 
     }

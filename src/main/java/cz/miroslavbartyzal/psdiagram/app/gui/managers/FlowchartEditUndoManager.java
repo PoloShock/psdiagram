@@ -62,8 +62,7 @@ public final class FlowchartEditUndoManager extends UndoManager
         beforeIsJoint = layout.getFocusedJoint() != null;
         lastSeenFlowchart = new ByteArrayOutputStream();
         try {
-            MainWindow.getJAXBcontext().createMarshaller().marshal(layout.getFlowchart(),
-                    lastSeenFlowchart);
+            MainWindow.marshal(layout.getFlowchart(), lastSeenFlowchart, false);
         } catch (JAXBException ex) {
             ex.printStackTrace(System.err);
         }
@@ -75,8 +74,7 @@ public final class FlowchartEditUndoManager extends UndoManager
         if (lastSeenFlowchart != null) {
             ByteArrayOutputStream currentFlowchart = new ByteArrayOutputStream();
             try {
-                MainWindow.getJAXBcontext().createMarshaller().marshal(layout.getFlowchart(),
-                        currentFlowchart);
+                MainWindow.marshal(layout.getFlowchart(), currentFlowchart, false);
             } catch (JAXBException ex) {
                 ex.printStackTrace(System.err);
             }
@@ -118,8 +116,7 @@ public final class FlowchartEditUndoManager extends UndoManager
         if (undoFlowchart.size() > 0) {
             ByteArrayOutputStream currentFlowchart = new ByteArrayOutputStream();
             try {
-                MainWindow.getJAXBcontext().createMarshaller().marshal(layout.getFlowchart(),
-                        currentFlowchart);
+                MainWindow.marshal(layout.getFlowchart(), currentFlowchart, false);
             } catch (JAXBException ex) {
                 ex.printStackTrace(System.err);
             }

@@ -70,7 +70,7 @@ public class ANTLRParser implements PSDParser
 //        System.out.println("thread died after: " + (System.currentTimeMillis() - time));
     }
 
-    private PSDGrammarParser createBailOutParser(String input)
+    private PSDGrammarParser createBailOutParser(String input, boolean buildParseTree)
     {
         PSDGrammarBailLexer lexer = new PSDGrammarBailLexer(new ANTLRInputStream(input));
         lexer.removeErrorListeners();
@@ -85,7 +85,7 @@ public class ANTLRParser implements PSDParser
         });
 
         PSDGrammarParser parser = new PSDGrammarParser(new CommonTokenStream(lexer));
-        parser.setBuildParseTree(false);
+        parser.setBuildParseTree(buildParseTree);
         parser.removeErrorListeners();
         parser.addErrorListener(new ANTLRMySyntaxErrorListener()
         {
@@ -105,7 +105,7 @@ public class ANTLRParser implements PSDParser
     private boolean parse(String input, RuleCallback ruleCallback)
     {
         try {
-            ruleCallback.ruleCall(createBailOutParser(input));
+            ruleCallback.ruleCall(createBailOutParser(input, false));
             return true;
         } catch (RuntimeException ex) {
             return false;
@@ -118,6 +118,18 @@ public class ANTLRParser implements PSDParser
         stopParsing();
         recoveryParseThread = new RecoveryParseThread(input, ruleCallback, listener);
         recoveryParseThread.start();
+    }
+
+    @Override
+    public String translatePSDToJavaScript(String input)
+    {
+        try {
+            PSDGrammarParser parser = createBailOutParser(input, true);
+            PSDToJavaScriptVisitor visitor = new PSDToJavaScriptVisitor(input);
+            return visitor.visit(parser.expression());
+        } catch (RuntimeException ex) {
+            return input;
+        }
     }
 
     @Override

@@ -173,59 +173,6 @@ public abstract class AbstractSymbolFunctionForm extends javax.swing.JPanel impl
 
     /**
      *
-     * @param command a | b
-     * @return a || b
-     */
-    public static String convertFromPSDToJSCommands(String command)
-    {
-        if (command == null) {
-            return command;
-        }
-
-        // v uvozovkach si nesmim vsimat niceho
-        String[] commandWithoutQ = RegexFunctions.splitString(command, "\"([^\"\\\\]|\\\\.)*\"?");
-        for (int i = 0; i < commandWithoutQ.length; i += 2) {
-            // convert doublechar operators to their unicode equivalent and back so the chars that were part of the doublechars are not misclasified
-            commandWithoutQ[i] = commandWithoutQ[i].replace("!=", "≠").replace(">=", "≥").replace(
-                    "<=", "≤").replace("=", "==").replace("≠", "!=").replace("≥", ">=").replace("≤",
-                            "<=");
-        }
-
-        String cmnd = "";
-        for (String commandPart : commandWithoutQ) {
-            cmnd += commandPart;
-        }
-
-        return cmnd;
-    }
-
-    /**
-     *
-     * @param command a || b
-     * @return a | b
-     */
-    public static String convertFromJSToPSDCommands(String command)
-    {
-        if (command == null) {
-            return command;
-        }
-
-        // v uvozovkach si nesmim vsimat niceho
-        String[] commandWithoutQ = RegexFunctions.splitString(command, "\"([^\"\\\\]|\\\\.)*\"?");
-        for (int i = 0; i < commandWithoutQ.length; i += 2) {
-            commandWithoutQ[i] = commandWithoutQ[i].replace("==", "=");
-        }
-
-        String cmnd = "";
-        for (String commandPart : commandWithoutQ) {
-            cmnd += commandPart;
-        }
-
-        return cmnd;
-    }
-
-    /**
-     *
      * @param command a || b
      * @return a | b
      */

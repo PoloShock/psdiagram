@@ -90,6 +90,7 @@ public class ValueFilterTest
             add("!(a > 1)");
             add("a = b+\"ahoj\"");
             add("a / -1");
+            add("a // -1");
             add("a + -1");
             add("a - -1");
             add("a / +1");

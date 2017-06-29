@@ -221,10 +221,9 @@ public class FlowchartSymbolDragManager
     private LayoutElement cloneElement(LayoutElement element) throws JAXBException
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        MainWindow.getJAXBcontext().createMarshaller().marshal(element, baos);
+        MainWindow.marshal(element, baos, false);
         return GlobalFunctions.unsafeCast(
-                MainWindow.getJAXBcontext().createUnmarshaller().unmarshal(new ByteArrayInputStream(
-                                baos.toByteArray())));
+                MainWindow.unmarshal(new ByteArrayInputStream(baos.toByteArray())));
     }
 
     private boolean isFocusedJointDefaultJoint()

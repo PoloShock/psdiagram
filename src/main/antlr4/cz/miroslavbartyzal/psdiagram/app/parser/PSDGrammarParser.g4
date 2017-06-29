@@ -63,11 +63,12 @@ options { tokenVocab=PSDGrammarLexer; }
         }
 
         switch ( op ) {
-            case PLUS  : return left   +   right;
-            case MINUS : return left   -   right;
-            case MUL   : return left   *   right;
-            case DIV   : return left   /   right;
-            case MOD   : return left   %   right;
+            case PLUS       : return left   +   right;
+            case MINUS      : return left   -   right;
+            case MUL        : return left   *   right;
+            case DIV        : return left   /   right;
+            case FLOORDIV   : return Math.floor(left / right);
+            case MOD        : return left   %   right;
         }
 
         return null;
@@ -244,7 +245,7 @@ constant_String
                 String stringWithoutQuotes = $CONSTANT_STRING.text.substring(1, $CONSTANT_STRING.text.length()-1);
                 int stringLength = unescapeJavaString(stringWithoutQuotes).length();
                 if (stringLength == 0) {
-                    String msg = "Do přázdné řetězcové hodnoty se není možné odkazovat.";
+                    String msg = "Do prázdné řetězcové hodnoty se není možné odkazovat.";
                     ruleNotifyErrorListeners(msg, null, $arrayLookup_BracketsPart.start, $arrayLookup_BracketsPart.stop);
                 } else if ($arrayLookup_BracketsPart.value != null && $arrayLookup_BracketsPart.value > stringLength - 1) {
                     String msg = "Index odkazující do řetězcové hodnoty má vyšší hodnotu, než její délka dovoluje.";
@@ -730,10 +731,10 @@ conditionalOr_Expression_LeftPart
             String errorHeader = "Operátor '" + $OR.text + "' (logické OR (nebo)) lze použít pouze v kombinaci s logickými hodnotami.";
         } (
             (conditionalAnd_Expression | unknownTypeValue) {ruleNotifyErrorListeners(errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota číselná.", "logická hodnota", $numeric_Expression.start, $numeric_Expression.stop);}
-        |   numeric_Expression {notifyErrorListeners($OR, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota číselná.\n- Na pravé straně operátoru byla nalezena hodnota číselná.", "'=', '!=', '>', '<', '>=', '<=', '+', '-', '*', '/', '%'", null);}
+        |   numeric_Expression {notifyErrorListeners($OR, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota číselná.\n- Na pravé straně operátoru byla nalezena hodnota číselná.", "'=', '!=', '>', '<', '>=', '<=', '+', '-', '*', '/', '//', '%'", null);}
         |   string_Expression {notifyErrorListeners($OR, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota číselná.\n- Na pravé straně operátoru byla nalezena hodnota řetězcová.", "'+'", null);}
         |   array_Expression {notifyErrorListeners($OR, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota číselná.\n- Na pravé straně operátoru byla nalezena hodnota v podobě pole.", null, null);}
-        |   numericOrString_Expression {notifyErrorListeners($OR, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota číselná.\n- Na pravé straně operátoru byla nalezena hodnota číselná/řetězcová.", "'=', '!=', '>', '<', '>=', '<=', '+', '-', '*', '/', '%'", null);}
+        |   numericOrString_Expression {notifyErrorListeners($OR, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota číselná.\n- Na pravé straně operátoru byla nalezena hodnota číselná/řetězcová.", "'=', '!=', '>', '<', '>=', '<=', '+', '-', '*', '/', '//', '%'", null);}
         |   NULL_LITERAL {notifyErrorListeners($OR, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota číselná.\n- Na pravé straně operátoru byla nalezena hodnota null.", null, null);}
         |   {
                 ruleNotifyErrorListeners(errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota číselná.", "logická hodnota", $numeric_Expression.start, $numeric_Expression.stop);
@@ -772,10 +773,10 @@ conditionalOr_Expression_LeftPart
             String errorHeader = "Operátor '" + $OR.text + "' (logické OR (nebo)) lze použít pouze v kombinaci s logickými hodnotami.";
         } (
             (conditionalAnd_Expression | unknownTypeValue) {ruleNotifyErrorListeners(errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota číselná/řetězcová.", "logická hodnota", $numericOrString_Expression.start, $numericOrString_Expression.stop);}
-        |   numeric_Expression {notifyErrorListeners($OR, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota číselná/řetězcová.\n- Na pravé straně operátoru byla nalezena hodnota číselná.", "'=', '!=', '>', '<', '>=', '<=', '+', '-', '*', '/', '%'", null);}
+        |   numeric_Expression {notifyErrorListeners($OR, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota číselná/řetězcová.\n- Na pravé straně operátoru byla nalezena hodnota číselná.", "'=', '!=', '>', '<', '>=', '<=', '+', '-', '*', '/', '//', '%'", null);}
         |   string_Expression {notifyErrorListeners($OR, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota číselná/řetězcová.\n- Na pravé straně operátoru byla nalezena hodnota řetězcová.", "'=', '!=', '+'", null);}
         |   array_Expression {notifyErrorListeners($OR, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota číselná/řetězcová.\n- Na pravé straně operátoru byla nalezena hodnota v podobě pole.", null, null);}
-        |   numericOrString_Expression {notifyErrorListeners($OR, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota číselná/řetězcová.\n- Na pravé straně operátoru byla nalezena hodnota číselná/řetězcová.", "'=', '!=', '>', '<', '>=', '<=', '+', '-', '*', '/', '%'", null);}
+        |   numericOrString_Expression {notifyErrorListeners($OR, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota číselná/řetězcová.\n- Na pravé straně operátoru byla nalezena hodnota číselná/řetězcová.", "'=', '!=', '>', '<', '>=', '<=', '+', '-', '*', '/', '//', '%'", null);}
         |   NULL_LITERAL {notifyErrorListeners($OR, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota číselná/řetězcová.\n- Na pravé straně operátoru byla nalezena hodnota null.", "'=', '!=', '+'", null);}
         |   {
                 ruleNotifyErrorListeners(errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota číselná/řetězcová.", "logická hodnota", $numericOrString_Expression.start, $numericOrString_Expression.stop);
@@ -846,10 +847,10 @@ conditionalAnd_Expression_LeftPart
             String errorHeader = "Operátor '" + $AND.text + "' (logické AND (a zároveň)) lze použít pouze v kombinaci s logickými hodnotami.";
         } (
             (equality_Expression | unknownTypeValue) {ruleNotifyErrorListeners(errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota číselná.", "logická hodnota", $numeric_Expression.start, $numeric_Expression.stop);}
-        |   numeric_Expression {notifyErrorListeners($AND, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota číselná.\n- Na pravé straně operátoru byla nalezena hodnota číselná.", "'=', '!=', '>', '<', '>=', '<=', '+', '-', '*', '/', '%'", null);}
+        |   numeric_Expression {notifyErrorListeners($AND, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota číselná.\n- Na pravé straně operátoru byla nalezena hodnota číselná.", "'=', '!=', '>', '<', '>=', '<=', '+', '-', '*', '/', '//', '%'", null);}
         |   string_Expression {notifyErrorListeners($AND, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota číselná.\n- Na pravé straně operátoru byla nalezena hodnota řetězcová.", "'+'", null);}
         |   array_Expression {notifyErrorListeners($AND, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota číselná.\n- Na pravé straně operátoru byla nalezena hodnota v podobě pole.", null, null);}
-        |   numericOrString_Expression {notifyErrorListeners($AND, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota číselná.\n- Na pravé straně operátoru byla nalezena hodnota číselná/řetězcová.", "'=', '!=', '>', '<', '>=', '<=', '+', '-', '*', '/', '%'", null);}
+        |   numericOrString_Expression {notifyErrorListeners($AND, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota číselná.\n- Na pravé straně operátoru byla nalezena hodnota číselná/řetězcová.", "'=', '!=', '>', '<', '>=', '<=', '+', '-', '*', '/', '//', '%'", null);}
         |   NULL_LITERAL {notifyErrorListeners($AND, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota číselná.\n- Na pravé straně operátoru byla nalezena hodnota null.", null, null);}
         |   {
                 ruleNotifyErrorListeners(errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota číselná.", "logická hodnota", $numeric_Expression.start, $numeric_Expression.stop);
@@ -888,10 +889,10 @@ conditionalAnd_Expression_LeftPart
             String errorHeader = "Operátor '" + $AND.text + "' (logické AND (a zároveň)) lze použít pouze v kombinaci s logickými hodnotami.";
         } (
             (equality_Expression | unknownTypeValue) {ruleNotifyErrorListeners(errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota číselná/řetězcová.", "logická hodnota", $numericOrString_Expression.start, $numericOrString_Expression.stop);}
-        |   numeric_Expression {notifyErrorListeners($AND, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota číselná/řetězcová.\n- Na pravé straně operátoru byla nalezena hodnota číselná.", "'=', '!=', '>', '<', '>=', '<=', '+', '-', '*', '/', '%'", null);}
+        |   numeric_Expression {notifyErrorListeners($AND, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota číselná/řetězcová.\n- Na pravé straně operátoru byla nalezena hodnota číselná.", "'=', '!=', '>', '<', '>=', '<=', '+', '-', '*', '/', '//', '%'", null);}
         |   string_Expression {notifyErrorListeners($AND, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota číselná/řetězcová.\n- Na pravé straně operátoru byla nalezena hodnota řetězcová.", "'=', '!=', '+'", null);}
         |   array_Expression {notifyErrorListeners($AND, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota číselná/řetězcová.\n- Na pravé straně operátoru byla nalezena hodnota v podobě pole.", null, null);}
-        |   numericOrString_Expression {notifyErrorListeners($AND, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota číselná/řetězcová.\n- Na pravé straně operátoru byla nalezena hodnota číselná/řetězcová.", "'=', '!=', '>', '<', '>=', '<=', '+', '-', '*', '/', '%'", null);}
+        |   numericOrString_Expression {notifyErrorListeners($AND, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota číselná/řetězcová.\n- Na pravé straně operátoru byla nalezena hodnota číselná/řetězcová.", "'=', '!=', '>', '<', '>=', '<=', '+', '-', '*', '/', '//', '%'", null);}
         |   NULL_LITERAL {notifyErrorListeners($AND, errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota číselná/řetězcová.\n- Na pravé straně operátoru byla nalezena hodnota null.", "'=', '!=', '+'", null);}
         |   {
                 ruleNotifyErrorListeners(errorHeader + "\n- Na levé straně operátoru byla nalezena hodnota číselná/řetězcová.", "logická hodnota", $numericOrString_Expression.start, $numericOrString_Expression.stop);
@@ -1463,80 +1464,97 @@ additive_Expression_LeftPart returns [Double value]
     ;
 
 multiplicative_Expression returns [Double value]
-	:
-        multiplicative_Expression_LeftPart {$value = $multiplicative_Expression_LeftPart.value;} (
-			op=(MUL | DIV | MOD) unary_Numeric_Expression {$value = eval($value, $op.type, $unary_Numeric_Expression.value);}
-		|	op=(MUL | DIV | MOD) (
-            	numericOrString_Expression_WithParetheses
-            |   unknownTypeValue
-            |   {notifyErrorListenersOnPointAfter("Chybí číselná hodnota na pravé straně operátoru '" + $op.text + "'.", "číselná hodnota", $op);}
-            ) {$value = null;}
-        // wrong combinations follow
-        |   op=(MUL | DIV | MOD) unary_Boolean_Expression {
-                $value = null;
-                String operation = "chyba!";
-                if ($op.getType() == MUL) {
-                    operation = "násobení";
-                } else if ($op.getType() == DIV) {
-                    operation = "dělení";
-                } else if ($op.getType() == MOD) {
-                    operation = "modulo (zbytek po celočíselném dělení)";
-                }
-                String errorHeader = "Operátor '" + $op.text + "' (" + operation + ") lze použít pouze v kombinaci s číselnými hodnotami.";
-                ruleNotifyErrorListeners(errorHeader + "\n- Na pravé straně operátoru byla nalezena hodnota logická.", "číselná hodnota", $unary_Boolean_Expression.start, $unary_Boolean_Expression.stop);
+    :
+        multiplicative_Expression_LeftPart {$value = $multiplicative_Expression_LeftPart.value;} (multiplicative_Expression_Operator multiplicative_Expression_RightPart[$multiplicative_Expression_Operator.op] {$value = eval($value, $multiplicative_Expression_Operator.op.getType(), $multiplicative_Expression_RightPart.value);})*
+    ;
+
+multiplicative_Expression_Operator returns [Token op]
+    :
+        operator=(MUL | DIV | FLOORDIV | MOD) {$op = $operator;}
+    ;
+
+multiplicative_Expression_RightPart [Token op] returns [Double value]
+    :
+        unary_Numeric_Expression {$value = $unary_Numeric_Expression.value;}
+    |   (
+            numericOrString_Expression_WithParetheses
+        |   unknownTypeValue
+        |   {notifyErrorListenersOnPointAfter("Chybí číselná hodnota na pravé straně operátoru '" + $op.getText() + "'.", "číselná hodnota", $op);}
+        ) {$value = null;}
+    // wrong combinations follow
+    |   unary_Boolean_Expression {
+            $value = null;
+            String operation = "chyba!";
+            if ($op.getType() == MUL) {
+                operation = "násobení";
+            } else if ($op.getType() == DIV) {
+                operation = "dělení";
+            } else if ($op.getType() == FLOORDIV) {
+                operation = "celočíselné dělení";
+            } else if ($op.getType() == MOD) {
+                operation = "modulo (zbytek po celočíselném dělení)";
             }
-        |   op=(MUL | DIV | MOD) atomic_String_Expression {
-                $value = null;
-                String operation = "chyba!";
-                if ($op.getType() == MUL) {
-                    operation = "násobení";
-                } else if ($op.getType() == DIV) {
-                    operation = "dělení";
-                } else if ($op.getType() == MOD) {
-                    operation = "modulo (zbytek po celočíselném dělení)";
-                }
-                String errorHeader = "Operátor '" + $op.text + "' (" + operation + ") lze použít pouze v kombinaci s číselnými hodnotami.";
-                ruleNotifyErrorListeners(errorHeader + "\n- Na pravé straně operátoru byla nalezena hodnota řetězcová.\nČíselnou hodnotu však lze s řetězcovou hodnotou spojit operátorem '+'.", "číselná hodnota", $atomic_String_Expression.start, $atomic_String_Expression.stop);
+            String errorHeader = "Operátor '" + $op.getText() + "' (" + operation + ") lze použít pouze v kombinaci s číselnými hodnotami.";
+            ruleNotifyErrorListeners(errorHeader + "\n- Na pravé straně operátoru byla nalezena hodnota logická.", "číselná hodnota", $unary_Boolean_Expression.start, $unary_Boolean_Expression.stop);
+        }
+    |   atomic_String_Expression {
+            $value = null;
+            String operation = "chyba!";
+            if ($op.getType() == MUL) {
+                operation = "násobení";
+            } else if ($op.getType() == DIV) {
+                operation = "dělení";
+            } else if ($op.getType() == FLOORDIV) {
+                operation = "celočíselné dělení";
+            } else if ($op.getType() == MOD) {
+                operation = "modulo (zbytek po celočíselném dělení)";
             }
-        |   op=(MUL | DIV | MOD) array_Expression {
-                $value = null;
-                String operation = "chyba!";
-                if ($op.getType() == MUL) {
-                    operation = "násobení";
-                } else if ($op.getType() == DIV) {
-                    operation = "dělení";
-                } else if ($op.getType() == MOD) {
-                    operation = "modulo (zbytek po celočíselném dělení)";
-                }
-                String errorHeader = "Operátor '" + $op.text + "' (" + operation + ") lze použít pouze v kombinaci s číselnými hodnotami.";
-                ruleNotifyErrorListeners(errorHeader + "\n- Na pravé straně operátoru byla nalezena hodnota v podobě pole.\nPokud chcete " + operation + " provést pro jednotlivé prvky pole, je nutné použít cyklus.", "číselná hodnota", $array_Expression.start, $array_Expression.stop);
+            String errorHeader = "Operátor '" + $op.getText() + "' (" + operation + ") lze použít pouze v kombinaci s číselnými hodnotami.";
+            ruleNotifyErrorListeners(errorHeader + "\n- Na pravé straně operátoru byla nalezena hodnota řetězcová.\nČíselnou hodnotu však lze s řetězcovou hodnotou spojit operátorem '+'.", "číselná hodnota", $atomic_String_Expression.start, $atomic_String_Expression.stop);
+        }
+    |   array_Expression {
+            $value = null;
+            String operation = "chyba!";
+            if ($op.getType() == MUL) {
+                operation = "násobení";
+            } else if ($op.getType() == DIV) {
+                operation = "dělení";
+            } else if ($op.getType() == FLOORDIV) {
+                operation = "celočíselné dělení";
+            } else if ($op.getType() == MOD) {
+                operation = "modulo (zbytek po celočíselném dělení)";
             }
-        |   op=(MUL | DIV | MOD) NULL_LITERAL {
-                $value = null;
-                String operation = "chyba!";
-                if ($op.getType() == MUL) {
-                    operation = "násobení";
-                } else if ($op.getType() == DIV) {
-                    operation = "dělení";
-                } else if ($op.getType() == MOD) {
-                    operation = "modulo (zbytek po celočíselném dělení)";
-                }
-                String errorHeader = "Operátor '" + $op.text + "' (" + operation + ") lze použít pouze v kombinaci s číselnými hodnotami.";
-                notifyErrorListeners($NULL_LITERAL, errorHeader + "\n- Na pravé straně operátoru byla nalezena hodnota null.", "číselná hodnota", null);
+            String errorHeader = "Operátor '" + $op.getText() + "' (" + operation + ") lze použít pouze v kombinaci s číselnými hodnotami.";
+            ruleNotifyErrorListeners(errorHeader + "\n- Na pravé straně operátoru byla nalezena hodnota v podobě pole.\nPokud chcete " + operation + " provést pro jednotlivé prvky pole, je nutné použít cyklus.", "číselná hodnota", $array_Expression.start, $array_Expression.stop);
+        }
+    |   NULL_LITERAL {
+            $value = null;
+            String operation = "chyba!";
+            if ($op.getType() == MUL) {
+                operation = "násobení";
+            } else if ($op.getType() == DIV) {
+                operation = "dělení";
+            } else if ($op.getType() == FLOORDIV) {
+                operation = "celočíselné dělení";
+            } else if ($op.getType() == MOD) {
+                operation = "modulo (zbytek po celočíselném dělení)";
             }
-		)*
+            String errorHeader = "Operátor '" + $op.getText() + "' (" + operation + ") lze použít pouze v kombinaci s číselnými hodnotami.";
+            notifyErrorListeners($NULL_LITERAL, errorHeader + "\n- Na pravé straně operátoru byla nalezena hodnota null.", "číselná hodnota", null);
+        }
     ;
 
 multiplicative_Expression_LeftPart returns [Double value]
 	:	unary_Numeric_Expression {$value = $unary_Numeric_Expression.value;}
-	|   (	numericOrString_Expression_WithParetheses
-        |	unknownTypeValue) op=(MUL | DIV | MOD) {
+	|   (	numericOrString_Expression_WithParetheses | unknownTypeValue) op=(MUL | DIV | FLOORDIV | MOD) {
                 $value = null;
                 String operation = "chyba!";
                 if ($op.getType() == MUL) {
                     operation = "násobení";
                 } else if ($op.getType() == DIV) {
                     operation = "dělení";
+                } else if ($op.getType() == FLOORDIV) {
+                    operation = "celočíselné dělení";
                 } else if ($op.getType() == MOD) {
                     operation = "modulo (zbytek po celočíselném dělení)";
                 }
@@ -1552,16 +1570,18 @@ multiplicative_Expression_LeftPart returns [Double value]
             |   array_Expression {ruleNotifyErrorListeners(errorHeader + "\n- Na pravé straně operátoru byla nalezena hodnota v podobě pole.\nPokud chcete " + operation + " provést pro jednotlivé prvky pole, je nutné použít cyklus.", "číselná hodnota", $array_Expression.start, $array_Expression.stop);}
             |   NULL_LITERAL {notifyErrorListeners($NULL_LITERAL, errorHeader + "\n- Na pravé straně operátoru byla nalezena hodnota null.", "číselná hodnota", null);}
             )
-    |   op=(MUL | DIV | MOD) (unary_Numeric_Expression | numericOrString_Expression_WithParetheses | unknownTypeValue) {$value = null; notifyErrorListenersOnPointBefore("Chybí číselná hodnota na levé straně operátoru '" + $op.text + "'.", "číselná hodnota", $op);}
-    |   op=(MUL | DIV | MOD) {$value = null; notifyErrorListenersOnPointBefore("Chybí číselná hodnota na levé straně operátoru '" + $op.text + "'.", "číselná hodnota", $op); notifyErrorListenersOnPointAfter("Chybí číselná hodnota na pravé straně operátoru '" + $op.text + "'.", "číselná hodnota", $op);}
+    |   op=(MUL | DIV | FLOORDIV | MOD) (unary_Numeric_Expression | numericOrString_Expression_WithParetheses | unknownTypeValue) {$value = null; notifyErrorListenersOnPointBefore("Chybí číselná hodnota na levé straně operátoru '" + $op.text + "'.", "číselná hodnota", $op);}
+    |   op=(MUL | DIV | FLOORDIV | MOD) {$value = null; notifyErrorListenersOnPointBefore("Chybí číselná hodnota na levé straně operátoru '" + $op.text + "'.", "číselná hodnota", $op); notifyErrorListenersOnPointAfter("Chybí číselná hodnota na pravé straně operátoru '" + $op.text + "'.", "číselná hodnota", $op);}
     // wrong combinations follow
-    |   unary_Boolean_Expression op=(MUL | DIV | MOD) {
+    |   unary_Boolean_Expression op=(MUL | DIV | FLOORDIV | MOD) {
             $value = null;
             String operation = "chyba!";
             if ($op.getType() == MUL) {
                 operation = "násobení";
             } else if ($op.getType() == DIV) {
                 operation = "dělení";
+            } else if ($op.getType() == FLOORDIV) {
+                operation = "celočíselné dělení";
             } else if ($op.getType() == MOD) {
                 operation = "modulo (zbytek po celočíselném dělení)";
             }
@@ -1579,13 +1599,15 @@ multiplicative_Expression_LeftPart returns [Double value]
                 notifyErrorListenersOnPointAfter("Chybí číselná hodnota na pravé straně operátoru '" + $op.text + "'.", "číselná hodnota", $op);
             }
         )
-    |   op=(MUL | DIV | MOD) unary_Boolean_Expression {
+    |   op=(MUL | DIV | FLOORDIV | MOD) unary_Boolean_Expression {
             $value = null;
             String operation = "chyba!";
             if ($op.getType() == MUL) {
                 operation = "násobení";
             } else if ($op.getType() == DIV) {
                 operation = "dělení";
+            } else if ($op.getType() == FLOORDIV) {
+                operation = "celočíselné dělení";
             } else if ($op.getType() == MOD) {
                 operation = "modulo (zbytek po celočíselném dělení)";
             }
@@ -1594,13 +1616,15 @@ multiplicative_Expression_LeftPart returns [Double value]
             ruleNotifyErrorListeners(errorHeader + "\n- Na pravé straně operátoru byla nalezena hodnota logická.", "číselná hodnota", $unary_Boolean_Expression.start, $unary_Boolean_Expression.stop);
         }
 
-    |   atomic_String_Expression op=(MUL | DIV | MOD) {
+    |   atomic_String_Expression op=(MUL | DIV | FLOORDIV | MOD) {
             $value = null;
             String operation = "chyba!";
             if ($op.getType() == MUL) {
                 operation = "násobení";
             } else if ($op.getType() == DIV) {
                 operation = "dělení";
+            } else if ($op.getType() == FLOORDIV) {
+                operation = "celočíselné dělení";
             } else if ($op.getType() == MOD) {
                 operation = "modulo (zbytek po celočíselném dělení)";
             }
@@ -1618,13 +1642,15 @@ multiplicative_Expression_LeftPart returns [Double value]
                 notifyErrorListenersOnPointAfter("Chybí číselná hodnota na pravé straně operátoru '" + $op.text + "'.", "číselná hodnota", $op);
             }
         ) {$value = null;}
-    |   op=(MUL | DIV | MOD) atomic_String_Expression {
+    |   op=(MUL | DIV | FLOORDIV | MOD) atomic_String_Expression {
             $value = null;
             String operation = "chyba!";
             if ($op.getType() == MUL) {
                 operation = "násobení";
             } else if ($op.getType() == DIV) {
                 operation = "dělení";
+            } else if ($op.getType() == FLOORDIV) {
+                operation = "celočíselné dělení";
             } else if ($op.getType() == MOD) {
                 operation = "modulo (zbytek po celočíselném dělení)";
             }
@@ -1633,13 +1659,15 @@ multiplicative_Expression_LeftPart returns [Double value]
             ruleNotifyErrorListeners(errorHeader + "\n- Na pravé straně operátoru byla nalezena hodnota řetězcová.", "číselná hodnota", $atomic_String_Expression.start, $atomic_String_Expression.stop);
         }
 
-    |   array_Expression op=(MUL | DIV | MOD) {
+    |   array_Expression op=(MUL | DIV | FLOORDIV | MOD) {
             $value = null;
             String operation = "chyba!";
             if ($op.getType() == MUL) {
                 operation = "násobení";
             } else if ($op.getType() == DIV) {
                 operation = "dělení";
+            } else if ($op.getType() == FLOORDIV) {
+                operation = "celočíselné dělení";
             } else if ($op.getType() == MOD) {
                 operation = "modulo (zbytek po celočíselném dělení)";
             }
@@ -1657,7 +1685,7 @@ multiplicative_Expression_LeftPart returns [Double value]
                 notifyErrorListenersOnPointAfter("Chybí číselná hodnota na pravé straně operátoru '" + $op.text + "'.", "číselná hodnota", $op);
             }
         ) {$value = null;}
-    |   op=(MUL | DIV | MOD) array_Expression // Will not be used because PLUS can't exist because of the UNARY_PLUS_OR_MINUS_OPERATOR token. Leaving it here anyway....
+    |   op=(MUL | DIV | FLOORDIV | MOD) array_Expression // Will not be used because PLUS can't exist because of the UNARY_PLUS_OR_MINUS_OPERATOR token. Leaving it here anyway....
         {
             $value = null;
             String operation = "chyba!";
@@ -1665,6 +1693,8 @@ multiplicative_Expression_LeftPart returns [Double value]
                 operation = "násobení";
             } else if ($op.getType() == DIV) {
                 operation = "dělení";
+            } else if ($op.getType() == FLOORDIV) {
+                operation = "celočíselné dělení";
             } else if ($op.getType() == MOD) {
                 operation = "modulo (zbytek po celočíselném dělení)";
             }
@@ -1673,13 +1703,15 @@ multiplicative_Expression_LeftPart returns [Double value]
             ruleNotifyErrorListeners(errorHeader + "\n- Na pravé straně operátoru byla nalezena hodnota v podobě pole.\nPokud chcete " + operation + " provést pro jednotlivé prvky pole, je nutné použít cyklus.", "číselná hodnota", $array_Expression.start, $array_Expression.stop);
         }
 
-    |   NULL_LITERAL op=(MUL | DIV | MOD) {
+    |   NULL_LITERAL op=(MUL | DIV | FLOORDIV | MOD) {
             $value = null;
             String operation = "chyba!";
             if ($op.getType() == MUL) {
                 operation = "násobení";
             } else if ($op.getType() == DIV) {
                 operation = "dělení";
+            } else if ($op.getType() == FLOORDIV) {
+                operation = "celočíselné dělení";
             } else if ($op.getType() == MOD) {
                 operation = "modulo (zbytek po celočíselném dělení)";
             }
@@ -1697,7 +1729,7 @@ multiplicative_Expression_LeftPart returns [Double value]
                 notifyErrorListenersOnPointAfter("Chybí číselná hodnota na pravé straně operátoru '" + $op.text + "'.", "číselná hodnota", $op);
             }
         ) {$value = null;}
-    |   op=(MUL | DIV | MOD) NULL_LITERAL // Will not be used because PLUS can't exist because of the UNARY_PLUS_OR_MINUS_OPERATOR token. Leaving it here anyway....
+    |   op=(MUL | DIV | FLOORDIV | MOD) NULL_LITERAL // Will not be used because PLUS can't exist because of the UNARY_PLUS_OR_MINUS_OPERATOR token. Leaving it here anyway....
         {
             $value = null;
             String operation = "chyba!";
@@ -1705,6 +1737,8 @@ multiplicative_Expression_LeftPart returns [Double value]
                 operation = "násobení";
             } else if ($op.getType() == DIV) {
                 operation = "dělení";
+            } else if ($op.getType() == FLOORDIV) {
+                operation = "celočíselné dělení";
             } else if ($op.getType() == MOD) {
                 operation = "modulo (zbytek po celočíselném dělení)";
             }

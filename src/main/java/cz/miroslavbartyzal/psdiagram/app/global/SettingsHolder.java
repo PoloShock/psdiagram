@@ -55,6 +55,16 @@ public final class SettingsHolder
 
     // automaticke loadovani nastaveni
     static {
+        try {
+            GraphicsEnvironment ge
+                    = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            Font font = Font.createFont(Font.TRUETYPE_FONT, Settings.class.getResourceAsStream(
+                    "/fonts/PSDSpecialSymbols.ttf"));
+            ge.registerFont(font);
+        } catch (IOException | FontFormatException ex) {
+            ex.printStackTrace(System.err);
+        }
+
         JAXBContext context = null;
         Marshaller marshaller = null;
         try {
@@ -267,9 +277,6 @@ public final class SettingsHolder
         private int ballShineRadius = 200;
         @XmlElement(name = "fps")
         private int fps = 25;
-        // nastavení filtrů funkcí
-        @XmlElement(name = "functionFilters")
-        private boolean functionFilters = true;
         // poslední použitý adresář - informace pro nacitani/ukladani
         @XmlElement(name = "lastDir")
         private String lastDir;
@@ -401,27 +408,6 @@ public final class SettingsHolder
         public void setExportTransparency(boolean exportTransparency)
         {
             this.exportTransparency = exportTransparency;
-            saveSettings();
-        }
-
-        /**
-         * Vrátí, zda jsou povoleny syntaktické filtry.
-         *
-         * @return true, když jsou povoleny syntaktické filtry
-         */
-        public boolean isFunctionFilters()
-        {
-            return functionFilters;
-        }
-
-        /**
-         * Nastaví, zda mají být používány syntaktické filtry.
-         *
-         * @param functionFilters true, když mají být použity syntaktické filtry
-         */
-        public void setFunctionFilters(boolean functionFilters)
-        {
-            this.functionFilters = functionFilters;
             saveSettings();
         }
 

@@ -7,11 +7,11 @@ package cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutElement;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.EnumSymbol;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
+import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
+import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.MaxBalloonSizeCallback;
 import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditManager;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.ValueFilter;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.VariableFilter;
-import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
-import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.MaxBalloonSizeCallback;
 import java.util.LinkedHashMap;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -63,21 +63,11 @@ public final class IO extends AbstractSymbolFunctionForm
 
         if (element.getSymbol().getCommands() != null) {
             if (element.getSymbol().getCommands().containsKey("var")) {
-                if (SettingsHolder.settings.isFunctionFilters()) {
-                    jTextFieldVar.setText(AbstractSymbolFunctionForm.convertFromJSToPSDCommands(
-                            element.getSymbol().getCommands().get("var")));
-                } else {
-                    jTextFieldVar.setText(element.getSymbol().getCommands().get("var"));
-                }
+                jTextFieldVar.setText(element.getSymbol().getCommands().get("var"));
                 jRadioButtonInput.setSelected(true);
                 setInputVisible();
             } else {
-                if (SettingsHolder.settings.isFunctionFilters()) {
-                    jTextFieldValue.setText(AbstractSymbolFunctionForm.convertFromJSToPSDCommands(
-                            element.getSymbol().getCommands().get("value")));
-                } else {
-                    jTextFieldValue.setText(element.getSymbol().getCommands().get("value"));
-                }
+                jTextFieldValue.setText(element.getSymbol().getCommands().get("value"));
                 jRadioButtonOutput.setSelected(true);
                 setOutputVisible();
             }
@@ -139,11 +129,7 @@ public final class IO extends AbstractSymbolFunctionForm
         }
 
         LinkedHashMap<String, String> commands = new LinkedHashMap<>();
-        if (SettingsHolder.settings.isFunctionFilters()) {
-            commands.put("var", AbstractSymbolFunctionForm.convertFromPSDToJSCommands(var));
-        } else {
-            commands.put("var", var);
-        }
+        commands.put("var", var);
         symbol.setCommands(commands);
     }
 
@@ -164,11 +150,7 @@ public final class IO extends AbstractSymbolFunctionForm
         }
 
         LinkedHashMap<String, String> commands = new LinkedHashMap<>();
-        if (SettingsHolder.settings.isFunctionFilters()) {
-            commands.put("value", AbstractSymbolFunctionForm.convertFromPSDToJSCommands(value));
-        } else {
-            commands.put("value", value);
-        }
+        commands.put("value", value);
         symbol.setCommands(commands);
     }
 
@@ -396,9 +378,7 @@ public final class IO extends AbstractSymbolFunctionForm
                 IO.super.getElement().getSymbol().setCommandsValid(valueValid);
             }
 
-            if (SettingsHolder.settings.isFunctionFilters()) {
-                IO.super.getFlowchartEditManager().repaintJPanelDiagram();
-            }
+            IO.super.getFlowchartEditManager().repaintJPanelDiagram();
         }
 
     }

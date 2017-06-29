@@ -269,7 +269,10 @@ DEC : '--';
 GT : '>';
 LT : '<';
 BANG : '!';
-EQUAL : '=';
+EQUAL
+    :   '='
+    //|    '==' {myNotifyErrorListeners("Pro operátor rovnosti použijte jediný znak '='.", "'='");}
+    ;
 LE : '<=';
 GE : '>=';
 NOTEQUAL : '!=';
@@ -284,6 +287,7 @@ AND
 PLUS : '+';
 MINUS : '-';
 MUL : '*';
+FLOORDIV : '//';
 DIV : '/';
 MOD : '%';
 
@@ -316,13 +320,14 @@ IDENTIFIER_AFTER_FIRST_CHAR
 fragment
 NONSEPARATOR
     :
-        ~[ \t\r\f\n\%\/\*\-\+\|\&\!\=\>\<\.\,\(\)\[\]\{\}\"\'\^\;]
+        ~[ \t\r\f\n%/*\-+|&!=><.,()[\]{}"'^;]
     ;
 
 // Whitespace
 WS
-	:
-		[ \t\r\f\n]+ -> skip//[ \r\t\f\n]+ -> channel(HIDDEN)
+    :
+        [ \t\r\f\n]+ -> skip
+        //[ \t\r\f\n]+ -> channel(HIDDEN)
     ;
 
 mode MODE_UPOMO_ASSERTION;

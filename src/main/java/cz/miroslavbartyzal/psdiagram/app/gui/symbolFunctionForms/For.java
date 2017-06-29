@@ -7,11 +7,11 @@ package cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutElement;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.EnumSymbol;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
+import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
+import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.MaxBalloonSizeCallback;
 import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditManager;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.NoArrayVariableFilter;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.NumericValueFilter;
-import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
-import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.MaxBalloonSizeCallback;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.VariableFilter;
 import java.util.LinkedHashMap;
 import javax.swing.JLabel;
@@ -69,38 +69,17 @@ public final class For extends AbstractSymbolFunctionForm
         jLabelExamples2.setFont(SettingsHolder.SMALL_CODEFONT);
 
         if (element.getSymbol().getCommands() != null) {
-            if (SettingsHolder.settings.isFunctionFilters()) {
-                jTextFieldVar.setText(AbstractSymbolFunctionForm.convertFromJSToPSDCommands(
-                        element.getSymbol().getCommands().get("var")));
-                if (element.getSymbol().getCommands().containsKey("from")) {
-                    jTextFieldFrom.setText(AbstractSymbolFunctionForm.convertFromJSToPSDCommands(
-                            element.getSymbol().getCommands().get("from")));
-                    jTextFieldForTo.setText(AbstractSymbolFunctionForm.convertFromJSToPSDCommands(
-                            element.getSymbol().getCommands().get("to")));
-                    jTextFieldIncrement.setText(
-                            AbstractSymbolFunctionForm.convertFromJSToPSDCommands(
-                                    element.getSymbol().getCommands().get("inc")));
-                    jRadioButtonFor.setSelected(true);
-                    setForVisible();
-                } else {
-                    jTextFieldForeach.setText(AbstractSymbolFunctionForm.convertFromJSToPSDCommands(
-                            element.getSymbol().getCommands().get("array")));
-                    jRadioButtonForeach.setSelected(true);
-                    setForeachVisible();
-                }
+            jTextFieldVar.setText(element.getSymbol().getCommands().get("var"));
+            if (element.getSymbol().getCommands().containsKey("from")) {
+                jTextFieldFrom.setText(element.getSymbol().getCommands().get("from"));
+                jTextFieldForTo.setText(element.getSymbol().getCommands().get("to"));
+                jTextFieldIncrement.setText(element.getSymbol().getCommands().get("inc"));
+                jRadioButtonFor.setSelected(true);
+                setForVisible();
             } else {
-                jTextFieldVar.setText(element.getSymbol().getCommands().get("var"));
-                if (element.getSymbol().getCommands().containsKey("from")) {
-                    jTextFieldFrom.setText(element.getSymbol().getCommands().get("from"));
-                    jTextFieldForTo.setText(element.getSymbol().getCommands().get("to"));
-                    jTextFieldIncrement.setText(element.getSymbol().getCommands().get("inc"));
-                    jRadioButtonFor.setSelected(true);
-                    setForVisible();
-                } else {
-                    jTextFieldForeach.setText(element.getSymbol().getCommands().get("array"));
-                    jRadioButtonForeach.setSelected(true);
-                    setForeachVisible();
-                }
+                jTextFieldForeach.setText(element.getSymbol().getCommands().get("array"));
+                jRadioButtonForeach.setSelected(true);
+                setForeachVisible();
             }
         } else {
             jRadioButtonFor.setSelected(true);
@@ -215,17 +194,10 @@ public final class For extends AbstractSymbolFunctionForm
         }
 
         LinkedHashMap<String, String> commands = new LinkedHashMap<>();
-        if (SettingsHolder.settings.isFunctionFilters()) {
-            commands.put("var", AbstractSymbolFunctionForm.convertFromPSDToJSCommands(var));
-            commands.put("from", AbstractSymbolFunctionForm.convertFromPSDToJSCommands(from));
-            commands.put("to", AbstractSymbolFunctionForm.convertFromPSDToJSCommands(to));
-            commands.put("inc", AbstractSymbolFunctionForm.convertFromPSDToJSCommands(inc));
-        } else {
-            commands.put("var", var);
-            commands.put("from", from);
-            commands.put("to", to);
-            commands.put("inc", inc);
-        }
+        commands.put("var", var);
+        commands.put("from", from);
+        commands.put("to", to);
+        commands.put("inc", inc);
         symbol.setCommands(commands);
     }
 
@@ -248,13 +220,8 @@ public final class For extends AbstractSymbolFunctionForm
         }
 
         LinkedHashMap<String, String> commands = new LinkedHashMap<>();
-        if (SettingsHolder.settings.isFunctionFilters()) {
-            commands.put("var", AbstractSymbolFunctionForm.convertFromPSDToJSCommands(var));
-            commands.put("array", AbstractSymbolFunctionForm.convertFromPSDToJSCommands(array));
-        } else {
-            commands.put("var", var);
-            commands.put("array", array);
-        }
+        commands.put("var", var);
+        commands.put("array", array);
         symbol.setCommands(commands);
     }
 
@@ -569,9 +536,7 @@ public final class For extends AbstractSymbolFunctionForm
                 }
             }
 
-            if (SettingsHolder.settings.isFunctionFilters()) {
-                For.super.getFlowchartEditManager().repaintJPanelDiagram();
-            }
+            For.super.getFlowchartEditManager().repaintJPanelDiagram();
         }
 
     }

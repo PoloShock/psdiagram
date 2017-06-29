@@ -4,30 +4,29 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.codeImportExport;
 
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.StartEnd;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.For;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.LoopEnd;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.IO;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.EnumSymbol;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Comment;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Decision;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.GotoLabel;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.SubRoutine;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Goto;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Switch;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.LoopStart;
-import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.ValueFilter;
-import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.ConstantFilter;
-import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.NoArrayVariableFilter;
-import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.VariableFilter;
-import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.NumericValueFilter;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.Flowchart;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.FlowchartElement;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutElement;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutSegment;
-import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Comment;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Decision;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.EnumSymbol;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.For;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Goto;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.GotoLabel;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.IO;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.LoopEnd;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.LoopStart;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.StartEnd;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.SubRoutine;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Switch;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.BooleanValueFilter;
+import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.ConstantFilter;
+import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.NoArrayVariableFilter;
+import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.NumericValueFilter;
+import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.ValueFilter;
+import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.VariableFilter;
 import java.awt.HeadlessException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -128,13 +127,11 @@ public final class Pascal
 
                     String value = command.substring(command.indexOf(":=") + 2, command.length()).trim();
 
-                    if (SettingsHolder.settings.isFunctionFilters()) {
-                        if (!VariableFilter.isValid(var) || !ValueFilter.isValid(value)) {
-                            // udaje neprosli filtrem
-                            actualElement.getSymbol().setValueAndSize(INVALID_COMMAND);
-                            actualElement = AddComment(actualSegment, actualElement, command, true);
-                            var = "";
-                        }
+                    if (!VariableFilter.isValid(var) || !ValueFilter.isValid(value)) {
+                        // udaje neprosli filtrem
+                        actualElement.getSymbol().setValueAndSize(INVALID_COMMAND);
+                        actualElement = AddComment(actualSegment, actualElement, command, true);
+                        var = "";
                     }
 
                     if (!var.equals("")) {
@@ -156,14 +153,12 @@ public final class Pascal
                         String var = command.substring(command.indexOf("(") + 1,
                                 command.lastIndexOf(")")).trim();
 
-                        if (SettingsHolder.settings.isFunctionFilters()) {
-                            if (!VariableFilter.isValid(var)) {
-                                // udaje neprosli filtrem
-                                actualElement.getSymbol().setValueAndSize(INVALID_COMMAND);
-                                actualElement = AddComment(actualSegment, actualElement, command,
-                                        true);
-                                command = "";
-                            }
+                        if (!VariableFilter.isValid(var)) {
+                            // udaje neprosli filtrem
+                            actualElement.getSymbol().setValueAndSize(INVALID_COMMAND);
+                            actualElement = AddComment(actualSegment, actualElement, command,
+                                    true);
+                            command = "";
                         }
                         if (!command.equals("")) {
                             cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.IO.generateIValues(
@@ -178,14 +173,12 @@ public final class Pascal
                         String value = command.substring(command.indexOf("(") + 1,
                                 command.lastIndexOf(")")).trim();
 
-                        if (SettingsHolder.settings.isFunctionFilters()) {
-                            if (!ValueFilter.isValid(value)) {
-                                // udaje neprosli filtrem
-                                actualElement.getSymbol().setValueAndSize(INVALID_COMMAND);
-                                actualElement = AddComment(actualSegment, actualElement, command,
-                                        true);
-                                command = "";
-                            }
+                        if (!ValueFilter.isValid(value)) {
+                            // udaje neprosli filtrem
+                            actualElement.getSymbol().setValueAndSize(INVALID_COMMAND);
+                            actualElement = AddComment(actualSegment, actualElement, command,
+                                    true);
+                            command = "";
                         }
                         if (!command.equals("")) {
                             cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.IO.generateOValues(
@@ -218,15 +211,13 @@ public final class Pascal
                             from = myCommand.substring(0, myCommand.lastIndexOf("to")).trim();
                         }
 
-                        if (SettingsHolder.settings.isFunctionFilters()) {
-                            if (!NoArrayVariableFilter.isValid(var) || !NumericValueFilter.isValid(
-                                    from) || !NumericValueFilter.isValid(to) || !NumericValueFilter.isValid(
-                                            inc)) {
-                                // udaje neprosli filtrem
-                                actualElement.getSymbol().setValueAndSize(INVALID_COMMAND);
-                                AddComment(actualSegment, actualElement, command, true); // neni sance ze by bylo obsazeno, proto ani neupravuji actual element
-                                command = "";
-                            }
+                        if (!NoArrayVariableFilter.isValid(var) || !NumericValueFilter.isValid(
+                                from) || !NumericValueFilter.isValid(to) || !NumericValueFilter.isValid(
+                                        inc)) {
+                            // udaje neprosli filtrem
+                            actualElement.getSymbol().setValueAndSize(INVALID_COMMAND);
+                            AddComment(actualSegment, actualElement, command, true); // neni sance ze by bylo obsazeno, proto ani neupravuji actual element
+                            command = "";
                         }
 
                         if (!command.equals("")) {
@@ -240,14 +231,12 @@ public final class Pascal
                         String var = myCommand.substring(0, myCommand.indexOf("in ")).trim();
                         String array = myCommand.substring(myCommand.indexOf("in ") + 3).trim();
 
-                        if (SettingsHolder.settings.isFunctionFilters()) {
-                            if (!NoArrayVariableFilter.isValid(var) || !VariableFilter.isValid(
-                                    array)) {
-                                // udaje neprosli filtrem
-                                actualElement.getSymbol().setValueAndSize(INVALID_COMMAND);
-                                AddComment(actualSegment, actualElement, command, true); // neni sance ze by bylo obsazeno, proto ani neupravuji actual element
-                                command = "";
-                            }
+                        if (!NoArrayVariableFilter.isValid(var) || !VariableFilter.isValid(
+                                array)) {
+                            // udaje neprosli filtrem
+                            actualElement.getSymbol().setValueAndSize(INVALID_COMMAND);
+                            AddComment(actualSegment, actualElement, command, true); // neni sance ze by bylo obsazeno, proto ani neupravuji actual element
+                            command = "";
                         }
 
                         if (!command.equals("")) {
@@ -272,13 +261,11 @@ public final class Pascal
                                 EnumSymbol.LOOPCONDITIONUP.getInstance(""));
                         condition = command.toLowerCase().replaceFirst("while\\s*", "").replaceFirst(
                                 "\\s*do$", "");
-                        if (SettingsHolder.settings.isFunctionFilters()) {
-                            if (!BooleanValueFilter.isValid(condition)) {
-                                // udaje neprosli filtrem
-                                actualElement.getSymbol().setValueAndSize(INVALID_COMMAND);
-                                AddComment(actualSegment, actualElement, command, true); // neni sance ze by bylo obsazeno, proto ani neupravuji actual element
-                                condition = "";
-                            }
+                        if (!BooleanValueFilter.isValid(condition)) {
+                            // udaje neprosli filtrem
+                            actualElement.getSymbol().setValueAndSize(INVALID_COMMAND);
+                            AddComment(actualSegment, actualElement, command, true); // neni sance ze by bylo obsazeno, proto ani neupravuji actual element
+                            condition = "";
                         }
                     } else {
                         actualElement = actualSegment.addSymbol(actualElement,
@@ -301,19 +288,17 @@ public final class Pascal
                     //command = command.substring(0, command.indexOf("until")+5) + " !(" + command.substring(command.indexOf("until")+5, command.length()).trim() + ")";
                     String condition = "!(" + command.toLowerCase().replaceFirst("until\\s*", "").trim() + ")";
 
-                    if (SettingsHolder.settings.isFunctionFilters()) {
-                        if (!BooleanValueFilter.isValid(condition)) {
-                            // udaje neprosli filtrem
-                            actualNoCommentElement.getSymbol().setValueAndSize(INVALID_COMMAND);
-                            if (actualElement.equals(actualNoCommentElement)) {
-                                actualElement = AddComment(actualSegment, actualElement, condition,
-                                        true);
-                            } else {
-                                // neni-li actualNoCommentElement actualElement, musim zachovat aktualni element aktualnim elementem (tento komentar ma byt co nejblize parent symbolu)
-                                AddComment(actualSegment, actualNoCommentElement, condition, true);
-                            }
-                            condition = "";
+                    if (!BooleanValueFilter.isValid(condition)) {
+                        // udaje neprosli filtrem
+                        actualNoCommentElement.getSymbol().setValueAndSize(INVALID_COMMAND);
+                        if (actualElement.equals(actualNoCommentElement)) {
+                            actualElement = AddComment(actualSegment, actualElement, condition,
+                                    true);
+                        } else {
+                            // neni-li actualNoCommentElement actualElement, musim zachovat aktualni element aktualnim elementem (tento komentar ma byt co nejblize parent symbolu)
+                            AddComment(actualSegment, actualNoCommentElement, condition, true);
                         }
+                        condition = "";
                     }
 
                     if (!condition.equals("")) {
@@ -330,13 +315,11 @@ public final class Pascal
                     String conditionVar = command.toLowerCase().replaceFirst("case\\s*", "").replaceFirst(
                             "\\s*of$", "");
 
-                    if (SettingsHolder.settings.isFunctionFilters()) {
-                        if (!VariableFilter.isValid(conditionVar)) {
-                            // udaje neprosli filtrem
-                            actualElement.getSymbol().setValueAndSize(INVALID_COMMAND);
-                            actualElement = AddComment(actualSegment, actualElement, command, true);
-                            conditionVar = "";
-                        }
+                    if (!VariableFilter.isValid(conditionVar)) {
+                        // udaje neprosli filtrem
+                        actualElement.getSymbol().setValueAndSize(INVALID_COMMAND);
+                        actualElement = AddComment(actualSegment, actualElement, command, true);
+                        conditionVar = "";
                     }
 
                     if (!conditionVar.equals("")) {
@@ -354,13 +337,11 @@ public final class Pascal
                     String condition = command.toLowerCase().replaceFirst("if\\s*", "").replaceFirst(
                             "\\s*then$", "");
 
-                    if (SettingsHolder.settings.isFunctionFilters()) {
-                        if (!BooleanValueFilter.isValid(condition)) {
-                            // udaje neprosli filtrem
-                            actualElement.getSymbol().setValueAndSize(INVALID_COMMAND);
-                            AddComment(actualSegment, actualElement, command, true); // neni sance ze by bylo obsazeno, proto ani neupravuji actual element
-                            condition = "";
-                        }
+                    if (!BooleanValueFilter.isValid(condition)) {
+                        // udaje neprosli filtrem
+                        actualElement.getSymbol().setValueAndSize(INVALID_COMMAND);
+                        AddComment(actualSegment, actualElement, command, true); // neni sance ze by bylo obsazeno, proto ani neupravuji actual element
+                        condition = "";
                     }
 
                     if (!condition.equals("")) {
@@ -440,19 +421,17 @@ public final class Pascal
                     String constant = checkConstantForRanges(command.replaceFirst("\\s*\\:$", ""));
 
                     if (!actualNoCommentElement.getSymbol().getValue().equals(INVALID_COMMAND)) {
-                        if (SettingsHolder.settings.isFunctionFilters()) {
-                            if (!ConstantFilter.isValid(constant)) {
-                                // udaje neprosli filtrem
-                                actualNoCommentElement.getSymbol().setValueAndSize(INVALID_COMMAND);
-                                if (actualElement.equals(actualNoCommentElement)) {
-                                    actualElement = AddComment(actualSegment, actualElement, command,
-                                            true);
-                                } else {
-                                    // neni-li actualNoCommentElement actualElement, musim zachovat aktualni element aktulanim elementem (tento komentar ma byt co nejblize parent symbolu)
-                                    AddComment(actualSegment, actualNoCommentElement, command, true);
-                                }
-                                constant = "";
+                        if (!ConstantFilter.isValid(constant)) {
+                            // udaje neprosli filtrem
+                            actualNoCommentElement.getSymbol().setValueAndSize(INVALID_COMMAND);
+                            if (actualElement.equals(actualNoCommentElement)) {
+                                actualElement = AddComment(actualSegment, actualElement, command,
+                                        true);
+                            } else {
+                                // neni-li actualNoCommentElement actualElement, musim zachovat aktualni element aktulanim elementem (tento komentar ma byt co nejblize parent symbolu)
+                                AddComment(actualSegment, actualNoCommentElement, command, true);
                             }
+                            constant = "";
                         }
 
                         String[] segmentConstants = new String[actualNoCommentElement.getInnerSegmentsCount() - 1]; // prvni segment nema default, je to else vetev
@@ -753,9 +732,6 @@ public final class Pascal
 
         code = Pattern.compile("(?<![\\w])and(?![\\w])", FLAGS).matcher(code).replaceAll("&&");
         code = Pattern.compile("(?<![\\w])or(?![\\w])", FLAGS).matcher(code).replaceAll("||");
-        if (!SettingsHolder.settings.isFunctionFilters()) {
-            code = code.replaceAll("(?<![\\:\\+\\-\\*\\/\\!])\\=", "==");
-        }
         code = checkForMultidimArray(code);
 
         ArrayList<String> commands = new ArrayList<>();
@@ -1175,8 +1151,8 @@ public final class Pascal
                 for (FlowchartElement element : segment) {
                     Symbol symbol = element.getSymbol();
                     if (symbol.getCommands() != null) {
-                        if (symbol instanceof cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Process || (symbol instanceof IO && symbol.getCommands().containsKey(
-                                "var"))) {
+                        if (symbol instanceof cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Process 
+                                || (symbol instanceof IO && symbol.getCommands().containsKey("var"))) {
                             if (symbol.getCommands().get("var").contains("[")) {
                                 String var = symbol.getCommands().get("var");
                                 arrayVars.add(var.substring(0, var.indexOf("[")));
@@ -1566,7 +1542,6 @@ public final class Pascal
         code = code.replaceAll("\\s*\\%\\s*", " mod ");
         code = code.replaceAll("\\s*\\&\\&\\s*", " and ");
         code = code.replaceAll("\\s*\\|\\|\\s*", " or ");
-        code = code.replaceAll("\\=\\=", "=");
         return code;
     }
 

@@ -13,6 +13,8 @@ public interface PSDParser
 {
 
     public void stopParsing();
+    
+    public String translatePSDToJavaScript(String input);
 
     public boolean parseExpression(String input);
 

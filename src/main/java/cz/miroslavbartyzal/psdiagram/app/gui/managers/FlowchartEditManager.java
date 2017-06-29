@@ -4,20 +4,20 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.gui.managers;
 
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Comment;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.StartEnd;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.LoopEnd;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Decision;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Joint;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.EnumSymbol;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.Flowchart;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.Layout;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutElement;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutSegment;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Comment;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Decision;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.EnumSymbol;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Joint;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.LoopEnd;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.StartEnd;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
+import cz.miroslavbartyzal.psdiagram.app.global.GlobalFunctions;
 import cz.miroslavbartyzal.psdiagram.app.gui.MainWindow;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.AbstractSymbolFunctionForm;
-import cz.miroslavbartyzal.psdiagram.app.global.GlobalFunctions;
 import java.awt.Component;
 import java.awt.Graphics2D;
 import java.awt.event.*;
@@ -532,8 +532,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
                                 for (LayoutElement element : layout.getMeAndMyDependants(
                                         focusedElement)) {
                                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                                    MainWindow.getJAXBcontext().createMarshaller().marshal(element,
-                                            baos);
+                                    MainWindow.marshal(element, baos, false);
                                     elementsToPaste.put(baos,
                                             element.getSymbol().hasPairSymbol() && element.getSymbol() instanceof Comment);
                                 }
@@ -558,8 +557,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
                         try {
                             for (ByteArrayOutputStream baos : elementsToPaste.keySet()) {
                                 LayoutElement newElement = GlobalFunctions.unsafeCast(
-                                        MainWindow.getJAXBcontext().createUnmarshaller().unmarshal(
-                                                new ByteArrayInputStream(baos.toByteArray())));
+                                        MainWindow.unmarshal(new ByteArrayInputStream(baos.toByteArray())));
                                 elementsToAdd.add(newElement);
                             }
                         } catch (JAXBException ex) {

@@ -7,9 +7,9 @@ package cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutElement;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.EnumSymbol;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
-import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditManager;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.MaxBalloonSizeCallback;
+import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditManager;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.BooleanValueFilter;
 import java.util.LinkedHashMap;
 import javax.swing.JLabel;
@@ -53,13 +53,8 @@ public final class LoopStart extends AbstractSymbolFunctionForm
          * + "</html>");
          */
         String operators;
-        if (SettingsHolder.settings.isFunctionFilters()) {
-            operators = "- dostupné relační operátory: =,!=,&gt;,&lt;,&gt;=,&lt;=<br />"
-                    + "- dostupné logické operátory: &&(and),||(or),!(negace)";
-        } else {
-            operators = "- dostupné relační operátory: ==, !=, &gt;, &lt;, &gt;=, &lt;=<br />"
-                    + "- dostupné logické operátory: &&, &, ||, |, !(negace)";
-        }
+        operators = "- dostupné relační operátory: =,!=,&gt;,&lt;,&gt;=,&lt;=<br />"
+                + "- dostupné logické operátory: &&(and),||(or),!(negace)";
         operators += "</p></html>";
         jLabelDescription = new JLabel("<html><p>"
                 + "- tělo cyklu se vykonává jen pokud hodnota rozhodovacího výrazu je logická pravda<br />"
@@ -71,12 +66,7 @@ public final class LoopStart extends AbstractSymbolFunctionForm
         jLabelExamples.setFont(SettingsHolder.SMALL_CODEFONT);
 
         if (element.getSymbol().getCommands() != null) {
-            if (SettingsHolder.settings.isFunctionFilters()) {
-                jTextFieldCondition.setText(AbstractSymbolFunctionForm.convertFromJSToPSDCommands(
-                        element.getSymbol().getCommands().get("condition"))); // ulozeny jsou dvojite hodnoty
-            } else {
-                jTextFieldCondition.setText(element.getSymbol().getCommands().get("condition"));
-            }
+            jTextFieldCondition.setText(element.getSymbol().getCommands().get("condition"));
         }
 
         ((AbstractDocument) jTextFieldCondition.getDocument()).setDocumentFilter(
@@ -124,12 +114,7 @@ public final class LoopStart extends AbstractSymbolFunctionForm
         }
 
         LinkedHashMap<String, String> commands = new LinkedHashMap<>();
-        if (SettingsHolder.settings.isFunctionFilters()) {
-            commands.put("condition", AbstractSymbolFunctionForm.convertFromPSDToJSCommands(
-                    condition)); //ulozit dvojite hodnoty
-        } else {
-            commands.put("condition", condition);
-        }
+        commands.put("condition", condition);
         symbol.setCommands(commands);
     }
 
@@ -255,9 +240,7 @@ public final class LoopStart extends AbstractSymbolFunctionForm
             LoopStart.super.getElement().getSymbol().setCommandsValid(
                     (boolean) jTextFieldCondition.getDocument().getProperty("commandValid"));
 
-            if (SettingsHolder.settings.isFunctionFilters()) {
-                LoopStart.super.getFlowchartEditManager().repaintJPanelDiagram();
-            }
+            LoopStart.super.getFlowchartEditManager().repaintJPanelDiagram();
         }
 
     }

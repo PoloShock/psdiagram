@@ -11,6 +11,7 @@
 package cz.miroslavbartyzal.psdiagram.app.gui;
 
 import cz.miroslavbartyzal.psdiagram.app.flowchart.Flowchart;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.FlowchartElement;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.EnumLayout;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.Layout;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutElement;
@@ -29,6 +30,7 @@ import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.StartEnd;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.SubRoutine;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Switch;
 import cz.miroslavbartyzal.psdiagram.app.global.GlobalFunctions;
+import cz.miroslavbartyzal.psdiagram.app.global.RegexFunctions;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.MaxBalloonSizeCallback;
 import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartDebugManager;
@@ -67,15 +69,19 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
@@ -142,13 +148,14 @@ public final class MainWindow extends javax.swing.JFrame
         }
     });
 
-    ;
-
-    /** Creates new form MainWindow */
+    /**
+     * Creates new form MainWindow
+     */
     private MainWindow(final File flowchartToOpen)
     {
         if (!SettingsHolder.IS_DEPLOYMENT_MODE) {
-            if (!System.getenv("COMPUTERNAME").equals("POLOSHOCK-NB")) {
+            String computerName = System.getenv("COMPUTERNAME");
+            if (computerName == null || !System.getenv("COMPUTERNAME").equals("POLOSHOCK-NB")) {
                 JOptionPane.showMessageDialog(null,
                         "<html>Tato verze PS Diagramu je určena pouze pro vývoj.<br />"
                         + "Pro obdržení správné verze navštivte www.psdiagram.cz nebo mne kontaktujte<br />"
@@ -443,7 +450,7 @@ public final class MainWindow extends javax.swing.JFrame
 
         Marshaller jAXBmarshaller = null;
         try {
-            jAXBmarshaller = getJAXBcontext().createMarshaller();
+            jAXBmarshaller = jAXBcontext.createMarshaller();
             jAXBmarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         } catch (JAXBException ex) {
             ex.printStackTrace(System.err);
@@ -458,9 +465,9 @@ public final class MainWindow extends javax.swing.JFrame
         updater.loadInfo(null, new Updater.InfoLoadListener()
         {
             @Override
-            public void onInfoLoaded(boolean newVersionAvailable)
+            public void onInfoLoaded(Boolean newVersionAvailable)
             {
-                if (newVersionAvailable) {
+                if (Boolean.TRUE.equals(newVersionAvailable)) {
                     if (forceUpdate) {
                         JOptionPane.showMessageDialog(null, new String(new byte[]{60, 104, 116, 109,
                             108, 62, 80, 108, 97, 116, 110, 111, 115, 116, 32, 116, -61, -87, 116,
@@ -482,48 +489,54 @@ public final class MainWindow extends javax.swing.JFrame
                     }
                     jMenuItemUpdateActionPerformed(null);
                 } else if (forceUpdate) {
-                    // html content
-                    JEditorPane ep = new JEditorPane("text/html", new String(
-                            new byte[]{60, 104, 116, 109, 108, 62, 80, 108, 97, 116, 110, 111, 115,
-                                116, 32, 116, -61, -87, 116, 111, 32, 118, 101, 114, 122, 101, 32,
-                                97, 112, 108, 105, 107, 97, 99, 101, 32, 118, 121, 112, 114, -59,
-                                -95, 101, 108, 97, 46, 60, 98, 114, 32, 47, 62, 80, 114, 111, 32,
-                                122, -61, -83, 115, 107, -61, -95, 110, -61, -83, 32, 110, 111, 118,
-                                -61, -87, 44, 32, 97, 107, 116, 117, -61, -95, 108, 110, -61, -83,
-                                32, 118, 101, 114, 122, 101, 44, 32, 110, 97, 118, -59, -95, 116,
-                                105, 118, 116, 101, 32, 112, 114, 111, 115, -61, -83, 109, 32, 115,
-                                116, 114, -61, -95, 110, 107, 121, 32, 60, 97, 32, 104, 114, 101,
-                                102, 61, 34, 104, 116, 116, 112, 58, 47, 47, 119, 119, 119, 46, 112,
-                                115, 100, 105, 97, 103, 114, 97, 109, 46, 99, 122, 34, 62, 112, 115,
-                                100, 105, 97, 103, 114, 97, 109, 46, 99, 122, 60, 47, 97, 62, 46, 60,
-                                47, 104, 116, 109, 108, 62}, StandardCharsets.UTF_8)); // <html>Platnost této verze aplikace vypršela.<br />Pro získání nové, aktuální verze, navštivte prosím stránky <a href="http://www.psdiagram.cz">psdiagram.cz</a>.</html>
-                    // handle link events
-                    ep.addHyperlinkListener(new HyperlinkListener()
-                    {
-                        @Override
-                        public void hyperlinkUpdate(HyperlinkEvent e)
+                    if (newVersionAvailable == null) { // close the app only if we couldn't reach the update server -> don't close the app if there is no version yet
+                        // html content
+                        JEditorPane ep = new JEditorPane("text/html", new String(
+                                new byte[]{60, 104, 116, 109, 108, 62, 80, 108, 97, 116, 110, 111, 115,
+                                    116, 32, 116, -61, -87, 116, 111, 32, 118, 101, 114, 122, 101, 32,
+                                    97, 112, 108, 105, 107, 97, 99, 101, 32, 118, 121, 112, 114, -59,
+                                    -95, 101, 108, 97, 46, 60, 98, 114, 32, 47, 62, 80, 114, 111, 32,
+                                    122, -61, -83, 115, 107, -61, -95, 110, -61, -83, 32, 110, 111, 118,
+                                    -61, -87, 44, 32, 97, 107, 116, 117, -61, -95, 108, 110, -61, -83,
+                                    32, 118, 101, 114, 122, 101, 44, 32, 110, 97, 118, -59, -95, 116,
+                                    105, 118, 116, 101, 32, 112, 114, 111, 115, -61, -83, 109, 32, 115,
+                                    116, 114, -61, -95, 110, 107, 121, 32, 60, 97, 32, 104, 114, 101,
+                                    102, 61, 34, 104, 116, 116, 112, 58, 47, 47, 119, 119, 119, 46, 112,
+                                    115, 100, 105, 97, 103, 114, 97, 109, 46, 99, 122, 34, 62, 112, 115,
+                                    100, 105, 97, 103, 114, 97, 109, 46, 99, 122, 60, 47, 97, 62, 46, 60,
+                                    47, 104, 116, 109, 108, 62}, StandardCharsets.UTF_8)); // <html>Platnost této verze aplikace vypršela.<br />Pro získání nové, aktuální verze, navštivte prosím stránky <a href="http://www.psdiagram.cz">psdiagram.cz</a>.</html>
+                        // handle link events
+                        ep.addHyperlinkListener(new HyperlinkListener()
                         {
-                            if (e.getEventType().equals(HyperlinkEvent.EventType.ACTIVATED)) {
-                                try {
+                            @Override
+                            public void hyperlinkUpdate(HyperlinkEvent e)
+                            {
+                                if (e.getEventType().equals(HyperlinkEvent.EventType.ACTIVATED)) {
                                     try {
-                                        Desktop.getDesktop().browse(e.getURL().toURI());
-                                    } catch (URISyntaxException ex) {
+                                        try {
+                                            Desktop.getDesktop().browse(e.getURL().toURI());
+                                        } catch (URISyntaxException ex) {
+                                        }
+                                    } catch (IOException ex) {
                                     }
-                                } catch (IOException ex) {
                                 }
                             }
-                        }
-                    });
-                    ep.setEditable(false);
-                    ep.setBackground(new Color(0, 0, 0, 0));
-                    // show
-                    JOptionPane.showMessageDialog(null, ep, new String(new byte[]{75, 111, 110, 101,
-                        99, 32, 112, 108, 97, 116, 110, 111, 115, 116, 105, 32, 118, 101, 114, 122,
-                        101, 32, 97, 112, 108, 105, 107, 97, 99, 101},
-                            StandardCharsets.UTF_8), JOptionPane.WARNING_MESSAGE); // Konec platnosti verze aplikace
+                        });
+                        ep.setEditable(false);
+                        ep.setBackground(new Color(0, 0, 0, 0));
+                        // show
+                        JOptionPane.showMessageDialog(null, ep, new String(new byte[]{75, 111, 110, 101,
+                            99, 32, 112, 108, 97, 116, 110, 111, 115, 116, 105, 32, 118, 101, 114, 122,
+                            101, 32, 97, 112, 108, 105, 107, 97, 99, 101},
+                                StandardCharsets.UTF_8), JOptionPane.WARNING_MESSAGE); // Konec platnosti verze aplikace
 
-                    flowchartCrashRecovery.backupFlowchart();
-                    System.exit(0);
+                        flowchartCrashRecovery.backupFlowchart();
+                        System.exit(0);
+                    } else {
+                        // there is somehow no new version available yet (and it is verified through the server)
+                        MainWindow.this.setVisible(true);
+                    }
+
                 }
             }
         });
@@ -536,8 +549,7 @@ public final class MainWindow extends javax.swing.JFrame
             List<File> recoveryFiles = flowchartCrashRecovery.getFilesToRestore();
             File recoveryFile = recoveryFiles.get(0);
             try {
-                FlowchartRecovery flowchartRecovery = GlobalFunctions.unsafeCast(
-                        getJAXBcontext().createUnmarshaller().unmarshal(recoveryFile));
+                FlowchartRecovery flowchartRecovery = GlobalFunctions.unsafeCast(unmarshal(recoveryFile));
                 openDiagram(flowchartRecovery.flowchartSaveContainer.flowchart,
                         flowchartRecovery.actualFlowchartFile);
                 SettingsHolder.settings.setDontSaveDirectly(flowchartRecovery.dontSaveDirectly); // we want to preserve that setting (there could be library algorithm opened)
@@ -545,7 +557,7 @@ public final class MainWindow extends javax.swing.JFrame
                 updateTitle();
                 super.setTitle(super.getTitle() + " (zotaveno)");
                 setStatusText("Diagram byl po neočekávaném ukončení aplikace úspěšně zotaven.", 8000);
-            } catch (JAXBException ex) {
+            } catch (JAXBException | FileNotFoundException ex) {
                 ex.printStackTrace(System.err);
             }
 
@@ -1503,20 +1515,17 @@ public final class MainWindow extends javax.swing.JFrame
             jMenuItemSaveAsActionPerformed(evt);
         } else {
             try {
-                Marshaller jAXBmarshaller = getJAXBcontext().createMarshaller();
-                jAXBmarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
                 if (SettingsHolder.settings.getActualFlowchartFile().getName().endsWith(".xml")) {
-                    jAXBmarshaller.marshal(layout.getFlowchart(),
-                            SettingsHolder.settings.getActualFlowchartFile());
+                    marshal(layout.getFlowchart(), SettingsHolder.settings.getActualFlowchartFile(), true);
                 } else {
-                    jAXBmarshaller.marshal(new FlowchartSaveContainer(layout.getFlowchart()),
-                            SettingsHolder.settings.getActualFlowchartFile());
+                    marshal(new FlowchartSaveContainer(layout.getFlowchart()),
+                            SettingsHolder.settings.getActualFlowchartFile(), true);
                 }
                 flowchartCrashRecovery.updateSavedFlowchart();
                 setStatusText(
                         "Diagram byl úspěšně uložen do " + SettingsHolder.settings.getActualFlowchartFile().getPath(),
                         3500);
-            } catch (JAXBException ex) {
+            } catch (JAXBException | FileNotFoundException ex) {
                 ex.printStackTrace(System.err);
                 JOptionPane.showMessageDialog(this, "Při ukládání diagramu nastala chyba!",
                         "Diagram se nepodařilo uložit", JOptionPane.ERROR_MESSAGE);
@@ -1559,9 +1568,7 @@ public final class MainWindow extends javax.swing.JFrame
                 defaultName);
         if (file != null) {
             try {
-                Marshaller jAXBmarshaller = getJAXBcontext().createMarshaller();
-                jAXBmarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-                jAXBmarshaller.marshal(new FlowchartSaveContainer(layout.getFlowchart()), file);
+                marshal(new FlowchartSaveContainer(layout.getFlowchart()), file, true);
 
                 SettingsHolder.settings.setDontSaveDirectly(false);
                 SettingsHolder.settings.setActualFlowchartFile(file);
@@ -1571,7 +1578,7 @@ public final class MainWindow extends javax.swing.JFrame
                 setStatusText(
                         "Diagram byl úspěšně uložen do " + SettingsHolder.settings.getActualFlowchartFile().getPath(),
                         3500);
-            } catch (JAXBException ex) {
+            } catch (JAXBException | FileNotFoundException ex) {
                 ex.printStackTrace(System.err);
                 JOptionPane.showMessageDialog(this, "Při ukládání diagramu nastala chyba!",
                         "Diagram se nepodařilo uložit", JOptionPane.ERROR_MESSAGE);
@@ -1656,47 +1663,20 @@ public final class MainWindow extends javax.swing.JFrame
     public static void main(final String args[])
     {
         /*
-         * Set the Nimbus look and feel
-         */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /*
-         * If Nimbus (introduced in Java SE 6) is not available, stay with the
-         * default look and feel.
-         * For details see
-         * http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            ex.printStackTrace(System.err);
-        }
-        //</editor-fold>
-
-        /*
          * Create and display the form
          */
-        SwingUtilities.invokeLater(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                File flowchartToOpen = null;
-                if (args.length > 0 && new File(args[0]).isFile()) {
-                    flowchartToOpen = new File(args[0]);
-                }
+        SwingUtilities.invokeLater(() -> {
+            File flowchartToOpen = null;
+            if (args.length > 0 && new File(args[0]).isFile()) {
+                flowchartToOpen = new File(args[0]);
+            }
 
-                new MainWindow(flowchartToOpen).setVisible(!forceUpdate);
-                if (args.length > 0 && args[0].equals("-updated")) {
-                    JOptionPane.showMessageDialog(null,
-                            "PS Diagram byl úspěšně aktualizován na verzi " + SettingsHolder.PSDIAGRAM_VERSION + "-" + SettingsHolder.PSDIAGRAM_BUILD + ".",
-                            "Aktualizace proběhla v pořádku",
-                            JOptionPane.INFORMATION_MESSAGE);
-                }
+            new MainWindow(flowchartToOpen).setVisible(!forceUpdate);
+            if (args.length > 0 && args[0].equals("-updated")) {
+                JOptionPane.showMessageDialog(null,
+                        "PS Diagram byl úspěšně aktualizován na verzi " + SettingsHolder.PSDIAGRAM_VERSION + "-" + SettingsHolder.PSDIAGRAM_BUILD + ".",
+                        "Aktualizace proběhla v pořádku",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
         });
     }
@@ -2201,17 +2181,67 @@ public final class MainWindow extends javax.swing.JFrame
     {
         return flowchartOverlookManager;
     }
-
-    /**
-     * Vrací platný kontext JAXB, použitelný pro marshalling/unmarshalling
-     * vývojového diagramu.
-     *
-     * @return platný kontext JAXB, použitelný pro marshalling/unmarshalling
-     * vývojového diagramu
-     */
-    public static JAXBContext getJAXBcontext()
+    
+    public static void marshal(Object object, File file, boolean formated) throws JAXBException, FileNotFoundException
     {
-        return jAXBcontext;
+        marshal(object, new FileOutputStream(file), formated);
+    }
+
+    public static void marshal(Object object, OutputStream os, boolean formated) throws JAXBException
+    {
+        Marshaller jAXBmarshaller = jAXBcontext.createMarshaller();
+        jAXBmarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, formated);
+        jAXBmarshaller.marshal(object, os);
+    }
+
+    public static Object unmarshal(File file) throws JAXBException, FileNotFoundException
+    {
+        return unmarshal(new FileInputStream(file));
+    }
+
+    public static Object unmarshal(InputStream is) throws JAXBException
+    {
+        Object object = jAXBcontext.createUnmarshaller().unmarshal(is);
+
+        if (object instanceof FlowchartSaveContainer) {
+            ensureBackwardCompatibility(((FlowchartSaveContainer) object).flowchart);
+        } else if (object instanceof Flowchart) {
+            ensureBackwardCompatibility(GlobalFunctions.unsafeCast(object));
+        }
+
+        return object;
+    }
+
+    private static void ensureBackwardCompatibility(Flowchart<LayoutSegment, LayoutElement> flowchart)
+    {
+        for (LayoutSegment segment : flowchart) {
+            if (segment != null) {
+                for (FlowchartElement element : segment) {
+                    Map<String, String> commands = element.getSymbol().getCommands();
+                    if (commands != null) {
+                        for (String key : commands.keySet()) {
+                            String command = commands.get(key);
+                            if (command == null) {
+                                continue;
+                            }
+
+                            // v uvozovkach si nesmim vsimat niceho
+                            String[] commandWithoutQ = RegexFunctions.splitString(command, "\"([^\"\\\\]|\\\\.)*\"?");
+                            for (int i = 0; i < commandWithoutQ.length; i += 2) {
+                                commandWithoutQ[i] = commandWithoutQ[i].replace("==", "=");
+                            }
+
+                            String cmnd = "";
+                            for (String commandPart : commandWithoutQ) {
+                                cmnd += commandPart;
+                            }
+
+                            commands.put(key, cmnd);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /*
@@ -2285,7 +2315,7 @@ public final class MainWindow extends javax.swing.JFrame
             currentTime = System.currentTimeMillis();
         }
 
-        final Long expiration = 1498860000000l; // 2017.7.1. 00:00:00 = 1498860000000 (System.out.println(new GregorianCalendar(2017, 6, 1).getTimeInMillis());) - month is zero-based
+        final Long expiration = 1530396000000L; // 2018.7.1. 00:00:00 = 1530396000000 (System.out.println(new GregorianCalendar(2018, 6, 1).getTimeInMillis());) - month is zero-based
         daysLeft = (expiration - currentTime) / 86400000l;
         if (currentTime > expiration || currentTime < SettingsHolder.settings.getLastTrialLaunchedTime()) {
 //            System.exit(0); <- let's let the user download newer version of PS Diagram
@@ -2358,21 +2388,18 @@ public final class MainWindow extends javax.swing.JFrame
                     return false;
                 }
             } else {
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                try {
-                    Marshaller jAXBmarshaller = getJAXBcontext().createMarshaller();
-                    jAXBmarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+                try (ByteArrayOutputStream baosCurrent = new ByteArrayOutputStream();
+                        ByteArrayOutputStream baosSaved = new ByteArrayOutputStream();) {
+                    
                     if (SettingsHolder.settings.getActualFlowchartFile().getName().endsWith(".xml")) {
-                        jAXBmarshaller.marshal(layout.getFlowchart(), baos);
+                        marshal(layout.getFlowchart(), baosCurrent, false);
                     } else {
-                        jAXBmarshaller.marshal(new FlowchartSaveContainer(layout.getFlowchart()),
-                                baos);
+                        marshal(new FlowchartSaveContainer(layout.getFlowchart()), baosCurrent, false);
                     }
-                    String currentFlowchart = new String(baos.toByteArray(), StandardCharsets.UTF_8);
-                    String savedFlowchart = new String(Files.readAllBytes(
-                            SettingsHolder.settings.getActualFlowchartFile().toPath()), StandardCharsets.UTF_8);
-                    if (!currentFlowchart.equals(savedFlowchart)
-                            && !currentFlowchart.equals(savedFlowchart.replaceAll("\\&quot\\;", "\""))) { // for back compatibility with java 7 JAXB
+                    // unmarshaling first in order to ensure backward compatibility is not breaking the matching below
+                    marshal(unmarshal(SettingsHolder.settings.getActualFlowchartFile()), baosSaved, false);
+                    
+                    if (!Arrays.equals(baosCurrent.toByteArray(), baosSaved.toByteArray())) {
                         if (askAboutIt) {
                             return askAboutSaving();
                         } else {
@@ -2458,15 +2485,13 @@ public final class MainWindow extends javax.swing.JFrame
         try {
             Flowchart<LayoutSegment, LayoutElement> flowchart;
             if (file.getName().endsWith(".xml")) {
-                flowchart = GlobalFunctions.unsafeCast(
-                        getJAXBcontext().createUnmarshaller().unmarshal(file));
+                flowchart = GlobalFunctions.unsafeCast(unmarshal(file));
             } else {
-                FlowchartSaveContainer flowchartSaveContainer = GlobalFunctions.unsafeCast(
-                        getJAXBcontext().createUnmarshaller().unmarshal(file));
+                FlowchartSaveContainer flowchartSaveContainer = GlobalFunctions.unsafeCast(unmarshal(file));
                 flowchart = flowchartSaveContainer.flowchart;
             }
             openDiagram(flowchart, file);
-        } catch (JAXBException ex) {
+        } catch (JAXBException | FileNotFoundException ex) {
             ex.printStackTrace(System.err);
             JOptionPane.showMessageDialog(this, "Při načítání diagramu nastala chyba!",
                     "Diagram se nepodařilo otevřít", JOptionPane.ERROR_MESSAGE);
@@ -2478,7 +2503,7 @@ public final class MainWindow extends javax.swing.JFrame
         }
     }
 
-    // Do not use thi method unless you know what you are doing. openDiagram(File file) method is prefered.
+    // Do not use this method unless you know what you are doing. openDiagram(File file) method is prefered.
     private void openDiagram(Flowchart<LayoutSegment, LayoutElement> flowchart, File file)
     {
         SettingsHolder.settings.setDontSaveDirectly(false);

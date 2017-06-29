@@ -5,7 +5,6 @@
 package cz.miroslavbartyzal.psdiagram.app.flowchart.symbols;
 
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutElement;
-import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.MaxBalloonSizeCallback;
 import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditManager;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.AbstractSymbolFunctionForm;
@@ -68,8 +67,7 @@ public enum EnumSymbol
                     if (commands != null && !commands.isEmpty()) {
                         for (Map.Entry<String, String> entrySet : commands.entrySet()) {
                             String key = entrySet.getKey();
-                            String value = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(
-                                    entrySet.getValue());
+                            String value = entrySet.getValue();
                             if (value.isEmpty()) {
                                 continue;
                             }
@@ -125,10 +123,6 @@ public enum EnumSymbol
                     }
                     String var = commands.get("var");
                     String value = commands.get("value");
-                    if (SettingsHolder.settings.isFunctionFilters()) {
-                        var = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(var);
-                        value = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(value);
-                    }
                     cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.Process.generateValues(
                             symbol, var, value);
                 }
@@ -174,8 +168,7 @@ public enum EnumSymbol
                     if (commands != null && !commands.isEmpty()) {
                         for (Map.Entry<String, String> entrySet : commands.entrySet()) {
                             String key = entrySet.getKey();
-                            String value = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(
-                                    entrySet.getValue());
+                            String value = entrySet.getValue();
                             if (value.isEmpty()) {
                                 continue;
                             }
@@ -231,16 +224,10 @@ public enum EnumSymbol
                     }
                     if (commands.containsKey("var")) {
                         String var = commands.get("var");
-                        if (SettingsHolder.settings.isFunctionFilters()) {
-                            var = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(var);
-                        }
                         cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.IO.generateIValues(
                                 symbol, var);
                     } else {
                         String value = commands.get("value");
-                        if (SettingsHolder.settings.isFunctionFilters()) {
-                            value = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(value);
-                        }
                         cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.IO.generateOValues(
                                 symbol, value);
                     }
@@ -287,8 +274,7 @@ public enum EnumSymbol
                     if (commands != null && !commands.isEmpty()) {
                         for (Map.Entry<String, String> entrySet : commands.entrySet()) {
                             String key = entrySet.getKey();
-                            String value = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(
-                                    entrySet.getValue());
+                            String value = entrySet.getValue();
                             if (value.isEmpty()) {
                                 continue;
                             }
@@ -337,9 +323,6 @@ public enum EnumSymbol
                         return;
                     }
                     String condition = commands.get("condition");
-                    if (SettingsHolder.settings.isFunctionFilters()) {
-                        condition = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(condition);
-                    }
                     cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.Decision.generateValues(
                             symbol, condition);
                 }
@@ -385,8 +368,7 @@ public enum EnumSymbol
                     if (commands != null && !commands.isEmpty()) {
                         for (Map.Entry<String, String> entrySet : commands.entrySet()) {
                             String key = entrySet.getKey();
-                            String value = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(
-                                    entrySet.getValue());
+                            String value = entrySet.getValue();
                             if (value.isEmpty()) {
                                 continue;
                             }
@@ -453,17 +435,9 @@ public enum EnumSymbol
                             return;
                         } else {
                             segmentConstants[i - 1] = commands.get("" + i);
-                            if (SettingsHolder.settings.isFunctionFilters()) {
-                                segmentConstants[i - 1] = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(
-                                        segmentConstants[i - 1]);
-                            }
                         }
                     }
                     String conditionVar = commands.get("conditionVar");
-                    if (SettingsHolder.settings.isFunctionFilters()) {
-                        conditionVar = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(
-                                conditionVar);
-                    }
                     cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.Switch.generateValues(
                             element, conditionVar, segmentConstants);
                 }
@@ -509,8 +483,7 @@ public enum EnumSymbol
                     if (commands != null && !commands.isEmpty()) {
                         for (Map.Entry<String, String> entrySet : commands.entrySet()) {
                             String key = entrySet.getKey();
-                            String value = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(
-                                    entrySet.getValue());
+                            String value = entrySet.getValue();
                             if (value.isEmpty()) {
                                 continue;
                             }
@@ -586,10 +559,6 @@ public enum EnumSymbol
                     if (commands.containsKey("array")) {
                         String var = commands.get("var");
                         String array = commands.get("array");
-                        if (SettingsHolder.settings.isFunctionFilters()) {
-                            var = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(var);
-                            array = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(array);
-                        }
                         cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.For.generateForeachValues(
                                 symbol, var, array);
                     } else {
@@ -597,12 +566,6 @@ public enum EnumSymbol
                         String from = commands.get("from");
                         String to = commands.get("to");
                         String inc = commands.get("conditionVar");
-                        if (SettingsHolder.settings.isFunctionFilters()) {
-                            var = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(var);
-                            from = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(from);
-                            to = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(to);
-                            inc = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(inc);
-                        }
                         cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.For.generateForValues(
                                 symbol, var, from, to, inc);
                     }
@@ -653,8 +616,7 @@ public enum EnumSymbol
                     if (commands != null && !commands.isEmpty()) {
                         for (Map.Entry<String, String> entrySet : commands.entrySet()) {
                             String key = entrySet.getKey();
-                            String value = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(
-                                    entrySet.getValue());
+                            String value = entrySet.getValue();
                             if (value.isEmpty()) {
                                 continue;
                             }
@@ -706,9 +668,6 @@ public enum EnumSymbol
                         return;
                     }
                     String condition = commands.get("condition");
-                    if (SettingsHolder.settings.isFunctionFilters()) {
-                        condition = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(condition);
-                    }
                     cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.LoopStart.generateValues(
                             symbol, condition);
                 }
@@ -764,8 +723,7 @@ public enum EnumSymbol
                     if (commands != null && !commands.isEmpty()) {
                         for (Map.Entry<String, String> entrySet : commands.entrySet()) {
                             String key = entrySet.getKey();
-                            String value = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(
-                                    entrySet.getValue());
+                            String value = entrySet.getValue();
                             if (value.isEmpty()) {
                                 continue;
                             }
@@ -822,9 +780,6 @@ public enum EnumSymbol
                         return;
                     }
                     String condition = commands.get("condition");
-                    if (SettingsHolder.settings.isFunctionFilters()) {
-                        condition = AbstractSymbolFunctionForm.convertFromJSToPSDCommands(condition);
-                    }
                     cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.LoopEnd.generateValues(
                             symbol, condition);
                 }

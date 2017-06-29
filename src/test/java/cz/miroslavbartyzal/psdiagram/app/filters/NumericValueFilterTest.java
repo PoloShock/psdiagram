@@ -40,6 +40,7 @@ public class NumericValueFilterTest
             add("Ahoj.cau.func(a > b)");
             add("Func.func.func(a>b)");
             add("a / -1");
+            add("a // -1");
             add("a + -1");
             add("a - -1");
             add("a / +1");
@@ -50,6 +51,9 @@ public class NumericValueFilterTest
             add("a + -pom");
             add("a - -pom");
             add("a / +pom");
+            add("a // +pom");
+            add("a // +pom // Math.floor(a // 2 // 3)");
+            add("19 // ((21 // 2) // 5)");
             add("a + +pom");
             add("a - +pom");
             add("a -+-+pom");
@@ -171,6 +175,7 @@ public class NumericValueFilterTest
             add("(-(1) + (1)) != (-(-1) * -2) && true");
             add("1 - 2 + \"\"");
             add("1 - 2 + \"\" + 1 / 2");
+            add("1 - 2 + \"\" + 1 // 2");
             add("!true + \"_\"");
             add("1 - 2 + \"\" + 1 / 2 + -1");
             add("((\"ahoj\") + (\"b\")) + (\"c\") = \"\""); // (("ahoj") + ("b")) + ("c") = ""

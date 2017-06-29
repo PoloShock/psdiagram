@@ -8,7 +8,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import org.eclipse.persistence.jaxb.JAXBContextFactory;
 
 /**
  *
@@ -23,9 +22,8 @@ public class JAXBUpdateContext
     {
         if (jAXBContext == null) {
             try {
-//                jAXBContext = JAXBContext.newInstance(ChangesCondenser.class);
-                jAXBContext = JAXBContextFactory.createContext(new Class[]{ChangesCondenser.class},
-                        null);
+                jAXBContext = JAXBContext.newInstance(ChangesCondenser.class);
+//                jAXBContext = JAXBContextFactory.createContext(new Class[]{ChangesCondenser.class}, null);
             } catch (JAXBException ex) {
                 ex.printStackTrace(System.err);
             }

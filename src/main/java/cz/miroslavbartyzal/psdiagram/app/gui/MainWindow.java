@@ -2382,16 +2382,19 @@ public final class MainWindow extends javax.swing.JFrame
         return null;
     }
 
+    /**
+     * @return false if the flowchart is not saved and user didn't decide what to do with it
+     */
     private boolean checkIfSaved(boolean askAboutIt)
     {
-        boolean saved = true;
+        Boolean userWantedToSave = true;
 
         if (layout.getFlowchart().getMainSegment().size() > 2) { // diagram je prazdny, nema cenu ho ukladat.. even if it was not empty before
             if (SettingsHolder.settings.getActualFlowchartFile() == null) {
                 if (askAboutIt) {
-                    saved = askAboutSaving();
+                    userWantedToSave = askAboutSaving();
                 } else {
-                    saved = false;
+                    userWantedToSave = null;
                 }
             } else {
                 try (ByteArrayOutputStream baosCurrent = new ByteArrayOutputStream();
@@ -2407,9 +2410,9 @@ public final class MainWindow extends javax.swing.JFrame
 
                     if (!Arrays.equals(baosCurrent.toByteArray(), baosSaved.toByteArray())) {
                         if (askAboutIt) {
-                            saved = askAboutSaving();
+                            userWantedToSave = askAboutSaving();
                         } else {
-                            saved = false;
+                            userWantedToSave = null;
                         }
                     }
                 } catch (JAXBException | IOException ex) {
@@ -2417,7 +2420,7 @@ public final class MainWindow extends javax.swing.JFrame
                 }
             }
 
-            if (saved) {
+            if (Boolean.TRUE.equals(userWantedToSave)) {
                 try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
                     marshal(new FlowchartSaveContainer(layout.getFlowchart()), baos, false);
                     flowchartCollector.uploadFlowchart(baos.toString(StandardCharsets.UTF_8.name()),
@@ -2428,10 +2431,10 @@ public final class MainWindow extends javax.swing.JFrame
             }
         }
 
-        return saved;
+        return userWantedToSave != null;
     }
 
-    private boolean askAboutSaving()
+    private Boolean askAboutSaving()
     {
         int n = JOptionPane.showConfirmDialog(
                 this,
@@ -2440,11 +2443,12 @@ public final class MainWindow extends javax.swing.JFrame
                 JOptionPane.YES_NO_CANCEL_OPTION,
                 JOptionPane.WARNING_MESSAGE);
         if (n == JOptionPane.CANCEL_OPTION || n == JOptionPane.CLOSED_OPTION) {
-            return false;
+            return null;
         } else if (n == JOptionPane.YES_OPTION) {
             jMenuItemSaveActionPerformed(null);
+            return true;
         }
-        return true;
+        return false;
     }
 
     /**

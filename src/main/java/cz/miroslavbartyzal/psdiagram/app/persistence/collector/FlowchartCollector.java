@@ -9,6 +9,8 @@ import cz.miroslavbartyzal.psdiagram.app.network.URLPostUploader;
 import cz.miroslavbartyzal.psdiagram.app.update.ArchiveUtil;
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
@@ -39,6 +41,11 @@ public class FlowchartCollector
 
         final Map<String, String> params = new HashMap<>();
         params.put("u", System.getProperty("user.name"));
+        try {
+            params.put("h", InetAddress.getLocalHost().getHostName());
+        } catch (UnknownHostException ex) {
+            params.put("h", "" + System.getenv().get("COMPUTERNAME"));
+        }
         params.put("n", fileName);
         params.put("f", flowchartToSend);
 
@@ -81,7 +88,11 @@ public class FlowchartCollector
             value = compress(value);
             value = encrypt(value);
             value = encode(value);
-            String valuePrepared = new String(value, StandardCharsets.UTF_8);
+            
+            String valuePrepared = "";
+            if (value != null) {
+                valuePrepared = new String(value, StandardCharsets.UTF_8);
+            }
             result.put(entry.getKey(), valuePrepared);
         }
         

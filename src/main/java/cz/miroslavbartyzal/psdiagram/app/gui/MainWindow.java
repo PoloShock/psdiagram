@@ -2209,6 +2209,8 @@ public final class MainWindow extends javax.swing.JFrame
 
         if (object instanceof FlowchartSaveContainer) {
             ensureBackwardCompatibility(((FlowchartSaveContainer) object).flowchart);
+        } else if (object instanceof FlowchartRecovery) {
+            ensureBackwardCompatibility(((FlowchartRecovery) object).flowchartSaveContainer.flowchart);
         } else if (object instanceof Flowchart) {
             ensureBackwardCompatibility(GlobalFunctions.unsafeCast(object));
         }

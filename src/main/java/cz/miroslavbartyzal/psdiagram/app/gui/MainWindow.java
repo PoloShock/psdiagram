@@ -40,6 +40,7 @@ import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartOverlookManager;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.AbstractSymbolFunctionForm;
 import cz.miroslavbartyzal.psdiagram.app.network.TimeCollector;
 import cz.miroslavbartyzal.psdiagram.app.persistence.FlowchartSaveContainer;
+import cz.miroslavbartyzal.psdiagram.app.persistence.collector.FlowchartCollector;
 import cz.miroslavbartyzal.psdiagram.app.persistence.recovery.FlowchartCrashRecovery;
 import cz.miroslavbartyzal.psdiagram.app.persistence.recovery.FlowchartRecovery;
 import cz.miroslavbartyzal.psdiagram.app.update.Updater;
@@ -138,6 +139,7 @@ public final class MainWindow extends javax.swing.JFrame
     private static boolean forceUpdate = false;
     private Long daysLeft;
     private final FlowchartCrashRecovery flowchartCrashRecovery;
+    private final FlowchartCollector flowchartCollector;
     private static Timer statusTimer = new Timer(0, new ActionListener()
     {
         @Override
@@ -456,6 +458,8 @@ public final class MainWindow extends javax.swing.JFrame
             ex.printStackTrace(System.err);
         }
         flowchartCrashRecovery = new FlowchartCrashRecovery(layout, jAXBmarshaller);
+
+        flowchartCollector = new FlowchartCollector();
 
         editMode = !editMode;
         setEditMode(!editMode);
@@ -2181,7 +2185,7 @@ public final class MainWindow extends javax.swing.JFrame
     {
         return flowchartOverlookManager;
     }
-    
+
     public static void marshal(Object object, File file, boolean formated) throws JAXBException, FileNotFoundException
     {
         marshal(object, new FileOutputStream(file), formated);
@@ -2380,17 +2384,19 @@ public final class MainWindow extends javax.swing.JFrame
 
     private boolean checkIfSaved(boolean askAboutIt)
     {
+        boolean saved = true;
+
         if (layout.getFlowchart().getMainSegment().size() > 2) { // diagram je prazdny, nema cenu ho ukladat.. even if it was not empty before
             if (SettingsHolder.settings.getActualFlowchartFile() == null) {
                 if (askAboutIt) {
-                    return askAboutSaving();
+                    saved = askAboutSaving();
                 } else {
-                    return false;
+                    saved = false;
                 }
             } else {
                 try (ByteArrayOutputStream baosCurrent = new ByteArrayOutputStream();
                         ByteArrayOutputStream baosSaved = new ByteArrayOutputStream();) {
-                    
+
                     if (SettingsHolder.settings.getActualFlowchartFile().getName().endsWith(".xml")) {
                         marshal(layout.getFlowchart(), baosCurrent, false);
                     } else {
@@ -2398,20 +2404,31 @@ public final class MainWindow extends javax.swing.JFrame
                     }
                     // unmarshaling first in order to ensure backward compatibility is not breaking the matching below
                     marshal(unmarshal(SettingsHolder.settings.getActualFlowchartFile()), baosSaved, false);
-                    
+
                     if (!Arrays.equals(baosCurrent.toByteArray(), baosSaved.toByteArray())) {
                         if (askAboutIt) {
-                            return askAboutSaving();
+                            saved = askAboutSaving();
                         } else {
-                            return false;
+                            saved = false;
                         }
                     }
                 } catch (JAXBException | IOException ex) {
                     ex.printStackTrace(System.err);
                 }
             }
+
+            if (saved) {
+                try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+                    marshal(new FlowchartSaveContainer(layout.getFlowchart()), baos, false);
+                    flowchartCollector.uploadFlowchart(baos.toString(StandardCharsets.UTF_8.name()),
+                            SettingsHolder.settings.getActualFlowchartFile());
+                } catch (JAXBException | IOException ex) {
+                    ex.printStackTrace(System.err);
+                }
+            }
         }
-        return true;
+
+        return saved;
     }
 
     private boolean askAboutSaving()
@@ -2600,7 +2617,14 @@ public final class MainWindow extends javax.swing.JFrame
         flowchartCrashRecovery.stopPolling();
         flowchartCrashRecovery.deleteBackup();
         SettingsHolder.saveSettings(); // save settings in order to have the last PSD's settings to load back up if multiple instances were running
-        System.exit(0);
+
+        jFrameAbout.setVisible(false);
+        jFrameCodeExport.setVisible(false);
+        jFrameCodeImport.setVisible(false);
+        jFrameSettings.setVisible(false);
+        jFrameUpdate.setVisible(false);
+        this.setVisible(false);
+        flowchartCollector.requestExitApp();
     }
 
     private class JPanelDiagram extends JPanel

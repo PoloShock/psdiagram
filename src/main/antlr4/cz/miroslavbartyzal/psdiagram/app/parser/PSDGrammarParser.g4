@@ -1544,32 +1544,43 @@ multiplicative_Expression_RightPart [Token op] returns [Double value]
         }
     ;
 
+multiplicative_Expression_LeftPart_ValidLeft
+    :   
+        numericOrString_Expression_WithParetheses 
+    |   unknownTypeValue
+    ;
+
+multiplicative_Expression_LeftPart_ValidRight
+    :   
+        unary_Numeric_Expression
+    |	numericOrString_Expression_WithParetheses
+    |	unknownTypeValue
+    ;
+
 multiplicative_Expression_LeftPart returns [Double value]
-	:	unary_Numeric_Expression {$value = $unary_Numeric_Expression.value;}
-	|   (	numericOrString_Expression_WithParetheses | unknownTypeValue) op=(MUL | DIV | FLOORDIV | MOD) {
+    :	unary_Numeric_Expression {$value = $unary_Numeric_Expression.value;}
+    |   (   multiplicative_Expression_LeftPart_ValidLeft) multiplicative_Expression_Operator {
                 $value = null;
                 String operation = "chyba!";
-                if ($op.getType() == MUL) {
+                if ($multiplicative_Expression_Operator.op.getType() == MUL) {
                     operation = "násobení";
-                } else if ($op.getType() == DIV) {
+                } else if ($multiplicative_Expression_Operator.op.getType() == DIV) {
                     operation = "dělení";
-                } else if ($op.getType() == FLOORDIV) {
+                } else if ($multiplicative_Expression_Operator.op.getType() == FLOORDIV) {
                     operation = "celočíselné dělení";
-                } else if ($op.getType() == MOD) {
+                } else if ($multiplicative_Expression_Operator.op.getType() == MOD) {
                     operation = "modulo (zbytek po celočíselném dělení)";
                 }
-                String errorHeader = "Operátor '" + $op.text + "' (" + operation + ") lze použít pouze v kombinaci s číselnými hodnotami.";
+                String errorHeader = "Operátor '" + $multiplicative_Expression_Operator.op.getText() + "' (" + operation + ") lze použít pouze v kombinaci s číselnými hodnotami.";
             } (
-                unary_Numeric_Expression
-            |	numericOrString_Expression_WithParetheses
-            |	unknownTypeValue
-            |   {notifyErrorListenersOnPointAfter("Chybí číselná hodnota na pravé straně operátoru '" + $op.text + "'.", "číselná hodnota", $op);}
+                multiplicative_Expression_LeftPart_ValidRight
+            |   {notifyErrorListenersOnPointAfter("Chybí číselná hodnota na pravé straně operátoru '" + $multiplicative_Expression_Operator.op.getText() + "'.", "číselná hodnota", $multiplicative_Expression_Operator.op);}
             // wrong combinations follow
             |   unary_Boolean_Expression {ruleNotifyErrorListeners(errorHeader + "\n- Na pravé straně operátoru byla nalezena hodnota logická.", "číselná hodnota", $unary_Boolean_Expression.start, $unary_Boolean_Expression.stop);}
             |   atomic_String_Expression {ruleNotifyErrorListeners(errorHeader + "\n- Na pravé straně operátoru byla nalezena hodnota řetězcová.", "číselná hodnota", $atomic_String_Expression.start, $atomic_String_Expression.stop);}
             |   array_Expression {ruleNotifyErrorListeners(errorHeader + "\n- Na pravé straně operátoru byla nalezena hodnota v podobě pole.\nPokud chcete " + operation + " provést pro jednotlivé prvky pole, je nutné použít cyklus.", "číselná hodnota", $array_Expression.start, $array_Expression.stop);}
             |   NULL_LITERAL {notifyErrorListeners($NULL_LITERAL, errorHeader + "\n- Na pravé straně operátoru byla nalezena hodnota null.", "číselná hodnota", null);}
-            )
+        )
     |   op=(MUL | DIV | FLOORDIV | MOD) (unary_Numeric_Expression | numericOrString_Expression_WithParetheses | unknownTypeValue) {$value = null; notifyErrorListenersOnPointBefore("Chybí číselná hodnota na levé straně operátoru '" + $op.text + "'.", "číselná hodnota", $op);}
     |   op=(MUL | DIV | FLOORDIV | MOD) {$value = null; notifyErrorListenersOnPointBefore("Chybí číselná hodnota na levé straně operátoru '" + $op.text + "'.", "číselná hodnota", $op); notifyErrorListenersOnPointAfter("Chybí číselná hodnota na pravé straně operátoru '" + $op.text + "'.", "číselná hodnota", $op);}
     // wrong combinations follow

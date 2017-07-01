@@ -143,12 +143,12 @@ public final class ElementFunctionBed
             return result;
         }
         
-        HashMap<String, String> commandsProcessed = null;
         HashMap<String, String> commandsOriginal = null;
+        HashMap<String, String> commandsProcessed = null;
         if (symbol.getCommands() != null) {
             commandsOriginal = new HashMap<>(symbol.getCommands());
-            commandsProcessed = new HashMap<>(symbol.getCommands());
-            setRandoms(commandsProcessed);
+            setRandoms(commandsOriginal);
+            commandsProcessed = new HashMap<>(commandsOriginal);
             translateToJavaScript(commandsProcessed);
         }
         

@@ -56,6 +56,22 @@ public class PSDToJavaScriptVisitor extends PSDGrammarParserBaseVisitor<String>
         return result;
     }
 
+    @Override
+    public String visitMultiplicative_Expression_LeftPart(PSDGrammarParser.Multiplicative_Expression_LeftPartContext ctx)
+    {
+        if (ctx.multiplicative_Expression_LeftPart_ValidLeft() == null
+                || ctx.multiplicative_Expression_Operator() == null 
+                || ctx.multiplicative_Expression_Operator().operator.getType() != PSDGrammarParser.FLOORDIV
+                || ctx.multiplicative_Expression_LeftPart_ValidRight() == null) {
+            return super.visitMultiplicative_Expression_LeftPart(ctx);
+        }
+      
+        String leftOperand = ctx.multiplicative_Expression_LeftPart_ValidLeft().accept(this);
+        String operator = ctx.multiplicative_Expression_Operator().accept(this);
+        String rightOperand = ctx.multiplicative_Expression_LeftPart_ValidRight().accept(this);
+        return transformToMathFloor(leftOperand, operator, rightOperand);
+    }
+
     private String transformToMathFloor(String leftOperand, String operator, String rightOperand)
     {
         String[] leftOperandLSplit = splitSpaceLeft(leftOperand);

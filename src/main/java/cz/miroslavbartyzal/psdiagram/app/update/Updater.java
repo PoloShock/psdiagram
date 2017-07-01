@@ -151,7 +151,7 @@ public final class Updater
                 "extrahuji..."));
         File extractedDir;
         try {
-            extractedDir = ArchiveExtractor.extractZIP(downloadedFile, true,
+            extractedDir = ArchiveUtil.extractZIP(downloadedFile, true,
                     Charset.defaultCharset());
         } catch (IOException ex) {
             ex.printStackTrace(System.err);
@@ -160,7 +160,7 @@ public final class Updater
             return;
         } catch (IllegalArgumentException ex) { // let's try it once more with UTF-8
             try {
-                extractedDir = ArchiveExtractor.extractZIP(downloadedFile, true,
+                extractedDir = ArchiveUtil.extractZIP(downloadedFile, true,
                         StandardCharsets.UTF_8);
             } catch (IOException | IllegalArgumentException ex2) {
                 ex.printStackTrace(System.err);
@@ -225,9 +225,9 @@ public final class Updater
             for (String str : UPDATER_FILES_TO_REMOVE) {
                 new File(SettingsHolder.WORKING_DIR, str).delete();
             }
-            ArchiveExtractor.delete(new File(SettingsHolder.WORKING_DIR, ARCHIVE_NAME.substring(
+            ArchiveUtil.delete(new File(SettingsHolder.WORKING_DIR, ARCHIVE_NAME.substring(
                     0, ARCHIVE_NAME.length() - 4)));
-            ArchiveExtractor.delete(new File(SettingsHolder.WORKING_DIR, "oldjre"));
+            ArchiveUtil.delete(new File(SettingsHolder.WORKING_DIR, "oldjre"));
         } catch (IOException ex) {
         }
     }

@@ -65,7 +65,7 @@ public class URLStringDownloader extends SwingWorker<String, Void>
     {
         URL url;
         try {
-            url = URLParser.urlConcatenation(serverURL, parameters);
+            url = HTTPParser.urlConcatenation(serverURL, parameters);
         } catch (UnsupportedEncodingException ex) {
             ex.printStackTrace(System.err);
             super.firePropertyChange("error", null, "chyba: špatné kódování URL");
@@ -144,6 +144,7 @@ public class URLStringDownloader extends SwingWorker<String, Void>
                 } catch (InterruptedException | ExecutionException ex) {
                     ex.printStackTrace(System.err);
                     URLStringDownloader.super.firePropertyChange("error", null, "interní chyba");
+                    downloadFinishedListener.onDownloadFinished(null, charset);
                 }
             });
 

@@ -101,6 +101,7 @@ public final class Main
     // TODO pri zadani napr. 'a%2 = = 1' to ve druhem hintu rika, ze je na leve strane logicka hodnota, pritom tam není nic!
     // TODO pri validaci jediného '&' se v dalších validacích hlásí jako logické AND.. a pritom predtim rikam ze to neni log. AND
     // TODO zkontrolovat chování checkboxu pro výchozí hodnoty textu symbolů -> stávalo se mi, že po kliknutí na zaškrtnutý zůstal zaškrtnutý
+    //e TODO implementovat sifrovani ve FlowchartCollector-u
     /**
      * Metoda pro spuštění hlavního okna aplikace. Nejsou přijímány žádné
      * parametry.

@@ -27,6 +27,14 @@ public class PSDToJavaScriptTest
     }
     
     @Test
+    public void visitorTest1b()
+    {
+        String input = "a // b // ((c // d) // e)";
+        String result = parser.translatePSDToJavaScript(input);
+        Assert.assertEquals("Math.floor(Math.floor(a / b) / (Math.floor((Math.floor(c / d)) / e)))", result);
+    }
+    
+    @Test
     public void visitorTest2()
     {
         String input = "5 * 5 // 2 * 2";
@@ -40,6 +48,14 @@ public class PSDToJavaScriptTest
         String input = "2 + -5 * 5 // 2 * 2";
         String result = parser.translatePSDToJavaScript(input);
         Assert.assertEquals("2 + Math.floor(-5 * 5 / 2) * 2", result);
+    }
+    
+    @Test
+    public void visitorTest3b()
+    {
+        String input = "2 + -b * c // d * 2";
+        String result = parser.translatePSDToJavaScript(input);
+        Assert.assertEquals("2 + Math.floor(-b * c / d) * 2", result);
     }
     
     @Test

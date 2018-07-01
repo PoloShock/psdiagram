@@ -4,7 +4,7 @@
 
     <groupId>cz.miroslavbartyzal</groupId>
     <artifactId>psdiagram</artifactId>
-    <version>1.4.1</version>
+    <version>1.4.1.1</version>
     <packaging>jar</packaging>
     <name>PS Diagram</name>
     <url>http://www.psdiagram.cz</url>
@@ -127,40 +127,36 @@
                                     <goal>versioninfo</goal>
                                 </goals>
                                 <configuration>
-                                    <inputFileToMerge>${env.OPENSHIFT_DATA_DIR}versioninfo.xml</inputFileToMerge>
+                                    <inputFileToMerge>${env.PSD_DATA_DIR}versioninfo.xml</inputFileToMerge>
                                     <outputFile>${project.build.directory}/OPENSHIFT_DATA/versioninfo.xml</outputFile>
 
                                     <version>${project.version}</version>
                                     <changelogurl>http://www.psdiagram.cz/changelog</changelogurl>
                                     <releaseurl></releaseurl>
 
-                                    <headline>Celočíselné dělení je na světě!</headline>
+                                    <headline>Oprava switch symbolu</headline>
                                     <description>
                                         <![CDATA[
                                         <html>
-                                            <p align="justify">S přáním krásného léta vám opět přináším novou verzi PS Diagramu. :)</p>
-                                            <p align="justify">V této aktualizaci jsem se zaměřil zejména na řešení celočíslého dělení. Do teď bylo potřeba pro tento úkol použít funkci Math.floor, na jejíž vstup se vložilo dělení obyčejné. Fungovalo to, protože výsledek po obyčejném dělení tato funkce zaokrouhlila dolů. Dovedu si ale představit, že při tak běžné operaci jako je celočíselné dělení mohl být tento způsob zdlouhavého zápisu docela otrava. Proto jsem PS Diagram naučil nový operátor „//“, který vše s lehkostí napraví. :)</p>
-                                            <p align="justify">Příklad: <br/>„Math.floor(12 / 10)“ je stejné jako „12 // 10“</p>
+                                            <p align="justify">Malá oprava na základě oznámení.</p>
+                                            <p align="justify">Děkuji paní Miroslavě za zprávu! :)</p>
                                         </html>
                                         ]]>
                                     </description>
 
                                     <features>
-                                        <feature>pro celočíselné dělení lze nyní využít operátor '//' (např. 9 // 2 = 4)</feature>
                                     </features>
                                     <enhancements>
-                                        <enhancement>sjednocena barva tooltipů s barvou zpráv syntaktického analyzátoru</enhancement>
                                     </enhancements>
                                     <extensions>
                                     </extensions>
                                     <changes>
-                                        <change>již není možné vypnout syntaktickou analýzu funkcí symbolů</change>
                                     </changes>
                                     <fixes>
-                                        <fix>v některých případech se za běhu mimo operační systém Windows špatně zobrazoval znak vyznačující pozici syntaktické chyby</fix>
+                                        <fix>switch symbol nepřepínal správně tok programu v případě zadání více konstant oddělených čárkami</fix>
+                                        <fix>switch symbol nebyl při syntaktické chybě některé z konstant vykreslen červeně</fix>
                                     </fixes>
                                     <others>
-                                        <other>opraveny nalezené překlepy</other>
                                     </others>
                                 </configuration>
                             </execution>
@@ -224,7 +220,7 @@
                                             <fileset dir="${basedir}/src/main/resources/intozip"/>
                                         </copy>
                                         <copy todir="${project.build.directory}/zip/PS Diagram/jre">
-                                            <fileset dir="c:/Program Files (x86)/Java/jre1.8.0_131"/>
+                                            <fileset dir="c:/Program Files (x86)/Java/jre1.8.0_144"/>
                                         </copy>
                                         <copy file="c:/Zaloha/Programovani/Moje/Visual Studio 2013/PS Diagram Launcher/PS Diagram Launcher/bin/Release/PS Diagram.exe" todir="${project.build.directory}/zip/PS Diagram"/>
                                         <zip destfile="${project.build.directory}/OPENSHIFT_DATA/PS_Diagram_${project.version}.zip"
@@ -397,7 +393,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${env.OPENSHIFT_DATA_DIR}</outputDirectory>
+                            <outputDirectory>${env.PSD_DATA_DIR}</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>src/main/resources</directory>

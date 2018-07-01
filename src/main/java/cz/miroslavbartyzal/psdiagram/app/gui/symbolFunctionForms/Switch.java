@@ -370,6 +370,7 @@ public final class Switch extends AbstractSymbolFunctionForm
                 return;
             } else if (!varValid) {
                 Switch.super.getElement().getSymbol().setCommandsValid(false);
+                Switch.super.getFlowchartEditManager().repaintJPanelDiagram();
                 return;
             }
             // varValid is true
@@ -380,10 +381,12 @@ public final class Switch extends AbstractSymbolFunctionForm
                     return;
                 } else if (!segmentValid) {
                     Switch.super.getElement().getSymbol().setCommandsValid(false);
+                    Switch.super.getFlowchartEditManager().repaintJPanelDiagram();
+                    return;
                 }
             }
+            
             Switch.super.getElement().getSymbol().setCommandsValid(true);
-
             Switch.super.getFlowchartEditManager().repaintJPanelDiagram();
         }
 

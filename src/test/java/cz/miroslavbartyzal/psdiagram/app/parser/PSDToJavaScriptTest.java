@@ -97,4 +97,11 @@ public class PSDToJavaScriptTest
         Assert.assertEquals(input, result);
     }
     
+    @Test
+    public void visitorSyntaxErrorTest2() {
+        String input = "1,2";
+        String result = parser.translatePSDToJavaScript(input);
+        Assert.assertEquals(input, result);
+    }
+    
 }

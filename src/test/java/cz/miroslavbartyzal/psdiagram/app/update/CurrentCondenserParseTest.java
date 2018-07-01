@@ -27,7 +27,7 @@ public class CurrentCondenserParseTest
         ChangesCondenser condenser = null;
         try {
             condenser = ChangesCondenserTest.JAXBCondenserUnmarshal(new FileInputStream(
-                    System.getenv("OPENSHIFT_DATA_DIR") + "versioninfo.xml"));
+                    System.getenv("PSD_DATA_DIR") + "versioninfo.xml"));
         } catch (FileNotFoundException ex) {
             ex.printStackTrace(System.err);
         }

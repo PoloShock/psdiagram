@@ -126,7 +126,7 @@ public class ANTLRParser implements PSDParser
         try {
             PSDGrammarParser parser = createBailOutParser(input, true);
             PSDToJavaScriptVisitor visitor = new PSDToJavaScriptVisitor(input);
-            return visitor.visit(parser.expression());
+            return visitor.visit(parser.solo_Expression());
         } catch (RuntimeException ex) {
             return input;
         }

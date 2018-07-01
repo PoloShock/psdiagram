@@ -32,7 +32,7 @@ public class XMLtoHTMLConversionTest
         // Source
         JAXBContext jc = JAXBUpdateContext.getJAXBContext();
         ChangesCondenser condenser = (ChangesCondenser) JAXBUpdateContext.getUnmarshaller().unmarshal(
-                new File(System.getenv("OPENSHIFT_DATA_DIR") + "versioninfo.xml"));
+                new File(System.getenv("PSD_DATA_DIR") + "versioninfo.xml"));
         JAXBSource source = new JAXBSource(jc, condenser);
 
         // Result

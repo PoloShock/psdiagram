@@ -107,12 +107,18 @@ public class PSDToJavaScriptVisitor extends PSDGrammarParserBaseVisitor<String>
     @Override
     public String visitTerminal(TerminalNode node)
     {
+        if (node.getSymbol().getType() == PSDGrammarParser.EOF) {
+            return "";
+        }
+        
         String spaceLeft = getTerminalSpaceLeft(node.getSymbol().getStartIndex());
         String spaceRight = getTerminalSpaceRight(node.getSymbol().getStopIndex());
 
-        String nodeText = node.getText();
+        String nodeText;
         if (node.getSymbol().getType() == PSDGrammarParser.EQUAL) {
             nodeText = "==";
+        } else {
+            nodeText = node.getText();
         }
 
         return spaceLeft + nodeText + spaceRight;

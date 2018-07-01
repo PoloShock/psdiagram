@@ -21,6 +21,7 @@ import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
 import cz.miroslavbartyzal.psdiagram.app.global.RegexFunctions;
 import cz.miroslavbartyzal.psdiagram.app.gui.EnhancedJOptionPane;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.AbstractSymbolFunctionForm;
+import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.ConstantFilter;
 import cz.miroslavbartyzal.psdiagram.app.parser.antlr.ANTLRParser;
 import java.awt.geom.Path2D;
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ import javax.swing.JOptionPane;
  * Tato třída představuje jakýsi "blackbox", či "postýlku", ve které jsou
  * prováděny veškeré funkce symbolů. K tomuto účelu je používán Javascript
  * (Rhino), který je součástí JDK Javy.</p>
- *
+ * <p>
  * <p>
  * Funkce symbolu je provedena a následně jsou všechny proměnné
  * překontrolovány, přičemž se hledají jejich případné modifikace či proměnné,
@@ -46,6 +47,7 @@ import javax.swing.JOptionPane;
  */
 public final class ElementFunctionBed
 {
+
     private static final ANTLRParser parser = new ANTLRParser();
 
     private static final String scriptStart = "importPackage(javax.swing);"
@@ -131,10 +133,10 @@ public final class ElementFunctionBed
         Symbol symbol = actualElement.getSymbol();
         if (symbol instanceof StartEnd && (actualSegment.getParentElement() != null
                 || actualSegment.indexOfElement(actualElement) > 1 || (actualSegment.indexOfElement(
-                        actualElement) == 1 && !(actualSegment.getElement(0).getSymbol() instanceof Comment)))) { // > 1 protoze 0ty muze byt komentar
+                actualElement) == 1 && !(actualSegment.getElement(0).getSymbol() instanceof Comment)))) { // > 1 protoze 0ty muze byt komentar
             return result;
         }
-        
+
         if ((symbol instanceof Goto || symbol instanceof GotoLabel)
                 && (symbol.getValue() == null || symbol.getValue().matches("\\s*"))) {
             JOptionPane.showMessageDialog(null,
@@ -142,7 +144,7 @@ public final class ElementFunctionBed
                     "Chybí textová hodnota symbolu", JOptionPane.ERROR_MESSAGE);
             return result;
         }
-        
+
         HashMap<String, String> commandsOriginal = null;
         HashMap<String, String> commandsProcessed = null;
         if (symbol.getCommands() != null) {
@@ -151,7 +153,7 @@ public final class ElementFunctionBed
             commandsProcessed = new HashMap<>(commandsOriginal);
             translateToJavaScript(commandsProcessed);
         }
-        
+
         int innerSegment = -1;
 
         if (symbol instanceof Switch) {
@@ -392,7 +394,7 @@ public final class ElementFunctionBed
             }
         }
     }
-    
+
     private static void translateToJavaScript(HashMap<String, String> commands)
     {
         for (String key : commands.keySet()) {
@@ -400,7 +402,7 @@ public final class ElementFunctionBed
             commands.put(key, value);
         }
     }
-    
+
     //*************************************************************************
     //*******************SYMBOLS PROGRESS AND UPDATEVARS SET*******************
     //*************************************************************************
@@ -451,23 +453,21 @@ public final class ElementFunctionBed
             if (i % 2 == 1) {
                 commandSplit[i] = AbstractSymbolFunctionForm.convertToPSDDisplayCommands(
                         commandSplit[i]);
-            } else {
-                if (!commandSplit[i].equals("") && !commandSplit[i].matches("^\\s+$")) {
-                    // nahradim promennou jeji hodnotou
-                    String[] extraRet = new String[1];
-                    try {
-                        //doSymbolScript(variables, "_extraRet_[0] = " + commandSplit[i] + ";", extraRet);
-                        //doSymbolScript(variables, "_extraRet_[0] = " + commandSplit[i] + ".toSource();", extraRet);
-                        doSymbolScript(variables,
-                                "_extraRet_[0] = myUneval(" + commandSplit[i] + ");", extraRet, true);
-                    } catch (ScriptException ex) {
-                        // won't happen since silent is on true as doSymbolScript call parameter
-                        ex.printStackTrace(System.err);
-                    }
+            } else if (!commandSplit[i].equals("") && !commandSplit[i].matches("^\\s+$")) {
+                // nahradim promennou jeji hodnotou
+                String[] extraRet = new String[1];
+                try {
+                    //doSymbolScript(variables, "_extraRet_[0] = " + commandSplit[i] + ";", extraRet);
+                    //doSymbolScript(variables, "_extraRet_[0] = " + commandSplit[i] + ".toSource();", extraRet);
+                    doSymbolScript(variables,
+                            "_extraRet_[0] = myUneval(" + commandSplit[i] + ");", extraRet, true);
+                } catch (ScriptException ex) {
+                    // won't happen since silent is on true as doSymbolScript call parameter
+                    ex.printStackTrace(System.err);
+                }
 
-                    if (extraRet[0] != null) {
-                        commandSplit[i] = extraRet[0];
-                    }
+                if (extraRet[0] != null) {
+                    commandSplit[i] = extraRet[0];
                 }
             }
         }
@@ -503,7 +503,7 @@ public final class ElementFunctionBed
 
         // bohuzel switch nema za stejne hodnoty new Number(1) a 1; new String("ahoj") a "ahoj"
         // musel bych kazdou "key" hodnotu protahnout scriptovou toSource() metodou - to uz bude lepsi nahradit switch if else..
-            /*
+        /*
          * String script = ""
          * + "_extraRet_[0] = " + commands.get("conditionVar") + ";"
          * + "if (false){}";
@@ -535,7 +535,7 @@ public final class ElementFunctionBed
     }
 
     private static int decisionSetProgAndUpVars(FunctionResult result,
-            HashMap<String, String> commands, HashMap<String, String> originalCommands, 
+            HashMap<String, String> commands, HashMap<String, String> originalCommands,
             HashMap<String, String> variables)
     {
         String[] extraRet = new String[]{"-1"};
@@ -561,7 +561,7 @@ public final class ElementFunctionBed
         String[] extraRet = new String[]{null, "-1"};
         String script = "if ((" + commands.get("inc") + " > 0 && " + commands.get("var") + " > " + commands.get(
                 "to") + ") || (" + commands.get("inc") + " < 0 && " + commands.get("var") + " < " + commands.get(
-                        "to") + ")) {";
+                "to") + ")) {";
         if (variables.containsKey(commands.get("var"))) {
             // inicializace jiz probehla
             if (commands.containsKey("array")) {
@@ -577,7 +577,7 @@ public final class ElementFunctionBed
             } else {
                 script = ""
                         + "var " + commands.get("var") + " = " + commands.get("var") + " + " + commands.get(
-                                "inc") + ";"
+                        "inc") + ";"
                         + script
                         + "_extraRet_[1] = -1;"
                         + "} else {"
@@ -662,9 +662,11 @@ public final class ElementFunctionBed
             if (input == null) {
                 input = "null";
                 result.haltDebug = true;
-            } else if (!input.matches("^(\\-|\\+)?([1-9]|0(?=\\.|$))[0-9]*(\\.[0-9]+)?$")) {
-                // input is not a number
-                input = "\"" + input.replaceAll("\"", "").replaceAll("\'", "") + "\"";
+            } else if (!input.matches("^(\\-|\\+)?([1-9]|0(?=\\.|$))[0-9]*(\\.[0-9]+)?$")
+                    && (!input.startsWith("[") || !input.endsWith("]")
+                    || !ConstantFilter.isValid(input.substring(1, input.length() - 1)))) {
+                // input is not a number nor a constant array
+                input = "\"" + input.replaceAll("(?<!\\\\)\"", "") + "\"";
             }
 
             if (!commands.get("var").contains("[")) {
@@ -714,7 +716,7 @@ public final class ElementFunctionBed
     }
 
     private static int processSetProgAndUpVars(FunctionResult result,
-            HashMap<String, String> commands, HashMap<String, String> originalCommands, 
+            HashMap<String, String> commands, HashMap<String, String> originalCommands,
             HashMap<String, String> variables)
     {
         String var = "";

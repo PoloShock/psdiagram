@@ -96,12 +96,12 @@ public final class Main
     // TODO implementovat moznost online dotazniku primo v PSDcku
     // TODO konzole?
     // TODO kdybych jeste chtel dark theme, tak: https://github.com/Revivius/nb-darcula
-    //!e TODO sbirat diagramove vytvory
     //!e TODO doplnit operator "^" pro exponovani
     // TODO pri zadani napr. 'a%2 = = 1' to ve druhem hintu rika, ze je na leve strane logicka hodnota, pritom tam není nic!
     // TODO pri validaci jediného '&' se v dalších validacích hlásí jako logické AND.. a pritom predtim rikam ze to neni log. AND
     // TODO zkontrolovat chování checkboxu pro výchozí hodnoty textu symbolů -> stávalo se mi, že po kliknutí na zaškrtnutý zůstal zaškrtnutý
     //e TODO implementovat sifrovani ve FlowchartCollector-u
+    //e updatovat na javu 10
     /**
      * Metoda pro spuštění hlavního okna aplikace. Nejsou přijímány žádné
      * parametry.

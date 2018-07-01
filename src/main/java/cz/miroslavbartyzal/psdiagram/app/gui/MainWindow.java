@@ -898,6 +898,7 @@ public final class MainWindow extends javax.swing.JFrame
     jSliderZoom.setValue(10);
     jSliderZoom.setPreferredSize(new java.awt.Dimension(150, 21));
 
+    jLabelZoom.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
     jLabelZoom.setText("100%");
     jLabelZoom.setPreferredSize(new java.awt.Dimension(32, 21));
 
@@ -907,9 +908,9 @@ public final class MainWindow extends javax.swing.JFrame
         jPanelStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelStatusLayout.createSequentialGroup()
             .addContainerGap()
-            .addComponent(jLabelStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jLabelStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 691, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addComponent(jLabelZoom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jLabelZoom, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
             .addComponent(jSliderZoom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addContainerGap())
@@ -1376,7 +1377,7 @@ public final class MainWindow extends javax.swing.JFrame
     getContentPane().setLayout(layout);
     layout.setHorizontalGroup(
         layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-        .addComponent(jToolBarMenu, javax.swing.GroupLayout.DEFAULT_SIZE, 900, Short.MAX_VALUE)
+        .addComponent(jToolBarMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         .addComponent(jPanelStatus, javax.swing.GroupLayout.DEFAULT_SIZE, 900, Short.MAX_VALUE)
         .addComponent(jSplitPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
     );
@@ -2321,7 +2322,7 @@ public final class MainWindow extends javax.swing.JFrame
             currentTime = System.currentTimeMillis();
         }
 
-        final Long expiration = 1530396000000L; // 2018.7.1. 00:00:00 = 1530396000000 (System.out.println(new GregorianCalendar(2018, 6, 1).getTimeInMillis());) - month is zero-based
+        final Long expiration = 1563141600000L; // 2019.7.15. 00:00:00 = 1563141600000 (System.out.println(new GregorianCalendar(2019, 6, 15).getTimeInMillis());) - month is zero-based
         daysLeft = (expiration - currentTime) / 86400000l;
         if (currentTime > expiration || currentTime < SettingsHolder.settings.getLastTrialLaunchedTime()) {
 //            System.exit(0); <- let's let the user download newer version of PS Diagram

@@ -4,7 +4,7 @@
 
     <groupId>cz.miroslavbartyzal</groupId>
     <artifactId>psdiagram</artifactId>
-    <version>1.4.1.1</version>
+    <version>1.4.2</version>
     <packaging>jar</packaging>
     <name>PS Diagram</name>
     <url>http://www.psdiagram.cz</url>
@@ -72,7 +72,7 @@
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
-            <version>4.7</version>
+            <version>4.7.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.abego.treelayout</groupId>
@@ -134,12 +134,12 @@
                                     <changelogurl>http://www.psdiagram.cz/changelog</changelogurl>
                                     <releaseurl></releaseurl>
 
-                                    <headline>Oprava switch symbolu</headline>
+                                    <headline>Pole jako uživatelský vstup do Vstup/Výstup symbolu</headline>
                                     <description>
                                         <![CDATA[
                                         <html>
-                                            <p align="justify">Malá oprava na základě oznámení.</p>
-                                            <p align="justify">Děkuji paní Miroslavě za zprávu! :)</p>
+                                            <p align="justify">Dnešní aktualizace je věnována vylepšení zadávání hodnot do symbolu Vstup/Výstup. Dříve šly touto cestou zadávat pouze číslice nebo text, od teď už to půjde i s polem. Jednotlivé prvky pole už tak do algoritmu není nutné ládovat jednotlivě pomocí cyklu. :) Stačí výčet prvků oddělit čárkami a celý jej ohraničit hranatými závorkami (např. [1, 5, 3, 10]).</p>
+                                            <p align="justify">Děkuji paní Ing. Janě V. za námět na vylepšení! :)</p>
                                         </html>
                                         ]]>
                                     </description>
@@ -147,14 +147,15 @@
                                     <features>
                                     </features>
                                     <enhancements>
+                                        <enhancement>přes symbol Vstup/Výstup lze od teď do spuštěného algoritmu zadávat celá pole ve formě [1, 5, 3]</enhancement>
                                     </enhancements>
                                     <extensions>
                                     </extensions>
                                     <changes>
                                     </changes>
                                     <fixes>
-                                        <fix>switch symbol nepřepínal správně tok programu v případě zadání více konstant oddělených čárkami</fix>
-                                        <fix>switch symbol nebyl při syntaktické chybě některé z konstant vykreslen červeně</fix>
+                                        <fix>symbol Vstup/Výstup již přijímá textové hodnoty včetně případných uvozovek (dvojité uvozovky je nutné escapovat)</fix>
+                                        <fix>zobrazení aktuální hodnoty zvětšení vývojového diagramu bylo v linuxu useknuté</fix>
                                     </fixes>
                                     <others>
                                     </others>
@@ -220,7 +221,7 @@
                                             <fileset dir="${basedir}/src/main/resources/intozip"/>
                                         </copy>
                                         <copy todir="${project.build.directory}/zip/PS Diagram/jre">
-                                            <fileset dir="c:/Program Files (x86)/Java/jre1.8.0_144"/>
+                                            <fileset dir="c:/Program Files (x86)/Java/jre1.8.0_172"/>
                                         </copy>
                                         <copy file="c:/Zaloha/Programovani/Moje/Visual Studio 2013/PS Diagram Launcher/PS Diagram Launcher/bin/Release/PS Diagram.exe" todir="${project.build.directory}/zip/PS Diagram"/>
                                         <zip destfile="${project.build.directory}/OPENSHIFT_DATA/PS_Diagram_${project.version}.zip"
@@ -436,7 +437,7 @@
             <plugin>
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr4-maven-plugin</artifactId>
-                <version>4.7</version>
+                <version>4.7.1</version>
                 <executions>
                     <execution>
                         <id>antlr</id>

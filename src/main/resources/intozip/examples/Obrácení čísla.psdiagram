@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<flowchartSaveContainer>
+    <flowchart>
+        <mainSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="layoutSegment" xmlID="0">
+            <element xsi:type="layoutElement" xmlID="5" parentSegment="0">
+                <comment>
+                    <borderColor>0,0,0,255</borderColor>
+                    <shapeDownColor>230,230,230,255</shapeDownColor>
+                    <hasShadow>true</hasShadow>
+                    <customValue>Algoritmus pro obrácení pořadí cifer 
+zadaného čísla, nemůžeme-li použít 
+převod do textového řetězce.</customValue>
+                    <commandsValid>true</commandsValid>
+                    <value>Algoritmus pro obrácení pořadí cifer 
+zadaného čísla, nemůžeme-li použít 
+převod do textového řetězce.</value>
+                    <alwaysLeftAlign>false</alwaysLeftAlign>
+                    <relativeX>64.0</relativeX>
+                    <relativeY>0.0</relativeY>
+                    <paired>true</paired>
+                </comment>
+            </element>
+            <element xsi:type="layoutElement" xmlID="1" parentSegment="0">
+                <startEnd>
+                    <borderColor>0,0,0,255</borderColor>
+                    <shapeUpColor>255,255,255,255</shapeUpColor>
+                    <shapeDownColor>230,230,230,255</shapeDownColor>
+                    <hasShadow>true</hasShadow>
+                    <commandsValid>true</commandsValid>
+                    <value>Začátek</value>
+                </startEnd>
+            </element>
+            <element xsi:type="layoutElement" xmlID="22" parentSegment="0">
+                <process>
+                    <borderColor>0,0,0,255</borderColor>
+                    <shapeUpColor>255,255,255,255</shapeUpColor>
+                    <shapeDownColor>230,230,230,255</shapeDownColor>
+                    <hasShadow>true</hasShadow>
+                    <defaultValue>a ← 0</defaultValue>
+                    <commands>
+                        <entry key="var">a</entry>
+                        <entry key="value">0</entry>
+                    </commands>
+                    <commandsValid>true</commandsValid>
+                    <value>a ← 0</value>
+                </process>
+            </element>
+            <element xsi:type="layoutElement" xmlID="20" parentSegment="0">
+                <loopStart>
+                    <borderColor>0,0,0,255</borderColor>
+                    <shapeUpColor>255,255,255,255</shapeUpColor>
+                    <shapeDownColor>230,230,230,255</shapeDownColor>
+                    <hasShadow>true</hasShadow>
+                    <commandsValid>true</commandsValid>
+                    <value></value>
+                    <overHanged>false</overHanged>
+                </loopStart>
+                <segment xsi:nil="true"/>
+                <segment xsi:type="layoutSegment" xmlID="21" parentElement="20">
+                    <element xsi:type="layoutElement" xmlID="4" parentSegment="21">
+                        <io>
+                            <borderColor>0,0,0,255</borderColor>
+                            <shapeUpColor>255,255,255,255</shapeUpColor>
+                            <shapeDownColor>230,230,230,255</shapeDownColor>
+                            <hasShadow>true</hasShadow>
+                            <customValue>"Zadejte celé 
+nezáporné 
+číslo" →</customValue>
+                            <defaultValue>"Zadejte celé nezáporné číslo" →</defaultValue>
+                            <commands>
+<entry key="value">"Zadejte celé nezáporné číslo"</entry>
+                            </commands>
+                            <commandsValid>true</commandsValid>
+                            <value>"Zadejte celé 
+nezáporné 
+číslo" →</value>
+                        </io>
+                    </element>
+                    <element xsi:type="layoutElement" xmlID="3" parentSegment="21">
+                        <io>
+                            <borderColor>0,0,0,255</borderColor>
+                            <shapeUpColor>255,255,255,255</shapeUpColor>
+                            <shapeDownColor>230,230,230,255</shapeDownColor>
+                            <hasShadow>true</hasShadow>
+                            <defaultValue>a ←</defaultValue>
+                            <commands>
+<entry key="var">a</entry>
+                            </commands>
+                            <commandsValid>true</commandsValid>
+                            <value>a ←</value>
+                        </io>
+                    </element>
+                </segment>
+            </element>
+            <element xsi:type="layoutElement" xmlID="23" parentSegment="0">
+                <comment>
+                    <borderColor>0,0,0,255</borderColor>
+                    <shapeDownColor>230,230,230,255</shapeDownColor>
+                    <hasShadow>true</hasShadow>
+                    <customValue>není-li 'a' číslo, 
+nebo je 'a' menší než nula,
+nebo 'a' není celé číslo,
+...opakuj</customValue>
+                    <commandsValid>true</commandsValid>
+                    <value>není-li 'a' číslo, 
+nebo je 'a' menší než nula,
+nebo 'a' není celé číslo,
+...opakuj</value>
+                    <alwaysLeftAlign>false</alwaysLeftAlign>
+                    <relativeX>93.0</relativeX>
+                    <relativeY>49.0</relativeY>
+                    <paired>true</paired>
+                </comment>
+            </element>
+            <element xsi:type="layoutElement" xmlID="19" parentSegment="0">
+                <loopEnd>
+                    <borderColor>0,0,0,255</borderColor>
+                    <shapeUpColor>255,255,255,255</shapeUpColor>
+                    <shapeDownColor>230,230,230,255</shapeDownColor>
+                    <hasShadow>true</hasShadow>
+                    <customValue>isNaN(a) 
+|| a &lt; 0 
+|| a%1 &gt; 0</customValue>
+                    <defaultValue>isNaN(a) || a &lt; 0 || a%1 &gt; 0</defaultValue>
+                    <commands>
+                        <entry key="condition">isNaN(a) || a &lt; 0 || a%1 &gt; 0</entry>
+                    </commands>
+                    <commandsValid>true</commandsValid>
+                    <value>isNaN(a) 
+|| a &lt; 0 
+|| a%1 &gt; 0</value>
+                </loopEnd>
+            </element>
+            <element xsi:type="layoutElement" xmlID="9" parentSegment="0">
+                <process>
+                    <borderColor>0,0,0,255</borderColor>
+                    <shapeUpColor>255,255,255,255</shapeUpColor>
+                    <shapeDownColor>230,230,230,255</shapeDownColor>
+                    <hasShadow>true</hasShadow>
+                    <defaultValue>cifry ← []</defaultValue>
+                    <commands>
+                        <entry key="var">cifry</entry>
+                        <entry key="value">[]</entry>
+                    </commands>
+                    <commandsValid>true</commandsValid>
+                    <value>cifry ← []</value>
+                </process>
+            </element>
+            <element xsi:type="layoutElement" xmlID="7" parentSegment="0">
+                <loopStart>
+                    <borderColor>0,0,0,255</borderColor>
+                    <shapeUpColor>255,255,255,255</shapeUpColor>
+                    <shapeDownColor>230,230,230,255</shapeDownColor>
+                    <hasShadow>true</hasShadow>
+                    <defaultValue>a ≠ 0</defaultValue>
+                    <commands>
+                        <entry key="condition">a != 0</entry>
+                    </commands>
+                    <commandsValid>true</commandsValid>
+                    <value>a ≠ 0</value>
+                    <overHanged>true</overHanged>
+                </loopStart>
+                <segment xsi:nil="true"/>
+                <segment xsi:type="layoutSegment" xmlID="8" parentElement="7">
+                    <element xsi:type="layoutElement" xmlID="10" parentSegment="8">
+                        <process>
+                            <borderColor>0,0,0,255</borderColor>
+                            <shapeUpColor>255,255,255,255</shapeUpColor>
+                            <shapeDownColor>230,230,230,255</shapeDownColor>
+                            <hasShadow>true</hasShadow>
+                            <defaultValue>cifra ← a%10</defaultValue>
+                            <commands>
+<entry key="var">cifra</entry>
+<entry key="value">a%10</entry>
+                            </commands>
+                            <commandsValid>true</commandsValid>
+                            <value>cifra ← a%10</value>
+                        </process>
+                    </element>
+                    <element xsi:type="layoutElement" xmlID="17" parentSegment="8">
+                        <process>
+                            <borderColor>0,0,0,255</borderColor>
+                            <shapeUpColor>255,255,255,255</shapeUpColor>
+                            <shapeDownColor>230,230,230,255</shapeDownColor>
+                            <hasShadow>true</hasShadow>
+                            <defaultValue>cifry[cifry.length] ← cifra</defaultValue>
+                            <commands>
+<entry key="var">cifry[cifry.length]</entry>
+<entry key="value">cifra</entry>
+                            </commands>
+                            <commandsValid>true</commandsValid>
+                            <value>cifry[cifry.length] ← cifra</value>
+                        </process>
+                    </element>
+                    <element xsi:type="layoutElement" xmlID="25" parentSegment="8">
+                        <comment>
+                            <borderColor>0,0,0,255</borderColor>
+                            <shapeDownColor>230,230,230,255</shapeDownColor>
+                            <hasShadow>true</hasShadow>
+                            <customValue>Celočíselné dělení</customValue>
+                            <commandsValid>true</commandsValid>
+                            <value>Celočíselné dělení</value>
+                            <alwaysLeftAlign>false</alwaysLeftAlign>
+                            <relativeX>56.0</relativeX>
+                            <relativeY>1.0</relativeY>
+                            <paired>true</paired>
+                        </comment>
+                    </element>
+                    <element xsi:type="layoutElement" xmlID="15" parentSegment="8">
+                        <process>
+                            <borderColor>0,0,0,255</borderColor>
+                            <shapeUpColor>255,255,255,255</shapeUpColor>
+                            <shapeDownColor>230,230,230,255</shapeDownColor>
+                            <hasShadow>true</hasShadow>
+                            <defaultValue>a ← a // 10</defaultValue>
+                            <commands>
+<entry key="var">a</entry>
+<entry key="value">a // 10</entry>
+                            </commands>
+                            <commandsValid>true</commandsValid>
+                            <value>a ← a // 10</value>
+                        </process>
+                    </element>
+                </segment>
+            </element>
+            <element xsi:type="layoutElement" xmlID="6" parentSegment="0">
+                <loopEnd>
+                    <borderColor>0,0,0,255</borderColor>
+                    <shapeUpColor>255,255,255,255</shapeUpColor>
+                    <shapeDownColor>230,230,230,255</shapeDownColor>
+                    <hasShadow>true</hasShadow>
+                    <commandsValid>true</commandsValid>
+                    <value></value>
+                </loopEnd>
+            </element>
+            <element xsi:type="layoutElement" xmlID="13" parentSegment="0">
+                <process>
+                    <borderColor>0,0,0,255</borderColor>
+                    <shapeUpColor>255,255,255,255</shapeUpColor>
+                    <shapeDownColor>230,230,230,255</shapeDownColor>
+                    <hasShadow>true</hasShadow>
+                    <defaultValue>cisloP ← 0</defaultValue>
+                    <commands>
+                        <entry key="var">cisloP</entry>
+                        <entry key="value">0</entry>
+                    </commands>
+                    <commandsValid>true</commandsValid>
+                    <value>cisloP ← 0</value>
+                </process>
+            </element>
+            <element xsi:type="layoutElement" xmlID="11" parentSegment="0">
+                <for>
+                    <borderColor>0,0,0,255</borderColor>
+                    <shapeUpColor>255,255,255,255</shapeUpColor>
+                    <shapeDownColor>230,230,230,255</shapeDownColor>
+                    <hasShadow>true</hasShadow>
+                    <defaultValue>i ← 0..cifry.length-1</defaultValue>
+                    <commands>
+                        <entry key="var">i</entry>
+                        <entry key="from">0</entry>
+                        <entry key="to">cifry.length-1</entry>
+                        <entry key="inc">1</entry>
+                    </commands>
+                    <commandsValid>true</commandsValid>
+                    <value>i ← 0..cifry.length-1</value>
+                </for>
+                <segment xsi:nil="true"/>
+                <segment xsi:type="layoutSegment" xmlID="12" parentElement="11">
+                    <element xsi:type="layoutElement" xmlID="24" parentSegment="12">
+                        <comment>
+                            <borderColor>0,0,0,255</borderColor>
+                            <shapeDownColor>230,230,230,255</shapeDownColor>
+                            <hasShadow>true</hasShadow>
+                            <customValue>Určení řádu dané cifry</customValue>
+                            <commandsValid>true</commandsValid>
+                            <value>Určení řádu dané cifry</value>
+                            <relativePointToSymbol x="16.5" y="-125.0"/>
+                            <alwaysLeftAlign>false</alwaysLeftAlign>
+                            <relativeX>30.0</relativeX>
+                            <relativeY>-125.0</relativeY>
+                            <paired>true</paired>
+                        </comment>
+                    </element>
+                    <element xsi:type="layoutElement" xmlID="18" parentSegment="12">
+                        <process>
+                            <borderColor>0,0,0,255</borderColor>
+                            <shapeUpColor>255,255,255,255</shapeUpColor>
+                            <shapeDownColor>230,230,230,255</shapeDownColor>
+                            <hasShadow>true</hasShadow>
+                            <customValue>rad ← Math.pow(10,
+cifry.length-i-1)</customValue>
+                            <defaultValue>rad ← Math.pow(10,cifry.length-i-1)</defaultValue>
+                            <commands>
+<entry key="var">rad</entry>
+<entry key="value">Math.pow(10,cifry.length-i-1)</entry>
+                            </commands>
+                            <commandsValid>true</commandsValid>
+                            <value>rad ← Math.pow(10,cifry.length-i-1)</value>
+                        </process>
+                    </element>
+                    <element xsi:type="layoutElement" xmlID="16" parentSegment="12">
+                        <process>
+                            <borderColor>0,0,0,255</borderColor>
+                            <shapeUpColor>255,255,255,255</shapeUpColor>
+                            <shapeDownColor>230,230,230,255</shapeDownColor>
+                            <hasShadow>true</hasShadow>
+                            <customValue>cisloP ← 
+cisloP + cifry[i]*rad</customValue>
+                            <defaultValue>cisloP ← cisloP + cifry[i]*rad</defaultValue>
+                            <commands>
+<entry key="var">cisloP</entry>
+<entry key="value">cisloP + cifry[i]*rad</entry>
+                            </commands>
+                            <commandsValid>true</commandsValid>
+                            <value>cisloP ← cisloP + cifry[i]*rad</value>
+                        </process>
+                    </element>
+                </segment>
+            </element>
+            <element xsi:type="layoutElement" xmlID="14" parentSegment="0">
+                <io>
+                    <borderColor>0,0,0,255</borderColor>
+                    <shapeUpColor>255,255,255,255</shapeUpColor>
+                    <shapeDownColor>230,230,230,255</shapeDownColor>
+                    <hasShadow>true</hasShadow>
+                    <defaultValue>"Výsledek: " + cisloP →</defaultValue>
+                    <commands>
+                        <entry key="value">"Výsledek: " + cisloP</entry>
+                    </commands>
+                    <commandsValid>true</commandsValid>
+                    <value>"Výsledek: " + cisloP →</value>
+                </io>
+            </element>
+            <element xsi:type="layoutElement" xmlID="2" parentSegment="0">
+                <startEnd>
+                    <borderColor>0,0,0,255</borderColor>
+                    <shapeUpColor>255,255,255,255</shapeUpColor>
+                    <shapeDownColor>230,230,230,255</shapeDownColor>
+                    <hasShadow>true</hasShadow>
+                    <commandsValid>true</commandsValid>
+                    <value>Konec</value>
+                </startEnd>
+            </element>
+        </mainSegment>
+    </flowchart>
+</flowchartSaveContainer>

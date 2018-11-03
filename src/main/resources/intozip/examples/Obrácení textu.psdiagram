@@ -2,21 +2,19 @@
 <flowchartSaveContainer>
     <flowchart>
         <mainSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="layoutSegment" xmlID="0">
-            <element xsi:type="layoutElement" xmlID="9" parentSegment="0">
+            <element xsi:type="layoutElement" xmlID="10" parentSegment="0">
                 <comment>
                     <borderColor>0,0,0,255</borderColor>
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
-                    <customValue>Algoritmus výpočtu faktoriálu
-celého nezáporného čísla n
-podle vzorce: n! = 1*2*3..n</customValue>
+                    <customValue>Algoritmus pro obrácení pořadí 
+znaků zadaného textového řetězce.</customValue>
                     <commandsValid>true</commandsValid>
-                    <value>Algoritmus výpočtu faktoriálu
-celého nezáporného čísla n
-podle vzorce: n! = 1*2*3..n</value>
+                    <value>Algoritmus pro obrácení pořadí 
+znaků zadaného textového řetězce.</value>
                     <alwaysLeftAlign>false</alwaysLeftAlign>
-                    <relativeX>114.0</relativeX>
-                    <relativeY>35.0</relativeY>
+                    <relativeX>67.0</relativeX>
+                    <relativeY>0.0</relativeY>
                     <paired>true</paired>
                 </comment>
             </element>
@@ -27,25 +25,25 @@ podle vzorce: n! = 1*2*3..n</value>
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
                     <commandsValid>true</commandsValid>
-                    <value>Start</value>
+                    <value>Začátek</value>
                 </startEnd>
             </element>
-            <element xsi:type="layoutElement" xmlID="6" parentSegment="0">
+            <element xsi:type="layoutElement" xmlID="14" parentSegment="0">
                 <process>
                     <borderColor>0,0,0,255</borderColor>
                     <shapeUpColor>255,255,255,255</shapeUpColor>
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
-                    <defaultValue>n ← 0</defaultValue>
+                    <defaultValue>text ← ""</defaultValue>
                     <commands>
-                        <entry key="var">n</entry>
-                        <entry key="value">0</entry>
+                        <entry key="var">text</entry>
+                        <entry key="value">""</entry>
                     </commands>
                     <commandsValid>true</commandsValid>
-                    <value>n ← 0</value>
+                    <value>text ← ""</value>
                 </process>
             </element>
-            <element xsi:type="layoutElement" xmlID="4" parentSegment="0">
+            <element xsi:type="layoutElement" xmlID="12" parentSegment="0">
                 <loopStart>
                     <borderColor>0,0,0,255</borderColor>
                     <shapeUpColor>255,255,255,255</shapeUpColor>
@@ -56,143 +54,153 @@ podle vzorce: n! = 1*2*3..n</value>
                     <overHanged>false</overHanged>
                 </loopStart>
                 <segment xsi:nil="true"/>
-                <segment xsi:type="layoutSegment" xmlID="5" parentElement="4">
-                    <element xsi:type="layoutElement" xmlID="8" parentSegment="5">
+                <segment xsi:type="layoutSegment" xmlID="13" parentElement="12">
+                    <element xsi:type="layoutElement" xmlID="3" parentSegment="13">
                         <io>
                             <borderColor>0,0,0,255</borderColor>
                             <shapeUpColor>255,255,255,255</shapeUpColor>
                             <shapeDownColor>230,230,230,255</shapeDownColor>
                             <hasShadow>true</hasShadow>
-                            <customValue>"zadejte cele
-nezaporne
-cislo" →</customValue>
-                            <defaultValue>"zadejte cele nezaporne cislo" →</defaultValue>
+                            <defaultValue>"Zadejte jakýkoliv text" →</defaultValue>
                             <commands>
-<entry key="value">"zadejte cele nezaporne cislo"</entry>
+<entry key="value">"Zadejte jakýkoliv text"</entry>
                             </commands>
                             <commandsValid>true</commandsValid>
-                            <value>"zadejte cele
-nezaporne
-cislo" →</value>
+                            <value>"Zadejte jakýkoliv text" →</value>
                         </io>
                     </element>
-                    <element xsi:type="layoutElement" xmlID="7" parentSegment="5">
+                    <element xsi:type="layoutElement" xmlID="4" parentSegment="13">
                         <io>
                             <borderColor>0,0,0,255</borderColor>
                             <shapeUpColor>255,255,255,255</shapeUpColor>
                             <shapeDownColor>230,230,230,255</shapeDownColor>
                             <hasShadow>true</hasShadow>
-                            <defaultValue>n ←</defaultValue>
+                            <defaultValue>text ←</defaultValue>
                             <commands>
-<entry key="var">n</entry>
+<entry key="var">text</entry>
                             </commands>
                             <commandsValid>true</commandsValid>
-                            <value>n ←</value>
+                            <value>text ←</value>
                         </io>
                     </element>
                 </segment>
             </element>
-            <element xsi:type="layoutElement" xmlID="10" parentSegment="0">
+            <element xsi:type="layoutElement" xmlID="15" parentSegment="0">
                 <comment>
                     <borderColor>0,0,0,255</borderColor>
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
-                    <customValue>není-li n číslo, 
-nebo je n menší než nula,
-nebo n není celé číslo,
+                    <customValue>je-li 'text' číslo, 
+nebo je 'text' pole,
 ...opakuj</customValue>
                     <commandsValid>true</commandsValid>
-                    <value>není-li n číslo, 
-nebo je n menší než nula,
-nebo n není celé číslo,
+                    <value>je-li 'text' číslo, 
+nebo je 'text' pole,
 ...opakuj</value>
                     <alwaysLeftAlign>false</alwaysLeftAlign>
-                    <relativeX>97.0</relativeX>
-                    <relativeY>46.0</relativeY>
+                    <relativeX>100.0</relativeX>
+                    <relativeY>47.0</relativeY>
                     <paired>true</paired>
                 </comment>
             </element>
-            <element xsi:type="layoutElement" xmlID="3" parentSegment="0">
+            <element xsi:type="layoutElement" xmlID="11" parentSegment="0">
                 <loopEnd>
                     <borderColor>0,0,0,255</borderColor>
                     <shapeUpColor>255,255,255,255</shapeUpColor>
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
-                    <customValue>isNaN(n)
-| n &lt; 0
-| n%1 &gt; 0</customValue>
-                    <defaultValue>isNaN(n) | n &lt; 0 | n%1 &gt; 0</defaultValue>
+                    <customValue>¬isNaN(text) 
+|| Array.isArray(text)</customValue>
+                    <defaultValue>¬isNaN(text) || Array.isArray(text)</defaultValue>
                     <commands>
-                        <entry key="condition">isNaN(n) || n &lt; 0 || n%1 &gt; 0</entry>
+                        <entry key="condition">!isNaN(text) || Array.isArray(text)</entry>
                     </commands>
                     <commandsValid>true</commandsValid>
-                    <value>isNaN(n)
-| n &lt; 0
-| n%1 &gt; 0</value>
+                    <value>¬isNaN(text) 
+|| Array.isArray(text)</value>
                 </loopEnd>
             </element>
-            <element xsi:type="layoutElement" xmlID="18" parentSegment="0">
+            <element xsi:type="layoutElement" xmlID="7" parentSegment="0">
                 <process>
                     <borderColor>0,0,0,255</borderColor>
                     <shapeUpColor>255,255,255,255</shapeUpColor>
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
-                    <defaultValue>f ← 1</defaultValue>
+                    <defaultValue>textP ← ""</defaultValue>
                     <commands>
-                        <entry key="var">f</entry>
-                        <entry key="value">1</entry>
+                        <entry key="var">textP</entry>
+                        <entry key="value">""</entry>
                     </commands>
                     <commandsValid>true</commandsValid>
-                    <value>f ← 1</value>
+                    <value>textP ← ""</value>
                 </process>
             </element>
-            <element xsi:type="layoutElement" xmlID="16" parentSegment="0">
+            <element xsi:type="layoutElement" xmlID="5" parentSegment="0">
                 <for>
                     <borderColor>0,0,0,255</borderColor>
                     <shapeUpColor>255,255,255,255</shapeUpColor>
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
-                    <defaultValue>i ← 2..n</defaultValue>
+                    <defaultValue>i ← 0..text.length-1</defaultValue>
                     <commands>
                         <entry key="var">i</entry>
-                        <entry key="from">2</entry>
-                        <entry key="to">n</entry>
+                        <entry key="from">0</entry>
+                        <entry key="to">text.length-1</entry>
                         <entry key="inc">1</entry>
                     </commands>
                     <commandsValid>true</commandsValid>
-                    <value>i ← 2..n</value>
+                    <value>i ← 0..text.length-1</value>
                 </for>
                 <segment xsi:nil="true"/>
-                <segment xsi:type="layoutSegment" xmlID="17" parentElement="16">
-                    <element xsi:type="layoutElement" xmlID="19" parentSegment="17">
+                <segment xsi:type="layoutSegment" xmlID="6" parentElement="5">
+                    <element xsi:type="layoutElement" xmlID="16" parentSegment="6">
+                        <comment>
+                            <borderColor>0,0,0,255</borderColor>
+                            <shapeDownColor>230,230,230,255</shapeDownColor>
+                            <hasShadow>true</hasShadow>
+                            <customValue>S textovým řetězcem lze 
+pracovat jako s polem znaků.</customValue>
+                            <commandsValid>true</commandsValid>
+                            <value>S textovým řetězcem lze 
+pracovat jako s polem znaků.</value>
+                            <relativePointToSymbol x="15.5" y="-97.5"/>
+                            <alwaysLeftAlign>false</alwaysLeftAlign>
+                            <relativeX>31.0</relativeX>
+                            <relativeY>-97.0</relativeY>
+                            <paired>true</paired>
+                        </comment>
+                    </element>
+                    <element xsi:type="layoutElement" xmlID="8" parentSegment="6">
                         <process>
                             <borderColor>0,0,0,255</borderColor>
                             <shapeUpColor>255,255,255,255</shapeUpColor>
                             <shapeDownColor>230,230,230,255</shapeDownColor>
                             <hasShadow>true</hasShadow>
-                            <defaultValue>f ← f*i</defaultValue>
+                            <defaultValue>textP ← text[i] + textP</defaultValue>
                             <commands>
-<entry key="var">f</entry>
-<entry key="value">f*i</entry>
+<entry key="var">textP</entry>
+<entry key="value">text[i] + textP</entry>
                             </commands>
                             <commandsValid>true</commandsValid>
-                            <value>f ← f*i</value>
+                            <value>textP ← text[i] + textP</value>
                         </process>
                     </element>
                 </segment>
             </element>
-            <element xsi:type="layoutElement" xmlID="15" parentSegment="0">
+            <element xsi:type="layoutElement" xmlID="9" parentSegment="0">
                 <io>
                     <borderColor>0,0,0,255</borderColor>
                     <shapeUpColor>255,255,255,255</shapeUpColor>
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
-                    <defaultValue>f →</defaultValue>
+                    <customValue>"Převrácený text: "
+ + textP →</customValue>
+                    <defaultValue>"Obrácená verze textu: " + textP →</defaultValue>
                     <commands>
-                        <entry key="value">f</entry>
+                        <entry key="value">"Obrácená verze textu: " + textP</entry>
                     </commands>
                     <commandsValid>true</commandsValid>
-                    <value>f →</value>
+                    <value>"Obrácená verze textu: " + textP →</value>
                 </io>
             </element>
             <element xsi:type="layoutElement" xmlID="2" parentSegment="0">

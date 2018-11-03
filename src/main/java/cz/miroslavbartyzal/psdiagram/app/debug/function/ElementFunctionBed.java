@@ -26,11 +26,11 @@ import cz.miroslavbartyzal.psdiagram.app.parser.antlr.ANTLRParser;
 import java.awt.geom.Path2D;
 import java.util.ArrayList;
 import java.util.HashMap;
-import javax.script.Invocable;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.swing.JOptionPane;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Function;
+import org.mozilla.javascript.ScriptableObject;
 
 /**
  * <p>
@@ -50,7 +50,7 @@ public final class ElementFunctionBed
 
     private static final ANTLRParser parser = new ANTLRParser();
 
-    private static final String scriptStart = "importPackage(javax.swing);"
+    private static final String scriptStart = ""
             + "var updateVariables = \"{"
             + "var _locals = (function(){}).__parent__;"
             + "for (var _i in _locals) {"
@@ -286,11 +286,6 @@ public final class ElementFunctionBed
         return result;
     }
 
-    private static ScriptEngine getJavaScriptEngine()
-    {
-        return new ScriptEngineManager().getEngineByName("rhino");
-    }
-
     /**
      *
      * @param variables
@@ -303,19 +298,20 @@ public final class ElementFunctionBed
             String symbolScript, String[] extraReturn, boolean silently) throws ScriptException
     {
         HashMap<String, String> updatedVariables = new HashMap<>();
-        ScriptEngine jsEngine = getJavaScriptEngine();
+        Context context = Context.enter();
         try {
-            jsEngine.eval(scriptStart + symbolScript + scriptEnd);
-            Invocable invocableEngine = (Invocable) jsEngine;
-            invocableEngine.invokeFunction("script", variables, updatedVariables, extraReturn);
-        } catch (NoSuchMethodException ex) {
-            ex.printStackTrace(System.err);
-        } catch (ScriptException ex) {
+            ScriptableObject scope = context.initSafeStandardObjects();
+            context.evaluateString(scope, scriptStart + symbolScript + scriptEnd, "symbol-script", 1, null);
+            Function fct = (Function) scope.get("script", scope);
+            fct.call(context, scope, scope, new Object[]{variables, updatedVariables, extraReturn});
+        } catch (RuntimeException ex) {
             if (!silently) {
-                JOptionPane.showMessageDialog(null, ex.getCause().getMessage(), "Chyba!",
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "Chyba!",
                         JOptionPane.ERROR_MESSAGE);
                 throw ex;
             }
+        } finally {
+            Context.exit();
         }
         /*
          * for (String key: updatedVariables.keySet()) {
@@ -375,15 +371,8 @@ public final class ElementFunctionBed
 
                 for (int i = 0; i < commandSplit.length; i += 2) {
                     while (commandSplit[i].matches(".*Math.random\\([^\\)]*\\).*")) {
-                        try {
-                            commandSplit[i] = commandSplit[i].replaceFirst(
-                                    "Math.random\\([^\\)]*\\)", getJavaScriptEngine().eval(
-                                            "Math.random();").toString());
-                        } catch (ScriptException ex) {
-                            ex.printStackTrace(System.err);
-                            commandSplit[i] = commandSplit[i].replaceFirst(
-                                    "Math.random\\([^\\)]*\\)", Double.toString(Math.random()));
-                        }
+                        commandSplit[i] = commandSplit[i].replaceFirst(
+                                "Math.random\\([^\\)]*\\)", String.valueOf(Math.random()));
                     }
                 }
                 command = "";
@@ -407,7 +396,7 @@ public final class ElementFunctionBed
     //*******************SYMBOLS PROGRESS AND UPDATEVARS SET*******************
     //*************************************************************************
     /**
-     * @param originalCommand has to be in form before transaltion into JS (ex. no '==' but '=')
+     * @param originalCommand has to be in form before translation into JS (ex. no '==' but '=')
      */
     private static String getCompiledProgressDesc(HashMap<String, String> variables, String originalCommand)
     {
@@ -686,7 +675,7 @@ public final class ElementFunctionBed
         } else { // output
             String[] extraRet = new String[2];
             script = "_extraRet_[0] = myUneval(" + commands.get("value") + ");"
-                    + "_extraRet_[1] = JOptionPane.showOptionDialog(null, _extraRet_[0]"
+                    + "_extraRet_[1] = _extraRet_[0]"
                     + ".replaceFirst(\"^\\\"\", \"\").replaceFirst(\"\\\"$\", \"\")"
                     + ".replaceAll(\"\\\\\\\\t\", \"\\t\")"
                     + ".replaceAll(\"\\\\\\\\b\", \"\\b\")"
@@ -695,18 +684,16 @@ public final class ElementFunctionBed
                     + ".replaceAll(\"\\\\\\\\f\", \"\\f\")"
                     + ".replaceAll(\"\\\\\\\\'\", \"\\\\\'\")"
                     + ".replaceAll(\"\\\\\\\\\\\\\\\"\", \"\\\\\\\"\")"
-                    + ".replaceAll(\"\\\\\\\\\\\\\\\\\", \"\\\\\\\\\")"
-                    + ", \"Výstup\", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, [\"OK\", \"Přerušit\"], \"OK\");";
-//                    + "_extraRet_[1] = JOptionPane.showConfirmDialog(null, _extraRet_[0].replaceAll(\"\\\"\", \"\"), \"Výstup\", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);";
-            //+ "JOptionPane.showMessageDialog(null, _extraRet_[0], \"Výstup\", JOptionPane.INFORMATION_MESSAGE);";
-
+                    + ".replaceAll(\"\\\\\\\\\\\\\\\\\", \"\\\\\\\\\");";
             try {
                 result.updatedVariables = doSymbolScript(variables, script, extraRet, false);
             } catch (ScriptException ex) {
                 result.haltDebug = true;
             }
-            if (!result.haltDebug && extraRet[1] != null && Integer.valueOf(extraRet[1]) != JOptionPane.CLOSED_OPTION && Integer.valueOf(
-                    extraRet[1]) != JOptionPane.OK_OPTION) {
+            
+            int dialogResult = JOptionPane.showOptionDialog(null, extraRet[1], "Výstup", JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.INFORMATION_MESSAGE, null, new Object[]{"OK", "Přerušit"}, "OK");
+            if (!result.haltDebug && dialogResult != JOptionPane.CLOSED_OPTION && dialogResult != JOptionPane.OK_OPTION) {
                 result.haltDebug = true;
             }
             result.progressDesc = extraRet[0] + " →";

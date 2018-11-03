@@ -101,7 +101,7 @@ public final class Main
     // TODO pri validaci jediného '&' se v dalších validacích hlásí jako logické AND.. a pritom predtim rikam ze to neni log. AND
     // TODO zkontrolovat chování checkboxu pro výchozí hodnoty textu symbolů -> stávalo se mi, že po kliknutí na zaškrtnutý zůstal zaškrtnutý
     //e TODO implementovat sifrovani ve FlowchartCollector-u
-    //e updatovat na javu 10
+    //e updatovat na javu 11
     /**
      * Metoda pro spuštění hlavního okna aplikace. Nejsou přijímány žádné
      * parametry.

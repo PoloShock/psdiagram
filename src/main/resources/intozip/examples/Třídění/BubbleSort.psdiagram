@@ -59,18 +59,18 @@ posledních dvou prvků.</value>
                     <shapeUpColor>255,255,255,255</shapeUpColor>
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
-                    <customValue>"zadejte
-pozadovany
-pocet prvku
+                    <customValue>"zadejte 
+požadovaný 
+počet prvků 
 pole" →</customValue>
-                    <defaultValue>"zadejte pozadovany pocet prvku pole" →</defaultValue>
+                    <defaultValue>"zadejte požadovaný počet prvků pole" →</defaultValue>
                     <commands>
-                        <entry key="value">"zadejte pozadovany pocet prvku pole"</entry>
+                        <entry key="value">"zadejte požadovaný počet prvků pole"</entry>
                     </commands>
                     <commandsValid>true</commandsValid>
-                    <value>"zadejte
-pozadovany
-pocet prvku
+                    <value>"zadejte 
+požadovaný 
+počet prvků 
 pole" →</value>
                 </io>
             </element>
@@ -113,19 +113,19 @@ stanoveném intervalu.</value>
                     <shapeUpColor>255,255,255,255</shapeUpColor>
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
-                    <customValue>"zadejte
-minimalni
-hranici pro
-nahodne cislo" →</customValue>
-                    <defaultValue>"zadejte minimalni hranici pro nahodne cislo" →</defaultValue>
+                    <customValue>"zadejte 
+minimální 
+hranici pro 
+náhodné číslo" →</customValue>
+                    <defaultValue>"zadejte minimální hranici pro náhodné číslo" →</defaultValue>
                     <commands>
-                        <entry key="value">"zadejte minimalni hranici pro nahodne cislo"</entry>
+                        <entry key="value">"zadejte minimální hranici pro náhodné číslo"</entry>
                     </commands>
                     <commandsValid>true</commandsValid>
-                    <value>"zadejte
-minimalni
-hranici pro
-nahodne cislo" →</value>
+                    <value>"zadejte 
+minimální 
+hranici pro 
+náhodné číslo" →</value>
                 </io>
             </element>
             <element xsi:type="layoutElement" xmlID="14" parentSegment="0">
@@ -148,19 +148,19 @@ nahodne cislo" →</value>
                     <shapeUpColor>255,255,255,255</shapeUpColor>
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
-                    <customValue>"zadejte
-maximalni
-hranici pro
-nahodne cislo" →</customValue>
-                    <defaultValue>"zadejte maximalni hranici pro nahodne cislo" →</defaultValue>
+                    <customValue>"zadejte 
+maximální 
+hranici pro 
+náhodné číslo" →</customValue>
+                    <defaultValue>"zadejte maximální hranici pro náhodné číslo" →</defaultValue>
                     <commands>
-                        <entry key="value">"zadejte maximalni hranici pro nahodne cislo"</entry>
+                        <entry key="value">"zadejte maximální hranici pro náhodné číslo"</entry>
                     </commands>
                     <commandsValid>true</commandsValid>
-                    <value>"zadejte
-maximalni
-hranici pro
-nahodne cislo" →</value>
+                    <value>"zadejte 
+maximální 
+hranici pro 
+náhodné číslo" →</value>
                 </io>
             </element>
             <element xsi:type="layoutElement" xmlID="15" parentSegment="0">

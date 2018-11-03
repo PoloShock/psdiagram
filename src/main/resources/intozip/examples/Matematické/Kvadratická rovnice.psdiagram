@@ -42,16 +42,16 @@ matematiky.</value>
                     <hasShadow>true</hasShadow>
                     <customValue>"zadejte a, b, c
 koeficienty
-kvadraticke
+kvadratické
 rovnice" →</customValue>
-                    <defaultValue>"zadejte a, b, c koeficienty kvadraticke rovnice" →</defaultValue>
+                    <defaultValue>"zadejte a, b, c koeficienty kvadratické rovnice" →</defaultValue>
                     <commands>
-                        <entry key="value">"zadejte a, b, c koeficienty kvadraticke rovnice"</entry>
+                        <entry key="value">"zadejte a, b, c koeficienty kvadratické rovnice"</entry>
                     </commands>
                     <commandsValid>true</commandsValid>
                     <value>"zadejte a, b, c
 koeficienty
-kvadraticke
+kvadratické
 rovnice" →</value>
                 </io>
             </element>
@@ -169,15 +169,15 @@ a skončete.
             <shapeUpColor>255,255,255,255</shapeUpColor>
             <shapeDownColor>230,230,230,255</shapeDownColor>
             <hasShadow>true</hasShadow>
-            <customValue>"nema 
-reseni" →</customValue>
-            <defaultValue>"nema reseni" →</defaultValue>
+            <customValue>"nemá 
+řešení" →</customValue>
+            <defaultValue>"nemá řešení" →</defaultValue>
             <commands>
-                <entry key="value">"nema reseni"</entry>
+                <entry key="value">"nemá řešení"</entry>
             </commands>
             <commandsValid>true</commandsValid>
-            <value>"nema 
-reseni" →</value>
+            <value>"nemá 
+řešení" →</value>
         </io>
     </element>
     <description>Ne</description>
@@ -189,17 +189,17 @@ reseni" →</value>
             <shapeUpColor>255,255,255,255</shapeUpColor>
             <shapeDownColor>230,230,230,255</shapeDownColor>
             <hasShadow>true</hasShadow>
-            <customValue>"nekonecne 
+            <customValue>"nekonečně 
 mnoho 
-reseni" →</customValue>
-            <defaultValue>"nekonecne mnoho reseni" →</defaultValue>
+řešení" →</customValue>
+            <defaultValue>"nekonečně mnoho řešení" →</defaultValue>
             <commands>
-                <entry key="value">"nekonecne mnoho reseni"</entry>
+                <entry key="value">"nekonečně mnoho řešení"</entry>
             </commands>
             <commandsValid>true</commandsValid>
-            <value>"nekonecne 
+            <value>"nekonečně 
 mnoho 
-reseni" →</value>
+řešení" →</value>
         </io>
     </element>
     <description>Ano</description>
@@ -215,14 +215,14 @@ reseni" →</value>
     <shapeDownColor>230,230,230,255</shapeDownColor>
     <hasShadow>true</hasShadow>
     <customValue>"rovnice je
-linearni" →</customValue>
-    <defaultValue>"rovnice je linearni" →</defaultValue>
+lineární" →</customValue>
+    <defaultValue>"rovnice je lineární" →</defaultValue>
     <commands>
-        <entry key="value">"rovnice je linearni"</entry>
+        <entry key="value">"rovnice je lineární"</entry>
     </commands>
     <commandsValid>true</commandsValid>
     <value>"rovnice je
-linearni" →</value>
+lineární" →</value>
 </io>
                             </element>
                             <element xsi:type="layoutElement" xmlID="10" parentSegment="33">
@@ -349,17 +349,17 @@ má jedno řešení.</value>
     <shapeUpColor>255,255,255,255</shapeUpColor>
     <shapeDownColor>230,230,230,255</shapeDownColor>
     <hasShadow>true</hasShadow>
-    <customValue>"koren 
-dvojnasobny:
+    <customValue>"kořen 
+dvojnásobný:
  x1 = x2 = " 
 + x1 →</customValue>
-    <defaultValue>"koren dvojnasobny: x1 = x2 = " + x1 →</defaultValue>
+    <defaultValue>"kořen dvojnásobný: x1 = x2 = " + x1 →</defaultValue>
     <commands>
-        <entry key="value">"koren dvojnasobny: x1 = x2 = " + x1</entry>
+        <entry key="value">"kořen dvojnásobný: x1 = x2 = " + x1</entry>
     </commands>
     <commandsValid>true</commandsValid>
-    <value>"koren 
-dvojnasobny:
+    <value>"kořen 
+dvojnásobný:
  x1 = x2 = " 
 + x1 →</value>
 </io>
@@ -405,15 +405,15 @@ v oboru reálných čísel řešení.</value>
             <shapeUpColor>255,255,255,255</shapeUpColor>
             <shapeDownColor>230,230,230,255</shapeDownColor>
             <hasShadow>true</hasShadow>
-            <customValue>"rovnice nema
- v R reseni" →</customValue>
-            <defaultValue>"rovnice nema v R reseni" →</defaultValue>
+            <customValue>"rovnice nemá
+ v R řešení" →</customValue>
+            <defaultValue>"rovnice nemá v R řešení" →</defaultValue>
             <commands>
-                <entry key="value">"rovnice nema v R reseni"</entry>
+                <entry key="value">"rovnice nemá v R řešení"</entry>
             </commands>
             <commandsValid>true</commandsValid>
-            <value>"rovnice nema
- v R reseni" →</value>
+            <value>"rovnice nemá
+ v R řešení" →</value>
         </io>
     </element>
     <description>Ne</description>
@@ -481,18 +481,18 @@ má dvě řešení.</value>
             <shapeUpColor>255,255,255,255</shapeUpColor>
             <shapeDownColor>230,230,230,255</shapeDownColor>
             <hasShadow>true</hasShadow>
-            <customValue>"rovnice ma dva 
-koreny: x1 = "
+            <customValue>"rovnice má dva 
+kořeny: x1 = "
  + x1 
 + ", x2 = " 
 + x2 →</customValue>
-            <defaultValue>"rovnice ma dva koreny: x1 = " + x1 + ", x2 = " + x2 →</defaultValue>
+            <defaultValue>"rovnice má dva kořeny: x1 = " + x1 + ", x2 = " + x2 →</defaultValue>
             <commands>
-                <entry key="value">"rovnice ma dva koreny: x1 = " + x1 + ", x2 = " + x2</entry>
+                <entry key="value">"rovnice má dva kořeny: x1 = " + x1 + ", x2 = " + x2</entry>
             </commands>
             <commandsValid>true</commandsValid>
-            <value>"rovnice ma dva 
-koreny: x1 = "
+            <value>"rovnice má dva 
+kořeny: x1 = "
  + x1 
 + ", x2 = " 
 + x2 →</value>

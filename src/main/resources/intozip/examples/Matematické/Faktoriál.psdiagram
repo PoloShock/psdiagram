@@ -2,23 +2,21 @@
 <flowchartSaveContainer>
     <flowchart>
         <mainSegment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="layoutSegment" xmlID="0">
-            <element xsi:type="layoutElement" xmlID="16" parentSegment="0">
+            <element xsi:type="layoutElement" xmlID="9" parentSegment="0">
                 <comment>
                     <borderColor>0,0,0,255</borderColor>
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
-                    <customValue>Algoritmus provádí v zadaném
-přirozeném čísle separaci
-a součet jednotlivých číslic
-od poslední pozice až k první.</customValue>
+                    <customValue>Algoritmus výpočtu faktoriálu
+celého nezáporného čísla n
+podle vzorce: n! = 1*2*3..n</customValue>
                     <commandsValid>true</commandsValid>
-                    <value>Algoritmus provádí v zadaném
-přirozeném čísle separaci
-a součet jednotlivých číslic
-od poslední pozice až k první.</value>
+                    <value>Algoritmus výpočtu faktoriálu
+celého nezáporného čísla n
+podle vzorce: n! = 1*2*3..n</value>
                     <alwaysLeftAlign>false</alwaysLeftAlign>
-                    <relativeX>141.0</relativeX>
-                    <relativeY>51.0</relativeY>
+                    <relativeX>114.0</relativeX>
+                    <relativeY>35.0</relativeY>
                     <paired>true</paired>
                 </comment>
             </element>
@@ -32,7 +30,7 @@ od poslední pozice až k první.</value>
                     <value>Start</value>
                 </startEnd>
             </element>
-            <element xsi:type="layoutElement" xmlID="15" parentSegment="0">
+            <element xsi:type="layoutElement" xmlID="6" parentSegment="0">
                 <process>
                     <borderColor>0,0,0,255</borderColor>
                     <shapeUpColor>255,255,255,255</shapeUpColor>
@@ -47,7 +45,7 @@ od poslední pozice až k první.</value>
                     <value>n ← 0</value>
                 </process>
             </element>
-            <element xsi:type="layoutElement" xmlID="13" parentSegment="0">
+            <element xsi:type="layoutElement" xmlID="4" parentSegment="0">
                 <loopStart>
                     <borderColor>0,0,0,255</borderColor>
                     <shapeUpColor>255,255,255,255</shapeUpColor>
@@ -58,27 +56,27 @@ od poslední pozice až k první.</value>
                     <overHanged>false</overHanged>
                 </loopStart>
                 <segment xsi:nil="true"/>
-                <segment xsi:type="layoutSegment" xmlID="14" parentElement="13">
-                    <element xsi:type="layoutElement" xmlID="18" parentSegment="14">
+                <segment xsi:type="layoutSegment" xmlID="5" parentElement="4">
+                    <element xsi:type="layoutElement" xmlID="8" parentSegment="5">
                         <io>
                             <borderColor>0,0,0,255</borderColor>
                             <shapeUpColor>255,255,255,255</shapeUpColor>
                             <shapeDownColor>230,230,230,255</shapeDownColor>
                             <hasShadow>true</hasShadow>
-                            <customValue>"zadejte cele
-nezaporne
-cislo" →</customValue>
-                            <defaultValue>"zadejte cele nezaporne cislo" →</defaultValue>
+                            <customValue>"zadejte celé
+nezáporné
+číslo" →</customValue>
+                            <defaultValue>"zadejte celé nezáporné číslo" →</defaultValue>
                             <commands>
-<entry key="value">"zadejte cele nezaporne cislo"</entry>
+<entry key="value">"zadejte celé nezáporné číslo"</entry>
                             </commands>
                             <commandsValid>true</commandsValid>
-                            <value>"zadejte cele
-nezaporne
-cislo" →</value>
+                            <value>"zadejte celé
+nezáporné
+číslo" →</value>
                         </io>
                     </element>
-                    <element xsi:type="layoutElement" xmlID="3" parentSegment="14">
+                    <element xsi:type="layoutElement" xmlID="7" parentSegment="5">
                         <io>
                             <borderColor>0,0,0,255</borderColor>
                             <shapeUpColor>255,255,255,255</shapeUpColor>
@@ -94,19 +92,19 @@ cislo" →</value>
                     </element>
                 </segment>
             </element>
-            <element xsi:type="layoutElement" xmlID="17" parentSegment="0">
+            <element xsi:type="layoutElement" xmlID="10" parentSegment="0">
                 <comment>
                     <borderColor>0,0,0,255</borderColor>
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
-                    <customValue>není-li n číslo, 
-nebo je n menší než nula,
-nebo n není celé číslo,
+                    <customValue>není-li 'n' číslo, 
+nebo je 'n' menší než nula,
+nebo 'n' není celé číslo,
 ...opakuj</customValue>
                     <commandsValid>true</commandsValid>
-                    <value>není-li n číslo, 
-nebo je n menší než nula,
-nebo n není celé číslo,
+                    <value>není-li 'n' číslo, 
+nebo je 'n' menší než nula,
+nebo 'n' není celé číslo,
 ...opakuj</value>
                     <alwaysLeftAlign>false</alwaysLeftAlign>
                     <relativeX>97.0</relativeX>
@@ -114,125 +112,87 @@ nebo n není celé číslo,
                     <paired>true</paired>
                 </comment>
             </element>
-            <element xsi:type="layoutElement" xmlID="12" parentSegment="0">
+            <element xsi:type="layoutElement" xmlID="3" parentSegment="0">
                 <loopEnd>
                     <borderColor>0,0,0,255</borderColor>
                     <shapeUpColor>255,255,255,255</shapeUpColor>
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
-                    <customValue>isNaN(n)
-| n &lt; 0
-| n%1 &gt; 0</customValue>
-                    <defaultValue>isNaN(n) | n &lt; 0 | n%1 &gt; 0</defaultValue>
+                    <customValue>isNaN(n) 
+|| n &lt; 0 
+|| n%1 &gt; 0</customValue>
+                    <defaultValue>isNaN(n) || n &lt; 0 || n%1 &gt; 0</defaultValue>
                     <commands>
                         <entry key="condition">isNaN(n) || n &lt; 0 || n%1 &gt; 0</entry>
                     </commands>
                     <commandsValid>true</commandsValid>
-                    <value>isNaN(n)
-| n &lt; 0
-| n%1 &gt; 0</value>
+                    <value>isNaN(n) 
+|| n &lt; 0 
+|| n%1 &gt; 0</value>
                 </loopEnd>
             </element>
-            <element xsi:type="layoutElement" xmlID="4" parentSegment="0">
+            <element xsi:type="layoutElement" xmlID="18" parentSegment="0">
                 <process>
                     <borderColor>0,0,0,255</borderColor>
                     <shapeUpColor>255,255,255,255</shapeUpColor>
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
-                    <defaultValue>cs ← 0</defaultValue>
+                    <defaultValue>f ← 1</defaultValue>
                     <commands>
-                        <entry key="var">cs</entry>
-                        <entry key="value">0</entry>
+                        <entry key="var">f</entry>
+                        <entry key="value">1</entry>
                     </commands>
                     <commandsValid>true</commandsValid>
-                    <value>cs ← 0</value>
+                    <value>f ← 1</value>
                 </process>
             </element>
-            <element xsi:type="layoutElement" xmlID="6" parentSegment="0">
-                <loopStart>
+            <element xsi:type="layoutElement" xmlID="16" parentSegment="0">
+                <for>
                     <borderColor>0,0,0,255</borderColor>
                     <shapeUpColor>255,255,255,255</shapeUpColor>
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
+                    <defaultValue>i ← 2..n</defaultValue>
+                    <commands>
+                        <entry key="var">i</entry>
+                        <entry key="from">2</entry>
+                        <entry key="to">n</entry>
+                        <entry key="inc">1</entry>
+                    </commands>
                     <commandsValid>true</commandsValid>
-                    <value></value>
-                    <overHanged>false</overHanged>
-                </loopStart>
+                    <value>i ← 2..n</value>
+                </for>
                 <segment xsi:nil="true"/>
-                <segment xsi:type="layoutSegment" xmlID="7" parentElement="6">
-                    <element xsi:type="layoutElement" xmlID="8" parentSegment="7">
+                <segment xsi:type="layoutSegment" xmlID="17" parentElement="16">
+                    <element xsi:type="layoutElement" xmlID="19" parentSegment="17">
                         <process>
                             <borderColor>0,0,0,255</borderColor>
                             <shapeUpColor>255,255,255,255</shapeUpColor>
                             <shapeDownColor>230,230,230,255</shapeDownColor>
                             <hasShadow>true</hasShadow>
-                            <defaultValue>c ← n % 10</defaultValue>
+                            <defaultValue>f ← f*i</defaultValue>
                             <commands>
-<entry key="var">c</entry>
-<entry key="value">n % 10</entry>
+<entry key="var">f</entry>
+<entry key="value">f*i</entry>
                             </commands>
                             <commandsValid>true</commandsValid>
-                            <value>c ← n % 10</value>
-                        </process>
-                    </element>
-                    <element xsi:type="layoutElement" xmlID="9" parentSegment="7">
-                        <process>
-                            <borderColor>0,0,0,255</borderColor>
-                            <shapeUpColor>255,255,255,255</shapeUpColor>
-                            <shapeDownColor>230,230,230,255</shapeDownColor>
-                            <hasShadow>true</hasShadow>
-                            <defaultValue>cs ← cs + c</defaultValue>
-                            <commands>
-<entry key="var">cs</entry>
-<entry key="value">cs + c</entry>
-                            </commands>
-                            <commandsValid>true</commandsValid>
-                            <value>cs ← cs + c</value>
-                        </process>
-                    </element>
-                    <element xsi:type="layoutElement" xmlID="10" parentSegment="7">
-                        <process>
-                            <borderColor>0,0,0,255</borderColor>
-                            <shapeUpColor>255,255,255,255</shapeUpColor>
-                            <shapeDownColor>230,230,230,255</shapeDownColor>
-                            <hasShadow>true</hasShadow>
-                            <defaultValue>n ← (n-c) / 10</defaultValue>
-                            <commands>
-<entry key="var">n</entry>
-<entry key="value">(n-c) / 10</entry>
-                            </commands>
-                            <commandsValid>true</commandsValid>
-                            <value>n ← (n-c) / 10</value>
+                            <value>f ← f*i</value>
                         </process>
                     </element>
                 </segment>
             </element>
-            <element xsi:type="layoutElement" xmlID="5" parentSegment="0">
-                <loopEnd>
-                    <borderColor>0,0,0,255</borderColor>
-                    <shapeUpColor>255,255,255,255</shapeUpColor>
-                    <shapeDownColor>230,230,230,255</shapeDownColor>
-                    <hasShadow>true</hasShadow>
-                    <defaultValue>n ≠ 0</defaultValue>
-                    <commands>
-                        <entry key="condition">n != 0</entry>
-                    </commands>
-                    <commandsValid>true</commandsValid>
-                    <value>n ≠ 0</value>
-                </loopEnd>
-            </element>
-            <element xsi:type="layoutElement" xmlID="11" parentSegment="0">
+            <element xsi:type="layoutElement" xmlID="15" parentSegment="0">
                 <io>
                     <borderColor>0,0,0,255</borderColor>
                     <shapeUpColor>255,255,255,255</shapeUpColor>
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
-                    <defaultValue>cs →</defaultValue>
+                    <defaultValue>n + "! = " + f →</defaultValue>
                     <commands>
-                        <entry key="value">cs</entry>
+                        <entry key="value">n + "! = " + f</entry>
                     </commands>
                     <commandsValid>true</commandsValid>
-                    <value>cs →</value>
+                    <value>n + "! = " + f →</value>
                 </io>
             </element>
             <element xsi:type="layoutElement" xmlID="2" parentSegment="0">

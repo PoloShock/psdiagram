@@ -79,7 +79,7 @@ public class PSDToJavaScriptVisitor extends PSDGrammarParserBaseVisitor<String>
         String[] rightOperandRSplit = splitSpaceRight(rightOperand);
 
         return leftOperandLSplit[0] // muze byt neprazdna jen na zacatku inputu, protoze terminal sbira mezery jen vpravo
-                + "Math.floor(" + leftOperandLSplit[1] + "/" + operatorRSplit[1] + rightOperandRSplit[0] + ")" + rightOperandRSplit[1];
+                + "Math.trunc(" + leftOperandLSplit[1] + "/" + operatorRSplit[1] + rightOperandRSplit[0] + ")" + rightOperandRSplit[1];
     }
 
     private String[] splitSpaceLeft(String nodeText)

@@ -67,7 +67,7 @@ options { tokenVocab=PSDGrammarLexer; }
             case MINUS      : return left   -   right;
             case MUL        : return left   *   right;
             case DIV        : return left   /   right;
-            case FLOORDIV   : return Math.floor(left / right);
+            case FLOORDIV   : return (double)(left.intValue() / right.intValue());
             case MOD        : return left   %   right;
         }
 

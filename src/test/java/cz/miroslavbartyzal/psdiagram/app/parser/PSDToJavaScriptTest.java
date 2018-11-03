@@ -23,7 +23,7 @@ public class PSDToJavaScriptTest
     {
         String input = "19 // 1 // ((21 // 2) // 5)";
         String result = parser.translatePSDToJavaScript(input);
-        Assert.assertEquals("Math.floor(Math.floor(19 / 1) / (Math.floor((Math.floor(21 / 2)) / 5)))", result);
+        Assert.assertEquals("Math.trunc(Math.trunc(19 / 1) / (Math.trunc((Math.trunc(21 / 2)) / 5)))", result);
     }
     
     @Test
@@ -31,7 +31,7 @@ public class PSDToJavaScriptTest
     {
         String input = "a // b // ((c // d) // e)";
         String result = parser.translatePSDToJavaScript(input);
-        Assert.assertEquals("Math.floor(Math.floor(a / b) / (Math.floor((Math.floor(c / d)) / e)))", result);
+        Assert.assertEquals("Math.trunc(Math.trunc(a / b) / (Math.trunc((Math.trunc(c / d)) / e)))", result);
     }
     
     @Test
@@ -39,7 +39,7 @@ public class PSDToJavaScriptTest
     {
         String input = "5 * 5 // 2 * 2";
         String result = parser.translatePSDToJavaScript(input);
-        Assert.assertEquals("Math.floor(5 * 5 / 2) * 2", result);
+        Assert.assertEquals("Math.trunc(5 * 5 / 2) * 2", result);
     }
     
     @Test
@@ -47,7 +47,7 @@ public class PSDToJavaScriptTest
     {
         String input = "2 + -5 * 5 // 2 * 2";
         String result = parser.translatePSDToJavaScript(input);
-        Assert.assertEquals("2 + Math.floor(-5 * 5 / 2) * 2", result);
+        Assert.assertEquals("2 + Math.trunc(-5 * 5 / 2) * 2", result);
     }
     
     @Test
@@ -55,7 +55,7 @@ public class PSDToJavaScriptTest
     {
         String input = "2 + -b * c // d * 2";
         String result = parser.translatePSDToJavaScript(input);
-        Assert.assertEquals("2 + Math.floor(-b * c / d) * 2", result);
+        Assert.assertEquals("2 + Math.trunc(-b * c / d) * 2", result);
     }
     
     @Test
@@ -63,7 +63,7 @@ public class PSDToJavaScriptTest
     {
         String input = "2 + -5 * func(5 // 2) * 2";
         String result = parser.translatePSDToJavaScript(input);
-        Assert.assertEquals("2 + -5 * func(Math.floor(5 / 2)) * 2", result);
+        Assert.assertEquals("2 + -5 * func(Math.trunc(5 / 2)) * 2", result);
     }
     
     @Test
@@ -71,7 +71,7 @@ public class PSDToJavaScriptTest
     {
         String input = "2 + -5 * func(5 // 2) // 2";
         String result = parser.translatePSDToJavaScript(input);
-        Assert.assertEquals("2 + Math.floor(-5 * func(Math.floor(5 / 2)) / 2)", result);
+        Assert.assertEquals("2 + Math.trunc(-5 * func(Math.trunc(5 / 2)) / 2)", result);
     }
     
     @Test
@@ -87,7 +87,7 @@ public class PSDToJavaScriptTest
     {
         String input = " 2 + -5 * 5 //  2   *     2\t";
         String result = parser.translatePSDToJavaScript(input);
-        Assert.assertEquals(" 2 + Math.floor(-5 * 5 /  2)   *     2\t", result);
+        Assert.assertEquals(" 2 + Math.trunc(-5 * 5 /  2)   *     2\t", result);
     }
     
     @Test

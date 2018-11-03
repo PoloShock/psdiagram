@@ -250,7 +250,7 @@ public final class RegexFunctions
 
         while (matcher.find()) {
             //int index = value.substring(lastEndIndex).replaceFirst(functionRegex, "←").indexOf("←");
-            int index = matcher.start();
+            int index = lastEndIndex + matcher.start();
             strOut.add(value.substring(lastEndIndex, index));
             lastEndIndex = index;
             cyklus:
@@ -274,7 +274,7 @@ public final class RegexFunctions
         if (lastEndIndex < value.length()) {
             strOut.add(value.substring(lastEndIndex, value.length()));
         }
-        return strOut.toArray(new String[0]);
+        return strOut.toArray(new String[strOut.size()]);
     }
 
 }

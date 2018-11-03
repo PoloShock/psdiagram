@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<Form version="1.5" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
+<Form version="1.8" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <NonVisualComponents>
     <Menu class="javax.swing.JMenuBar" name="jMenuBar1">
       <Properties>
@@ -339,8 +339,8 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Component id="jToolBarMenu" alignment="0" max="32767" attributes="0"/>
-          <Component id="jPanelStatus" alignment="0" pref="900" max="32767" attributes="0"/>
-          <Component id="jSplitPane" alignment="0" pref="0" max="32767" attributes="0"/>
+          <Component id="jPanelStatus" alignment="0" pref="908" max="32767" attributes="0"/>
+          <Component id="jSplitPane" alignment="0" pref="908" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -614,7 +614,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jLabelStatus" min="-2" pref="691" max="-2" attributes="0"/>
+                  <Component id="jLabelStatus" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jLabelZoom" min="-2" pref="35" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
@@ -625,17 +625,13 @@
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="1" attributes="0">
-                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+              <Group type="102" alignment="0" attributes="0">
                   <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                      <Group type="102" attributes="0">
-                          <EmptySpace min="2" pref="2" max="-2" attributes="0"/>
-                          <Component id="jLabelStatus" max="32767" attributes="0"/>
-                      </Group>
+                      <Component id="jLabelZoom" alignment="0" max="32767" attributes="0"/>
                       <Component id="jSliderZoom" alignment="0" max="32767" attributes="0"/>
-                      <Component id="jLabelZoom" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="jLabelStatus" alignment="1" max="32767" attributes="0"/>
                   </Group>
-                  <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -707,7 +703,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
                           <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
-                          <Component id="jPanelDetails" pref="262" max="32767" attributes="0"/>
+                          <Component id="jPanelDetails" max="32767" attributes="0"/>
                           <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
                           <Component id="jToolBarSymbols" min="-2" pref="43" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
@@ -767,7 +763,7 @@
                           <Layout>
                             <DimensionLayout dim="0">
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jScrollPaneFunction" alignment="0" pref="262" max="32767" attributes="0"/>
+                                  <Component id="jScrollPaneFunction" alignment="0" pref="188" max="32767" attributes="0"/>
                               </Group>
                             </DimensionLayout>
                             <DimensionLayout dim="1">
@@ -793,7 +789,7 @@
                                       <Group type="103" groupAlignment="0" attributes="0">
                                           <Group type="102" alignment="0" attributes="0">
                                               <EmptySpace max="-2" attributes="0"/>
-                                              <Component id="jLabelFunction" pref="244" max="32767" attributes="0"/>
+                                              <Component id="jLabelFunction" pref="170" max="32767" attributes="0"/>
                                               <EmptySpace max="-2" attributes="0"/>
                                           </Group>
                                       </Group>
@@ -833,7 +829,7 @@
                           <Layout>
                             <DimensionLayout dim="0">
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jScrollPaneText" alignment="0" pref="262" max="32767" attributes="0"/>
+                                  <Component id="jScrollPaneText" alignment="0" pref="188" max="32767" attributes="0"/>
                               </Group>
                             </DimensionLayout>
                             <DimensionLayout dim="1">
@@ -861,7 +857,7 @@
                                           <Component id="jPanelTextSegment" alignment="0" max="32767" attributes="0"/>
                                           <Group type="102" attributes="0">
                                               <EmptySpace max="-2" attributes="0"/>
-                                              <Component id="jCheckBoxDefaultText" pref="244" max="32767" attributes="0"/>
+                                              <Component id="jCheckBoxDefaultText" pref="170" max="32767" attributes="0"/>
                                               <EmptySpace max="-2" attributes="0"/>
                                           </Group>
                                       </Group>
@@ -1047,7 +1043,7 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="577" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="659" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
                 <DimensionLayout dim="1">

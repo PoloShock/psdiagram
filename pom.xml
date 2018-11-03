@@ -4,7 +4,7 @@
 
     <groupId>cz.miroslavbartyzal</groupId>
     <artifactId>psdiagram</artifactId>
-    <version>1.4.2</version>
+    <version>1.4.2.1</version>
     <packaging>jar</packaging>
     <name>PS Diagram</name>
     <url>http://www.psdiagram.cz</url>
@@ -17,7 +17,7 @@
     </developers>
 
     <prerequisites>
-        <maven>3.0</maven>
+        <maven>3.0.5</maven>
     </prerequisites>
 
     <properties>
@@ -86,16 +86,11 @@
             <artifactId>jna-platform</artifactId>
             <version>4.2.2</version>
         </dependency>
-
+        
         <dependency>
-            <groupId>psd.rhino</groupId>
+            <groupId>org.mozilla</groupId>
             <artifactId>rhino</artifactId>
-            <version>1_7R4</version>
-        </dependency>
-        <dependency>
-            <groupId>psd.rhino</groupId>
-            <artifactId>rhino-wrapper</artifactId>
-            <version>1_7R4</version>
+            <version>1.7.10</version>
         </dependency>
         
     </dependencies>
@@ -134,12 +129,12 @@
                                     <changelogurl>http://www.psdiagram.cz/changelog</changelogurl>
                                     <releaseurl></releaseurl>
 
-                                    <headline>Pole jako uživatelský vstup do Vstup/Výstup symbolu</headline>
+                                    <headline>Důležité opravy a nové příklady algoritmů</headline>
                                     <description>
                                         <![CDATA[
                                         <html>
-                                            <p align="justify">Dnešní aktualizace je věnována vylepšení zadávání hodnot do symbolu Vstup/Výstup. Dříve šly touto cestou zadávat pouze číslice nebo text, od teď už to půjde i s polem. Jednotlivé prvky pole už tak do algoritmu není nutné ládovat jednotlivě pomocí cyklu. :) Stačí výčet prvků oddělit čárkami a celý jej ohraničit hranatými závorkami (např. [1, 5, 3, 10]).</p>
-                                            <p align="justify">Děkuji paní Ing. Janě V. za námět na vylepšení! :)</p>
+                                            <p align="justify">Přišel čas zase vymést několik chybiček, které se v PS Diagramu nepozorovaně usídlily. Jedna z nich je poměrně závažná. Funkce symbolu totiž podporovala až příliš širokou škálu příkazů, z nichž některé vlastně vůbec nesouvisely s vytvářením diagramů a daly se zneužít k různým nepravostem. Rozsah použitelných příkazů je proto nyní vhodně omezen. Tímto děkuji Štěpánovi P. za upozornění. :)</p>
+                                            <p align="justify">Krom oprav se PS Diagram dočkal i rozšíření knihovny algoritmů. Příklady v ní obsažené navíc prošly revizí a drobnými úpravami.</p>
                                         </html>
                                         ]]>
                                     </description>
@@ -147,15 +142,18 @@
                                     <features>
                                     </features>
                                     <enhancements>
-                                        <enhancement>přes symbol Vstup/Výstup lze od teď do spuštěného algoritmu zadávat celá pole ve formě [1, 5, 3]</enhancement>
+                                        <enhancement>příklady algoritmů jsou nyní organizovány do více kategorií</enhancement>
                                     </enhancements>
                                     <extensions>
+                                        <extension>přibyly dva příklady algoritmů: obrácení pořadí znaků textového řetězce a obrácení pořadí cifer čísla</extension>
                                     </extensions>
                                     <changes>
                                     </changes>
                                     <fixes>
-                                        <fix>symbol Vstup/Výstup již přijímá textové hodnoty včetně případných uvozovek (dvojité uvozovky je nutné escapovat)</fix>
-                                        <fix>zobrazení aktuální hodnoty zvětšení vývojového diagramu bylo v linuxu useknuté</fix>
+                                        <fix>funkce symbolu podporovala i příkazy, které nesouvisely s tvorbou diagramů, čehož bylo možné zneužít k různým nepravostem</fix>
+                                        <fix>celočíselné dělení pomocí operátoru "//" nyní správně pracuje i se zápornými čísly (předtím výsledek zaokrouhlovalo na špatnou stranu)</fix>
+                                        <fix>když byla v rámci jednoho symbolu volána více než jedna funkce (jako např. Math.pow(...) apod.), docházelo k chybě a zastavení běhu algoritmu</fix>
+                                        <fix>posuvník zvětšení/zmenšení diagramu se nyní při změnách velikosti okna aplikace drží vždy na jeho pravém okraji</fix>
                                     </fixes>
                                     <others>
                                     </others>
@@ -221,7 +219,7 @@
                                             <fileset dir="${basedir}/src/main/resources/intozip"/>
                                         </copy>
                                         <copy todir="${project.build.directory}/zip/PS Diagram/jre">
-                                            <fileset dir="c:/Program Files (x86)/Java/jre1.8.0_172"/>
+                                            <fileset dir="c:\Program Files (x86)\Java\jre1.8.0_192"/>
                                         </copy>
                                         <copy file="c:/Zaloha/Programovani/Moje/Visual Studio 2013/PS Diagram Launcher/PS Diagram Launcher/bin/Release/PS Diagram.exe" todir="${project.build.directory}/zip/PS Diagram"/>
                                         <zip destfile="${project.build.directory}/OPENSHIFT_DATA/PS_Diagram_${project.version}.zip"
@@ -327,7 +325,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
-                <version>2.2</version>
+                <version>2.7</version>
                 <executions>
                     <execution>
                         <phase>validate</phase>
@@ -343,7 +341,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>buildnumber-maven-plugin</artifactId>
-                <version>1.3</version>
+                <version>1.4</version>
                 <executions>
                     <execution>
                         <phase>validate</phase>
@@ -367,7 +365,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>properties-maven-plugin</artifactId>
-                <version>1.0-alpha-2</version>
+                <version>1.0.0</version>
                 <executions>
                     <execution>
                         <phase>initialize</phase>
@@ -412,7 +410,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.2</version>
+                <version>3.8.0</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
@@ -424,16 +422,6 @@
                 </configuration>
             </plugin>
 
-            <!--
-                Tento plugin (verze 4.5) nepodporuje custom specifikaci encodingu pro vygenerovane
-                zdrojové kódy -> generuje je v defaultním charsetu! Je proto nutné nastavit
-                globální proměnnou JAVA_TOOL_OPTIONS na hodnotu -Dfile.encoding=UTF8, která
-                zajistí, že java bude mít default UTF-8.
-                Alternativa je, nastavit mavenu MAVEN_OPTS="-Dfile.encoding=UTF-8" (v Netbeans
-                v properties projektu -> Actions a pridat property
-                Env.MAVEN_OPTS="-Dfile.encoding=UTF-8").
-                Nebo jakkoliv jinak spustit JVM s parametrem -Dfile.encoding=UTF-8.
-            -->
             <plugin>
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr4-maven-plugin</artifactId>
@@ -445,8 +433,6 @@
                             <goal>antlr4</goal>
                         </goals>
                         <configuration>
-                            <encoding>UTF-8</encoding>
-                            <!--<encoding>windows-1250</encoding>-->
                             <listener>false</listener>
                             <visitor>true</visitor>
                             <treatWarningsAsErrors>true</treatWarningsAsErrors>
@@ -467,7 +453,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>2.6</version>
+                <version>3.1.0</version>
                 <configuration>
                     <archive>
                         <addMavenDescriptor>false</addMavenDescriptor>
@@ -486,7 +472,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>2.4</version>
+                <version>3.2.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -519,8 +505,8 @@
                             </relocations>-->
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <Main-Class>cz.miroslavbartyzal.psdiagram.app.Main</Main-Class>
                                     <manifestEntries>
+                                        <Main-Class>cz.miroslavbartyzal.psdiagram.app.Main</Main-Class>
                                         <Built-By>Miroslav Bartyzal</Built-By>
                                         <Build-Number>${buildNumber}</Build-Number>
                                         <SplashScreen-Image>img/splash.png</SplashScreen-Image>
@@ -535,7 +521,7 @@
             <plugin>
                 <groupId>com.github.wvengen</groupId>
                 <artifactId>proguard-maven-plugin</artifactId>
-                <version>2.0.12</version>
+                <version>2.0.14</version>
                 <dependencies>
                     <dependency>
                         <groupId>net.sf.proguard</groupId>
@@ -627,13 +613,8 @@
                                     </inclusion>
                                     
                                     <inclusion>
-                                        <groupId>psd.rhino</groupId>
+                                        <groupId>org.mozilla</groupId>
                                         <artifactId>rhino</artifactId>
-                                        <library>true</library>
-                                    </inclusion>
-                                    <inclusion>
-                                        <groupId>psd.rhino</groupId>
-                                        <artifactId>rhino-wrapper</artifactId>
                                         <library>true</library>
                                     </inclusion>
                                 </inclusions>

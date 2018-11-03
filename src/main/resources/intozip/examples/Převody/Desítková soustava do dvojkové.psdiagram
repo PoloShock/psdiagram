@@ -7,14 +7,14 @@
                     <borderColor>0,0,0,255</borderColor>
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
-                    <customValue>Algoritmus převodu čísla z desítkové soustavy
-do dvojkové soustavy spočívá v postupném dělení
+                    <customValue>Algoritmus převodu čísla z desítkové soustavy (dekadické)
+do dvojkové soustavy (binární) spočívá v postupném dělení
 zadaného čísla číslem 2 (základ dvojkové soustavy)
 a ukládáním zbytků po dělení v opačném pořadí.
 Výpočet skončí, až bude podíl roven hodnotě 0.</customValue>
                     <commandsValid>true</commandsValid>
-                    <value>Algoritmus převodu čísla z desítkové soustavy
-do dvojkové soustavy spočívá v postupném dělení
+                    <value>Algoritmus převodu čísla z desítkové soustavy (dekadické)
+do dvojkové soustavy (binární) spočívá v postupném dělení
 zadaného čísla číslem 2 (základ dvojkové soustavy)
 a ukládáním zbytků po dělení v opačném pořadí.
 Výpočet skončí, až bude podíl roven hodnotě 0.</value>
@@ -67,17 +67,17 @@ Výpočet skončí, až bude podíl roven hodnotě 0.</value>
                             <shapeUpColor>255,255,255,255</shapeUpColor>
                             <shapeDownColor>230,230,230,255</shapeDownColor>
                             <hasShadow>true</hasShadow>
-                            <customValue>"zadejte cele
-nezaporne
-cislo" →</customValue>
-                            <defaultValue>"zadejte cele nezaporne cislo" →</defaultValue>
+                            <customValue>"zadejte celé
+nezáporné
+číslo" →</customValue>
+                            <defaultValue>"zadejte celé nezáporné číslo" →</defaultValue>
                             <commands>
-<entry key="value">"zadejte cele nezaporne cislo"</entry>
+<entry key="value">"zadejte celé nezáporné číslo"</entry>
                             </commands>
                             <commandsValid>true</commandsValid>
-                            <value>"zadejte cele
-nezaporne
-cislo" →</value>
+                            <value>"zadejte celé
+nezáporné
+číslo" →</value>
                         </io>
                     </element>
                     <element xsi:type="layoutElement" xmlID="3" parentSegment="6">
@@ -101,19 +101,19 @@ cislo" →</value>
                     <borderColor>0,0,0,255</borderColor>
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
-                    <customValue>není-li a číslo, 
-nebo je a menší než nula,
-nebo a není celé číslo,
+                    <customValue>není-li 'a' číslo, 
+nebo je 'a' menší než nula,
+nebo 'a' není celé číslo,
 ...opakuj</customValue>
                     <commandsValid>true</commandsValid>
-                    <value>není-li a číslo, 
-nebo je a menší než nula,
-nebo a není celé číslo,
+                    <value>není-li 'a' číslo, 
+nebo je 'a' menší než nula,
+nebo 'a' není celé číslo,
 ...opakuj</value>
-                    <relativePointToSymbol x="76.5" y="30.5"/>
+                    <relativePointToSymbol x="60.0" y="43.0"/>
                     <alwaysLeftAlign>false</alwaysLeftAlign>
-                    <relativeX>160.0</relativeX>
-                    <relativeY>31.0</relativeY>
+                    <relativeX>95.0</relativeX>
+                    <relativeY>43.0</relativeY>
                     <paired>true</paired>
                 </comment>
             </element>
@@ -124,17 +124,32 @@ nebo a není celé číslo,
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
                     <customValue>isNaN(a)
-| a &lt; 0
-| a%1 &gt; 0</customValue>
-                    <defaultValue>isNaN(a) | a &lt; 0 | a%1 &gt; 0</defaultValue>
+|| a &lt; 0
+|| a%1 &gt; 0</customValue>
+                    <defaultValue>isNaN(a) || a &lt; 0 || a%1 &gt; 0</defaultValue>
                     <commands>
                         <entry key="condition">isNaN(a) || a &lt; 0 || a%1 &gt; 0</entry>
                     </commands>
                     <commandsValid>true</commandsValid>
                     <value>isNaN(a)
-| a &lt; 0
-| a%1 &gt; 0</value>
+|| a &lt; 0
+|| a%1 &gt; 0</value>
                 </loopEnd>
+            </element>
+            <element xsi:type="layoutElement" xmlID="24" parentSegment="0">
+                <process>
+                    <borderColor>0,0,0,255</borderColor>
+                    <shapeUpColor>255,255,255,255</shapeUpColor>
+                    <shapeDownColor>230,230,230,255</shapeDownColor>
+                    <hasShadow>true</hasShadow>
+                    <defaultValue>b ← a</defaultValue>
+                    <commands>
+                        <entry key="var">b</entry>
+                        <entry key="value">a</entry>
+                    </commands>
+                    <commandsValid>true</commandsValid>
+                    <value>b ← a</value>
+                </process>
             </element>
             <element xsi:type="layoutElement" xmlID="4" parentSegment="0">
                 <process>
@@ -142,13 +157,13 @@ nebo a není celé číslo,
                     <shapeUpColor>255,255,255,255</shapeUpColor>
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
-                    <defaultValue>bn ← ""</defaultValue>
+                    <defaultValue>bin ← ""</defaultValue>
                     <commands>
-                        <entry key="var">bn</entry>
+                        <entry key="var">bin</entry>
                         <entry key="value">""</entry>
                     </commands>
                     <commandsValid>true</commandsValid>
-                    <value>bn ← ""</value>
+                    <value>bin ← ""</value>
                 </process>
             </element>
             <element xsi:type="layoutElement" xmlID="17" parentSegment="0">
@@ -163,6 +178,22 @@ nebo a není celé číslo,
                 </loopStart>
                 <segment xsi:nil="true"/>
                 <segment xsi:type="layoutSegment" xmlID="18" parentElement="17">
+                    <element xsi:type="layoutElement" xmlID="22" parentSegment="18">
+                        <comment>
+                            <borderColor>0,0,0,255</borderColor>
+                            <shapeDownColor>230,230,230,255</shapeDownColor>
+                            <hasShadow>true</hasShadow>
+                            <customValue>Je zbytek po celočíselném 
+dělení roven 1?</customValue>
+                            <commandsValid>true</commandsValid>
+                            <value>Je zbytek po celočíselném 
+dělení roven 1?</value>
+                            <alwaysLeftAlign>false</alwaysLeftAlign>
+                            <relativeX>49.0</relativeX>
+                            <relativeY>-43.0</relativeY>
+                            <paired>true</paired>
+                        </comment>
+                    </element>
                     <element xsi:type="layoutElement" xmlID="8" parentSegment="18">
                         <decision>
                             <borderColor>0,0,0,255</borderColor>
@@ -170,12 +201,12 @@ nebo a není celé číslo,
                             <shapeDownColor>230,230,230,255</shapeDownColor>
                             <hasShadow>true</hasShadow>
                             <customValue>a%2 = 1</customValue>
-                            <defaultValue>a%2 = 1</defaultValue>
+                            <defaultValue>b%2 = 1</defaultValue>
                             <commands>
-<entry key="condition">a%2 = 1</entry>
+<entry key="condition">b%2 = 1</entry>
                             </commands>
                             <commandsValid>true</commandsValid>
-                            <value>a%2 = 1</value>
+                            <value>b%2 = 1</value>
                         </decision>
                         <segment xsi:type="layoutSegment" xmlID="9" parentElement="8">
                             <element xsi:type="layoutElement" xmlID="13" parentSegment="9">
@@ -184,13 +215,13 @@ nebo a není celé číslo,
     <shapeUpColor>255,255,255,255</shapeUpColor>
     <shapeDownColor>230,230,230,255</shapeDownColor>
     <hasShadow>true</hasShadow>
-    <defaultValue>bn ← "0" + bn</defaultValue>
+    <defaultValue>bin ← "0" + bin</defaultValue>
     <commands>
-        <entry key="var">bn</entry>
-        <entry key="value">"0" + bn</entry>
+        <entry key="var">bin</entry>
+        <entry key="value">"0" + bin</entry>
     </commands>
     <commandsValid>true</commandsValid>
-    <value>bn ← "0" + bn</value>
+    <value>bin ← "0" + bin</value>
 </process>
                             </element>
                             <description>Ne</description>
@@ -202,49 +233,31 @@ nebo a není celé číslo,
     <shapeUpColor>255,255,255,255</shapeUpColor>
     <shapeDownColor>230,230,230,255</shapeDownColor>
     <hasShadow>true</hasShadow>
-    <defaultValue>bn ← "1" + bn</defaultValue>
+    <defaultValue>bin ← "1" + bin</defaultValue>
     <commands>
-        <entry key="var">bn</entry>
-        <entry key="value">"1" + bn</entry>
+        <entry key="var">bin</entry>
+        <entry key="value">"1" + bin</entry>
     </commands>
     <commandsValid>true</commandsValid>
-    <value>bn ← "1" + bn</value>
-</process>
-                            </element>
-                            <element xsi:type="layoutElement" xmlID="22" parentSegment="10">
-<comment>
-    <borderColor>0,0,0,255</borderColor>
-    <shapeDownColor>230,230,230,255</shapeDownColor>
-    <hasShadow>true</hasShadow>
-    <customValue>je třeba proměnnou učinit
-dělitelnou dvěmi bezezbytku</customValue>
-    <commandsValid>true</commandsValid>
-    <value>je třeba proměnnou učinit
-dělitelnou dvěmi bezezbytku</value>
-    <alwaysLeftAlign>false</alwaysLeftAlign>
-    <relativeX>75.0</relativeX>
-    <relativeY>0.0</relativeY>
-    <paired>true</paired>
-</comment>
-                            </element>
-                            <element xsi:type="layoutElement" xmlID="15" parentSegment="10">
-<process>
-    <borderColor>0,0,0,255</borderColor>
-    <shapeUpColor>255,255,255,255</shapeUpColor>
-    <shapeDownColor>230,230,230,255</shapeDownColor>
-    <hasShadow>true</hasShadow>
-    <customValue> ← n - 1</customValue>
-    <defaultValue>a ← a - 1</defaultValue>
-    <commands>
-        <entry key="var">a</entry>
-        <entry key="value">a - 1</entry>
-    </commands>
-    <commandsValid>true</commandsValid>
-    <value>a ← a - 1</value>
+    <value>bin ← "1" + bin</value>
 </process>
                             </element>
                             <description>Ano</description>
                         </segment>
+                    </element>
+                    <element xsi:type="layoutElement" xmlID="15" parentSegment="18">
+                        <comment>
+                            <borderColor>0,0,0,255</borderColor>
+                            <shapeDownColor>230,230,230,255</shapeDownColor>
+                            <hasShadow>true</hasShadow>
+                            <customValue>Celočíselné dělení</customValue>
+                            <commandsValid>true</commandsValid>
+                            <value>Celočíselné dělení</value>
+                            <alwaysLeftAlign>false</alwaysLeftAlign>
+                            <relativeX>72.0</relativeX>
+                            <relativeY>-1.0</relativeY>
+                            <paired>true</paired>
+                        </comment>
                     </element>
                     <element xsi:type="layoutElement" xmlID="12" parentSegment="18">
                         <process>
@@ -252,13 +265,13 @@ dělitelnou dvěmi bezezbytku</value>
                             <shapeUpColor>255,255,255,255</shapeUpColor>
                             <shapeDownColor>230,230,230,255</shapeDownColor>
                             <hasShadow>true</hasShadow>
-                            <defaultValue>a ← a / 2</defaultValue>
+                            <defaultValue>b ← b // 2</defaultValue>
                             <commands>
-<entry key="var">a</entry>
-<entry key="value">a / 2</entry>
+<entry key="var">b</entry>
+<entry key="value">b // 2</entry>
                             </commands>
                             <commandsValid>true</commandsValid>
-                            <value>a ← a / 2</value>
+                            <value>b ← b // 2</value>
                         </process>
                     </element>
                 </segment>
@@ -269,12 +282,12 @@ dělitelnou dvěmi bezezbytku</value>
                     <shapeUpColor>255,255,255,255</shapeUpColor>
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
-                    <defaultValue>a ≠ 0</defaultValue>
+                    <defaultValue>b ≠ 0</defaultValue>
                     <commands>
-                        <entry key="condition">a != 0</entry>
+                        <entry key="condition">b != 0</entry>
                     </commands>
                     <commandsValid>true</commandsValid>
-                    <value>a ≠ 0</value>
+                    <value>b ≠ 0</value>
                 </loopEnd>
             </element>
             <element xsi:type="layoutElement" xmlID="14" parentSegment="0">
@@ -283,15 +296,15 @@ dělitelnou dvěmi bezezbytku</value>
                     <shapeUpColor>255,255,255,255</shapeUpColor>
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
-                    <customValue>"vysledek je: "
- + bn →</customValue>
-                    <defaultValue>"vysledek je: " + bn →</defaultValue>
+                    <customValue>"Binární podoba čísla " 
++ a + " je: " + bin →</customValue>
+                    <defaultValue>"Binární podoba čísla " + a + " je: " + bin →</defaultValue>
                     <commands>
-                        <entry key="value">"vysledek je: " + bn</entry>
+                        <entry key="value">"Binární podoba čísla " + a + " je: " + bin</entry>
                     </commands>
                     <commandsValid>true</commandsValid>
-                    <value>"vysledek je: "
- + bn →</value>
+                    <value>"Binární podoba čísla " 
++ a + " je: " + bin →</value>
                 </io>
             </element>
             <element xsi:type="layoutElement" xmlID="2" parentSegment="0">

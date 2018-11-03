@@ -157,7 +157,8 @@ public final class MainWindow extends javax.swing.JFrame
     {
         if (!SettingsHolder.IS_DEPLOYMENT_MODE) {
             String computerName = System.getenv("COMPUTERNAME");
-            if (computerName == null || !System.getenv("COMPUTERNAME").equals("POLOSHOCK-NB")) {
+            if (computerName == null || !System.getenv("COMPUTERNAME").equals("POLOSHOCK-NB") && !System.getenv(
+                    "COMPUTERNAME").equals("PS-SILENT-MAMBA")) {
                 JOptionPane.showMessageDialog(null,
                         "<html>Tato verze PS Diagramu je určena pouze pro vývoj.<br />"
                         + "Pro obdržení správné verze navštivte www.psdiagram.cz nebo mne kontaktujte<br />"
@@ -180,7 +181,7 @@ public final class MainWindow extends javax.swing.JFrame
                 exit();
             }
         });
-
+        new javax.swing.JLabel();
         //pridani tlacitek layoutu
         ButtonGroup layoutGroup = new ButtonGroup();
         for (EnumLayout enumLayout : EnumLayout.values()) {
@@ -908,7 +909,7 @@ public final class MainWindow extends javax.swing.JFrame
         jPanelStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelStatusLayout.createSequentialGroup()
             .addContainerGap()
-            .addComponent(jLabelStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 691, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jLabelStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
             .addComponent(jLabelZoom, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -917,15 +918,12 @@ public final class MainWindow extends javax.swing.JFrame
     );
     jPanelStatusLayout.setVerticalGroup(
         jPanelStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelStatusLayout.createSequentialGroup()
-            .addGap(0, 0, Short.MAX_VALUE)
+        .addGroup(jPanelStatusLayout.createSequentialGroup()
             .addGroup(jPanelStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                .addGroup(jPanelStatusLayout.createSequentialGroup()
-                    .addGap(2, 2, 2)
-                    .addComponent(jLabelStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jLabelZoom, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jSliderZoom, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabelZoom, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGap(13, 13, 13))
+                .addComponent(jLabelStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
     );
 
     jSplitPane.setDividerLocation(306);
@@ -946,7 +944,7 @@ public final class MainWindow extends javax.swing.JFrame
         jPanelInnerFunctionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
         .addGroup(jPanelInnerFunctionLayout.createSequentialGroup()
             .addContainerGap()
-            .addComponent(jLabelFunction, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
+            .addComponent(jLabelFunction, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
             .addContainerGap())
     );
     jPanelInnerFunctionLayout.setVerticalGroup(
@@ -963,7 +961,7 @@ public final class MainWindow extends javax.swing.JFrame
     jPanelOuterFunction.setLayout(jPanelOuterFunctionLayout);
     jPanelOuterFunctionLayout.setHorizontalGroup(
         jPanelOuterFunctionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-        .addComponent(jScrollPaneFunction, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
+        .addComponent(jScrollPaneFunction, javax.swing.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE)
     );
     jPanelOuterFunctionLayout.setVerticalGroup(
         jPanelOuterFunctionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1023,7 +1021,7 @@ public final class MainWindow extends javax.swing.JFrame
         .addComponent(jPanelTextSegment, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         .addGroup(jPanelInnerTextLayout.createSequentialGroup()
             .addContainerGap()
-            .addComponent(jCheckBoxDefaultText, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
+            .addComponent(jCheckBoxDefaultText, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
             .addContainerGap())
     );
     jPanelInnerTextLayout.setVerticalGroup(
@@ -1044,7 +1042,7 @@ public final class MainWindow extends javax.swing.JFrame
     jPanelOuterText.setLayout(jPanelOuterTextLayout);
     jPanelOuterTextLayout.setHorizontalGroup(
         jPanelOuterTextLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-        .addComponent(jScrollPaneText, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
+        .addComponent(jScrollPaneText, javax.swing.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE)
     );
     jPanelOuterTextLayout.setVerticalGroup(
         jPanelOuterTextLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1076,7 +1074,7 @@ public final class MainWindow extends javax.swing.JFrame
         jPanelEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
         .addGroup(jPanelEditLayout.createSequentialGroup()
             .addGap(0, 0, 0)
-            .addComponent(jPanelDetails, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
+            .addComponent(jPanelDetails, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGap(0, 0, 0)
             .addComponent(jToolBarSymbols, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addGap(0, 0, 0))
@@ -1117,7 +1115,7 @@ public final class MainWindow extends javax.swing.JFrame
     jPanelDiagram.setLayout(jPanelDiagramLayout);
     jPanelDiagramLayout.setHorizontalGroup(
         jPanelDiagramLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-        .addGap(0, 577, Short.MAX_VALUE)
+        .addGap(0, 659, Short.MAX_VALUE)
     );
     jPanelDiagramLayout.setVerticalGroup(
         jPanelDiagramLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1378,8 +1376,8 @@ public final class MainWindow extends javax.swing.JFrame
     layout.setHorizontalGroup(
         layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
         .addComponent(jToolBarMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        .addComponent(jPanelStatus, javax.swing.GroupLayout.DEFAULT_SIZE, 900, Short.MAX_VALUE)
-        .addComponent(jSplitPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+        .addComponent(jPanelStatus, javax.swing.GroupLayout.DEFAULT_SIZE, 908, Short.MAX_VALUE)
+        .addComponent(jSplitPane, javax.swing.GroupLayout.DEFAULT_SIZE, 908, Short.MAX_VALUE)
     );
     layout.setVerticalGroup(
         layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1559,6 +1557,8 @@ public final class MainWindow extends javax.swing.JFrame
         SwingUtilities.invokeLater(() -> {
             jScrollPaneDiagram.getVerticalScrollBar().setValue(0);
             jScrollPaneDiagram.getHorizontalScrollBar().setValue(0);
+            jPnlDiagram.setTranslateX(0);
+            jPnlDiagram.setTranslateY(0);
         });
     }//GEN-LAST:event_jMenuItemNewActionPerformed
 
@@ -1825,9 +1825,15 @@ public final class MainWindow extends javax.swing.JFrame
             for (Component component : getAllComponents(jPanelLeftSplit)) {
                 component.setEnabled(true);
             }
+            
+            // TODO tohle je priprava na shovavani leveho panelu v rezimu nahledu
+//            jSplitPane.setLeftComponent(jPanelLeftSplit);
+//            jSplitPane.setDividerLocation(jSplitPane.getLastDividerLocation());
+//            jSplitPane.setDividerSize(new javax.swing.JSplitPane().getDividerSize());
+//            jPnlDiagram.setTranslateX(jPnlDiagram.getTranslateX() - jSplitPane.getDividerLocation());
+
             jTextAreaTextSymbol.getDocument().addDocumentListener(flowchartEditManager);
             jTextFieldTextSegment.getDocument().addDocumentListener(flowchartEditManager);
-            //setEnableToSymbolButtons(true);
             flowchartCrashRecovery.startPolling();
         } else {
             try {
@@ -1853,7 +1859,13 @@ public final class MainWindow extends javax.swing.JFrame
             for (Component component : getAllComponents(jPanelLeftSplit)) {
                 component.setEnabled(false);
             }
-            //setEnableToSymbolButtons(false);
+            
+            // TODO tohle je priprava na shovavani leveho panelu v rezimu nahledu
+//            jSplitPane.setLeftComponent(null);
+//            jSplitPane.setDividerLocation(0);
+//            jSplitPane.setDividerSize(0);
+//            jPnlDiagram.setTranslateX(jPnlDiagram.getTranslateX() + jSplitPane.getLastDividerLocation());
+
             flowchartCrashRecovery.stopPolling();
         }
         layout.setEditMode(editMode);
@@ -2487,6 +2499,8 @@ public final class MainWindow extends javax.swing.JFrame
         SwingUtilities.invokeLater(() -> {
             jScrollPaneDiagram.getVerticalScrollBar().setValue(0);
             jScrollPaneDiagram.getHorizontalScrollBar().setValue(0);
+            jPnlDiagram.setTranslateX(0);
+            jPnlDiagram.setTranslateY(0);
         });
         return true;
     }
@@ -2531,6 +2545,8 @@ public final class MainWindow extends javax.swing.JFrame
     private void openDiagram(Flowchart<LayoutSegment, LayoutElement> flowchart, File file)
     {
         SettingsHolder.settings.setDontSaveDirectly(false);
+        
+        this.setJScrollPaneFunctionViewportView(null); // resetuje formulář pro nastavení funkce symbolu
         // prepnu do nahledoveho modu
         if (editMode) {
             flowchartEditManager.actionPerformed(new ActionEvent(jButtonToolEdit,
@@ -2558,6 +2574,8 @@ public final class MainWindow extends javax.swing.JFrame
         SwingUtilities.invokeLater(() -> {
             jScrollPaneDiagram.getVerticalScrollBar().setValue(0);
             jScrollPaneDiagram.getHorizontalScrollBar().setValue(0);
+            jPnlDiagram.setTranslateX(0);
+            jPnlDiagram.setTranslateY(0);
         });
     }
 
@@ -2574,13 +2592,6 @@ public final class MainWindow extends javax.swing.JFrame
         return compList;
     }
 
-    /*
-     * private void setEnableToSymbolButtons(boolean enabled) {
-     * for (Component component: jToolBarSymbols.getComponents()) {
-     * component.setEnabled(enabled);
-     * }
-     * }
-     */
     private void loadLayoutSettings()
     {
         ArrayList<JMenuItem> menuItems = layout.getSettings();

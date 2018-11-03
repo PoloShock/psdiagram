@@ -4,8 +4,10 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.gui;
 
+import cz.miroslavbartyzal.psdiagram.app.global.GlobalFunctions;
 import cz.miroslavbartyzal.psdiagram.app.update.ChangesCondenser;
 import cz.miroslavbartyzal.psdiagram.app.update.Updater;
+import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,14 +18,17 @@ import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.math.RoundingMode;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Calendar;
+import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
+import javax.swing.event.HyperlinkEvent;
 
 /**
  *
@@ -440,6 +445,32 @@ public class JFrameUpdate extends javax.swing.JFrame implements PropertyChangeLi
     private void jButtonDoInActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButtonDoInActionPerformed
     {//GEN-HEADEREND:event_jButtonDoInActionPerformed
         downloadHit = true;
+        if (!GlobalFunctions.isWindows()) {
+            // html content
+            JEditorPane ep = new JEditorPane("text/html",
+                    "<html>Aktualizace PS Diagramu je (prozatím) vyvíjena jen pro operační systém Windows.<br />"
+                            + "Stále ji však můžete provést sami stažením nové verze aplikace na stránkách "
+                            + "<a href=\"http://www.psdiagram.cz\">psdiagram.cz</a>.</html>");
+            // handle link events
+            ep.addHyperlinkListener((HyperlinkEvent e) -> {
+                if (e.getEventType().equals(HyperlinkEvent.EventType.ACTIVATED)) {
+                    try {
+                        try {
+                            Desktop.getDesktop().browse(e.getURL().toURI());
+                        } catch (URISyntaxException ex) {
+                        }
+                    } catch (IOException ex) {
+                    }
+                }
+            });
+            ep.setEditable(false);
+            ep.setBackground(new Color(0, 0, 0, 0));
+            // show
+            JOptionPane.showMessageDialog(null, ep, "Nepodporovaný oprerační systém", JOptionPane.WARNING_MESSAGE);
+            
+            return;
+        }
+
         if (!downloadInProgress) {
             resetProgress();
             downloadInProgress = true;

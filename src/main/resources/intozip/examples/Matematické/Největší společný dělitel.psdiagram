@@ -49,20 +49,20 @@ společným dělitelem původních
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
                     <customValue>"Zadejte hodnoty
-promennych A a B,
-jejichz nejvetsi
-spolecny delitel
-chcete najit." →</customValue>
-                    <defaultValue>"Zadejte hodnoty promennych A a B, jejichz nejvetsi spolecny delitel chcete najit." →</defaultValue>
+proměnných A a B,
+jejichž největší
+společný dělitel
+chcete najít." →</customValue>
+                    <defaultValue>"Zadejte hodnoty proměnných A a B, jejichž největší společný dělitel chcete najít." →</defaultValue>
                     <commands>
-                        <entry key="value">"Zadejte hodnoty promennych A a B, jejichz nejvetsi spolecny delitel chcete najit."</entry>
+                        <entry key="value">"Zadejte hodnoty proměnných A a B, jejichž největší společný dělitel chcete najít."</entry>
                     </commands>
                     <commandsValid>true</commandsValid>
                     <value>"Zadejte hodnoty
-promennych A a B,
-jejichz nejvetsi
-spolecny delitel
-chcete najit." →</value>
+proměnných A a B,
+jejichž největší
+společný dělitel
+chcete najít." →</value>
                 </io>
             </element>
             <element xsi:type="layoutElement" xmlID="796715" parentSegment="3753303">
@@ -177,19 +177,19 @@ chcete najit." →</value>
                     <shapeUpColor>255,255,255,255</shapeUpColor>
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
-                    <customValue>"nejvetsi
-spolecny
-delitel je "
-+ a →</customValue>
-                    <defaultValue>"nejvetsi spolecny delitel je " + a →</defaultValue>
+                    <customValue>"nejvetší 
+společný 
+dělitel je 
+" + a →</customValue>
+                    <defaultValue>"nejvetší společný dělitel je " + a →</defaultValue>
                     <commands>
-                        <entry key="value">"nejvetsi spolecny delitel je " + a</entry>
+                        <entry key="value">"nejvetší společný dělitel je " + a</entry>
                     </commands>
                     <commandsValid>true</commandsValid>
-                    <value>"nejvetsi
-spolecny
-delitel je "
-+ a →</value>
+                    <value>"nejvetší 
+společný 
+dělitel je 
+" + a →</value>
                 </io>
             </element>
             <element xsi:type="layoutElement" xmlID="32226195" parentSegment="3753303">

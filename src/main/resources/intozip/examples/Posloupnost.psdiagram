@@ -75,6 +75,27 @@ ukončené nulou, která do posloupnosti nepatří.</value>
                     <value>pocet ← 0</value>
                 </process>
             </element>
+            <element xsi:type="layoutElement" xmlID="14" parentSegment="0">
+                <io>
+                    <borderColor>0,0,0,255</borderColor>
+                    <shapeUpColor>255,255,255,255</shapeUpColor>
+                    <shapeDownColor>230,230,230,255</shapeDownColor>
+                    <hasShadow>true</hasShadow>
+                    <customValue>"Zadávejte postupně 
+čísla posloupnosti, 
+ukončete posloupnost 
+zadáním nuly." →</customValue>
+                    <defaultValue>"Zadávejte postupně čísla posloupnosti, ukončete posloupnost zadáním nuly." →</defaultValue>
+                    <commands>
+                        <entry key="value">"Zadávejte postupně čísla posloupnosti, ukončete posloupnost zadáním nuly."</entry>
+                    </commands>
+                    <commandsValid>true</commandsValid>
+                    <value>"Zadávejte postupně 
+čísla posloupnosti, 
+ukončete posloupnost 
+zadáním nuly." →</value>
+                </io>
+            </element>
             <element xsi:type="layoutElement" xmlID="4" parentSegment="0">
                 <io>
                     <borderColor>0,0,0,255</borderColor>
@@ -251,14 +272,14 @@ ukončené nulou, která do posloupnosti nepatří.</value>
                             <shapeUpColor>255,255,255,255</shapeUpColor>
                             <shapeDownColor>230,230,230,255</shapeDownColor>
                             <hasShadow>true</hasShadow>
-                            <customValue>"Prazdna
+                            <customValue>"Prázdná 
 posloupnost" →</customValue>
-                            <defaultValue>"Prazdna posloupnost" →</defaultValue>
+                            <defaultValue>"Prázdná posloupnost" →</defaultValue>
                             <commands>
-<entry key="value">"Prazdna posloupnost"</entry>
+<entry key="value">"Prázdná posloupnost"</entry>
                             </commands>
                             <commandsValid>true</commandsValid>
-                            <value>"Prazdna
+                            <value>"Prázdná 
 posloupnost" →</value>
                         </io>
                     </element>
@@ -275,19 +296,19 @@ posloupnost" →</value>
 +min+
 ", vyskytuje se "
 +pmin+
-"x z celkoveho poctu "
-+pocet+" cisel" →</customValue>
-                            <defaultValue>"Minimum: "+min+", vyskytuje se "+pmin+"x z celkoveho poctu "+pocet+" cisel" →</defaultValue>
+"x z celkového počtu "
++pocet+" čísel" →</customValue>
+                            <defaultValue>"Minimum: "+min+", vyskytuje se "+pmin+"x z celkového počtu "+pocet+" čísel" →</defaultValue>
                             <commands>
-<entry key="value">"Minimum: "+min+", vyskytuje se "+pmin+"x z celkoveho poctu "+pocet+" cisel"</entry>
+<entry key="value">"Minimum: "+min+", vyskytuje se "+pmin+"x z celkového počtu "+pocet+" čísel"</entry>
                             </commands>
                             <commandsValid>true</commandsValid>
                             <value>"Minimum: "
 +min+
 ", vyskytuje se "
 +pmin+
-"x z celkoveho poctu "
-+pocet+" cisel" →</value>
+"x z celkového počtu "
++pocet+" čísel" →</value>
                         </io>
                     </element>
                     <description>Ano</description>

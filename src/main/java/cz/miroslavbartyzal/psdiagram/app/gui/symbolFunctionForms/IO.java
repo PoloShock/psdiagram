@@ -186,9 +186,9 @@ public final class IO extends AbstractSymbolFunctionForm
 
         buttonGroup = new javax.swing.ButtonGroup();
         jLabelVar = new javax.swing.JLabel();
-        jTextFieldVar = new javax.swing.JTextField();
+        jTextFieldVar = new WatermarkJTextField("kam uložit co uživatel napíše");
         jLabelValue = new javax.swing.JLabel();
-        jTextFieldValue = new javax.swing.JTextField();
+        jTextFieldValue = new WatermarkJTextField("co uživateli zobrazit");
         jPanel1 = new cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.JPanelSymbol(mySymbol, jLabelDescription);
         jLabelExampleLabel = new javax.swing.JLabel();
         jLabelExamples = new javax.swing.JLabel();

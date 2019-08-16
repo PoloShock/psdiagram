@@ -70,6 +70,9 @@
       <Properties>
         <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;&#xa;Prom&#x11b;nn&#xe1;, do kter&#xe9; bude ukl&#xe1;d&#xe1;na aktu&#xe1;ln&#xed; hodnota prob&#xed;haj&#xed;c&#xed;ho cyklu.&lt;br /&gt;&#xa;V p&#x159;&#xed;pad&#x11b; for cyklu se hodnota rovn&#xe1; aktu&#xe1;ln&#xed; hodnot&#x11b; po&#x10d;&#xed;tadla.&lt;br /&gt;&#xa;V p&#x159;&#xed;pad&#x11b; for-each cyklu se hodnota rovn&#xe1; aktu&#xe1;ln&#xed;mu prvku z dan&#xe9;ho pole.&lt;br /&gt;&#xa;&lt;/html&gt;"/>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new WatermarkJTextField(&quot;&quot;)"/>
+      </AuxValues>
     </Component>
     <Container class="javax.swing.JPanel" name="jPanel1">
       <AuxValues>
@@ -157,8 +160,11 @@
         </Component>
         <Component class="javax.swing.JTextField" name="jTextFieldFrom">
           <Properties>
-            <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;&#xa;Cyklus inkrementuje po&#x10d;&#xe1;te&#x10d;n&#xed; &#x10d;&#xed;selnou hodnotu v&#x17e;dy o hodnotu inkrementu,&lt;br /&gt;&#xa;dokud nen&#xed; dosa&#x17e;ena maxim&#xe1;ln&#xed; stanoven&#xe1; hodnota - t&#xed;m cyklus kon&#x10d;&#xed;.&#xa;&lt;/html&gt;"/>
+            <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;&#xa;Cyklus inkrementuje (navy&#x161;uje) po&#x10d;&#xe1;te&#x10d;n&#xed; &#x10d;&#xed;selnou hodnotu v&#x17e;dy o hodnotu inkrementu,&lt;br /&gt;&#xa;dokud nen&#xed; dosa&#x17e;ena maxim&#xe1;ln&#xed; stanoven&#xe1; hodnota - t&#xed;m cyklus kon&#x10d;&#xed;.&#xa;&lt;/html&gt;"/>
           </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new WatermarkJTextField(&quot;od kolika po&#x10d;&#xed;tat&quot;)"/>
+          </AuxValues>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel2">
           <Properties>
@@ -167,8 +173,11 @@
         </Component>
         <Component class="javax.swing.JTextField" name="jTextFieldForTo">
           <Properties>
-            <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;&#xa;Cyklus inkrementuje po&#x10d;&#xe1;te&#x10d;n&#xed; &#x10d;&#xed;selnou hodnotu v&#x17e;dy o hodnotu inkrementu,&lt;br /&gt;&#xa;dokud nen&#xed; dosa&#x17e;ena maxim&#xe1;ln&#xed; stanoven&#xe1; hodnota - t&#xed;m cyklus kon&#x10d;&#xed;.&#xa;&lt;/html&gt;"/>
+            <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;&#xa;Cyklus inkrementuje (navy&#x161;uje) po&#x10d;&#xe1;te&#x10d;n&#xed; &#x10d;&#xed;selnou hodnotu v&#x17e;dy o hodnotu inkrementu,&lt;br /&gt;&#xa;dokud nen&#xed; dosa&#x17e;ena maxim&#xe1;ln&#xed; stanoven&#xe1; hodnota - t&#xed;m cyklus kon&#x10d;&#xed;.&#xa;&lt;/html&gt;"/>
           </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new WatermarkJTextField(&quot;do kolika po&#x10d;&#xed;tat&quot;)"/>
+          </AuxValues>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabelExampleLabel1">
           <Properties>
@@ -226,6 +235,9 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="jTextFieldForeach">
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new WatermarkJTextField(&quot;pole, kter&#xe9; proch&#xe1;zet&quot;)"/>
+          </AuxValues>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabelExampleLabel2">
           <Properties>

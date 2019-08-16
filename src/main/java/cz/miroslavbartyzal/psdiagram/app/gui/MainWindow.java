@@ -2334,7 +2334,7 @@ public final class MainWindow extends javax.swing.JFrame
             currentTime = System.currentTimeMillis();
         }
 
-        final Long expiration = 1563141600000L; // 2019.7.15. 00:00:00 = 1563141600000 (System.out.println(new GregorianCalendar(2019, 6, 15).getTimeInMillis());) - month is zero-based
+        final Long expiration = 1594764000000L; // 2020.7.15. 00:00:00 = 1594764000000 (System.out.println(new GregorianCalendar(2020, 6, 15).getTimeInMillis());) - month is zero-based
         daysLeft = (expiration - currentTime) / 86400000l;
         if (currentTime > expiration || currentTime < SettingsHolder.settings.getLastTrialLaunchedTime()) {
 //            System.exit(0); <- let's let the user download newer version of PS Diagram

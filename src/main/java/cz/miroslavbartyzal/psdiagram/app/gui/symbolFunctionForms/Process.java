@@ -61,7 +61,7 @@ public final class Process extends AbstractSymbolFunctionForm
         jLabelExamples.setFont(SettingsHolder.SMALL_CODEFONT);
 
         if (element.getSymbol().getCommands() != null) {
-            jTextFieldVar.setText( element.getSymbol().getCommands().get("var"));
+            jTextFieldVar.setText(element.getSymbol().getCommands().get("var"));
             jTextFieldValue.setText(element.getSymbol().getCommands().get("value"));
         }
 

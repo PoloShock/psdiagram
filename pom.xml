@@ -4,7 +4,7 @@
 
     <groupId>cz.miroslavbartyzal</groupId>
     <artifactId>psdiagram</artifactId>
-    <version>1.4.2.1</version>
+    <version>1.4.2.2</version>
     <packaging>jar</packaging>
     <name>PS Diagram</name>
     <url>http://www.psdiagram.cz</url>
@@ -72,7 +72,7 @@
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
-            <version>4.7.1</version>
+            <version>4.7.2</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.abego.treelayout</groupId>
@@ -90,7 +90,7 @@
         <dependency>
             <groupId>org.mozilla</groupId>
             <artifactId>rhino</artifactId>
-            <version>1.7.10</version>
+            <version>1.7.11</version>
         </dependency>
         
     </dependencies>
@@ -129,12 +129,13 @@
                                     <changelogurl>http://www.psdiagram.cz/changelog</changelogurl>
                                     <releaseurl></releaseurl>
 
-                                    <headline>Důležité opravy a nové příklady algoritmů</headline>
+                                    <headline>Malá, ale šikovná aktualizace</headline>
                                     <description>
                                         <![CDATA[
                                         <html>
-                                            <p align="justify">Přišel čas zase vymést několik chybiček, které se v PS Diagramu nepozorovaně usídlily. Jedna z nich je poměrně závažná. Funkce symbolu totiž podporovala až příliš širokou škálu příkazů, z nichž některé vlastně vůbec nesouvisely s vytvářením diagramů a daly se zneužít k různým nepravostem. Rozsah použitelných příkazů je proto nyní vhodně omezen. Tímto děkuji Štěpánovi P. za upozornění. :)</p>
-                                            <p align="justify">Krom oprav se PS Diagram dočkal i rozšíření knihovny algoritmů. Příklady v ní obsažené navíc prošly revizí a drobnými úpravami.</p>
+                                            <p align="justify">Dnešní aktualizace je spíše jen symbolická. ;)</p>
+                                             <p align="justify">Už nějakou dobu jsem měl poznamenáno, že by bylo dobré plovoucí texty, co napovídají například u symbolů "Zpracování" a "Rozhodování - podmínka", rozšířit i na ostatní symboly. Dnes jsem se k tomu konečně dostal, a tak už jsou nápovědy i u ostatních symbolů. Snad přijdou vhod.</p>
+                                            <p align="justify">PS: kdyby vám v PS Diagramu něco chybělo, neváhejte mi napsat a já to do příště zakomponuji :)</p>
                                         </html>
                                         ]]>
                                     </description>
@@ -142,18 +143,13 @@
                                     <features>
                                     </features>
                                     <enhancements>
-                                        <enhancement>příklady algoritmů jsou nyní organizovány do více kategorií</enhancement>
+                                        <enhancement>přidány pomocné plovoucí texty do formulářů pro symboly "Vstup/Výstup", "Switch" a "Cyklus s pevným počtem opakování"</enhancement>
                                     </enhancements>
                                     <extensions>
-                                        <extension>přibyly dva příklady algoritmů: obrácení pořadí znaků textového řetězce a obrácení pořadí cifer čísla</extension>
                                     </extensions>
                                     <changes>
                                     </changes>
                                     <fixes>
-                                        <fix>funkce symbolu podporovala i příkazy, které nesouvisely s tvorbou diagramů, čehož bylo možné zneužít k různým nepravostem</fix>
-                                        <fix>celočíselné dělení pomocí operátoru "//" nyní správně pracuje i se zápornými čísly (předtím výsledek zaokrouhlovalo na špatnou stranu)</fix>
-                                        <fix>když byla v rámci jednoho symbolu volána více než jedna funkce (jako např. Math.pow(...) apod.), docházelo k chybě a zastavení běhu algoritmu</fix>
-                                        <fix>posuvník zvětšení/zmenšení diagramu se nyní při změnách velikosti okna aplikace drží vždy na jeho pravém okraji</fix>
                                     </fixes>
                                     <others>
                                     </others>
@@ -219,7 +215,7 @@
                                             <fileset dir="${basedir}/src/main/resources/intozip"/>
                                         </copy>
                                         <copy todir="${project.build.directory}/zip/PS Diagram/jre">
-                                            <fileset dir="c:\Program Files (x86)\Java\jre1.8.0_192"/>
+                                            <fileset dir="c:\Program Files (x86)\AdoptOpenJDK\jdk-8.0.222.10-hotspot\jre"/>
                                         </copy>
                                         <copy file="c:/Zaloha/Programovani/Moje/Visual Studio 2013/PS Diagram Launcher/PS Diagram Launcher/bin/Release/PS Diagram.exe" todir="${project.build.directory}/zip/PS Diagram"/>
                                         <zip destfile="${project.build.directory}/OPENSHIFT_DATA/PS_Diagram_${project.version}.zip"

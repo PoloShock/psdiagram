@@ -76,6 +76,9 @@
       <Properties>
         <Property name="toolTipText" type="java.lang.String" value="Prom&#x11b;nn&#xe1;, do kter&#xe9; bude vstupn&#xed; hodnota ulo&#x17e;ena."/>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new WatermarkJTextField(&quot;kam ulo&#x17e;it co u&#x17e;ivatel nap&#xed;&#x161;e&quot;)"/>
+      </AuxValues>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabelValue">
       <Properties>
@@ -86,6 +89,9 @@
       <Properties>
         <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;&#xa;Hodnota, kter&#xe1; se m&#xe1; zobrazit na v&#xfd;stupu.&lt;br /&gt;&#xa;&#x158;et&#x11b;zcovou hodnotu ohrani&#x10d;te uvozovkami, matematick&#xe9; operace z&#xe1;vorkami.&#xa;&lt;/html&gt;"/>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new WatermarkJTextField(&quot;co u&#x17e;ivateli zobrazit&quot;)"/>
+      </AuxValues>
     </Component>
     <Container class="javax.swing.JPanel" name="jPanel1">
       <AuxValues>

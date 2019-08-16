@@ -227,12 +227,14 @@ public final class For extends AbstractSymbolFunctionForm
 
     private void setForVisible()
     {
+        ((WatermarkJTextField)jTextFieldVar).setWatermarkText("do které ukládat počítání");
         jPanelForeach.setVisible(false);
         jPanelFor.setVisible(true);
     }
 
     private void setForeachVisible()
     {
+        ((WatermarkJTextField)jTextFieldVar).setWatermarkText("do které ukládat prvky pole");
         jPanelFor.setVisible(false);
         jPanelForeach.setVisible(true);
     }
@@ -249,22 +251,22 @@ public final class For extends AbstractSymbolFunctionForm
 
         buttonGroup = new javax.swing.ButtonGroup();
         jLabelVar = new javax.swing.JLabel();
-        jTextFieldVar = new javax.swing.JTextField();
+        jTextFieldVar = new WatermarkJTextField("");
         jPanel1 = new cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.JPanelSymbol(mySymbol, jLabelDescription);
         jRadioButtonFor = new javax.swing.JRadioButton();
         jRadioButtonForeach = new javax.swing.JRadioButton();
         jPanelFor = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jTextFieldFrom = new javax.swing.JTextField();
+        jTextFieldFrom = new WatermarkJTextField("od kolika počítat");
         jLabel2 = new javax.swing.JLabel();
-        jTextFieldForTo = new javax.swing.JTextField();
+        jTextFieldForTo = new WatermarkJTextField("do kolika počítat");
         jLabelExampleLabel1 = new javax.swing.JLabel();
         jLabelExamples1 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jTextFieldIncrement = new javax.swing.JTextField();
         jPanelForeach = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        jTextFieldForeach = new javax.swing.JTextField();
+        jTextFieldForeach = new WatermarkJTextField("pole, které procházet");
         jLabelExampleLabel2 = new javax.swing.JLabel();
         jLabelExamples2 = new javax.swing.JLabel();
 
@@ -308,11 +310,11 @@ public final class For extends AbstractSymbolFunctionForm
 
         jLabel1.setText("Začít od:");
 
-        jTextFieldFrom.setToolTipText("<html>\nCyklus inkrementuje počáteční číselnou hodnotu vždy o hodnotu inkrementu,<br />\ndokud není dosažena maximální stanovená hodnota - tím cyklus končí.\n</html>");
+        jTextFieldFrom.setToolTipText("<html>\nCyklus inkrementuje (navyšuje) počáteční číselnou hodnotu vždy o hodnotu inkrementu,<br />\ndokud není dosažena maximální stanovená hodnota - tím cyklus končí.\n</html>");
 
         jLabel2.setText("Počítat do (včetně):");
 
-        jTextFieldForTo.setToolTipText("<html>\nCyklus inkrementuje počáteční číselnou hodnotu vždy o hodnotu inkrementu,<br />\ndokud není dosažena maximální stanovená hodnota - tím cyklus končí.\n</html>");
+        jTextFieldForTo.setToolTipText("<html>\nCyklus inkrementuje (navyšuje) počáteční číselnou hodnotu vždy o hodnotu inkrementu,<br />\ndokud není dosažena maximální stanovená hodnota - tím cyklus končí.\n</html>");
 
         jLabelExampleLabel1.setText("Příklady:");
 
@@ -414,7 +416,7 @@ public final class For extends AbstractSymbolFunctionForm
                 .addComponent(jPanelFor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanelForeach, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 

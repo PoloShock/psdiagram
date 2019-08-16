@@ -163,7 +163,7 @@ public final class Switch extends AbstractSymbolFunctionForm
     {
 
         jLabel1 = new javax.swing.JLabel();
-        jTextFieldConditionVar = new javax.swing.JTextField();
+        jTextFieldConditionVar = new WatermarkJTextField("proměnná, dle které rozhodovat");
         jPanel1 = new JPanelSymbol(mySymbol, jLabelDescription);
         jLabel3 = new javax.swing.JLabel();
         jLabelExamples = new javax.swing.JLabel();
@@ -306,7 +306,7 @@ public final class Switch extends AbstractSymbolFunctionForm
                 super.add(Box.createRigidArea(new Dimension(0, componentPadding)));
                 minHeight += jLabel.getSize().height + componentPadding;
 
-                jTextFieldSegments[i] = new JTextField();
+                jTextFieldSegments[i] = new WatermarkJTextField("když se vstupní prom. rovná...");
                 jTextFieldSegments[i].setSize(jTextFieldSegments[i].getPreferredSize());
                 jTextFieldSegments[i].setAlignmentX(0);
                 jTextFieldSegments[i].setFont(SettingsHolder.CODEFONT);

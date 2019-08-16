@@ -66,7 +66,6 @@ public final class Main
     // TODO podivat se na logicnost posouvani diagramu pri posunu komentare mimo platno a zpet
     // TODO pridat info o poctu vykonanych prikazu po skonceni algoritmu -> hezky benchmark, kriterium pro hodnoceni efektivity algoritmu :)
     //      TODO taky by se dalo merit celkovy cas, co prikazy v JS zabrali! :))
-    //e TODO pridat dalsi watermark napovedy
     // TODO v polich pro nazev promenne nabizet jiz existujici promenne
     // TODO Do ulozky integrovat historii vytvoreni diagramu pomoci systemtime timestampu. Undo akci do teto historie zahrnovat jako beznou akci editace. Pri nacteni diagramu by se meli nacist i undoable edits, pozor ale na ty undo akce viz predchozi veta. Rozhranni pro timetravel (historie) muze pockat.
     //      - budu pak muset upravit i podminky pro ukladani a prompty pro ulozeni diagramu - diagram s jedinymi symboly Start-End jiz stoji za ukladani pokud ma historii...
@@ -102,6 +101,8 @@ public final class Main
     // TODO zkontrolovat chování checkboxu pro výchozí hodnoty textu symbolů -> stávalo se mi, že po kliknutí na zaškrtnutý zůstal zaškrtnutý
     //e TODO implementovat sifrovani ve FlowchartCollector-u
     //e updatovat na javu 11
+    //
+    // OpenJDK odtud: https://adoptopenjdk.net/
     /**
      * Metoda pro spuštění hlavního okna aplikace. Nejsou přijímány žádné
      * parametry.

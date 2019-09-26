@@ -4,7 +4,7 @@
 
     <groupId>cz.miroslavbartyzal</groupId>
     <artifactId>psdiagram</artifactId>
-    <version>1.4.2.2</version>
+    <version>1.4.2.3</version>
     <packaging>jar</packaging>
     <name>PS Diagram</name>
     <url>http://www.psdiagram.cz</url>
@@ -84,7 +84,7 @@
         <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna-platform</artifactId>
-            <version>4.2.2</version>
+            <version>4.5.2</version>
         </dependency>
         
         <dependency>
@@ -129,13 +129,11 @@
                                     <changelogurl>http://www.psdiagram.cz/changelog</changelogurl>
                                     <releaseurl></releaseurl>
 
-                                    <headline>Malá, ale šikovná aktualizace</headline>
+                                    <headline>Oprava spouštění PS Diagramu</headline>
                                     <description>
                                         <![CDATA[
                                         <html>
-                                            <p align="justify">Dnešní aktualizace je spíše jen symbolická. ;)</p>
-                                             <p align="justify">Už nějakou dobu jsem měl poznamenáno, že by bylo dobré plovoucí texty, co napovídají například u symbolů "Zpracování" a "Rozhodování - podmínka", rozšířit i na ostatní symboly. Dnes jsem se k tomu konečně dostal, a tak už jsou nápovědy i u ostatních symbolů. Snad přijdou vhod.</p>
-                                            <p align="justify">PS: kdyby vám v PS Diagramu něco chybělo, neváhejte mi napsat a já to do příště zakomponuji :)</p>
+                                            <p align="justify">Někteří z vás měli poslední dny problém PS Diagram spustit. Ukázalo se, že chyba je v knihovně, na které PS Diagram závisí. Naštěstí se mi ji podařilo opravit, a tak už by od teď mělo spouštění fungovat zase jako po másle. :)</p>
                                         </html>
                                         ]]>
                                     </description>
@@ -143,13 +141,13 @@
                                     <features>
                                     </features>
                                     <enhancements>
-                                        <enhancement>přidány pomocné plovoucí texty do formulářů pro symboly "Vstup/Výstup", "Switch" a "Cyklus s pevným počtem opakování"</enhancement>
                                     </enhancements>
                                     <extensions>
                                     </extensions>
                                     <changes>
                                     </changes>
                                     <fixes>
+                                        <fix>opraveno spouštění PS Diagramu doprovázené nekonečným dialogem "nahrávám..."</fix>
                                     </fixes>
                                     <others>
                                     </others>

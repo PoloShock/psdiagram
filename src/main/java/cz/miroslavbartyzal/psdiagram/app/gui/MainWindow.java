@@ -155,7 +155,6 @@ public final class MainWindow extends javax.swing.JFrame
                 exit();
             }
         });
-        new javax.swing.JLabel();
         //pridani tlacitek layoutu
         ButtonGroup layoutGroup = new ButtonGroup();
         for (EnumLayout enumLayout : EnumLayout.values()) {

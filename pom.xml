@@ -23,7 +23,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <psdiagram.web.url>>http://www.psdiagram.cz</psdiagram.web.url>
+        <psdiagram.web.url>http://www.psdiagram.cz</psdiagram.web.url>
         <!--<psdiagram.web.url>http://localhost</psdiagram.web.url>-->
 
         <build.profile>development</build.profile>

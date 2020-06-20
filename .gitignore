@@ -2,3 +2,8 @@
 Thumbs.db
 [Tt]arget/
 .idea/
+
+dependency-reduced-pom.xml
+nbactions*.xml
+nb-configuration.xml
+psdiagram.iml

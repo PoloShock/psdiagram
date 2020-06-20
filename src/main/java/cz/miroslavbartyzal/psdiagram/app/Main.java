@@ -4,8 +4,18 @@
  */
 package cz.miroslavbartyzal.psdiagram.app;
 
+import cz.miroslavbartyzal.psdiagram.app.global.PrintStreamWithTimestamp;
+import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import cz.miroslavbartyzal.psdiagram.app.gui.MainWindow;
 import java.awt.Color;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 
@@ -23,8 +33,6 @@ public final class Main
     // TODO mozna pridat komentar do XML a exportu PDF, kodu.. o PS Diagramu
     // TODO do budoucna podprogram moznost expandovat/collapsovat :)
     // TODO nastaveni zarovnavani komentarovych textu
-    //e TODO exception handling (i v updateru): http://stackoverflow.com/questions/4590295/catch-exception-high-in-the-call-stack-when-dealing-with-n-tiers
-    //e!! TODO logovani do souboru (i v updateru) + zaznamenávat i datum a čas
     // TODO pridat info o verzi a licenci
     // TODO prepnuti focusu z platna do textboxu i pri editaci funkce symbolu
     // TODO ukolovani studentu? (seradit spravne kroky algoritmu, vyuziti jen urciteho poctu prikazu apod.)
@@ -111,9 +119,48 @@ public final class Main
      */
     public static void main(String[] args)
     {
+        // lets not use exlusive file loging when in development mode.. (in such case, console is better)
+        if (SettingsHolder.IS_DEPLOYMENT_MODE) {
+            initFileLogging();
+        }
+        
+        initLookAndFeel();
+
+        ToolTipManager.sharedInstance().setDismissDelay(12000); // nastavení tooltipů tak, aby zůstali 12 sekund
+        UIManager.put("info", Color.WHITE);
+
+        MainWindow.main(args);
+    }
+
+    private static void initFileLogging()
+    {
+        setupGlobalExceptionHandling();
+        
+        File logFile = Paths.get(System.getProperty("user.home"), ".psdiagram", "psdiagram.log").toFile();
+        try {
+            PrintStream outputFileStream = new PrintStreamWithTimestamp(
+                    new BufferedOutputStream(new FileOutputStream(logFile, true)),
+                    true, StandardCharsets.UTF_8.toString());
+            System.setOut(outputFileStream);
+            System.setErr(outputFileStream);
+        } catch (FileNotFoundException | UnsupportedEncodingException ex) {
+            ex.printStackTrace(System.err);
+        }
+    }
+
+    private static void setupGlobalExceptionHandling()
+    {
+        Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) -> {
+            System.err.println("Exception in thread \"" + t.getName() + "\" ");
+            e.printStackTrace(System.err);
+        });
+    }
+
+    private static void initLookAndFeel()
+    {
         /*
          * Set the Nimbus look and feel
-         * 
+         *
          * If Nimbus (introduced in Java SE 6) is not available, stay with the
          * default look and feel.
          * For details see
@@ -129,11 +176,6 @@ public final class Main
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             ex.printStackTrace(System.err);
         }
-
-        ToolTipManager.sharedInstance().setDismissDelay(12000); // nastavení tooltipů tak, aby zůstali 12 sekund
-        UIManager.put("info", Color.WHITE);
-
-        MainWindow.main(args);
     }
 
 }

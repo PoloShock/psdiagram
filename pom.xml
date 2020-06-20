@@ -100,8 +100,174 @@
         <tag>HEAD</tag>
         <url>http://127.0.0.1/dummy</url>
     </scm>
-    
-    
+
+    <profiles>
+        <profile>
+            <id>deployment</id>
+            <properties>
+                <psdiagram.web.url>http://www.psdiagram.cz</psdiagram.web.url>
+                <build.profile>deployment</build.profile>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>cz.miroslavbartyzal</groupId>
+                        <artifactId>versioninfo-maven-plugin</artifactId>
+                        <version>1.1</version>
+                        <executions>
+                            <execution>
+                                <phase>generate-test-resources</phase> <!-- in order to test it in unit test -->
+                                <goals>
+                                    <goal>versioninfo</goal>
+                                </goals>
+                                <configuration>
+                                    <inputFileToMerge>${env.PSD_DATA_DIR}versioninfo.xml</inputFileToMerge>
+                                    <outputFile>${project.build.directory}/OPENSHIFT_DATA/versioninfo.xml</outputFile>
+
+                                    <version>${project.version}</version>
+                                    <changelogurl>http://www.psdiagram.cz/changelog</changelogurl>
+                                    <releaseurl></releaseurl>
+
+                                    <headline>Oprava spouštění PS Diagramu</headline>
+                                    <description>
+                                        <![CDATA[
+                                        <html>
+                                            <p align="justify">Někteří z vás měli poslední dny problém PS Diagram spustit. Ukázalo se, že chyba je v knihovně, na které PS Diagram závisí. Naštěstí se mi ji podařilo opravit, a tak už by od teď mělo spouštění fungovat zase jako po másle. :)</p>
+                                        </html>
+                                        ]]>
+                                    </description>
+
+                                    <features>
+                                    </features>
+                                    <enhancements>
+                                    </enhancements>
+                                    <extensions>
+                                    </extensions>
+                                    <changes>
+                                    </changes>
+                                    <fixes>
+                                        <fix>opraveno spouštění PS Diagramu doprovázené nekonečným dialogem "nahrávám..."</fix>
+                                    </fixes>
+                                    <others>
+                                    </others>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.8</version>
+                        <executions>
+                            <execution>
+                                <id>mktemp-OPENSHIFTdir</id>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target name="mktemp-OPENSHIFTdir">
+                                        <mkdir dir="${project.build.directory}/OPENSHIFT_DATA"/>
+                                    </target>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>delete-signature</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target name="delete-signature">
+                                        <jar destfile="${project.build.directory}/${psdiagramfinalname}" filesetmanifest="merge">
+                                            <zipfileset src="${project.build.directory}/${project.build.finalName}-obfuscated-with_dependencies.jar" excludes="META-INF/*.DSA,META-INF/*.RSA,META-INF/*.SF,META-INF\eclipse.inf,about.html,license.html,readme.html" />
+                                        </jar>
+                                    </target>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>prepare-for-deploy</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target name="prepare-for-deploy">
+                                        <mkdir dir="${project.build.directory}/zip/PS Diagram"/>
+                                        <copy file="${project.build.directory}/${psdiagramfinalname}" todir="${project.build.directory}/zip/PS Diagram"/>
+                                        <copy todir="${project.build.directory}/zip/PS Diagram">
+                                            <fileset dir="${basedir}/src/main/resources/intozip"/>
+                                        </copy>
+                                        <copy todir="${project.build.directory}/zip/PS Diagram/jre">
+                                            <fileset dir="c:\Program Files (x86)\AdoptOpenJDK\jdk-8.0.222.10-hotspot\jre"/>
+                                        </copy>
+                                        <copy file="c:/Zaloha/Programovani/Moje/Visual Studio 2013/PS Diagram Launcher/PS Diagram Launcher/bin/Release/PS Diagram.exe" todir="${project.build.directory}/zip/PS Diagram"/>
+                                        <zip destfile="${project.build.directory}/OPENSHIFT_DATA/PS_Diagram_${project.version}.zip"
+                                             encoding="UTF-8"
+                                             useLanguageEncodingFlag="true"
+                                             createUnicodeExtraFields="always"
+                                             basedir="${project.build.directory}/zip"
+                                             update="true"
+                                             level="9"
+                                        />
+                                        <move todir="${project.build.directory}/OPENSHIFT_DATA/PS_Diagram_${project.version}">
+                                            <fileset dir="${project.build.directory}/zip/PS Diagram"/>
+                                        </move>
+                                    </target>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>prepare-updater</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target name="prepare-updater">
+                                        <copy file="${settings.localRepository}/cz/miroslavbartyzal/psdiagram.updater/${project.version}/psdiagram.updater-${project.version}-with_dependencies.jar" tofile="${project.build.directory}/zip/updater.jar"/>
+                                        <zip destfile="${project.build.directory}/OPENSHIFT_DATA/PSD-update_${project.version}.zip"
+                                             encoding="UTF-8"
+                                             useLanguageEncodingFlag="true"
+                                             createUnicodeExtraFields="always"
+                                             basedir="${project.build.directory}/zip"
+                                             update="true"
+                                             level="9"
+                                        />
+                                        <delete dir="${project.build.directory}/zip"/>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>cz.miroslavbartyzal</groupId>
+                        <artifactId>directoryfootprint-maven-plugin</artifactId>
+                        <version>1.1</version>
+                        <executions>
+                            <execution>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>dirfootprint</goal>
+                                </goals>
+                                <configuration>
+                                    <inputDirectory>${project.build.directory}/OPENSHIFT_DATA/PS_Diagram_${project.version}</inputDirectory>
+                                    <version>${project.version}</version>
+                                    <outputFile>${project.build.directory}/zip/dirfootprint.xml</outputFile>
+                                    <zipIt>true</zipIt>
+                                    <zipPassword>fuckyouavast</zipPassword>
+                                    <zipExtension>psdzip</zipExtension>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+
     <build>
 
         <resources>

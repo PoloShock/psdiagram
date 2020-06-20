@@ -108,6 +108,7 @@
                 <psdiagram.web.url>http://www.psdiagram.cz</psdiagram.web.url>
                 <build.profile>deployment</build.profile>
             </properties>
+            
             <build>
                 <plugins>
                     <plugin>
@@ -150,6 +151,123 @@
                                     </fixes>
                                     <others>
                                     </others>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    
+                    <plugin>
+                        <groupId>com.github.wvengen</groupId>
+                        <artifactId>proguard-maven-plugin</artifactId>
+                        <version>2.0.14</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>net.sf.proguard</groupId>
+                                <artifactId>proguard-base</artifactId>
+                                <version>5.2.1</version>
+                                <scope>runtime</scope>
+                            </dependency>
+                        </dependencies>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>proguard</goal>
+                                </goals>
+                                <configuration>
+                                    <archive>
+                                        <manifest>
+                                            <Main-Class>cz.miroslavbartyzal.psdiagram.app.Main</Main-Class>
+                                        </manifest>
+                                        <manifestEntries>
+                                            <Built-By>Miroslav Bartyzal</Built-By>
+                                            <Build-Number>${buildNumber}</Build-Number>
+                                            <SplashScreen-Image>img/splash.png</SplashScreen-Image>
+                                        </manifestEntries>
+                                    </archive>
+                                    <obfuscate>true</obfuscate>
+                                    <includeDependency>false</includeDependency>
+                                    <assembly>
+                                        <inclusions>
+                                            <inclusion>
+                                                <groupId>org.freehep</groupId>
+                                                <artifactId>freehep-graphics2d</artifactId>
+                                                <library>true</library>
+                                            </inclusion>
+                                            <inclusion>
+                                                <groupId>org.freehep</groupId>
+                                                <artifactId>freehep-graphicsio-pdf</artifactId>
+                                                <library>true</library>
+                                            </inclusion>
+                                            <inclusion>
+                                                <groupId>org.freehep</groupId>
+                                                <artifactId>freehep-graphicsbase</artifactId>
+                                                <library>true</library>
+                                            </inclusion>
+                                            <inclusion>
+                                                <groupId>org.freehep</groupId>
+                                                <artifactId>freehep-graphicsio</artifactId>
+                                                <library>true</library>
+                                            </inclusion>
+                                            <inclusion>
+                                                <groupId>org.freehep</groupId>
+                                                <artifactId>freehep-graphicsio-tests</artifactId>
+                                                <library>true</library>
+                                            </inclusion>
+                                            <inclusion>
+                                                <groupId>org.freehep</groupId>
+                                                <artifactId>freehep-io</artifactId>
+                                                <library>true</library>
+                                            </inclusion>
+
+                                            <inclusion>
+                                                <groupId>org.eclipse.persistence</groupId>
+                                                <artifactId>org.eclipse.persistence.core</artifactId>
+                                                <library>true</library>
+                                                <!--<filter>META-INF/ECLIPSE_.RSA,META-INF/ECLIPSE_.SF</filter> NEFUNGUJE!!!-->
+                                            </inclusion>
+
+                                            <inclusion>
+                                                <groupId>org.antlr</groupId>
+                                                <artifactId>antlr4-runtime</artifactId>
+                                                <library>true</library>
+                                            </inclusion>
+
+                                            <inclusion>
+                                                <groupId>net.java.balloontip</groupId>
+                                                <artifactId>balloontip</artifactId>
+                                                <library>true</library>
+                                            </inclusion>
+
+                                            <inclusion>
+                                                <groupId>net.java.dev.jna</groupId>
+                                                <artifactId>jna-platform</artifactId>
+                                                <library>true</library>
+                                            </inclusion>
+                                            <inclusion>
+                                                <groupId>net.java.dev.jna</groupId>
+                                                <artifactId>jna</artifactId>
+                                                <library>true</library>
+                                            </inclusion>
+                                    
+                                            <inclusion>
+                                                <groupId>org.mozilla</groupId>
+                                                <artifactId>rhino</artifactId>
+                                                <library>true</library>
+                                            </inclusion>
+                                        </inclusions>
+                                    </assembly>
+                                    <!--                    <options>
+                                        <option>-keep class org.freehep.** {*** *(...);}</option>
+                                    </options>-->
+                                    <!--                    <inFilter>!main/java/cz/miroslavbartyzal/psdiagram/app/diagram/changelog.txt</inFilter>-->
+                                    <injar>${project.build.finalName}.jar</injar>
+                                    <outjar>${project.build.finalName}-obfuscated-with_dependencies.jar</outjar>
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
+                                    <proguardInclude>${basedir}/proguard.pro</proguardInclude>
+                                    <!--                    <libs>
+                                        <lib>c:\Users\Miroslav\.m2\repository\junit\junit\4.11\junit-4.11.jar</lib>
+                                    </libs>-->
                                 </configuration>
                             </execution>
                         </executions>
@@ -262,6 +380,118 @@
                             </execution>
                         </executions>
                     </plugin>
+
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>buildnumber-maven-plugin</artifactId>
+                        <version>1.4</version>
+                        <executions>
+                            <execution>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>create</goal>
+                                </goals>
+                                <configuration>
+                                    <doCheck>false</doCheck>
+                                    <doUpdate>false</doUpdate>
+                                    <revisionOnScmFailure>n/a</revisionOnScmFailure>
+                                    <format>{0,number,#} ({1,date,dd.MM.yyyy})</format>
+                                    <items>
+                                        <item>buildNumber</item>
+                                        <item>timestamp</item>
+                                    </items>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>properties-maven-plugin</artifactId>
+                        <version>1.0.0</version>
+                        <executions>
+                            <execution>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>read-project-properties</goal>
+                                </goals>
+                                <configuration>
+                                    <files>
+                                        <file>${basedir}/src/main/resources/deploy.properties</file>
+                                    </files>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <configuration>
+                            <archive>
+                                <addMavenDescriptor>false</addMavenDescriptor>
+                                <manifest>
+                                    <Main-Class>cz.miroslavbartyzal.psdiagram.app.Main</Main-Class>
+                                </manifest>
+                                <manifestEntries>
+                                    <Built-By>Miroslav Bartyzal</Built-By>
+                                    <Build-Number>${buildNumber}</Build-Number>
+                                    <SplashScreen-Image>img/splash.png</SplashScreen-Image>
+                                </manifestEntries>
+                            </archive>
+                        </configuration>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <version>3.2.0</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>shade</goal>
+                                </goals>
+                                <configuration>
+                                    <shadedArtifactAttached>true</shadedArtifactAttached>
+                                    <shadedClassifierName>with_dependencies</shadedClassifierName>
+                                    <filters>
+                                        <filter>
+                                            <artifact>*:*</artifact>
+                                            <excludes>
+                                                <exclude>META-INF/maven/**</exclude>
+                                                <exclude>META-INF/*.SF</exclude>
+                                                <exclude>META-INF/*.DSA</exclude>
+                                                <exclude>META-INF/*.RSA</exclude>
+                                                <exclude>META-INF/eclipse.inf</exclude>
+                                                <exclude>about.html</exclude>
+                                                <exclude>license.html</exclude>
+                                                <exclude>readme.html</exclude>
+                                            </excludes>
+                                        </filter>
+                                    </filters>
+                                    <!--                            <relocations>
+                                        <relocation>
+                                            <pattern>org</pattern>
+                                            <shadedPattern>shaded.org</shadedPattern>
+                                        </relocation>
+                                    </relocations>-->
+                                    <transformers>
+                                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                            <manifestEntries>
+                                                <Main-Class>cz.miroslavbartyzal.psdiagram.app.Main</Main-Class>
+                                                <Built-By>Miroslav Bartyzal</Built-By>
+                                                <Build-Number>${buildNumber}</Build-Number>
+                                                <SplashScreen-Image>img/splash.png</SplashScreen-Image>
+                                            </manifestEntries>
+                                        </transformer>
+                                    </transformers>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    
                 </plugins>
             </build>
         </profile>
@@ -314,49 +544,6 @@
             </plugin>
 
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>buildnumber-maven-plugin</artifactId>
-                <version>1.4</version>
-                <executions>
-                    <execution>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>create</goal>
-                        </goals>
-                        <configuration>
-                            <doCheck>false</doCheck>
-                            <doUpdate>false</doUpdate>
-                            <revisionOnScmFailure>n/a</revisionOnScmFailure>
-                            <format>{0,number,#} ({1,date,dd.MM.yyyy})</format>
-                            <items>
-                                <item>buildNumber</item>
-                                <item>timestamp</item>
-                            </items>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>properties-maven-plugin</artifactId>
-                <version>1.0.0</version>
-                <executions>
-                    <execution>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>read-project-properties</goal>
-                        </goals>
-                        <configuration>
-                            <files>
-                                <file>${basedir}/src/main/resources/deploy.properties</file>
-                            </files>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.0</version>
@@ -389,213 +576,7 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.1.0</version>
-                <configuration>
-                    <archive>
-                        <addMavenDescriptor>false</addMavenDescriptor>
-                        <manifest>
-                            <Main-Class>cz.miroslavbartyzal.psdiagram.app.Main</Main-Class>
-                        </manifest>
-                        <manifestEntries>
-                            <Built-By>Miroslav Bartyzal</Built-By>
-                            <Build-Number>${buildNumber}</Build-Number>
-                            <SplashScreen-Image>img/splash.png</SplashScreen-Image>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.0</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <shadedArtifactAttached>true</shadedArtifactAttached>
-                            <shadedClassifierName>with_dependencies</shadedClassifierName>
-                            <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/maven/**</exclude>
-                                        <exclude>META-INF/*.SF</exclude>
-                                        <exclude>META-INF/*.DSA</exclude>
-                                        <exclude>META-INF/*.RSA</exclude>
-                                        <exclude>META-INF/eclipse.inf</exclude>
-                                        <exclude>about.html</exclude>
-                                        <exclude>license.html</exclude>
-                                        <exclude>readme.html</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
-                            <!--                            <relocations>
-                                <relocation>
-                                    <pattern>org</pattern>
-                                    <shadedPattern>shaded.org</shadedPattern>
-                                </relocation>
-                            </relocations>-->
-                            <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <manifestEntries>
-                                        <Main-Class>cz.miroslavbartyzal.psdiagram.app.Main</Main-Class>
-                                        <Built-By>Miroslav Bartyzal</Built-By>
-                                        <Build-Number>${buildNumber}</Build-Number>
-                                        <SplashScreen-Image>img/splash.png</SplashScreen-Image>
-                                    </manifestEntries>
-                                </transformer>
-                            </transformers>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>com.github.wvengen</groupId>
-                <artifactId>proguard-maven-plugin</artifactId>
-                <version>2.0.14</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>net.sf.proguard</groupId>
-                        <artifactId>proguard-base</artifactId>
-                        <version>5.2.1</version>
-                        <scope>runtime</scope>
-                    </dependency>
-                </dependencies>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>proguard</goal>
-                        </goals>
-                        <configuration>
-                            <archive>
-                                <manifest>
-                                    <Main-Class>cz.miroslavbartyzal.psdiagram.app.Main</Main-Class>
-                                </manifest>
-                                <manifestEntries>
-                                    <Built-By>Miroslav Bartyzal</Built-By>
-                                    <Build-Number>${buildNumber}</Build-Number>
-                                    <SplashScreen-Image>img/splash.png</SplashScreen-Image>
-                                </manifestEntries>
-                            </archive>
-                            <obfuscate>true</obfuscate>
-                            <includeDependency>false</includeDependency>
-                            <assembly>
-                                <inclusions>
-                                    <inclusion>
-                                        <groupId>org.freehep</groupId>
-                                        <artifactId>freehep-graphics2d</artifactId>
-                                        <library>true</library>
-                                    </inclusion>
-                                    <inclusion>
-                                        <groupId>org.freehep</groupId>
-                                        <artifactId>freehep-graphicsio-pdf</artifactId>
-                                        <library>true</library>
-                                    </inclusion>
-                                    <inclusion>
-                                        <groupId>org.freehep</groupId>
-                                        <artifactId>freehep-graphicsbase</artifactId>
-                                        <library>true</library>
-                                    </inclusion>
-                                    <inclusion>
-                                        <groupId>org.freehep</groupId>
-                                        <artifactId>freehep-graphicsio</artifactId>
-                                        <library>true</library>
-                                    </inclusion>
-                                    <inclusion>
-                                        <groupId>org.freehep</groupId>
-                                        <artifactId>freehep-graphicsio-tests</artifactId>
-                                        <library>true</library>
-                                    </inclusion>
-                                    <inclusion>
-                                        <groupId>org.freehep</groupId>
-                                        <artifactId>freehep-io</artifactId>
-                                        <library>true</library>
-                                    </inclusion>
-
-                                    <inclusion>
-                                        <groupId>org.eclipse.persistence</groupId>
-                                        <artifactId>org.eclipse.persistence.core</artifactId>
-                                        <library>true</library>
-                                        <!--<filter>META-INF/ECLIPSE_.RSA,META-INF/ECLIPSE_.SF</filter> NEFUNGUJE!!!-->
-                                    </inclusion>
-
-                                    <inclusion>
-                                        <groupId>org.antlr</groupId>
-                                        <artifactId>antlr4-runtime</artifactId>
-                                        <library>true</library>
-                                    </inclusion>
-
-                                    <inclusion>
-                                        <groupId>net.java.balloontip</groupId>
-                                        <artifactId>balloontip</artifactId>
-                                        <library>true</library>
-                                    </inclusion>
-
-                                    <inclusion>
-                                        <groupId>net.java.dev.jna</groupId>
-                                        <artifactId>jna-platform</artifactId>
-                                        <library>true</library>
-                                    </inclusion>
-                                    <inclusion>
-                                        <groupId>net.java.dev.jna</groupId>
-                                        <artifactId>jna</artifactId>
-                                        <library>true</library>
-                                    </inclusion>
-                                    
-                                    <inclusion>
-                                        <groupId>org.mozilla</groupId>
-                                        <artifactId>rhino</artifactId>
-                                        <library>true</library>
-                                    </inclusion>
-                                </inclusions>
-                            </assembly>
-                            <!--                    <options>
-                                <option>-keep class org.freehep.** {*** *(...);}</option>
-                            </options>-->
-                            <!--                    <inFilter>!main/java/cz/miroslavbartyzal/psdiagram/app/diagram/changelog.txt</inFilter>-->
-                            <injar>${project.build.finalName}.jar</injar>
-                            <outjar>${project.build.finalName}-obfuscated-with_dependencies.jar</outjar>
-                            <outputDirectory>${project.build.directory}</outputDirectory>
-                            <proguardInclude>${basedir}/proguard.pro</proguardInclude>
-                            <!--                    <libs>
-                                <lib>c:\Users\Miroslav\.m2\repository\junit\junit\4.11\junit-4.11.jar</lib>
-                            </libs>-->
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.8</version>
-                <executions>
-                    <execution>
-                        <id>delete-signature</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <target name="delete-signature">
-                                <jar destfile="${project.build.directory}/${project.build.finalName}-obfuscated-with_dependencies_UNSIGNED.jar" filesetmanifest="merge">
-                                    <zipfileset src="${project.build.directory}/${project.build.finalName}-obfuscated-with_dependencies.jar" excludes="META-INF/maven/**,META-INF/*.DSA,META-INF/*.RSA,META-INF/*.SF,META-INF/eclipse.inf,about.html,license.html,readme.html" />
-                                </jar>
-                            </target>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+            
         </plugins>
     </build>
 </project>

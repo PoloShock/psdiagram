@@ -155,18 +155,6 @@
                         </executions>
                     </plugin>
 
-                    <!--                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>2.16</version>
-                        <configuration>
-                            <argLine>-Dfile.encoding=UTF-8</argLine>
-                            <systemPropertyVariables>
-                                <build.versioninfo>${project.build.directory}/OPENSHIFT_DATA/</build.versioninfo>
-                            </systemPropertyVariables>
-                        </configuration>
-                    </plugin>-->
-
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-antrun-plugin</artifactId>
@@ -277,12 +265,6 @@
                 </plugins>
             </build>
         </profile>
-        <profile>
-            <id>development-run</id>
-            <properties>
-                <build.profile>development-run</build.profile>
-            </properties>
-        </profile>
     </profiles>
 
 
@@ -374,32 +356,6 @@
                 </executions>
             </plugin>
 
-            <!--            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>2.6</version>
-                <executions>
-                    <execution>
-                        <id>copy-resources</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${env.PSD_DATA_DIR}</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>src/main/resources</directory>
-                                    <filtering>true</filtering>
-                                    <includes>
-                                        <include>psdiagram_changes.xml</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>-->
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -433,15 +389,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <!--            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.10</version>
-                <configuration>
-                    <argLine>-Dfile.encoding=UTF-8</argLine>
-                </configuration>
-            </plugin>-->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

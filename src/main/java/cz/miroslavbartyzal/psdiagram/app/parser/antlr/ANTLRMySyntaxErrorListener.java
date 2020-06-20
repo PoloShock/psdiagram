@@ -32,7 +32,7 @@ public abstract class ANTLRMySyntaxErrorListener extends DiagnosticErrorListener
             String msg, RecognitionException e)
     {
         if (e instanceof FailedPredicateException) {
-            if (SettingsHolder.IS_DEVELOPMENT_RUN_MODE) {
+            if (!SettingsHolder.IS_DEPLOYMENT_MODE) {
                 System.err.println("Recieved FailedPredicateException.");
             }
             return;

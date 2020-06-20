@@ -23,13 +23,12 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <psdiagram.web.url>http://localhost</psdiagram.web.url>
+        <psdiagram.web.url>>http://www.psdiagram.cz</psdiagram.web.url>
+        <!--<psdiagram.web.url>http://localhost</psdiagram.web.url>-->
 
         <build.profile>development</build.profile>
-        <!--+ kdyz davam run v developmentu tak nastavuji build.profile=development-run, abych si nezvykl odklikavat upozorneni-->
     </properties>
     
-    <!--"c:\Program Files\NetBeans 8.1\java\maven\bin\mvn" deploy:deploy-file -Durl=file://.m2 -DcreateChecksum=true -Dfile="...\babbler-0.3.0.jar" -Djavadoc="...\Babbler-0.3.0-javadoc.jar" -DgroupId=rocks.xmpp -DartifactId=xmpp-client -Dversion=0.4.0-SNAPSHOT -Dpackaging=jar-->
     <repositories>
         <repository>
             <id>.m2</id>

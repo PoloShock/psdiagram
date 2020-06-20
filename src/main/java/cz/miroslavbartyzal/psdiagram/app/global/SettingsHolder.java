@@ -159,7 +159,6 @@ public final class SettingsHolder
     public static final String BUILD_PROFILE = ResourceBundle.getBundle("application").getString(
             "buildProfile");
     public static final boolean IS_DEPLOYMENT_MODE = BUILD_PROFILE.equals("deployment");
-    public static final boolean IS_DEVELOPMENT_RUN_MODE = BUILD_PROFILE.equals("development-run");
     public static final File JAVAW = getJavaw();
 
     /**

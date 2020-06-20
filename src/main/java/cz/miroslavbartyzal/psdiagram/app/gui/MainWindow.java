@@ -145,22 +145,6 @@ public final class MainWindow extends javax.swing.JFrame
      */
     private MainWindow(final File flowchartToOpen)
     {
-        if (!SettingsHolder.IS_DEPLOYMENT_MODE) {
-            String computerName = System.getenv("COMPUTERNAME");
-            if (computerName == null || !System.getenv("COMPUTERNAME").equals("POLOSHOCK-NB") && !System.getenv(
-                    "COMPUTERNAME").equals("PS-SILENT-MAMBA")) {
-                JOptionPane.showMessageDialog(null,
-                        "<html>Tato verze PS Diagramu je určena pouze pro vývoj.<br />"
-                        + "Pro obdržení správné verze navštivte www.psdiagram.cz nebo mne kontaktujte<br />"
-                        + "na emailu miroslavbartyzal@gmail.com.</html>", "Chyba verze",
-                        JOptionPane.ERROR_MESSAGE);
-                System.exit(0);
-            } else if (!SettingsHolder.IS_DEVELOPMENT_RUN_MODE) {
-                JOptionPane.showMessageDialog(null, SettingsHolder.BUILD_PROFILE, "",
-                        JOptionPane.WARNING_MESSAGE);
-            }
-        }
-
         System.setProperty("java.net.useSystemProxies", "true");
         initComponents();
         super.addWindowListener(new WindowAdapter()

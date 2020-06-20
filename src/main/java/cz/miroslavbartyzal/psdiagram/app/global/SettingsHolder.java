@@ -292,8 +292,6 @@ public final class SettingsHolder
         private boolean exportTransparency = true;
         @XmlElement(name = "exportFlowchartPadding")
         private int exportFlowchartPadding = AbstractLayout.flowchartPadding;
-        @XmlElement(name = "ltlt")
-        private long lastTrialLaunchedTime = 1350252860443l;
         @XmlElement(name = "proxyHost", defaultValue = "")
         private String proxyHost = "";
         @XmlElement(name = "proxyPort")
@@ -535,27 +533,6 @@ public final class SettingsHolder
         public void setFps(int fps)
         {
             this.fps = fps;
-            saveSettings();
-        }
-
-        /**
-         * Vrátí čas předchozího spuštění aplikace v milisekundách.
-         * <p/>
-         * @return čas předchozího spuštění aplikace v milisekundách
-         */
-        public long getLastTrialLaunchedTime()
-        {
-            return lastTrialLaunchedTime;
-        }
-
-        /**
-         * Nastaví čas předchozího spuštění aplikace v milisekundách
-         * <p/>
-         * @param lastTrialLaunchedTime nový čas předchozího spuštění aplikace v milisekundách
-         */
-        public void setLastTrialLaunchedTime(long lastTrialLaunchedTime)
-        {
-            this.lastTrialLaunchedTime = lastTrialLaunchedTime;
             saveSettings();
         }
 

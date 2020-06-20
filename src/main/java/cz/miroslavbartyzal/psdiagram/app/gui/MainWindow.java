@@ -11,7 +11,6 @@
 package cz.miroslavbartyzal.psdiagram.app.gui;
 
 import cz.miroslavbartyzal.psdiagram.app.flowchart.Flowchart;
-import cz.miroslavbartyzal.psdiagram.app.flowchart.FlowchartElement;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.EnumLayout;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.Layout;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutElement;
@@ -38,7 +37,6 @@ import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditManager;
 import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditUndoManager;
 import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartOverlookManager;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.AbstractSymbolFunctionForm;
-import cz.miroslavbartyzal.psdiagram.app.network.TimeCollector;
 import cz.miroslavbartyzal.psdiagram.app.persistence.FlowchartSaveContainer;
 import cz.miroslavbartyzal.psdiagram.app.persistence.collector.FlowchartCollector;
 import cz.miroslavbartyzal.psdiagram.app.persistence.recovery.FlowchartCrashRecovery;
@@ -47,7 +45,6 @@ import cz.miroslavbartyzal.psdiagram.app.update.Updater;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -76,18 +73,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
-import javax.swing.JEditorPane;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -101,8 +95,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.TransferHandler;
 import javax.swing.TransferHandler.TransferSupport;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
 import javax.swing.event.MouseInputAdapter;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -118,7 +110,7 @@ import org.freehep.graphicsio.pdf.PDFGraphics2D;
 public final class MainWindow extends javax.swing.JFrame
 {
 
-    private final String WINDOW_TITLE = "PS Diagram"; // BEWARE OF CHANGE - updater is using it for process identification
+    private final String WINDOW_TITLE = "PS Diagram"; // BEWARE OF CHANGE - updater project is using it for process identification
     private Layout layout;
     private boolean editMode = true;
     private boolean animationMode = false;
@@ -136,8 +128,6 @@ public final class MainWindow extends javax.swing.JFrame
     private final JFrameAbout jFrameAbout;
     private final JFrameUpdate jFrameUpdate;
     private static final JAXBContext jAXBcontext = createJAXBContext();
-    private static boolean forceUpdate = false;
-    private Long daysLeft;
     private final FlowchartCrashRecovery flowchartCrashRecovery;
     private final FlowchartCollector flowchartCollector;
     private static Timer statusTimer = new Timer(0, new ActionListener()
@@ -290,7 +280,7 @@ public final class MainWindow extends javax.swing.JFrame
                     flowchartCrashRecovery.backupFlowchart();
                 }
             }
-        }, forceUpdate, daysLeft);
+        });
 
         flowchartEditManager = new FlowchartEditManager(layout, this, jPanelDiagram,
                 new FlowchartEditUndoManager(jMenuItemUndo, jMenuItemRedo, jButtonToolUndo,
@@ -473,75 +463,7 @@ public final class MainWindow extends javax.swing.JFrame
             public void onInfoLoaded(Boolean newVersionAvailable)
             {
                 if (Boolean.TRUE.equals(newVersionAvailable)) {
-                    if (forceUpdate) {
-                        JOptionPane.showMessageDialog(null, new String(new byte[]{60, 104, 116, 109,
-                            108, 62, 80, 108, 97, 116, 110, 111, 115, 116, 32, 116, -61, -87, 116,
-                            111, 32, 118, 101, 114, 122, 101, 32, 97, 112, 108, 105, 107, 97, 99,
-                            101, 32, 118, 121, 112, 114, -59, -95, 101, 108, 97, 46, 60, 98, 114, 32,
-                            47, 62, 80, 114, 111, 32, 100, 97, 108, -59, -95, -61, -83, 32, 112, 111,
-                            117, -59, -66, -61, -83, 118, -61, -95, 110, -61, -83, 32, 80, 83, 32,
-                            68, 105, 97, 103, 114, 97, 109, 117, 32, 106, 101, 106, 32, 112, 114,
-                            111, 115, -61, -83, 109, 32, 97, 107, 116, 117, 97, 108, 105, 122, 117,
-                            106, 116, 101, 32, 112, 111, 109, 111, 99, -61, -83, 32, 110, -61, -95,
-                            115, 108, 101, 100, 117, 106, -61, -83, 99, -61, -83, 104, 111, 32, 102,
-                            111, 114, 109, 117, 108, -61, -95, -59, -103, 101, 46, 60, 47, 104, 116,
-                            109, 108, 62},
-                                StandardCharsets.UTF_8), new String(
-                                new byte[]{75, 111, 110, 101, 99, 32, 112, 108, 97, 116, 110,
-                                    111, 115, 116, 105, 32, 118, 101, 114, 122, 101, 32, 97,
-                                    112, 108, 105, 107, 97, 99, 101},
-                                StandardCharsets.UTF_8), JOptionPane.WARNING_MESSAGE); // Konec platnosti verze aplikace; <html>Platnost této verze aplikace vypršela.<br />Pro další používání PS Diagramu jej prosím aktualizujte pomocí následujícího formuláře.</html>
-                    }
                     jMenuItemUpdateActionPerformed(null);
-                } else if (forceUpdate) {
-                    if (newVersionAvailable == null) { // close the app only if we couldn't reach the update server -> don't close the app if there is no version yet
-                        // html content
-                        JEditorPane ep = new JEditorPane("text/html", new String(
-                                new byte[]{60, 104, 116, 109, 108, 62, 80, 108, 97, 116, 110, 111, 115,
-                                    116, 32, 116, -61, -87, 116, 111, 32, 118, 101, 114, 122, 101, 32,
-                                    97, 112, 108, 105, 107, 97, 99, 101, 32, 118, 121, 112, 114, -59,
-                                    -95, 101, 108, 97, 46, 60, 98, 114, 32, 47, 62, 80, 114, 111, 32,
-                                    122, -61, -83, 115, 107, -61, -95, 110, -61, -83, 32, 110, 111, 118,
-                                    -61, -87, 44, 32, 97, 107, 116, 117, -61, -95, 108, 110, -61, -83,
-                                    32, 118, 101, 114, 122, 101, 44, 32, 110, 97, 118, -59, -95, 116,
-                                    105, 118, 116, 101, 32, 112, 114, 111, 115, -61, -83, 109, 32, 115,
-                                    116, 114, -61, -95, 110, 107, 121, 32, 60, 97, 32, 104, 114, 101,
-                                    102, 61, 34, 104, 116, 116, 112, 58, 47, 47, 119, 119, 119, 46, 112,
-                                    115, 100, 105, 97, 103, 114, 97, 109, 46, 99, 122, 34, 62, 112, 115,
-                                    100, 105, 97, 103, 114, 97, 109, 46, 99, 122, 60, 47, 97, 62, 46, 60,
-                                    47, 104, 116, 109, 108, 62}, StandardCharsets.UTF_8)); // <html>Platnost této verze aplikace vypršela.<br />Pro získání nové, aktuální verze, navštivte prosím stránky <a href="http://www.psdiagram.cz">psdiagram.cz</a>.</html>
-                        // handle link events
-                        ep.addHyperlinkListener(new HyperlinkListener()
-                        {
-                            @Override
-                            public void hyperlinkUpdate(HyperlinkEvent e)
-                            {
-                                if (e.getEventType().equals(HyperlinkEvent.EventType.ACTIVATED)) {
-                                    try {
-                                        try {
-                                            Desktop.getDesktop().browse(e.getURL().toURI());
-                                        } catch (URISyntaxException ex) {
-                                        }
-                                    } catch (IOException ex) {
-                                    }
-                                }
-                            }
-                        });
-                        ep.setEditable(false);
-                        ep.setBackground(new Color(0, 0, 0, 0));
-                        // show
-                        JOptionPane.showMessageDialog(null, ep, new String(new byte[]{75, 111, 110, 101,
-                            99, 32, 112, 108, 97, 116, 110, 111, 115, 116, 105, 32, 118, 101, 114, 122,
-                            101, 32, 97, 112, 108, 105, 107, 97, 99, 101},
-                                StandardCharsets.UTF_8), JOptionPane.WARNING_MESSAGE); // Konec platnosti verze aplikace
-
-                        flowchartCrashRecovery.backupFlowchart();
-                        System.exit(0);
-                    } else {
-                        // there is somehow no new version available yet (and it is verified through the server)
-                        MainWindow.this.setVisible(true);
-                    }
-
                 }
             }
         });
@@ -1648,17 +1570,6 @@ public final class MainWindow extends javax.swing.JFrame
         flowchartEditManager.updateEditMenuEnablers();
     }//GEN-LAST:event_jMenuEditMenuSelected
 
-//    /**
-//     * Positions component by given percentages relatively to middle of main window.
-//     * If component's size would overlap screen, measures are taken against it.
-//     * <p/>
-//     * @param component component to be positioned
-//     * @param widthPercent if set to 0 the component's middle is placed on left border of main window, 100 means right border
-//     * @param heightPercent if set to 0 the component's middle is placed on top border of main window, 100 means bottom border
-//     */
-//    private void positionComponent(Component component, int widthPercent, int heightPercent)
-//    {
-//    }
     /**
      * Metoda pro spuštění hlavního okna aplikace. Nejsou přijímány žádné
      * paramtery.
@@ -1676,7 +1587,7 @@ public final class MainWindow extends javax.swing.JFrame
                 flowchartToOpen = new File(args[0]);
             }
 
-            new MainWindow(flowchartToOpen).setVisible(!forceUpdate);
+            new MainWindow(flowchartToOpen).setVisible(true);
             if (args.length > 0 && args[0].equals("-updated")) {
                 JOptionPane.showMessageDialog(null,
                         "PS Diagram byl úspěšně aktualizován na verzi " + SettingsHolder.PSDIAGRAM_VERSION + "-" + SettingsHolder.PSDIAGRAM_BUILD + ".",
@@ -2235,7 +2146,7 @@ public final class MainWindow extends javax.swing.JFrame
     {
         for (LayoutSegment segment : flowchart) {
             if (segment != null) {
-                for (FlowchartElement element : segment) {
+                for (LayoutElement element : segment) {
                     Map<String, String> commands = element.getSymbol().getCommands();
                     if (commands != null) {
                         for (String key : commands.keySet()) {
@@ -2297,51 +2208,6 @@ public final class MainWindow extends javax.swing.JFrame
 //            System.setProperty("socksProxyHost", global.SettingsHolder.settings.getProxyHost());
 //            System.setProperty("socksProxyPort", String.valueOf(global.SettingsHolder.settings.getProxyPort()));
 //        }
-        Date currentDate = TimeCollector.getTimeAndDate(
-                cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder.PSDIAGRAM_SERVER);
-        if (currentDate == null) {
-            currentDate = TimeCollector.getTimeAndDate(
-                    cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder.TIMESERVER);
-//            if (currentDate == null) {
-//                JOptionPane.showMessageDialog(null, new String(
-//                        new byte[]{60, 104, 116, 109, 108, 62, 84, 97, 116, 111, 32, 122, 107,
-//                            117, -59, -95, 101, 98, 110, -61, -83, 32, 118, 101, 114, 122, 101,
-//                            32, 97, 112, 108, 105, 107, 97, 99, 101, 32, 112, 111, 116, -59,
-//                            -103, 101, 98, 117, 106, 101, 32, 112, 114, 111, 32, 115, 118, -59,
-//                            -81, 106, 32, 98, -60, -101, 104, 32, 112, -59, -103, 105, 112, 111,
-//                            106, 101, 110, -61, -83, 32, 107, 32, 105, 110, 116, 101, 114, 110,
-//                            101, 116, 117, 46, 60, 98, 114, 32, 47, 62, 77, -61, -95, 116, 101,
-//                            45, 108, 105, 32, 112, 111, 116, -61, -83, -59, -66, 101, 44, 32,
-//                            107, 111, 110, 116, 97, 107, 116, 117, 106, 116, 101, 32, 109, 110,
-//                            101, 32, 112, 114, 111, 115, -61, -83, 109, 32, 110, 97, 32, 109,
-//                            105, 114, 111, 115, 108, 97, 118, 98, 97, 114, 116, 121, 122, 97,
-//                            108, 64, 103, 109, 97, 105, 108, 46, 99, 111, 109, 46, 60, 98, 114,
-//                            32, 47, 62, 78, 121, 110, -61, -83, 32, 115, 101, 32, 80, 83, 32, 68,
-//                            105, 97, 103, 114, 97, 109, 32, 117, 107, 111, 110, -60, -115, -61,
-//                            -83, 46, 46, 46, 60, 47, 104, 116, 109, 108, 62},
-//                        StandardCharsets.UTF_8), new String(new byte[]{78, 101, 112, 111, 100,
-//                            97, -59, -103, 105, 108, 111, 32, 115, 101, 32, 110, 97, 118, -61, -95,
-//                            122, 97, 116, 32, 115, 112, 111, 106, 101, 110, -61, -83, 32, 115, 101,
-//                            32, 115, 101, 114, 118, 101, 114, 101, 109}, StandardCharsets.UTF_8),
-//                        JOptionPane.WARNING_MESSAGE); // Nepodařilo se navázat spojení se serverem; <html>Tato zkušební verze aplikace potřebuje pro svůj běh připojení k internetu.<br />Máte-li potíže, kontaktujte mne prosím na miroslavbartyzal@gmail.com.<br />Nyní se PS Diagram ukončí...</html>
-//                System.exit(0);
-//            }
-        }
-        long currentTime;
-        if (currentDate != null) {
-            currentTime = currentDate.getTime();
-        } else {
-            currentTime = System.currentTimeMillis();
-        }
-
-        final Long expiration = 1594764000000L; // 2020.7.15. 00:00:00 = 1594764000000 (System.out.println(new GregorianCalendar(2020, 6, 15).getTimeInMillis());) - month is zero-based
-        daysLeft = (expiration - currentTime) / 86400000l;
-        if (currentTime > expiration || currentTime < SettingsHolder.settings.getLastTrialLaunchedTime()) {
-//            System.exit(0); <- let's let the user download newer version of PS Diagram
-            forceUpdate = true;
-        } else {
-            SettingsHolder.settings.setLastTrialLaunchedTime(currentTime);
-        }
         return new TransferHandler()
         {
             @Override

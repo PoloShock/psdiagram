@@ -17,7 +17,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * <p>Tato třída rozšiřuje třídu FlowchartSegment a reprezentuje tak kromě
  * logického segmentu diagramu i údaje, potřebné pro jakýkoliv layout. Jedná
- * se obecně o informace, které mohou potencionálně být nějakým způsobem
+ * se obecně o informace, které mohou potenciálně být nějakým způsobem
  * rozdílné pro jednotlivé layouty. Zárověň jsou však obecné, vykreslí je
  * Abstract Layout.<br />
  * Údaje, které tato třída obsahuje jsou například údaje o spojnici vedoucí k

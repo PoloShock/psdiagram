@@ -24,7 +24,7 @@ public final class Main
     // TODO do budoucna podprogram moznost expandovat/collapsovat :)
     // TODO nastaveni zarovnavani komentarovych textu
     //e TODO exception handling (i v updateru): http://stackoverflow.com/questions/4590295/catch-exception-high-in-the-call-stack-when-dealing-with-n-tiers
-    //e TODO logovani (i v updateru)
+    //e!! TODO logovani do souboru (i v updateru) + zaznamenávat i datum a čas
     // TODO pridat info o verzi a licenci
     // TODO prepnuti focusu z platna do textboxu i pri editaci funkce symbolu
     // TODO ukolovani studentu? (seradit spravne kroky algoritmu, vyuziti jen urciteho poctu prikazu apod.)

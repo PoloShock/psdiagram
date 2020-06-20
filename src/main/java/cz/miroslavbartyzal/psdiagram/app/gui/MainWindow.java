@@ -2187,27 +2187,6 @@ public final class MainWindow extends javax.swing.JFrame
      */
     private TransferHandler createTransferHandler()
     {
-//        Proxy proxyHTTP = Proxy.NO_PROXY;
-//        Proxy proxySOCKS = Proxy.NO_PROXY;
-//        if (global.SettingsHolder.settings.getProxyHost() != null && !global.SettingsHolder.settings.getProxyHost().equals("") && global.SettingsHolder.settings.getProxyPort() > 0) {
-//            try {
-//                InetSocketAddress addr = new InetSocketAddress(InetAddress.getByName(global.SettingsHolder.settings.getProxyHost()), global.SettingsHolder.settings.getProxyPort());
-//                proxyHTTP = new Proxy(Proxy.Type.HTTP, addr); //http://docs.oracle.com/javase/6/docs/technotes/guides/net/proxies.html
-//                proxySOCKS = new Proxy(Proxy.Type.SOCKS, addr);
-//            } catch (UnknownHostException ex) {
-//                JOptionPane.showMessageDialog(null, "<html>Nepodařilo se přistoupit k zadané adrese proxy.<br />Zpráva:<br />" + ex.getMessage() + "</html>", "Špatná proxy adresa", JOptionPane.WARNING_MESSAGE);
-//                System.err.println("0: " + ex);
-//                ex.printStackTrace(System.err);
-//            }
-//        }
-//        if (global.SettingsHolder.settings.getProxyHost() != null && !global.SettingsHolder.settings.getProxyHost().equals("") && global.SettingsHolder.settings.getProxyPort() > 0) {
-//            System.setProperty("http.proxyHost", global.SettingsHolder.settings.getProxyHost());
-//            System.setProperty("http.proxyPort", String.valueOf(global.SettingsHolder.settings.getProxyPort()));
-//            System.setProperty("htttps.proxyHost", global.SettingsHolder.settings.getProxyHost());
-//            System.setProperty("https.proxyPort", String.valueOf(global.SettingsHolder.settings.getProxyPort()));
-//            System.setProperty("socksProxyHost", global.SettingsHolder.settings.getProxyHost());
-//            System.setProperty("socksProxyPort", String.valueOf(global.SettingsHolder.settings.getProxyPort()));
-//        }
         return new TransferHandler()
         {
             @Override

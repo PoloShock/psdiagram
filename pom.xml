@@ -4,7 +4,7 @@
 
     <groupId>cz.miroslavbartyzal</groupId>
     <artifactId>psdiagram</artifactId>
-    <version>1.4.2.3</version>
+    <version>1.4.3</version>
     <packaging>jar</packaging>
     <name>PS Diagram</name>
     <url>http://www.psdiagram.cz</url>
@@ -129,11 +129,13 @@
                                     <changelogurl>http://www.psdiagram.cz/changelog</changelogurl>
                                     <releaseurl></releaseurl>
 
-                                    <headline>Oprava spouštění PS Diagramu</headline>
+                                    <headline>PS Diagram je nyní opensource!</headline>
                                     <description>
                                         <![CDATA[
                                         <html>
-                                            <p align="justify">Někteří z vás měli poslední dny problém PS Diagram spustit. Ukázalo se, že chyba je v knihovně, na které PS Diagram závisí. Naštěstí se mi ji podařilo opravit, a tak už by od teď mělo spouštění fungovat zase jako po másle. :)</p>
+                                            <p align="justify">Nastal velký milník v historii PS Diagramu. PS Diagram je od teď opensource! :) Vedle odkazu na Facebook přibyl i odkaz na GitHub, kde naleznete jeho zdrojové kódy.</p>
+                                            <p align="justify">Odteď, kdokoliv budete chtít něco v aplikaci vylepšit, můžete tak učinit přímo, vytvořit pull request a já vaše změny po shlédnutí zamerguji. Dávám tak prostor i studentům programování, kteří by se chtěli na PSD podílet např. v rámci své závěrečné/bakalářské/diplomové práce. Jeden takový student se již ohlásil. :)</p>
+                                            <p align="justify">Změny oproti starší verzi aplikace jsou k vidění níže.</p>
                                         </html>
                                         ]]>
                                     </description>
@@ -141,15 +143,17 @@
                                     <features>
                                     </features>
                                     <enhancements>
+                                        <enhancement>přidáno logování do souboru [HOME]/.psdiagram/psdiagram.log</enhancement>
                                     </enhancements>
                                     <extensions>
                                     </extensions>
                                     <changes>
+                                        <change>starší verze aplikace nemají od teď omezenou platnost - aktualizace není povinná</change>
                                     </changes>
                                     <fixes>
-                                        <fix>opraveno spouštění PS Diagramu doprovázené nekonečným dialogem "nahrávám..."</fix>
                                     </fixes>
                                     <others>
+                                        <other>PS Diagram je nyní na GitHub-u a je opensource</other>
                                     </others>
                                 </configuration>
                             </execution>
@@ -318,7 +322,7 @@
                                             <fileset dir="${basedir}/src/main/resources/intozip"/>
                                         </copy>
                                         <copy todir="${project.build.directory}/zip/PS Diagram/jre">
-                                            <fileset dir="c:\Program Files (x86)\AdoptOpenJDK\jdk-8.0.222.10-hotspot\jre"/>
+                                            <fileset dir="c:\Program Files (x86)\AdoptOpenJDK\jdk-8.0.252.09-hotspot\jre"/>
                                         </copy>
                                         <copy file="c:/Zaloha/Programovani/Moje/Visual Studio 2013/PS Diagram Launcher/PS Diagram Launcher/bin/Release/PS Diagram.exe" todir="${project.build.directory}/zip/PS Diagram"/>
                                         <zip destfile="${project.build.directory}/OPENSHIFT_DATA/PS_Diagram_${project.version}.zip"

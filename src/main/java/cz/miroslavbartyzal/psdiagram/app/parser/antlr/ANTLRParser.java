@@ -131,6 +131,16 @@ public class ANTLRParser implements PSDParser
             return input;
         }
     }
+    
+    public String translatePSDToJava(String input) {
+    	 try {
+             PSDGrammarParser parser = createBailOutParser(input, true);
+             PSDToJavaVisitor visitor = new PSDToJavaVisitor();
+             return visitor.visit(parser.solo_Expression());
+         } catch (RuntimeException ex) {
+             return input;
+         }
+    }
 
     @Override
     public boolean parseExpression(String input)

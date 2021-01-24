@@ -828,7 +828,8 @@ public final class Pascal
             matcher.appendTail(sb);
             commands.set(i, sb.toString());
         }
-
+        System.out.println("vypisujem commands: ");
+        commands.forEach(System.out::println);
         return commands;
     }
 

@@ -42,6 +42,60 @@ public enum EnumSourceCode
         {
             return "vložte jen část mezi Begin a End.";
         }
+    },
+	
+	JAVA
+    {
+        @Override
+        public Flowchart<LayoutSegment, LayoutElement> getFlowchart(String code)
+        {
+            return Java.getFlowchart(code);
+        }
+
+        @Override
+        public String getSourceCode(Flowchart<LayoutSegment, LayoutElement> flowchart, String name)
+        {
+            return Java.getSourceCode(flowchart, name);
+        }
+
+        @Override
+        public String getUniqueTextValue()
+        {
+            return "Java";
+        }
+
+        @Override
+        public String getGuideText()
+        {
+            return "vlozte len telo jednej funckie !! od '{' po '}' !!";
+        }
+    },
+	
+	PYTHON
+    {
+        @Override
+        public Flowchart<LayoutSegment, LayoutElement> getFlowchart(String code)
+        {
+            return Python.getFlowchart(code);
+        }
+
+        @Override
+        public String getSourceCode(Flowchart<LayoutSegment, LayoutElement> flowchart, String name)
+        {
+            return Python.getSourceCode(flowchart, name);
+        }
+
+        @Override
+        public String getUniqueTextValue()
+        {
+            return "Python";
+        }
+
+        @Override
+        public String getGuideText()
+        {
+            return "vlozte len telo jednej funckie  ";
+        }
     };
 
     /**

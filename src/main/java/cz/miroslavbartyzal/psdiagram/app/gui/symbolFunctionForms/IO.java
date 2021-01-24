@@ -148,7 +148,7 @@ public final class IO extends AbstractSymbolFunctionForm
         } else {
             symbol.setDefaultValue(null);
         }
-
+        
         LinkedHashMap<String, String> commands = new LinkedHashMap<>();
         commands.put("value", value);
         symbol.setCommands(commands);

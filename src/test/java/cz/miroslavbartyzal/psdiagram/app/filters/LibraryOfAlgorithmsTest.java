@@ -17,7 +17,7 @@ import cz.miroslavbartyzal.psdiagram.app.persistence.FlowchartSaveContainer;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 import org.junit.Assert;
 import org.junit.Test;
 

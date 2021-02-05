@@ -44,11 +44,24 @@
             <version>4.13.1</version>
             <scope>test</scope>
         </dependency>
+        
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>3.0.0</version>
+            <scope>runtime</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>org.eclipse.persistence.core</artifactId>
-            <version>2.6.4</version>
+            <version>3.0.0</version>
         </dependency>
 
         <dependency>
@@ -71,7 +84,7 @@
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
-            <version>4.7.2</version>
+            <version>4.9.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.abego.treelayout</groupId>
@@ -83,13 +96,13 @@
         <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna-platform</artifactId>
-            <version>4.5.2</version>
+            <version>5.6.0</version>
         </dependency>
         
         <dependency>
             <groupId>org.mozilla</groupId>
-            <artifactId>rhino</artifactId>
-            <version>1.7.11</version>
+            <artifactId>rhino-runtime</artifactId>
+            <version>1.7.13</version>
         </dependency>
         
     </dependencies>
@@ -114,7 +127,7 @@
                     <plugin>
                         <groupId>cz.miroslavbartyzal</groupId>
                         <artifactId>versioninfo-maven-plugin</artifactId>
-                        <version>1.1</version>
+                        <version>1.2</version>
                         <executions>
                             <execution>
                                 <phase>generate-test-resources</phase> <!-- in order to test it in unit test -->
@@ -191,7 +204,7 @@
                                             <fileset dir="${basedir}/src/main/resources/intozip"/>
                                         </copy>
                                         <copy todir="${project.build.directory}/zip/PS Diagram/jre">
-                                            <fileset dir="c:\Program Files (x86)\AdoptOpenJDK\jdk-8.0.252.09-hotspot\jre"/>
+                                            <fileset dir="c:/Program Files (x86)/AdoptOpenJDK/jre-11.0.10.9-hotspot"/>
                                         </copy>
                                         <copy file="c:/Zaloha/Programovani/Moje/Visual Studio 2013/PS Diagram Launcher/PS Diagram Launcher/bin/Release/PS Diagram.exe" todir="${project.build.directory}/zip/PS Diagram"/>
                                         <zip destfile="${project.build.directory}/OPENSHIFT_DATA/PS_Diagram_${project.version}.zip"
@@ -235,7 +248,7 @@
                     <plugin>
                         <groupId>cz.miroslavbartyzal</groupId>
                         <artifactId>directoryfootprint-maven-plugin</artifactId>
-                        <version>1.1</version>
+                        <version>1.2</version>
                         <executions>
                             <execution>
                                 <phase>integration-test</phase>
@@ -300,7 +313,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-jar-plugin</artifactId>
-                        <version>3.1.0</version>
+                        <version>3.2.0</version>
                         <configuration>
                             <archive>
                                 <addMavenDescriptor>false</addMavenDescriptor>
@@ -319,7 +332,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-shade-plugin</artifactId>
-                        <version>3.2.0</version>
+                        <version>3.2.4</version>
                         <executions>
                             <execution>
                                 <phase>package</phase>
@@ -403,7 +416,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
-                <version>2.7</version>
+                <version>2.8.1</version>
                 <executions>
                     <execution>
                         <phase>validate</phase>
@@ -419,10 +432,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version>
+                <version>3.8.1</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <release>11</release>
                     <encoding>${project.build.sourceEncoding}</encoding>
                     <!--                    <compilerArgs>
                         <arg>-verbose</arg>
@@ -434,7 +446,7 @@
             <plugin>
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr4-maven-plugin</artifactId>
-                <version>4.7.1</version>
+                <version>4.9.1</version>
                 <executions>
                     <execution>
                         <id>antlr</id>

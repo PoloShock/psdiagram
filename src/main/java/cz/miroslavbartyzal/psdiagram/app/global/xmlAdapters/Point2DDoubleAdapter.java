@@ -5,8 +5,8 @@
 package cz.miroslavbartyzal.psdiagram.app.global.xmlAdapters;
 
 import java.awt.geom.Point2D;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.adapters.XmlAdapter;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
  * Tato třída představuje adaptér JAXB pro třídu Point2D.Double.

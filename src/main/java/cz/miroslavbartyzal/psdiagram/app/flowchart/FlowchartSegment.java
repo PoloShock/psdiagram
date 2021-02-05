@@ -9,7 +9,7 @@ import java.awt.font.TextLayout;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.TreeSet;
-import javax.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.*;
 
 /**
  * <p>

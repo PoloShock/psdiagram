@@ -6,8 +6,8 @@ package cz.miroslavbartyzal.psdiagram.app.update;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.Charset;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.util.JAXBSource;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.util.JAXBSource;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;

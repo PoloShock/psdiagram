@@ -23,7 +23,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 
 /**
  *

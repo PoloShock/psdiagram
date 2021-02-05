@@ -52,8 +52,8 @@
         </dependency>
         
         <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
             <version>3.0.0</version>
             <scope>runtime</scope>
         </dependency>
@@ -85,12 +85,6 @@
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
             <version>4.9.1</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.abego.treelayout</groupId>
-                    <artifactId>org.abego.treelayout.core</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>

@@ -159,123 +159,6 @@
                             </execution>
                         </executions>
                     </plugin>
-                    
-                    <plugin>
-                        <groupId>com.github.wvengen</groupId>
-                        <artifactId>proguard-maven-plugin</artifactId>
-                        <version>2.0.14</version>
-                        <dependencies>
-                            <dependency>
-                                <groupId>net.sf.proguard</groupId>
-                                <artifactId>proguard-base</artifactId>
-                                <version>5.2.1</version>
-                                <scope>runtime</scope>
-                            </dependency>
-                        </dependencies>
-                        <executions>
-                            <execution>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>proguard</goal>
-                                </goals>
-                                <configuration>
-                                    <archive>
-                                        <manifest>
-                                            <Main-Class>cz.miroslavbartyzal.psdiagram.app.Main</Main-Class>
-                                        </manifest>
-                                        <manifestEntries>
-                                            <Built-By>Miroslav Bartyzal</Built-By>
-                                            <Build-Number>${buildNumber}</Build-Number>
-                                            <SplashScreen-Image>img/splash.png</SplashScreen-Image>
-                                        </manifestEntries>
-                                    </archive>
-                                    <obfuscate>true</obfuscate>
-                                    <includeDependency>false</includeDependency>
-                                    <assembly>
-                                        <inclusions>
-                                            <inclusion>
-                                                <groupId>org.freehep</groupId>
-                                                <artifactId>freehep-graphics2d</artifactId>
-                                                <library>true</library>
-                                            </inclusion>
-                                            <inclusion>
-                                                <groupId>org.freehep</groupId>
-                                                <artifactId>freehep-graphicsio-pdf</artifactId>
-                                                <library>true</library>
-                                            </inclusion>
-                                            <inclusion>
-                                                <groupId>org.freehep</groupId>
-                                                <artifactId>freehep-graphicsbase</artifactId>
-                                                <library>true</library>
-                                            </inclusion>
-                                            <inclusion>
-                                                <groupId>org.freehep</groupId>
-                                                <artifactId>freehep-graphicsio</artifactId>
-                                                <library>true</library>
-                                            </inclusion>
-                                            <inclusion>
-                                                <groupId>org.freehep</groupId>
-                                                <artifactId>freehep-graphicsio-tests</artifactId>
-                                                <library>true</library>
-                                            </inclusion>
-                                            <inclusion>
-                                                <groupId>org.freehep</groupId>
-                                                <artifactId>freehep-io</artifactId>
-                                                <library>true</library>
-                                            </inclusion>
-
-                                            <inclusion>
-                                                <groupId>org.eclipse.persistence</groupId>
-                                                <artifactId>org.eclipse.persistence.core</artifactId>
-                                                <library>true</library>
-                                                <!--<filter>META-INF/ECLIPSE_.RSA,META-INF/ECLIPSE_.SF</filter> NEFUNGUJE!!!-->
-                                            </inclusion>
-
-                                            <inclusion>
-                                                <groupId>org.antlr</groupId>
-                                                <artifactId>antlr4-runtime</artifactId>
-                                                <library>true</library>
-                                            </inclusion>
-
-                                            <inclusion>
-                                                <groupId>net.java.balloontip</groupId>
-                                                <artifactId>balloontip</artifactId>
-                                                <library>true</library>
-                                            </inclusion>
-
-                                            <inclusion>
-                                                <groupId>net.java.dev.jna</groupId>
-                                                <artifactId>jna-platform</artifactId>
-                                                <library>true</library>
-                                            </inclusion>
-                                            <inclusion>
-                                                <groupId>net.java.dev.jna</groupId>
-                                                <artifactId>jna</artifactId>
-                                                <library>true</library>
-                                            </inclusion>
-                                    
-                                            <inclusion>
-                                                <groupId>org.mozilla</groupId>
-                                                <artifactId>rhino</artifactId>
-                                                <library>true</library>
-                                            </inclusion>
-                                        </inclusions>
-                                    </assembly>
-                                    <!--                    <options>
-                                        <option>-keep class org.freehep.** {*** *(...);}</option>
-                                    </options>-->
-                                    <!--                    <inFilter>!main/java/cz/miroslavbartyzal/psdiagram/app/diagram/changelog.txt</inFilter>-->
-                                    <injar>${project.build.finalName}.jar</injar>
-                                    <outjar>${project.build.finalName}-obfuscated-with_dependencies.jar</outjar>
-                                    <outputDirectory>${project.build.directory}</outputDirectory>
-                                    <proguardInclude>${basedir}/proguard.pro</proguardInclude>
-                                    <!--                    <libs>
-                                        <lib>c:\Users\Miroslav\.m2\repository\junit\junit\4.11\junit-4.11.jar</lib>
-                                    </libs>-->
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
 
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -295,20 +178,6 @@
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>delete-signature</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                                <configuration>
-                                    <target name="delete-signature">
-                                        <jar destfile="${project.build.directory}/${psdiagramfinalname}" filesetmanifest="merge">
-                                            <zipfileset src="${project.build.directory}/${project.build.finalName}-obfuscated-with_dependencies.jar" excludes="META-INF/*.DSA,META-INF/*.RSA,META-INF/*.SF,META-INF\eclipse.inf,about.html,license.html,readme.html" />
-                                        </jar>
-                                    </target>
-                                </configuration>
-                            </execution>
-                            <execution>
                                 <id>prepare-for-deploy</id>
                                 <phase>pre-integration-test</phase>
                                 <goals>
@@ -317,7 +186,7 @@
                                 <configuration>
                                     <target name="prepare-for-deploy">
                                         <mkdir dir="${project.build.directory}/zip/PS Diagram"/>
-                                        <copy file="${project.build.directory}/${psdiagramfinalname}" todir="${project.build.directory}/zip/PS Diagram"/>
+                                        <copy file="${project.build.directory}/${project.build.finalName}-with_dependencies.jar" tofile="${project.build.directory}/zip/PS Diagram/${psdiagramfinalname}"/>
                                         <copy todir="${project.build.directory}/zip/PS Diagram">
                                             <fileset dir="${basedir}/src/main/resources/intozip"/>
                                         </copy>

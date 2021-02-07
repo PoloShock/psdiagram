@@ -4,6 +4,7 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.update;
 
+import cz.miroslavbartyzal.psdiagram.app.global.MyExceptionHandler;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -24,14 +25,14 @@ public class FileChecksum
         try {
             fs = new FileInputStream(file);
         } catch (FileNotFoundException ex) {
-            ex.printStackTrace(System.err);
+            MyExceptionHandler.handle(ex);
             return null;
         }
         MessageDigest md;
         try {
             md = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException ex) {
-            ex.printStackTrace(System.err);
+            MyExceptionHandler.handle(ex);
             return null;
         }
 
@@ -42,13 +43,13 @@ public class FileChecksum
                 md.update(buffer, 0, numOfBytesRead);
             }
         } catch (IOException ex) {
-            ex.printStackTrace(System.err);
+            MyExceptionHandler.handle(ex);
             return null;
         } finally {
             try {
                 fs.close();
             } catch (IOException ex) {
-                ex.printStackTrace(System.err);
+                MyExceptionHandler.handle(ex);
                 return null;
             }
         }

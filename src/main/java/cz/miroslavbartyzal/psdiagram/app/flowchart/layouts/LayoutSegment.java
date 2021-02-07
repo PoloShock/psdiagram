@@ -10,9 +10,9 @@ import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlType;
 
 /**
  * <p>Tato třída rozšiřuje třídu FlowchartSegment a reprezentuje tak kromě

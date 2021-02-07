@@ -5,6 +5,8 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.persistence.collector;
 
+import cz.miroslavbartyzal.psdiagram.app.global.MyExceptionHandler;
+import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import cz.miroslavbartyzal.psdiagram.app.network.URLPostUploader;
 import cz.miroslavbartyzal.psdiagram.app.update.ArchiveUtil;
 import java.io.File;
@@ -23,7 +25,7 @@ import java.util.Map;
 public class FlowchartCollector
 {
 
-    private static final String SERVER_URL = "http://www.psdiagram.cz/c";
+    private static final String SERVER_URL = SettingsHolder.PSDIAGRAM_SERVER + "/c";
     private boolean uploading;
     private boolean exitRequested;
 
@@ -108,7 +110,7 @@ public class FlowchartCollector
         try {
             return ArchiveUtil.compress(input);
         } catch (IOException ex) {
-            ex.printStackTrace(System.err);
+            MyExceptionHandler.handle(ex);
             return null;
         }
     }

@@ -7,7 +7,7 @@ package cz.miroslavbartyzal.psdiagram.app.flowchart;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
 import java.util.ArrayList;
 import java.util.TreeSet;
-import javax.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.*;
 
 /**
  * <p>Tato abstraktní třída reprezentuje logický element diagramu - symbol

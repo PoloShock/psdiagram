@@ -5,7 +5,7 @@
 package cz.miroslavbartyzal.psdiagram.app.global.xmlAdapters;
 
 import java.awt.Color;
-import javax.xml.bind.annotation.adapters.XmlAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
  * Tato třída představuje adaptér JAXB pro třídu Color.

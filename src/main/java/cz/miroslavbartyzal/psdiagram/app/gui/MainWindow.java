@@ -29,6 +29,7 @@ import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.StartEnd;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.SubRoutine;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Switch;
 import cz.miroslavbartyzal.psdiagram.app.global.GlobalFunctions;
+import cz.miroslavbartyzal.psdiagram.app.global.MyExceptionHandler;
 import cz.miroslavbartyzal.psdiagram.app.global.RegexFunctions;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.MaxBalloonSizeCallback;
@@ -96,9 +97,9 @@ import javax.swing.Timer;
 import javax.swing.TransferHandler;
 import javax.swing.TransferHandler.TransferSupport;
 import javax.swing.event.MouseInputAdapter;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 import org.freehep.graphics2d.VectorGraphics;
 import org.freehep.graphicsio.pdf.PDFGraphics2D;
 
@@ -429,7 +430,7 @@ public final class MainWindow extends javax.swing.JFrame
             jAXBmarshaller = jAXBcontext.createMarshaller();
             jAXBmarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         } catch (JAXBException ex) {
-            ex.printStackTrace(System.err);
+            MyExceptionHandler.handle(ex);
         }
         flowchartCrashRecovery = new FlowchartCrashRecovery(layout, jAXBmarshaller);
 
@@ -468,7 +469,7 @@ public final class MainWindow extends javax.swing.JFrame
                 super.setTitle(super.getTitle() + " (zotaveno)");
                 setStatusText("Diagram byl po neočekávaném ukončení aplikace úspěšně zotaven.", 8000);
             } catch (JAXBException | FileNotFoundException ex) {
-                ex.printStackTrace(System.err);
+                MyExceptionHandler.handle(ex);
             }
 
             String args[];
@@ -508,7 +509,7 @@ public final class MainWindow extends javax.swing.JFrame
             Runtime.getRuntime().exec(new String[]{"cmd", "/s", "/c",
                 "\"" + command + "\""});
         } catch (IOException ex) {
-            ex.printStackTrace(System.err);
+            MyExceptionHandler.handle(ex);
         }
     }
 
@@ -1313,7 +1314,7 @@ public final class MainWindow extends javax.swing.JFrame
 //            try {
 //                writer = PdfWriter.getInstance(document, new FileOutputStream(file));
 //            } catch (DocumentException | FileNotFoundException ex) {
-//                ex.printStackTrace(System.err);
+//                MyExceptionHandler.handle(ex);
 //                JOptionPane.showMessageDialog(this, "Při vytváření PDF souboru nastala chyba!", "Chyba", JOptionPane.ERROR_MESSAGE);
 //                return;
 //            }
@@ -1334,7 +1335,7 @@ public final class MainWindow extends javax.swing.JFrame
                 graphics = new PDFGraphics2D(file, new Dimension((int) layout.getWidth(),
                         (int) layout.getHeight()));
             } catch (FileNotFoundException ex) {
-                ex.printStackTrace(System.err);
+                MyExceptionHandler.handle(ex);
                 JOptionPane.showMessageDialog(this, "Při vytváření PDF souboru nastala chyba!",
                         "Chyba", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -1401,7 +1402,7 @@ public final class MainWindow extends javax.swing.JFrame
                             JOptionPane.ERROR_MESSAGE);
                 }
             } catch (IOException ex) {
-                ex.printStackTrace(System.err);
+                MyExceptionHandler.handle(ex);
                 JOptionPane.showMessageDialog(this, "Při vytváření souboru obrázku nastala chyba!",
                         "Chyba", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -1434,7 +1435,7 @@ public final class MainWindow extends javax.swing.JFrame
                         "Diagram byl úspěšně uložen do " + SettingsHolder.settings.getActualFlowchartFile().getPath(),
                         3500);
             } catch (JAXBException | FileNotFoundException ex) {
-                ex.printStackTrace(System.err);
+                MyExceptionHandler.handle(ex);
                 JOptionPane.showMessageDialog(this, "Při ukládání diagramu nastala chyba!",
                         "Diagram se nepodařilo uložit", JOptionPane.ERROR_MESSAGE);
             }
@@ -1489,7 +1490,7 @@ public final class MainWindow extends javax.swing.JFrame
                         "Diagram byl úspěšně uložen do " + SettingsHolder.settings.getActualFlowchartFile().getPath(),
                         3500);
             } catch (JAXBException | FileNotFoundException ex) {
-                ex.printStackTrace(System.err);
+                MyExceptionHandler.handle(ex);
                 JOptionPane.showMessageDialog(this, "Při ukládání diagramu nastala chyba!",
                         "Diagram se nepodařilo uložit", JOptionPane.ERROR_MESSAGE);
             }
@@ -1565,6 +1566,8 @@ public final class MainWindow extends javax.swing.JFrame
          * Create and display the form
          */
         SwingUtilities.invokeLater(() -> {
+            Thread.currentThread().setUncaughtExceptionHandler(new MyExceptionHandler());
+            
             File flowchartToOpen = null;
             if (args.length > 0 && new File(args[0]).isFile()) {
                 flowchartToOpen = new File(args[0]);
@@ -2220,7 +2223,7 @@ public final class MainWindow extends javax.swing.JFrame
                     cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Process.class,
                     StartEnd.class, SubRoutine.class, Switch.class);
         } catch (JAXBException ex) {
-            ex.printStackTrace(System.err);
+            MyExceptionHandler.handle(ex);
         }
         return null;
     }
@@ -2230,14 +2233,13 @@ public final class MainWindow extends javax.swing.JFrame
      */
     private boolean checkIfSaved(boolean askAboutIt)
     {
-        Boolean userWantedToSave = true;
+        Boolean userWantedToSave = null;
+        boolean saved = false;
 
         if (layout.getFlowchart().getMainSegment().size() > 2) { // diagram je prazdny, nema cenu ho ukladat.. even if it was not empty before
             if (SettingsHolder.settings.getActualFlowchartFile() == null) {
                 if (askAboutIt) {
-                    userWantedToSave = askAboutSaving();
-                } else {
-                    userWantedToSave = null;
+                    userWantedToSave = askAboutSavingAndSave();
                 }
             } else {
                 try (ByteArrayOutputStream baosCurrent = new ByteArrayOutputStream();
@@ -2253,31 +2255,37 @@ public final class MainWindow extends javax.swing.JFrame
 
                     if (!Arrays.equals(baosCurrent.toByteArray(), baosSaved.toByteArray())) {
                         if (askAboutIt) {
-                            userWantedToSave = askAboutSaving();
-                        } else {
-                            userWantedToSave = null;
+                            userWantedToSave = askAboutSavingAndSave();
                         }
+                    } else {
+                        saved = true;
                     }
                 } catch (JAXBException | IOException ex) {
-                    ex.printStackTrace(System.err);
+                    MyExceptionHandler.handle(ex);
                 }
             }
-
+            
             if (Boolean.TRUE.equals(userWantedToSave)) {
+                saved = true;
+            }
+
+            if (saved && !SettingsHolder.settings.isDontSaveDirectly()) {
                 try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
                     marshal(new FlowchartSaveContainer(layout.getFlowchart()), baos, false);
                     flowchartCollector.uploadFlowchart(baos.toString(StandardCharsets.UTF_8.name()),
                             SettingsHolder.settings.getActualFlowchartFile());
                 } catch (JAXBException | IOException ex) {
-                    ex.printStackTrace(System.err);
+                    MyExceptionHandler.handle(ex);
                 }
             }
+            
+            return saved || userWantedToSave != null;
+        } else {
+            return true;
         }
-
-        return userWantedToSave != null;
     }
 
-    private Boolean askAboutSaving()
+    private Boolean askAboutSavingAndSave()
     {
         int n = JOptionPane.showConfirmDialog(
                 this,
@@ -2358,7 +2366,7 @@ public final class MainWindow extends javax.swing.JFrame
             }
             openDiagram(flowchart, file);
         } catch (JAXBException | FileNotFoundException ex) {
-            ex.printStackTrace(System.err);
+            MyExceptionHandler.handle(ex);
             JOptionPane.showMessageDialog(this, "Při načítání diagramu nastala chyba!",
                     "Diagram se nepodařilo otevřít", JOptionPane.ERROR_MESSAGE);
             if (SettingsHolder.settings.getActualFlowchartFile() != null

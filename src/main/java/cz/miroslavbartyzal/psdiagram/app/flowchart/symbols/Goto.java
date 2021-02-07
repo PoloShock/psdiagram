@@ -7,10 +7,10 @@ package cz.miroslavbartyzal.psdiagram.app.flowchart.symbols;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.util.LinkedHashMap;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
 
 /**
  * Tato třída představuje symbol vstupní Spojky (goto, break, continue).

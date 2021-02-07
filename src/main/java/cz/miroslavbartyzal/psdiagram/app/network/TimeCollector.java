@@ -5,6 +5,7 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.network;
 
+import cz.miroslavbartyzal.psdiagram.app.global.MyExceptionHandler;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -26,7 +27,7 @@ public final class TimeCollector
         try {
             return getTimeAndDate(new URL(url));
         } catch (MalformedURLException ex) {
-            ex.printStackTrace(System.err);
+            MyExceptionHandler.handle(ex);
             return null;
         }
     }
@@ -47,7 +48,7 @@ public final class TimeCollector
                     Locale.ENGLISH);
             return sdf.parse(urlConn.getHeaderField("Date"));
         } catch (NullPointerException | IOException | ParseException ex) {
-            ex.printStackTrace(System.err);
+            MyExceptionHandler.handle(ex);
         }
         return null;
     }

@@ -4,7 +4,7 @@
 
     <groupId>cz.miroslavbartyzal</groupId>
     <artifactId>psdiagram</artifactId>
-    <version>1.4.3</version>
+    <version>1.4.4</version>
     <packaging>jar</packaging>
     <name>PS Diagram</name>
     <url>http://www.psdiagram.cz</url>
@@ -13,7 +13,7 @@
         <developer>
             <name>Miroslav Bartyzal</name>
             <email>miroslavbartyzal@gmail.com</email>
-        </developer>
+        </developer> 
     </developers>
 
     <prerequisites>
@@ -41,14 +41,27 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <version>4.13.1</version>
             <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>3.0.0</version>
+            <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>org.eclipse.persistence.core</artifactId>
-            <version>2.6.4</version>
+            <version>3.0.0</version>
         </dependency>
 
         <dependency>
@@ -71,25 +84,19 @@
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
-            <version>4.7.2</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.abego.treelayout</groupId>
-                    <artifactId>org.abego.treelayout.core</artifactId>
-                </exclusion>
-            </exclusions>
+            <version>4.9.1</version>
         </dependency>
 
         <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna-platform</artifactId>
-            <version>4.5.2</version>
+            <version>5.6.0</version>
         </dependency>
         
         <dependency>
             <groupId>org.mozilla</groupId>
-            <artifactId>rhino</artifactId>
-            <version>1.7.11</version>
+            <artifactId>rhino-runtime</artifactId>
+            <version>1.7.13</version>
         </dependency>
         
     </dependencies>
@@ -114,7 +121,7 @@
                     <plugin>
                         <groupId>cz.miroslavbartyzal</groupId>
                         <artifactId>versioninfo-maven-plugin</artifactId>
-                        <version>1.1</version>
+                        <version>1.2</version>
                         <executions>
                             <execution>
                                 <phase>generate-test-resources</phase> <!-- in order to test it in unit test -->
@@ -129,13 +136,13 @@
                                     <changelogurl>http://www.psdiagram.cz/changelog</changelogurl>
                                     <releaseurl></releaseurl>
 
-                                    <headline>PS Diagram je nyní opensource!</headline>
+                                    <headline>PS Diagram na 4K rozlišení</headline>
                                     <description>
                                         <![CDATA[
                                         <html>
-                                            <p align="justify">Nastal velký milník v historii PS Diagramu. PS Diagram je od teď opensource! :) Vedle odkazu na Facebook přibyl i odkaz na GitHub, kde naleznete jeho zdrojové kódy.</p>
-                                            <p align="justify">Odteď, kdokoliv budete chtít něco v aplikaci vylepšit, můžete tak učinit přímo, vytvořit pull request a já vaše změny po shlédnutí zamerguji. Dávám tak prostor i studentům programování, kteří by se chtěli na PSD podílet např. v rámci své závěrečné/bakalářské/diplomové práce. Jeden takový student se již ohlásil. :)</p>
-                                            <p align="justify">Změny oproti starší verzi aplikace jsou k vidění níže.</p>
+                                            <p align="justify">Protože mi nejeden z vás dal zpětnou vazbu o tom, že na 4K rozlišení PS Diagram nevypadá zrovna nejlépe, pořádně jsem si na tento neduh posvítil a vypadá to, že už by všechno mělo vypadat tak, jak by mělo. Stačí provést aktualizaci.</p>
+                                            <p align="justify">Také jsem se pustil do revize vzorových algoritmů a některá místa snad o malinko zpřehlednil komentáři. Algoritmus 'Obrácení čísla' si navíc vysloužil optimalizaci - děkuji Petrovi V. za trefný námět. :)</p>
+                                            <p align="justify">PS: umístil jsem na web uživatelskou příručku</p>
                                         </html>
                                         ]]>
                                     </description>
@@ -143,135 +150,19 @@
                                     <features>
                                     </features>
                                     <enhancements>
-                                        <enhancement>přidáno logování do souboru [HOME]/.psdiagram/psdiagram.log</enhancement>
+                                        <enhancement>revidována knihovna algoritmů</enhancement>
                                     </enhancements>
                                     <extensions>
                                     </extensions>
                                     <changes>
-                                        <change>starší verze aplikace nemají od teď omezenou platnost - aktualizace není povinná</change>
                                     </changes>
                                     <fixes>
+                                        <fix>optimalizace velikosti aplikace na monitorech s vysokým rozlišením (např. 4K)</fix>
+                                        <fix>občas v logovacím souboru nebyl zapsán čas záznamu</fix>
                                     </fixes>
                                     <others>
-                                        <other>PS Diagram je nyní na GitHub-u a je opensource</other>
+                                        <other>aktualizace Java JRE na verzi 11</other>
                                     </others>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    
-                    <plugin>
-                        <groupId>com.github.wvengen</groupId>
-                        <artifactId>proguard-maven-plugin</artifactId>
-                        <version>2.0.14</version>
-                        <dependencies>
-                            <dependency>
-                                <groupId>net.sf.proguard</groupId>
-                                <artifactId>proguard-base</artifactId>
-                                <version>5.2.1</version>
-                                <scope>runtime</scope>
-                            </dependency>
-                        </dependencies>
-                        <executions>
-                            <execution>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>proguard</goal>
-                                </goals>
-                                <configuration>
-                                    <archive>
-                                        <manifest>
-                                            <Main-Class>cz.miroslavbartyzal.psdiagram.app.Main</Main-Class>
-                                        </manifest>
-                                        <manifestEntries>
-                                            <Built-By>Miroslav Bartyzal</Built-By>
-                                            <Build-Number>${buildNumber}</Build-Number>
-                                            <SplashScreen-Image>img/splash.png</SplashScreen-Image>
-                                        </manifestEntries>
-                                    </archive>
-                                    <obfuscate>true</obfuscate>
-                                    <includeDependency>false</includeDependency>
-                                    <assembly>
-                                        <inclusions>
-                                            <inclusion>
-                                                <groupId>org.freehep</groupId>
-                                                <artifactId>freehep-graphics2d</artifactId>
-                                                <library>true</library>
-                                            </inclusion>
-                                            <inclusion>
-                                                <groupId>org.freehep</groupId>
-                                                <artifactId>freehep-graphicsio-pdf</artifactId>
-                                                <library>true</library>
-                                            </inclusion>
-                                            <inclusion>
-                                                <groupId>org.freehep</groupId>
-                                                <artifactId>freehep-graphicsbase</artifactId>
-                                                <library>true</library>
-                                            </inclusion>
-                                            <inclusion>
-                                                <groupId>org.freehep</groupId>
-                                                <artifactId>freehep-graphicsio</artifactId>
-                                                <library>true</library>
-                                            </inclusion>
-                                            <inclusion>
-                                                <groupId>org.freehep</groupId>
-                                                <artifactId>freehep-graphicsio-tests</artifactId>
-                                                <library>true</library>
-                                            </inclusion>
-                                            <inclusion>
-                                                <groupId>org.freehep</groupId>
-                                                <artifactId>freehep-io</artifactId>
-                                                <library>true</library>
-                                            </inclusion>
-
-                                            <inclusion>
-                                                <groupId>org.eclipse.persistence</groupId>
-                                                <artifactId>org.eclipse.persistence.core</artifactId>
-                                                <library>true</library>
-                                                <!--<filter>META-INF/ECLIPSE_.RSA,META-INF/ECLIPSE_.SF</filter> NEFUNGUJE!!!-->
-                                            </inclusion>
-
-                                            <inclusion>
-                                                <groupId>org.antlr</groupId>
-                                                <artifactId>antlr4-runtime</artifactId>
-                                                <library>true</library>
-                                            </inclusion>
-
-                                            <inclusion>
-                                                <groupId>net.java.balloontip</groupId>
-                                                <artifactId>balloontip</artifactId>
-                                                <library>true</library>
-                                            </inclusion>
-
-                                            <inclusion>
-                                                <groupId>net.java.dev.jna</groupId>
-                                                <artifactId>jna-platform</artifactId>
-                                                <library>true</library>
-                                            </inclusion>
-                                            <inclusion>
-                                                <groupId>net.java.dev.jna</groupId>
-                                                <artifactId>jna</artifactId>
-                                                <library>true</library>
-                                            </inclusion>
-                                    
-                                            <inclusion>
-                                                <groupId>org.mozilla</groupId>
-                                                <artifactId>rhino</artifactId>
-                                                <library>true</library>
-                                            </inclusion>
-                                        </inclusions>
-                                    </assembly>
-                                    <!--                    <options>
-                                        <option>-keep class org.freehep.** {*** *(...);}</option>
-                                    </options>-->
-                                    <!--                    <inFilter>!main/java/cz/miroslavbartyzal/psdiagram/app/diagram/changelog.txt</inFilter>-->
-                                    <injar>${project.build.finalName}.jar</injar>
-                                    <outjar>${project.build.finalName}-obfuscated-with_dependencies.jar</outjar>
-                                    <outputDirectory>${project.build.directory}</outputDirectory>
-                                    <proguardInclude>${basedir}/proguard.pro</proguardInclude>
-                                    <!--                    <libs>
-                                        <lib>c:\Users\Miroslav\.m2\repository\junit\junit\4.11\junit-4.11.jar</lib>
-                                    </libs>-->
                                 </configuration>
                             </execution>
                         </executions>
@@ -295,20 +186,6 @@
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>delete-signature</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                                <configuration>
-                                    <target name="delete-signature">
-                                        <jar destfile="${project.build.directory}/${psdiagramfinalname}" filesetmanifest="merge">
-                                            <zipfileset src="${project.build.directory}/${project.build.finalName}-obfuscated-with_dependencies.jar" excludes="META-INF/*.DSA,META-INF/*.RSA,META-INF/*.SF,META-INF\eclipse.inf,about.html,license.html,readme.html" />
-                                        </jar>
-                                    </target>
-                                </configuration>
-                            </execution>
-                            <execution>
                                 <id>prepare-for-deploy</id>
                                 <phase>pre-integration-test</phase>
                                 <goals>
@@ -317,12 +194,12 @@
                                 <configuration>
                                     <target name="prepare-for-deploy">
                                         <mkdir dir="${project.build.directory}/zip/PS Diagram"/>
-                                        <copy file="${project.build.directory}/${psdiagramfinalname}" todir="${project.build.directory}/zip/PS Diagram"/>
+                                        <copy file="${project.build.directory}/${project.build.finalName}-with_dependencies.jar" tofile="${project.build.directory}/zip/PS Diagram/${psdiagramfinalname}"/>
                                         <copy todir="${project.build.directory}/zip/PS Diagram">
                                             <fileset dir="${basedir}/src/main/resources/intozip"/>
                                         </copy>
                                         <copy todir="${project.build.directory}/zip/PS Diagram/jre">
-                                            <fileset dir="c:\Program Files (x86)\AdoptOpenJDK\jdk-8.0.252.09-hotspot\jre"/>
+                                            <fileset dir="c:/Program Files (x86)/AdoptOpenJDK/jre-11.0.10.9-hotspot"/>
                                         </copy>
                                         <copy file="c:/Zaloha/Programovani/Moje/Visual Studio 2013/PS Diagram Launcher/PS Diagram Launcher/bin/Release/PS Diagram.exe" todir="${project.build.directory}/zip/PS Diagram"/>
                                         <zip destfile="${project.build.directory}/OPENSHIFT_DATA/PS_Diagram_${project.version}.zip"
@@ -336,6 +213,7 @@
                                         <move todir="${project.build.directory}/OPENSHIFT_DATA/PS_Diagram_${project.version}">
                                             <fileset dir="${project.build.directory}/zip/PS Diagram"/>
                                         </move>
+                                        <copy file="${basedir}/src/main/resources/intozip/Uživatelská příručka.pdf" todir="${project.build.directory}/OPENSHIFT_DATA"/>
                                     </target>
                                 </configuration>
                             </execution>
@@ -366,7 +244,7 @@
                     <plugin>
                         <groupId>cz.miroslavbartyzal</groupId>
                         <artifactId>directoryfootprint-maven-plugin</artifactId>
-                        <version>1.1</version>
+                        <version>1.3</version>
                         <executions>
                             <execution>
                                 <phase>integration-test</phase>
@@ -431,7 +309,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-jar-plugin</artifactId>
-                        <version>3.1.0</version>
+                        <version>3.2.0</version>
                         <configuration>
                             <archive>
                                 <addMavenDescriptor>false</addMavenDescriptor>
@@ -450,7 +328,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-shade-plugin</artifactId>
-                        <version>3.2.0</version>
+                        <version>3.2.4</version>
                         <executions>
                             <execution>
                                 <phase>package</phase>
@@ -534,7 +412,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
-                <version>2.7</version>
+                <version>2.8.1</version>
                 <executions>
                     <execution>
                         <phase>validate</phase>
@@ -550,10 +428,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version>
+                <version>3.8.1</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <release>11</release>
                     <encoding>${project.build.sourceEncoding}</encoding>
                     <!--                    <compilerArgs>
                         <arg>-verbose</arg>
@@ -565,7 +442,7 @@
             <plugin>
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr4-maven-plugin</artifactId>
-                <version>4.7.1</version>
+                <version>4.9.1</version>
                 <executions>
                     <execution>
                         <id>antlr</id>

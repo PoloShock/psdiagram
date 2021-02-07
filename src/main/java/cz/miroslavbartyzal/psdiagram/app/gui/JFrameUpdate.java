@@ -5,6 +5,8 @@
 package cz.miroslavbartyzal.psdiagram.app.gui;
 
 import cz.miroslavbartyzal.psdiagram.app.global.GlobalFunctions;
+import cz.miroslavbartyzal.psdiagram.app.global.MyExceptionHandler;
+import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import cz.miroslavbartyzal.psdiagram.app.update.ChangesCondenser;
 import cz.miroslavbartyzal.psdiagram.app.update.Updater;
 import java.awt.Color;
@@ -167,7 +169,7 @@ public class JFrameUpdate extends javax.swing.JFrame implements PropertyChangeLi
                     try {
                         Desktop.getDesktop().browse(URI.create(url));
                     } catch (IOException ex) {
-                        ex.printStackTrace(System.err);
+                        MyExceptionHandler.handle(ex);
                     }
                 } else {
                     // TODO: error handling
@@ -418,7 +420,7 @@ public class JFrameUpdate extends javax.swing.JFrame implements PropertyChangeLi
             JEditorPane ep = new JEditorPane("text/html",
                     "<html>Aktualizace PS Diagramu je (prozatím) vyvíjena jen pro operační systém Windows.<br />"
                             + "Stále ji však můžete provést sami stažením nové verze aplikace na stránkách "
-                            + "<a href=\"http://www.psdiagram.cz\">psdiagram.cz</a>.</html>");
+                            + "<a href=\"" + SettingsHolder.PSDIAGRAM_SERVER + "\">psdiagram.cz</a>.</html>");
             // handle link events
             ep.addHyperlinkListener((HyperlinkEvent e) -> {
                 if (e.getEventType().equals(HyperlinkEvent.EventType.ACTIVATED)) {

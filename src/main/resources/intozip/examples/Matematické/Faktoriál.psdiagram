@@ -97,18 +97,24 @@ nezáporné
                     <borderColor>0,0,0,255</borderColor>
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
-                    <customValue>není-li 'n' číslo, 
+                    <customValue>Validace vstupu:
+
+
+není-li 'n' číslo, 
 nebo je 'n' menší než nula,
 nebo 'n' není celé číslo,
 ...opakuj</customValue>
                     <commandsValid>true</commandsValid>
-                    <value>není-li 'n' číslo, 
+                    <value>Validace vstupu:
+
+
+není-li 'n' číslo, 
 nebo je 'n' menší než nula,
 nebo 'n' není celé číslo,
 ...opakuj</value>
                     <alwaysLeftAlign>false</alwaysLeftAlign>
-                    <relativeX>97.0</relativeX>
-                    <relativeY>46.0</relativeY>
+                    <relativeX>79.0</relativeX>
+                    <relativeY>56.0</relativeY>
                     <paired>true</paired>
                 </comment>
             </element>

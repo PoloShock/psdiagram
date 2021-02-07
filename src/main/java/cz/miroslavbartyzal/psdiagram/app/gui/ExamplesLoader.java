@@ -9,8 +9,10 @@ import cz.miroslavbartyzal.psdiagram.app.flowchart.Flowchart;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutElement;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutSegment;
 import cz.miroslavbartyzal.psdiagram.app.global.GlobalFunctions;
+import cz.miroslavbartyzal.psdiagram.app.global.MyExceptionHandler;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import cz.miroslavbartyzal.psdiagram.app.persistence.FlowchartSaveContainer;
+import jakarta.xml.bind.JAXBException;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,7 +25,6 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.xml.bind.JAXBException;
 
 /**
  *
@@ -178,7 +179,7 @@ public class ExamplesLoader
                 }
                 return true;
             } catch (JAXBException | FileNotFoundException ex) {
-                ex.printStackTrace(System.err);
+                MyExceptionHandler.handle(ex);
             }
         }
         return false;

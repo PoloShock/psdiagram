@@ -4,6 +4,7 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters;
 
+import cz.miroslavbartyzal.psdiagram.app.global.MyExceptionHandler;
 import cz.miroslavbartyzal.psdiagram.app.global.StringFunctions;
 import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.MaxBalloonSizeCallback;
 import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.PSDBalloonToolTip;
@@ -264,7 +265,7 @@ public abstract class AbstractFilter extends DocumentFilter
                         highlighterTags.add(parentJTextField.getHighlighter().addHighlight(
                                 squiggler.getP0(), squiggler.getP1(), squiggler));
                     } catch (BadLocationException ex) {
-                        ex.printStackTrace(System.err);
+                        MyExceptionHandler.handle(ex);
                     }
                 }
             }

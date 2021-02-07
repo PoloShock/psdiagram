@@ -6,6 +6,7 @@
 package cz.miroslavbartyzal.psdiagram.app.persistence.recovery;
 
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.Layout;
+import cz.miroslavbartyzal.psdiagram.app.global.MyExceptionHandler;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import cz.miroslavbartyzal.psdiagram.app.persistence.FlowchartSaveContainer;
 import java.io.ByteArrayOutputStream;
@@ -21,8 +22,8 @@ import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 
 /**
  * This class handles flowchart backups in case of for example sudden termination of PS Diagram.
@@ -95,7 +96,7 @@ public class FlowchartCrashRecovery
                         SettingsHolder.settings.getActualFlowchartFile().toPath());
                 savedFlowchart.write(actualFFBytes, 0, actualFFBytes.length);
             } catch (Exception ex) {
-                ex.printStackTrace(System.err);
+                MyExceptionHandler.handle(ex);
                 savedFlowchart = null;
             }
         } else {
@@ -146,7 +147,7 @@ public class FlowchartCrashRecovery
                                 backupRAFile.getChannel().truncate(0);
                                 backupRAFile.write(flowchartRecoveryBaos.toByteArray());
                             } catch (IOException ex) {
-                                ex.printStackTrace(System.err);
+                                MyExceptionHandler.handle(ex);
                             }
                         }
                     }
@@ -155,7 +156,7 @@ public class FlowchartCrashRecovery
                     deleteBackup();
                 }
             } catch (JAXBException ex) {
-                ex.printStackTrace(System.err);
+                MyExceptionHandler.handle(ex);
             }
         } else {
             // current flowchart is empty - no need for its backup
@@ -186,10 +187,10 @@ public class FlowchartCrashRecovery
                             try {
                                 raFile.close();
                             } catch (IOException ex1) {
-                                ex1.printStackTrace(System.err);
+                                MyExceptionHandler.handle(ex1);
                             }
                         }
-                        ex.printStackTrace(System.err);
+                        MyExceptionHandler.handle(ex);
                         return;
                     }
                 }
@@ -227,10 +228,10 @@ public class FlowchartCrashRecovery
                         try {
                             raFile.close();
                         } catch (IOException ex1) {
-                            ex1.printStackTrace(System.err);
+                            MyExceptionHandler.handle(ex1);
                         }
                     }
-                    ex.printStackTrace(System.err);
+                    MyExceptionHandler.handle(ex);
                 }
             }
         }
@@ -262,10 +263,10 @@ public class FlowchartCrashRecovery
                         try {
                             raFile.close();
                         } catch (IOException ex1) {
-                            ex1.printStackTrace(System.err);
+                            MyExceptionHandler.handle(ex1);
                         }
                     }
-                    ex.printStackTrace(System.err);
+                    MyExceptionHandler.handle(ex);
                 }
             }
         }
@@ -279,13 +280,13 @@ public class FlowchartCrashRecovery
                 try {
                     backupFileLock.release();
                 } catch (IOException ex) {
-                    ex.printStackTrace(System.err);
+                    MyExceptionHandler.handle(ex);
                 }
             }
             try {
                 backupRAFile.close();
             } catch (IOException ex) {
-                ex.printStackTrace(System.err);
+                MyExceptionHandler.handle(ex);
             }
             backupFile.delete();
         }
@@ -318,10 +319,10 @@ public class FlowchartCrashRecovery
                         try {
                             raFile.close();
                         } catch (IOException ex1) {
-                            ex1.printStackTrace(System.err);
+                            MyExceptionHandler.handle(ex1);
                         }
                     }
-                    ex.printStackTrace(System.err);
+                    MyExceptionHandler.handle(ex);
                 }
             }
         }

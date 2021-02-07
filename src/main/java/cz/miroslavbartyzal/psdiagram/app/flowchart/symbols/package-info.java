@@ -15,5 +15,5 @@ import cz.miroslavbartyzal.psdiagram.app.global.xmlAdapters.Point2DDoubleAdapter
 import java.awt.Color;
 import java.awt.geom.Point2D;
 import java.util.LinkedHashMap;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapters;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapters;

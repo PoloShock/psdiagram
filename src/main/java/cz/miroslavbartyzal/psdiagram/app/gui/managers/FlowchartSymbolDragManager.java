@@ -10,7 +10,9 @@ import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutElement;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Joint;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
 import cz.miroslavbartyzal.psdiagram.app.global.GlobalFunctions;
+import cz.miroslavbartyzal.psdiagram.app.global.MyExceptionHandler;
 import cz.miroslavbartyzal.psdiagram.app.gui.MainWindow;
+import jakarta.xml.bind.JAXBException;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -23,7 +25,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import javax.swing.JPanel;
-import javax.xml.bind.JAXBException;
 
 /**
  *
@@ -76,7 +77,7 @@ public class FlowchartSymbolDragManager
         try {
             processedSymbol = cloneElement(element).getSymbol();
         } catch (JAXBException ex) {
-            ex.printStackTrace(System.err);
+            MyExceptionHandler.handle(ex);
         }
     }
 
@@ -176,7 +177,7 @@ public class FlowchartSymbolDragManager
                             elementsToAdd.add(cloneElement(element));
                         }
                     } catch (JAXBException ex) {
-                        ex.printStackTrace(System.err);
+                        MyExceptionHandler.handle(ex);
                         copying = false;
                         elementsToAdd = null;
                         return false;

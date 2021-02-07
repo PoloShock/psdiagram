@@ -4,6 +4,7 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.update;
 
+import cz.miroslavbartyzal.psdiagram.app.global.MyExceptionHandler;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -75,7 +76,7 @@ public class ArchiveUtil
             zos.closeEntry();
 
         } catch (IOException ex) {
-            ex.printStackTrace(System.err);
+            MyExceptionHandler.handle(ex);
         }
 
         return baos.toByteArray();

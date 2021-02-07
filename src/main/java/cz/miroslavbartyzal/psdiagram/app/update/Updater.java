@@ -4,9 +4,11 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.update;
 
+import cz.miroslavbartyzal.psdiagram.app.global.MyExceptionHandler;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import cz.miroslavbartyzal.psdiagram.app.network.URLFileDownloader;
 import cz.miroslavbartyzal.psdiagram.app.network.URLStringDownloader;
+import jakarta.xml.bind.JAXBException;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.ByteArrayInputStream;
@@ -16,7 +18,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import javax.swing.SwingUtilities;
-import javax.xml.bind.JAXBException;
 
 /**
  *
@@ -60,7 +61,7 @@ public final class Updater
                                     changesCondenser = (ChangesCondenser) JAXBUpdateContext.getUnmarshaller().unmarshal(
                                             new ByteArrayInputStream(result.getBytes(charset)));
                                 } catch (JAXBException ex) {
-                                    ex.printStackTrace(System.err);
+                                    MyExceptionHandler.handle(ex);
                                     statusListener.propertyChange(
                                             new PropertyChangeEvent(this, "error", null, "chyba při konverzi xml"));
                                 }
@@ -154,7 +155,7 @@ public final class Updater
             extractedDir = ArchiveUtil.extractZIP(downloadedFile, true,
                     Charset.defaultCharset());
         } catch (IOException ex) {
-            ex.printStackTrace(System.err);
+            MyExceptionHandler.handle(ex);
             statusListener.propertyChange(new PropertyChangeEvent(this, "error", null,
                     "chyba při extrahování instalátoru"));
             return;
@@ -163,7 +164,7 @@ public final class Updater
                 extractedDir = ArchiveUtil.extractZIP(downloadedFile, true,
                         StandardCharsets.UTF_8);
             } catch (IOException | IllegalArgumentException ex2) {
-                ex.printStackTrace(System.err);
+                MyExceptionHandler.handle(ex);
                 statusListener.propertyChange(new PropertyChangeEvent(this, "error", null,
                         "chyba při extrahování instalátoru"));
                 return;
@@ -206,7 +207,7 @@ public final class Updater
                     }
 
                 } catch (IOException ex) {
-                    ex.printStackTrace(System.err);
+                    MyExceptionHandler.handle(ex);
                     statusListener.propertyChange(new PropertyChangeEvent(this, "error", null,
                             "chyba při spouštění instalátoru"));
                     return;

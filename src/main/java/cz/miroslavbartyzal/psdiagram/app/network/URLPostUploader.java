@@ -4,6 +4,7 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.network;
 
+import cz.miroslavbartyzal.psdiagram.app.global.MyExceptionHandler;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -47,11 +48,11 @@ public class URLPostUploader extends SwingWorker<Integer, Void>
         try {
             url = HTTPParser.urlConcatenation(serverURL, null);
         } catch (UnsupportedEncodingException ex) {
-            ex.printStackTrace(System.err);
+            MyExceptionHandler.handle(ex);
             super.firePropertyChange("error", null, "chyba: špatné kódování URL");
             return null;
         } catch (MalformedURLException ex) {
-            ex.printStackTrace(System.err);
+            MyExceptionHandler.handle(ex);
             super.firePropertyChange("error", null, "chyba: špatný formát URL");
             return null;
         }
@@ -61,7 +62,7 @@ public class URLPostUploader extends SwingWorker<Integer, Void>
         try {
             conn = (HttpURLConnection) url.openConnection();
         } catch (IOException ex) {
-            ex.printStackTrace(System.err);
+            MyExceptionHandler.handle(ex);
             super.firePropertyChange("error", null, "chyba při navazování spojení");
             return null;
         }
@@ -88,7 +89,7 @@ public class URLPostUploader extends SwingWorker<Integer, Void>
                 os.write(out);
             }
         } catch (IOException ex) {
-            ex.printStackTrace(System.err);
+            MyExceptionHandler.handle(ex);
             super.firePropertyChange("error", null, "chyba při odesílání informací");
             return null;
         }
@@ -134,7 +135,7 @@ public class URLPostUploader extends SwingWorker<Integer, Void>
                 try {
                     uploadFinishedListener.onUploadFinished(URLPostUploader.super.get());
                 } catch (InterruptedException | ExecutionException ex) {
-                    ex.printStackTrace(System.err);
+                    MyExceptionHandler.handle(ex);
                     URLPostUploader.super.firePropertyChange("error", null, "interní chyba");
                     uploadFinishedListener.onUploadFinished(null);
                 }

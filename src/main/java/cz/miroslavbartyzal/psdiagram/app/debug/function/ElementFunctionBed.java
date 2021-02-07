@@ -18,6 +18,7 @@ import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.LoopStart;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.StartEnd;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Switch;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
+import cz.miroslavbartyzal.psdiagram.app.global.MyExceptionHandler;
 import cz.miroslavbartyzal.psdiagram.app.global.RegexFunctions;
 import cz.miroslavbartyzal.psdiagram.app.gui.EnhancedJOptionPane;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.AbstractSymbolFunctionForm;
@@ -92,7 +93,7 @@ public final class ElementFunctionBed
 //
 //            //System.out.println(JSENGINE.getFactory().getEngineVersion());
 //        } catch (ScriptException ex) {
-//            ex.printStackTrace(System.err);
+//            MyExceptionHandler.handle(ex);
 //            return null;
 //        }
 //    }
@@ -423,7 +424,7 @@ public final class ElementFunctionBed
                                 extraRet, true);
                     } catch (ScriptException ex) {
                         // won't happen since silent is on true as doSymbolScript call parameter
-                        ex.printStackTrace(System.err);
+                        MyExceptionHandler.handle(ex);
                     }
                     methodsSplit[j] = extraRet[0];
                 }
@@ -452,7 +453,7 @@ public final class ElementFunctionBed
                             "_extraRet_[0] = myUneval(" + commandSplit[i] + ");", extraRet, true);
                 } catch (ScriptException ex) {
                     // won't happen since silent is on true as doSymbolScript call parameter
-                    ex.printStackTrace(System.err);
+                    MyExceptionHandler.handle(ex);
                 }
 
                 if (extraRet[0] != null) {
@@ -639,7 +640,7 @@ public final class ElementFunctionBed
                                 extraRet, true);
                     } catch (ScriptException ex) {
                         // won't happen since silent is on true as doSymbolScript call parameter
-                        ex.printStackTrace(System.err);
+                        MyExceptionHandler.handle(ex);
                     }
                     var += extraRet[0];
                 }
@@ -718,7 +719,7 @@ public final class ElementFunctionBed
                             extraRet, true);
                 } catch (ScriptException ex) {
                     // won't happen since silent is on true as doSymbolScript call parameter
-                    ex.printStackTrace(System.err);
+                    MyExceptionHandler.handle(ex);
                 }
                 var += extraRet[0];
             }

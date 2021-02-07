@@ -4,6 +4,7 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.update;
 
+import cz.miroslavbartyzal.psdiagram.app.global.MyExceptionHandler;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.Charset;
 import jakarta.xml.bind.JAXBException;
@@ -30,7 +31,7 @@ public class CondenserToHTMLConverter
         try {
             source = new JAXBSource(JAXBUpdateContext.getMarshaller(), changesCondenser);
         } catch (JAXBException ex) {
-            ex.printStackTrace(System.err);
+            MyExceptionHandler.handle(ex);
             return null;
         }
 
@@ -49,14 +50,14 @@ public class CondenserToHTMLConverter
             transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
             transformer.setOutputProperty(OutputKeys.METHOD, "xml"); // don't include META tags
         } catch (TransformerConfigurationException ex) {
-            ex.printStackTrace(System.err);
+            MyExceptionHandler.handle(ex);
             return null;
         }
         // Transform
         try {
             transformer.transform(source, result);
         } catch (TransformerException ex) {
-            ex.printStackTrace(System.err);
+            MyExceptionHandler.handle(ex);
             return null;
         }
         return new String(((ByteArrayOutputStream) (result.getOutputStream())).toByteArray(),

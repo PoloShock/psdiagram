@@ -5,6 +5,7 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms;
 
+import cz.miroslavbartyzal.psdiagram.app.global.MyExceptionHandler;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -100,7 +101,7 @@ public class SquiggleHighlighter extends DefaultHighlighter.DefaultHighlightPain
 
                 return r;
             } catch (BadLocationException e) {
-                e.printStackTrace(System.err); // can't render
+                MyExceptionHandler.handle(e); // can't render
             }
         }
 

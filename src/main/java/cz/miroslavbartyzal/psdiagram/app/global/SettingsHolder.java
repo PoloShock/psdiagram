@@ -7,6 +7,14 @@ package cz.miroslavbartyzal.psdiagram.app.global;
 import cz.miroslavbartyzal.psdiagram.app.Main;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.AbstractLayout;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.EnumLayout;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.GraphicsEnvironment;
@@ -17,14 +25,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.ResourceBundle;
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Marshaller;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlType;
 
 /**
  * <p>
@@ -62,7 +62,7 @@ public final class SettingsHolder
                     "/fonts/PSDSpecialSymbols.ttf"));
             ge.registerFont(font);
         } catch (IOException | FontFormatException ex) {
-            ex.printStackTrace(System.err);
+            MyExceptionHandler.handle(ex);
         }
 
         JAXBContext context = null;
@@ -72,7 +72,7 @@ public final class SettingsHolder
             marshaller = context.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         } catch (JAXBException ex) {
-            ex.printStackTrace(System.err);
+            MyExceptionHandler.handle(ex);
         }
         jAXBcontext = context;
         jAXBmarshaller = marshaller;
@@ -85,7 +85,7 @@ public final class SettingsHolder
                     stngs.actualFlowchartFile = null;
                 }
             } catch (JAXBException ex) {
-                ex.printStackTrace(System.err);
+                MyExceptionHandler.handle(ex);
                 stngs = new Settings();
                 settingsAreNew = true;
             }
@@ -104,7 +104,7 @@ public final class SettingsHolder
             myFile = new File(
                     Main.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
         } catch (URISyntaxException ex) {
-            ex.printStackTrace(System.err);
+            MyExceptionHandler.handle(ex);
         }
         MY_FILE = myFile;
         MY_WORKING_DIR = Paths.get("").toAbsolutePath().toFile();
@@ -124,11 +124,11 @@ public final class SettingsHolder
      * systému přítomen font Consolas, je použit ten, jinak je použit font
      * LiberationMono-Regular, který je přibalen v této aplikaci.
      */
-    public static final Font CODEFONT = getMyCodeFont(13f);
+    public static final Font CODEFONT = getCodeFont(13f);
     /**
      * Konstanta udržuje font, používaný pro text segmentů vývojového diagramu.
      */
-    public static final Font SMALL_CODEFONT = getMyCodeFont(10f);
+    public static final Font SMALL_CODEFONT = getCodeFont(10f);
     /**
      * Tento font se používá pro popisky pod grafickou reprezentací symbolu ve
      * formuláři pro nastavení funkce symbolu.
@@ -141,12 +141,7 @@ public final class SettingsHolder
     public static final FontRenderContext FONTRENDERCONTEXT = new FontRenderContext(null,
             RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB,
             RenderingHints.VALUE_FRACTIONALMETRICS_DEFAULT);
-    /**
-     * Konstanta udržuje URL serveru, kterého se bude aplikace dotazovat na aktuální
-     * čas.
-     */
-    public static final String TIMESERVER = "http://www.seznam.cz";
-//    public static final String PSDIAGRAM_SERVER = "http://www.psdiagram.cz";
+
     public static final String PSDIAGRAM_SERVER = ResourceBundle.getBundle("application").getString(
             "psdiagramWebUrl");
     public static final String PSDIAGRAM_VERSION = ResourceBundle.getBundle("application").getString(
@@ -177,11 +172,11 @@ public final class SettingsHolder
         try {
             jAXBmarshaller.marshal(settings, settingsFile);
         } catch (JAXBException ex) {
-            ex.printStackTrace(System.err);
+            MyExceptionHandler.handle(ex);
         }
     }
 
-    private static Font getMyCodeFont(float size)
+    private static Font getCodeFont(float size)
     {
         String[] fontFamilies = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
         for (String fontFamily : fontFamilies) {
@@ -197,8 +192,7 @@ public final class SettingsHolder
     {
         try {
             //Returned font is of pt size 1
-            Font font = Font.createFont(Font.TRUETYPE_FONT, Settings.class.getResourceAsStream(
-                    "/fonts/" + fontName));
+            Font font = Font.createFont(Font.TRUETYPE_FONT, Settings.class.getResourceAsStream("/fonts/" + fontName));
             //Derive and return a desired pt version:
             //Need to use float otherwise
             //it would be interpreted as style

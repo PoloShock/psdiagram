@@ -16,8 +16,10 @@ import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.LoopEnd;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.StartEnd;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
 import cz.miroslavbartyzal.psdiagram.app.global.GlobalFunctions;
+import cz.miroslavbartyzal.psdiagram.app.global.MyExceptionHandler;
 import cz.miroslavbartyzal.psdiagram.app.gui.MainWindow;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.AbstractSymbolFunctionForm;
+import jakarta.xml.bind.JAXBException;
 import java.awt.Component;
 import java.awt.Graphics2D;
 import java.awt.event.*;
@@ -34,7 +36,6 @@ import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
-import jakarta.xml.bind.JAXBException;
 
 /**
  * <p>
@@ -537,7 +538,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
                                             element.getSymbol().hasPairSymbol() && element.getSymbol() instanceof Comment);
                                 }
                             } catch (JAXBException ex) {
-                                ex.printStackTrace(System.err);
+                                MyExceptionHandler.handle(ex);
                                 elementsToPaste = null;
                                 break;
                             }
@@ -561,7 +562,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
                                 elementsToAdd.add(newElement);
                             }
                         } catch (JAXBException ex) {
-                            ex.printStackTrace(System.err);
+                            MyExceptionHandler.handle(ex);
                             break;
                         }
 

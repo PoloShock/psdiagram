@@ -61,12 +61,15 @@ znaků zadaného textového řetězce.</value>
                             <shapeUpColor>255,255,255,255</shapeUpColor>
                             <shapeDownColor>230,230,230,255</shapeDownColor>
                             <hasShadow>true</hasShadow>
+                            <customValue>"Zadejte jakýkoliv 
+text" →</customValue>
                             <defaultValue>"Zadejte jakýkoliv text" →</defaultValue>
                             <commands>
 <entry key="value">"Zadejte jakýkoliv text"</entry>
                             </commands>
                             <commandsValid>true</commandsValid>
-                            <value>"Zadejte jakýkoliv text" →</value>
+                            <value>"Zadejte jakýkoliv 
+text" →</value>
                         </io>
                     </element>
                     <element xsi:type="layoutElement" xmlID="4" parentSegment="13">
@@ -90,16 +93,22 @@ znaků zadaného textového řetězce.</value>
                     <borderColor>0,0,0,255</borderColor>
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
-                    <customValue>je-li 'text' číslo, 
+                    <customValue>Validace vstupu:
+
+
+je-li 'text' číslo, 
 nebo je 'text' pole,
 ...opakuj</customValue>
                     <commandsValid>true</commandsValid>
-                    <value>je-li 'text' číslo, 
+                    <value>Validace vstupu:
+
+
+je-li 'text' číslo, 
 nebo je 'text' pole,
 ...opakuj</value>
                     <alwaysLeftAlign>false</alwaysLeftAlign>
-                    <relativeX>100.0</relativeX>
-                    <relativeY>47.0</relativeY>
+                    <relativeX>102.0</relativeX>
+                    <relativeY>61.0</relativeY>
                     <paired>true</paired>
                 </comment>
             </element>
@@ -193,14 +202,15 @@ pracovat jako s polem znaků.</value>
                     <shapeUpColor>255,255,255,255</shapeUpColor>
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
-                    <customValue>"Převrácený text: "
- + textP →</customValue>
+                    <customValue>"Obrácená verze textu: " 
++ textP →</customValue>
                     <defaultValue>"Obrácená verze textu: " + textP →</defaultValue>
                     <commands>
                         <entry key="value">"Obrácená verze textu: " + textP</entry>
                     </commands>
                     <commandsValid>true</commandsValid>
-                    <value>"Obrácená verze textu: " + textP →</value>
+                    <value>"Obrácená verze textu: " 
++ textP →</value>
                 </io>
             </element>
             <element xsi:type="layoutElement" xmlID="2" parentSegment="0">

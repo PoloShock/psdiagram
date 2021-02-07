@@ -8,6 +8,7 @@ import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.Win32Exception;
 import com.sun.jna.platform.win32.WinReg;
 import cz.miroslavbartyzal.psdiagram.app.global.GlobalFunctions;
+import cz.miroslavbartyzal.psdiagram.app.global.MyExceptionHandler;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditManager;
 import java.awt.event.ComponentAdapter;
@@ -745,7 +746,7 @@ public final class JFrameSettings extends javax.swing.JFrame
                 try {
                     Advapi32Util.registryDeleteKey(WinReg.HKEY_CURRENT_USER, extensionKey);
                 } catch (Win32Exception ex) {
-                    ex.printStackTrace(System.err);
+                    MyExceptionHandler.handle(ex);
                 }
             }
             // apparently keys with key inside can't be removed directly
@@ -754,7 +755,7 @@ public final class JFrameSettings extends javax.swing.JFrame
                     try {
                         Advapi32Util.registryDeleteKey(WinReg.HKEY_CURRENT_USER, appKeyToRemove);
                     } catch (Win32Exception ex) {
-                        ex.printStackTrace(System.err);
+                        MyExceptionHandler.handle(ex);
                     }
                 }
             }

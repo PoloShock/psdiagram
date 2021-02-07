@@ -4,6 +4,7 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.update;
 
+import cz.miroslavbartyzal.psdiagram.app.global.MyExceptionHandler;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
@@ -25,7 +26,7 @@ public class JAXBUpdateContext
                 jAXBContext = JAXBContext.newInstance(ChangesCondenser.class);
 //                jAXBContext = JAXBContextFactory.createContext(new Class[]{ChangesCondenser.class}, null);
             } catch (JAXBException ex) {
-                ex.printStackTrace(System.err);
+                MyExceptionHandler.handle(ex);
             }
         }
         return jAXBContext;
@@ -36,7 +37,7 @@ public class JAXBUpdateContext
         try {
             return getJAXBContext().createMarshaller();
         } catch (JAXBException ex) {
-            ex.printStackTrace(System.err);
+            MyExceptionHandler.handle(ex);
             return null;
         }
     }
@@ -46,7 +47,7 @@ public class JAXBUpdateContext
         try {
             return getJAXBContext().createUnmarshaller();
         } catch (JAXBException ex) {
-            ex.printStackTrace(System.err);
+            MyExceptionHandler.handle(ex);
             return null;
         }
     }

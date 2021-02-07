@@ -5,8 +5,10 @@
 package cz.miroslavbartyzal.psdiagram.app.gui.managers;
 
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.Layout;
+import cz.miroslavbartyzal.psdiagram.app.global.MyExceptionHandler;
 import cz.miroslavbartyzal.psdiagram.app.gui.MainWindow;
 import cz.miroslavbartyzal.psdiagram.app.gui.managers.undoableEdits.UniversalEdit;
+import jakarta.xml.bind.JAXBException;
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 import javax.swing.JButton;
@@ -15,7 +17,6 @@ import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEdit;
-import jakarta.xml.bind.JAXBException;
 
 /**
  * Tato třída je vrchním správcem Undo/Redo funkcionality aplikace.<br />
@@ -64,7 +65,7 @@ public final class FlowchartEditUndoManager extends UndoManager
         try {
             MainWindow.marshal(layout.getFlowchart(), lastSeenFlowchart, false);
         } catch (JAXBException ex) {
-            ex.printStackTrace(System.err);
+            MyExceptionHandler.handle(ex);
         }
     }
 
@@ -76,7 +77,7 @@ public final class FlowchartEditUndoManager extends UndoManager
             try {
                 MainWindow.marshal(layout.getFlowchart(), currentFlowchart, false);
             } catch (JAXBException ex) {
-                ex.printStackTrace(System.err);
+                MyExceptionHandler.handle(ex);
             }
             if (!Arrays.equals(lastSeenFlowchart.toByteArray(), currentFlowchart.toByteArray())) {
                 int[] currentFocusedPath = getFocusedPath(layout);
@@ -118,7 +119,7 @@ public final class FlowchartEditUndoManager extends UndoManager
             try {
                 MainWindow.marshal(layout.getFlowchart(), currentFlowchart, false);
             } catch (JAXBException ex) {
-                ex.printStackTrace(System.err);
+                MyExceptionHandler.handle(ex);
             }
             if (!Arrays.equals(undoFlowchart.toByteArray(), currentFlowchart.toByteArray())) {
                 int[] undoFocusedPath = uedit.getBeforeFocusedPath();

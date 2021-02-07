@@ -118,16 +118,16 @@ rovnice" →</value>
                             <hasShadow>true</hasShadow>
                             <customValue>Pokud je a = 0, nejedná
 se o rovnici kvadratickou,
-ale lineární, vypočtěte
+ale lineární. Vypočteme
 kořen lineární rovnice
-a skončete.
+a skončíme.
 </customValue>
                             <commandsValid>true</commandsValid>
                             <value>Pokud je a = 0, nejedná
 se o rovnici kvadratickou,
-ale lineární, vypočtěte
+ale lineární. Vypočteme
 kořen lineární rovnice
-a skončete.
+a skončíme.
 </value>
                             <alwaysLeftAlign>false</alwaysLeftAlign>
                             <relativeX>-75.0</relativeX>

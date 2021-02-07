@@ -17,8 +17,8 @@ přirozeném čísle separaci
 a součet jednotlivých číslic
 od poslední pozice až k první.</value>
                     <alwaysLeftAlign>false</alwaysLeftAlign>
-                    <relativeX>141.0</relativeX>
-                    <relativeY>51.0</relativeY>
+                    <relativeX>75.0</relativeX>
+                    <relativeY>29.0</relativeY>
                     <paired>true</paired>
                 </comment>
             </element>
@@ -99,18 +99,24 @@ nezáporné
                     <borderColor>0,0,0,255</borderColor>
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
-                    <customValue>není-li 'a' číslo, 
+                    <customValue>Validace vstupu:
+
+
+není-li 'a' číslo, 
 nebo je 'a' menší než nula,
 nebo 'a' není celé číslo,
 ...opakuj</customValue>
                     <commandsValid>true</commandsValid>
-                    <value>není-li 'a' číslo, 
+                    <value>Validace vstupu:
+
+
+není-li 'a' číslo, 
 nebo je 'a' menší než nula,
 nebo 'a' není celé číslo,
 ...opakuj</value>
                     <alwaysLeftAlign>false</alwaysLeftAlign>
-                    <relativeX>97.0</relativeX>
-                    <relativeY>46.0</relativeY>
+                    <relativeX>89.0</relativeX>
+                    <relativeY>62.0</relativeY>
                     <paired>true</paired>
                 </comment>
             </element>
@@ -154,13 +160,13 @@ nebo 'a' není celé číslo,
                     <shapeUpColor>255,255,255,255</shapeUpColor>
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
-                    <defaultValue>cs ← 0</defaultValue>
+                    <defaultValue>vysledek ← 0</defaultValue>
                     <commands>
-                        <entry key="var">cs</entry>
+                        <entry key="var">vysledek</entry>
                         <entry key="value">0</entry>
                     </commands>
                     <commandsValid>true</commandsValid>
-                    <value>cs ← 0</value>
+                    <value>vysledek ← 0</value>
                 </process>
             </element>
             <element xsi:type="layoutElement" xmlID="6" parentSegment="0">
@@ -175,6 +181,22 @@ nebo 'a' není celé číslo,
                 </loopStart>
                 <segment xsi:nil="true"/>
                 <segment xsi:type="layoutSegment" xmlID="7" parentElement="6">
+                    <element xsi:type="layoutElement" xmlID="21" parentSegment="7">
+                        <comment>
+                            <borderColor>0,0,0,255</borderColor>
+                            <shapeDownColor>230,230,230,255</shapeDownColor>
+                            <hasShadow>true</hasShadow>
+                            <customValue>Zbytek po celočíselném 
+dělení číslem 10</customValue>
+                            <commandsValid>true</commandsValid>
+                            <value>Zbytek po celočíselném 
+dělení číslem 10</value>
+                            <alwaysLeftAlign>false</alwaysLeftAlign>
+                            <relativeX>58.0</relativeX>
+                            <relativeY>0.0</relativeY>
+                            <paired>true</paired>
+                        </comment>
+                    </element>
                     <element xsi:type="layoutElement" xmlID="8" parentSegment="7">
                         <process>
                             <borderColor>0,0,0,255</borderColor>
@@ -196,13 +218,13 @@ nebo 'a' není celé číslo,
                             <shapeUpColor>255,255,255,255</shapeUpColor>
                             <shapeDownColor>230,230,230,255</shapeDownColor>
                             <hasShadow>true</hasShadow>
-                            <defaultValue>cs ← cs + c</defaultValue>
+                            <defaultValue>vysledek ← vysledek + c</defaultValue>
                             <commands>
-<entry key="var">cs</entry>
-<entry key="value">cs + c</entry>
+<entry key="var">vysledek</entry>
+<entry key="value">vysledek + c</entry>
                             </commands>
                             <commandsValid>true</commandsValid>
-                            <value>cs ← cs + c</value>
+                            <value>vysledek ← vysledek + c</value>
                         </process>
                     </element>
                     <element xsi:type="layoutElement" xmlID="20" parentSegment="7">
@@ -214,7 +236,7 @@ nebo 'a' není celé číslo,
                             <commandsValid>true</commandsValid>
                             <value>Celočíselné dělení</value>
                             <alwaysLeftAlign>false</alwaysLeftAlign>
-                            <relativeX>57.0</relativeX>
+                            <relativeX>61.0</relativeX>
                             <relativeY>-2.0</relativeY>
                             <paired>true</paired>
                         </comment>
@@ -257,15 +279,17 @@ nebo 'a' není celé číslo,
                     <shapeUpColor>255,255,255,255</shapeUpColor>
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
-                    <customValue>"Součet jednotlivých číslic 
-čísla " + n + " je: " + cs →</customValue>
-                    <defaultValue>"Součet jednotlivých číslic čísla " + n + " je: " + cs →</defaultValue>
+                    <customValue>"Součet jednotlivých 
+číslic čísla " + n 
++ " je: " + vysledek →</customValue>
+                    <defaultValue>"Součet jednotlivých číslic čísla " + n + " je: " + vysledek →</defaultValue>
                     <commands>
-                        <entry key="value">"Součet jednotlivých číslic čísla " + n + " je: " + cs</entry>
+                        <entry key="value">"Součet jednotlivých číslic čísla " + n + " je: " + vysledek</entry>
                     </commands>
                     <commandsValid>true</commandsValid>
-                    <value>"Součet jednotlivých číslic 
-čísla " + n + " je: " + cs →</value>
+                    <value>"Součet jednotlivých 
+číslic čísla " + n 
++ " je: " + vysledek →</value>
                 </io>
             </element>
             <element xsi:type="layoutElement" xmlID="2" parentSegment="0">

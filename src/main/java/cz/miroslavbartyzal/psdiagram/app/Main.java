@@ -4,17 +4,16 @@
  */
 package cz.miroslavbartyzal.psdiagram.app;
 
+import cz.miroslavbartyzal.psdiagram.app.global.MyExceptionHandler;
 import cz.miroslavbartyzal.psdiagram.app.global.PrintStreamWithTimestamp;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import cz.miroslavbartyzal.psdiagram.app.gui.MainWindow;
 import java.awt.Color;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
@@ -40,7 +39,7 @@ public final class Main
         if (SettingsHolder.IS_DEPLOYMENT_MODE) {
             initFileLogging();
         }
-        
+
         initLookAndFeel();
 
         ToolTipManager.sharedInstance().setDismissDelay(12000); // nastavení tooltipů tak, aby zůstali 12 sekund
@@ -52,25 +51,21 @@ public final class Main
     private static void initFileLogging()
     {
         setupGlobalExceptionHandling();
-        
-        File logFile = Paths.get(System.getProperty("user.home"), ".psdiagram", "psdiagram.log").toFile();
+
+        Path logFile = Paths.get(System.getProperty("user.home"), ".psdiagram", "psdiagram.log");
         try {
-            PrintStream outputFileStream = new PrintStreamWithTimestamp(
-                    new BufferedOutputStream(new FileOutputStream(logFile, true)),
+            PrintStream outputFileStream = new PrintStreamWithTimestamp(Files.newOutputStream(logFile),
                     true, StandardCharsets.UTF_8.toString());
             System.setOut(outputFileStream);
             System.setErr(outputFileStream);
-        } catch (FileNotFoundException | UnsupportedEncodingException ex) {
-            ex.printStackTrace(System.err);
+        } catch (IOException ex) {
+            MyExceptionHandler.handle(ex);
         }
     }
 
     private static void setupGlobalExceptionHandling()
     {
-        Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) -> {
-            System.err.println("Exception in thread \"" + t.getName() + "\" ");
-            e.printStackTrace(System.err);
-        });
+        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler());
     }
 
     private static void initLookAndFeel()
@@ -91,7 +86,7 @@ public final class Main
                 }
             }
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            ex.printStackTrace(System.err);
+            MyExceptionHandler.handle(ex);
         }
     }
 

@@ -101,19 +101,24 @@ nezáporné
                     <borderColor>0,0,0,255</borderColor>
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
-                    <customValue>není-li 'a' číslo, 
+                    <customValue>Validace vstupu:
+
+
+není-li 'a' číslo, 
 nebo je 'a' menší než nula,
 nebo 'a' není celé číslo,
 ...opakuj</customValue>
                     <commandsValid>true</commandsValid>
-                    <value>není-li 'a' číslo, 
+                    <value>Validace vstupu:
+
+
+není-li 'a' číslo, 
 nebo je 'a' menší než nula,
 nebo 'a' není celé číslo,
 ...opakuj</value>
-                    <relativePointToSymbol x="60.0" y="43.0"/>
                     <alwaysLeftAlign>false</alwaysLeftAlign>
-                    <relativeX>95.0</relativeX>
-                    <relativeY>43.0</relativeY>
+                    <relativeX>75.0</relativeX>
+                    <relativeY>67.0</relativeY>
                     <paired>true</paired>
                 </comment>
             </element>

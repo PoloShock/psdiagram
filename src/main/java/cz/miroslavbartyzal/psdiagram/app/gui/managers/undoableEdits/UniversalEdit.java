@@ -9,15 +9,16 @@ import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutElement;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutSegment;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Joint;
 import cz.miroslavbartyzal.psdiagram.app.global.GlobalFunctions;
+import cz.miroslavbartyzal.psdiagram.app.global.MyExceptionHandler;
 import cz.miroslavbartyzal.psdiagram.app.gui.MainWindow;
 import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditManager;
 import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditUndoManager;
+import jakarta.xml.bind.JAXBException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
-import jakarta.xml.bind.JAXBException;
 
 /**
  * <p>
@@ -204,7 +205,7 @@ public final class UniversalEdit extends AbstractUndoableEdit
             futureFlowchart = GlobalFunctions.unsafeCast(
                     MainWindow.unmarshal(bais));
         } catch (JAXBException | IndexOutOfBoundsException ex) {
-            ex.printStackTrace(System.err);
+            MyExceptionHandler.handle(ex);
             flowchartEditManager.resetUndoManager();
         }
         return futureFlowchart;

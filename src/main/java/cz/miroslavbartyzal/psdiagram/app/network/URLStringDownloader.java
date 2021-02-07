@@ -4,6 +4,7 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.network;
 
+import cz.miroslavbartyzal.psdiagram.app.global.MyExceptionHandler;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -67,11 +68,11 @@ public class URLStringDownloader extends SwingWorker<String, Void>
         try {
             url = HTTPParser.urlConcatenation(serverURL, parameters);
         } catch (UnsupportedEncodingException ex) {
-            ex.printStackTrace(System.err);
+            MyExceptionHandler.handle(ex);
             super.firePropertyChange("error", null, "chyba: špatné kódování URL");
             return null;
         } catch (MalformedURLException ex) {
-            ex.printStackTrace(System.err);
+            MyExceptionHandler.handle(ex);
             super.firePropertyChange("error", null, "chyba: špatný formát URL");
             return null;
         }
@@ -81,7 +82,7 @@ public class URLStringDownloader extends SwingWorker<String, Void>
         try {
             conn = url.openConnection();
         } catch (IOException ex) {
-            ex.printStackTrace(System.err);
+            MyExceptionHandler.handle(ex);
             super.firePropertyChange("error", null, "chyba při navazování spojení");
             return null;
         }
@@ -98,7 +99,7 @@ public class URLStringDownloader extends SwingWorker<String, Void>
             if (ex instanceof java.net.ConnectException) {
                 System.err.println("Nepodařilo se navázat spojení s " + url + ".");
             } else {
-                ex.printStackTrace(System.err);
+                MyExceptionHandler.handle(ex);
             }
             super.firePropertyChange("error", null, "chyba při otevírání vstupního streamu");
             return null;
@@ -118,14 +119,14 @@ public class URLStringDownloader extends SwingWorker<String, Void>
                 sb.append(line);
             }
         } catch (IOException ex) {
-            ex.printStackTrace(System.err);
+            MyExceptionHandler.handle(ex);
             super.firePropertyChange("error", null, "chyba při stahování informací");
             return null;
         }
         try {
             rd.close();
         } catch (IOException ex) {
-            ex.printStackTrace(System.err);
+            MyExceptionHandler.handle(ex);
             super.firePropertyChange("error", null, "chyba při uzavírání streamu");
             return null;
         }
@@ -142,7 +143,7 @@ public class URLStringDownloader extends SwingWorker<String, Void>
                 try {
                     downloadFinishedListener.onDownloadFinished(URLStringDownloader.super.get(), charset);
                 } catch (InterruptedException | ExecutionException ex) {
-                    ex.printStackTrace(System.err);
+                    MyExceptionHandler.handle(ex);
                     URLStringDownloader.super.firePropertyChange("error", null, "interní chyba");
                     downloadFinishedListener.onDownloadFinished(null, charset);
                 }

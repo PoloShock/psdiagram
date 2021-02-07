@@ -4,7 +4,7 @@
 
     <groupId>cz.miroslavbartyzal</groupId>
     <artifactId>psdiagram</artifactId>
-    <version>1.4.4-SNAPSHOT</version>
+    <version>1.4.4</version>
     <packaging>jar</packaging>
     <name>PS Diagram</name>
     <url>http://www.psdiagram.cz</url>
@@ -23,8 +23,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <!--<psdiagram.web.url>http://www.psdiagram.cz</psdiagram.web.url>-->
-        <psdiagram.web.url>http://localhost</psdiagram.web.url>
+        <psdiagram.web.url>http://www.psdiagram.cz</psdiagram.web.url>
+        <!--<psdiagram.web.url>http://localhost</psdiagram.web.url>-->
 
         <build.profile>development</build.profile>
     </properties>
@@ -136,13 +136,13 @@
                                     <changelogurl>http://www.psdiagram.cz/changelog</changelogurl>
                                     <releaseurl></releaseurl>
 
-                                    <headline>PS Diagram je nyní opensource!</headline>
+                                    <headline>PS Diagram na 4K rozlišení</headline>
                                     <description>
                                         <![CDATA[
                                         <html>
-                                            <p align="justify">Nastal velký milník v historii PS Diagramu. PS Diagram je od teď opensource! :) Vedle odkazu na Facebook přibyl i odkaz na GitHub, kde naleznete jeho zdrojové kódy.</p>
-                                            <p align="justify">Odteď, kdokoliv budete chtít něco v aplikaci vylepšit, můžete tak učinit přímo, vytvořit pull request a já vaše změny po shlédnutí zamerguji. Dávám tak prostor i studentům programování, kteří by se chtěli na PSD podílet např. v rámci své závěrečné/bakalářské/diplomové práce. Jeden takový student se již ohlásil. :)</p>
-                                            <p align="justify">Změny oproti starší verzi aplikace jsou k vidění níže.</p>
+                                            <p align="justify">Protože mi nejeden z vás dal zpětnou vazbu o tom, že na 4K rozlišení PS Diagram nevypadá zrovna nejlépe, pořádně jsem si na tento neduh posvítil a vypadá to, že už by všechno mělo vypadat tak, jak by mělo. Stačí provést aktualizaci.</p>
+                                            <p align="justify">Také jsem se pustil do revize vzorových algoritmů a některá místa snad o malinko zpřehlednil komentáři. Algoritmus 'Obrácení čísla' si navíc vysloužil optimalizaci - děkuji Petrovi V. za trefný námět. :)</p>
+                                            <p align="justify">PS: umístil jsem na web uživatelskou příručku</p>
                                         </html>
                                         ]]>
                                     </description>
@@ -150,17 +150,18 @@
                                     <features>
                                     </features>
                                     <enhancements>
-                                        <enhancement>přidáno logování do souboru [HOME]/.psdiagram/psdiagram.log</enhancement>
+                                        <enhancement>revidována knihovna algoritmů</enhancement>
                                     </enhancements>
                                     <extensions>
                                     </extensions>
                                     <changes>
-                                        <change>starší verze aplikace nemají od teď omezenou platnost - aktualizace není povinná</change>
                                     </changes>
                                     <fixes>
+                                        <fix>optimalizace velikosti aplikace na monitorech s vysokým rozlišením (např. 4K)</fix>
+                                        <fix>občas v logovacím souboru nebyl zapsán čas záznamu</fix>
                                     </fixes>
                                     <others>
-                                        <other>PS Diagram je nyní na GitHub-u a je opensource</other>
+                                        <other>aktualizace Java JRE na verzi 11</other>
                                     </others>
                                 </configuration>
                             </execution>

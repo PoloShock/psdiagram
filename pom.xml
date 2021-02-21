@@ -4,7 +4,7 @@
 
     <groupId>cz.miroslavbartyzal</groupId>
     <artifactId>psdiagram</artifactId>
-    <version>1.4.5-SNAPSHOT</version>
+    <version>1.4.4.1</version>
     <packaging>jar</packaging>
     <name>PS Diagram</name>
     <url>http://www.psdiagram.cz</url>
@@ -136,13 +136,11 @@
                                     <changelogurl>http://www.psdiagram.cz/changelog</changelogurl>
                                     <releaseurl></releaseurl>
 
-                                    <headline>PS Diagram na 4K rozlišení</headline>
+                                    <headline>Drobné opravy nejen pro 4K</headline>
                                     <description>
                                         <![CDATA[
                                         <html>
-                                            <p align="justify">Protože mi nejeden z vás dal zpětnou vazbu o tom, že na 4K rozlišení PS Diagram nevypadá zrovna nejlépe, pořádně jsem si na tento neduh posvítil a vypadá to, že už by všechno mělo vypadat tak, jak by mělo. Stačí provést aktualizaci.</p>
-                                            <p align="justify">Také jsem se pustil do revize vzorových algoritmů a některá místa snad o malinko zpřehlednil komentáři. Algoritmus 'Obrácení čísla' si navíc vysloužil optimalizaci - děkuji Petrovi V. za trefný námět. :)</p>
-                                            <p align="justify">PS: umístil jsem na web uživatelskou příručku</p>
+                                            <p align="justify">Na základě zpětné vazby se ukázalo, že na 4K rozlišení občas pozlobí vyskakovací dialog, kterému se nevykreslí spodní polovina. A tak přináším opravu. Snad zabere. :)</p>
                                         </html>
                                         ]]>
                                     </description>
@@ -150,18 +148,17 @@
                                     <features>
                                     </features>
                                     <enhancements>
-                                        <enhancement>revidována knihovna algoritmů</enhancement>
                                     </enhancements>
                                     <extensions>
                                     </extensions>
                                     <changes>
                                     </changes>
                                     <fixes>
-                                        <fix>optimalizace velikosti aplikace na monitorech s vysokým rozlišením (např. 4K)</fix>
-                                        <fix>občas v logovacím souboru nebyl zapsán čas záznamu</fix>
+                                        <fix>vyskakovací dialogy byly na některých 4K systémech vykresleny jen zčásti</fix>
+                                        <fix>řazení prvků pole ve výpisu proměnných již korektně umisťuje 10. prvek pole pod 9., nikoliv pod 1.</fix>
+                                        <fix>zodolněn proces aktualizace tak, aby nemohlo v případě chyby dojít k poškození stávající verze PS Diagramu</fix>
                                     </fixes>
                                     <others>
-                                        <other>aktualizace Java JRE na verzi 11</other>
                                     </others>
                                 </configuration>
                             </execution>

@@ -77,8 +77,7 @@ public final class Switch extends AbstractSymbolFunctionForm
             }
         }
 
-        ((AbstractDocument) jTextFieldConditionVar.getDocument()).setDocumentFilter(
-                new VariableFilter(jTextFieldConditionVar, validationListener,
+        ((AbstractDocument) jTextFieldConditionVar.getDocument()).setDocumentFilter(new VariableFilter(jTextFieldConditionVar, validationListener,
                         maxBalloonSizeCallback));
         AbstractSymbolFunctionForm.enhanceWithUndoRedoCapability(jTextFieldConditionVar);
         addDocumentListeners();
@@ -310,8 +309,7 @@ public final class Switch extends AbstractSymbolFunctionForm
                 jTextFieldSegments[i].setSize(jTextFieldSegments[i].getPreferredSize());
                 jTextFieldSegments[i].setAlignmentX(0);
                 jTextFieldSegments[i].setFont(SettingsHolder.CODEFONT);
-                ((AbstractDocument) jTextFieldSegments[i].getDocument()).setDocumentFilter(
-                        new ConstantFilter(jTextFieldSegments[i], validationListener,
+                ((AbstractDocument) jTextFieldSegments[i].getDocument()).setDocumentFilter(new ConstantFilter(jTextFieldSegments[i], validationListener,
                                 maxBalloonSizeCallback));
                 AbstractSymbolFunctionForm.enhanceWithUndoRedoCapability(jTextFieldSegments[i]);
                 //jTextFieldSegments[i].setBounds(0, minHeight, minWidth, jTextFieldSegments[i].getSize().height);

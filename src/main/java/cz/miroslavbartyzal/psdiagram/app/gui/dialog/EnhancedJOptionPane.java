@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.miroslavbartyzal.psdiagram.app.gui;
+package cz.miroslavbartyzal.psdiagram.app.gui.dialog;
 
 import java.awt.Component;
 import javax.swing.JDialog;
@@ -37,6 +37,7 @@ public class EnhancedJOptionPane extends JOptionPane
         JDialog dialog = pane.createDialog(parentComponent, title);
 
         pane.selectInitialValue();
+        dialog.pack();
         dialog.setVisible(true);
         dialog.dispose();
 

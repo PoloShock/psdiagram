@@ -46,22 +46,4 @@ public final class NumericValueFilter extends AbstractFilter
         return AbstractFilter.parseInput(input, RULE);
     }
 
-//    /**
-//     * Pokusí se daný textový řeťezec porovnat vůči tomuto filtru.
-//     * <p/>
-//     * @param input text, který chceme prověřit
-//     * @return
-//     */
-//    public static ValidityCheckResult isValid(String input)
-//    {
-//        if (input.length() == 0) {
-//            return ValidityCheckResult.createValidRes(false);
-//        }
-//
-//        if (input.contains("\"")) { //|| text.matches("^\\[+.*")) {
-//            return ValidityCheckResult.createInvalidRes("Řetězcové hodnoty nejsou povoleny.");
-//        } else {
-//            return ValueFilter.isValid(input);
-//        }
-//    }
 }

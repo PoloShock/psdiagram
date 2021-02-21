@@ -33,6 +33,7 @@ import cz.miroslavbartyzal.psdiagram.app.global.MyExceptionHandler;
 import cz.miroslavbartyzal.psdiagram.app.global.RegexFunctions;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.MaxBalloonSizeCallback;
+import cz.miroslavbartyzal.psdiagram.app.gui.dialog.MyJOptionPane;
 import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartDebugManager;
 import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditManager;
 import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditUndoManager;
@@ -43,6 +44,9 @@ import cz.miroslavbartyzal.psdiagram.app.persistence.collector.FlowchartCollecto
 import cz.miroslavbartyzal.psdiagram.app.persistence.recovery.FlowchartCrashRecovery;
 import cz.miroslavbartyzal.psdiagram.app.persistence.recovery.FlowchartRecovery;
 import cz.miroslavbartyzal.psdiagram.app.update.Updater;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
@@ -97,9 +101,6 @@ import javax.swing.Timer;
 import javax.swing.TransferHandler;
 import javax.swing.TransferHandler.TransferSupport;
 import javax.swing.event.MouseInputAdapter;
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Marshaller;
 import org.freehep.graphics2d.VectorGraphics;
 import org.freehep.graphicsio.pdf.PDFGraphics2D;
 
@@ -1315,7 +1316,7 @@ public final class MainWindow extends javax.swing.JFrame
 //                writer = PdfWriter.getInstance(document, new FileOutputStream(file));
 //            } catch (DocumentException | FileNotFoundException ex) {
 //                MyExceptionHandler.handle(ex);
-//                JOptionPane.showMessageDialog(this, "Při vytváření PDF souboru nastala chyba!", "Chyba", JOptionPane.ERROR_MESSAGE);
+//                MyJOptionPane.showMessageDialog(this, "Při vytváření PDF souboru nastala chyba!", "Chyba", JOptionPane.ERROR_MESSAGE);
 //                return;
 //            }
 //            document.open();
@@ -1336,7 +1337,7 @@ public final class MainWindow extends javax.swing.JFrame
                         (int) layout.getHeight()));
             } catch (FileNotFoundException ex) {
                 MyExceptionHandler.handle(ex);
-                JOptionPane.showMessageDialog(this, "Při vytváření PDF souboru nastala chyba!",
+                MyJOptionPane.showMessageDialog(this, "Při vytváření PDF souboru nastala chyba!",
                         "Chyba", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -1362,7 +1363,7 @@ public final class MainWindow extends javax.swing.JFrame
             int prevFlowchartPadding = layout.getFlowchartPadding();
             layout.setFlowchartPadding(SettingsHolder.settings.getExportFlowchartPadding());
 
-            String extension = file.getName().substring(file.getName().lastIndexOf(".") + 1,
+            String extension = file.getName().substring(file.getName().lastIndexOf('.') + 1,
                     file.getName().length());
             BufferedImage img;
             int width = (int) (layout.getWidth() * jPnlDiagram.getScale());
@@ -1398,12 +1399,12 @@ public final class MainWindow extends javax.swing.JFrame
 
             try {
                 if (!ImageIO.write(img, extension, file)) {
-                    JOptionPane.showMessageDialog(this, "Obrázek se nepodařilo vytvořit.", "Chyba",
+                    MyJOptionPane.showMessageDialog(this, "Obrázek se nepodařilo vytvořit.", "Chyba",
                             JOptionPane.ERROR_MESSAGE);
                 }
             } catch (IOException ex) {
                 MyExceptionHandler.handle(ex);
-                JOptionPane.showMessageDialog(this, "Při vytváření souboru obrázku nastala chyba!",
+                MyJOptionPane.showMessageDialog(this, "Při vytváření souboru obrázku nastala chyba!",
                         "Chyba", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -1436,7 +1437,7 @@ public final class MainWindow extends javax.swing.JFrame
                         3500);
             } catch (JAXBException | FileNotFoundException ex) {
                 MyExceptionHandler.handle(ex);
-                JOptionPane.showMessageDialog(this, "Při ukládání diagramu nastala chyba!",
+                MyJOptionPane.showMessageDialog(this, "Při ukládání diagramu nastala chyba!",
                         "Diagram se nepodařilo uložit", JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -1491,7 +1492,7 @@ public final class MainWindow extends javax.swing.JFrame
                         3500);
             } catch (JAXBException | FileNotFoundException ex) {
                 MyExceptionHandler.handle(ex);
-                JOptionPane.showMessageDialog(this, "Při ukládání diagramu nastala chyba!",
+                MyJOptionPane.showMessageDialog(this, "Při ukládání diagramu nastala chyba!",
                         "Diagram se nepodařilo uložit", JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -1523,7 +1524,7 @@ public final class MainWindow extends javax.swing.JFrame
             if (segment != null) {
                 for (LayoutElement element : segment) {
                     if (!element.getSymbol().areCommandsValid()) {
-                        JOptionPane.showMessageDialog(null,
+                        MyJOptionPane.showMessageDialog(null,
                                 "<html>Export diagramu do zdrojového kódu nelze provést, protože jeden nebo <br />"
                                 + "více symbolů diagramu obsahuje chybu ve své funkci (symbol označen červeně).<br /><br />"
                                 + "Odstraňte označené chyby a akci opakujte.</html>",
@@ -1567,7 +1568,7 @@ public final class MainWindow extends javax.swing.JFrame
          */
         SwingUtilities.invokeLater(() -> {
             Thread.currentThread().setUncaughtExceptionHandler(new MyExceptionHandler());
-            
+
             File flowchartToOpen = null;
             if (args.length > 0 && new File(args[0]).isFile()) {
                 flowchartToOpen = new File(args[0]);
@@ -1575,7 +1576,7 @@ public final class MainWindow extends javax.swing.JFrame
 
             new MainWindow(flowchartToOpen).setVisible(true);
             if (args.length > 0 && args[0].equals("-updated")) {
-                JOptionPane.showMessageDialog(null,
+                MyJOptionPane.showMessageDialog(null,
                         "PS Diagram byl úspěšně aktualizován na verzi " + SettingsHolder.PSDIAGRAM_VERSION + "-" + SettingsHolder.PSDIAGRAM_BUILD + ".",
                         "Aktualizace proběhla v pořádku",
                         JOptionPane.INFORMATION_MESSAGE);
@@ -1684,7 +1685,7 @@ public final class MainWindow extends javax.swing.JFrame
     }
 
     /**
-     * Nastaví editační režim aplikace do požadovaného stavu.<br />
+     * Nastaví editační režim aplikace do požadovaného stavu.
      * Tato metoda by měla být synchronizována s FlowchartEditManagerem.
      *
      * @param editMode požadovaný stav editačního režimu
@@ -1722,13 +1723,12 @@ public final class MainWindow extends javax.swing.JFrame
             for (Component component : getAllComponents(jPanelLeftSplit)) {
                 component.setEnabled(true);
             }
-            
+
             // TODO tohle je priprava na shovavani leveho panelu v rezimu nahledu
 //            jSplitPane.setLeftComponent(jPanelLeftSplit);
 //            jSplitPane.setDividerLocation(jSplitPane.getLastDividerLocation());
 //            jSplitPane.setDividerSize(new javax.swing.JSplitPane().getDividerSize());
 //            jPnlDiagram.setTranslateX(jPnlDiagram.getTranslateX() - jSplitPane.getDividerLocation());
-
             jTextAreaTextSymbol.getDocument().addDocumentListener(flowchartEditManager);
             jTextFieldTextSegment.getDocument().addDocumentListener(flowchartEditManager);
             flowchartCrashRecovery.startPolling();
@@ -1756,13 +1756,12 @@ public final class MainWindow extends javax.swing.JFrame
             for (Component component : getAllComponents(jPanelLeftSplit)) {
                 component.setEnabled(false);
             }
-            
+
             // TODO tohle je priprava na shovavani leveho panelu v rezimu nahledu
 //            jSplitPane.setLeftComponent(null);
 //            jSplitPane.setDividerLocation(0);
 //            jSplitPane.setDividerSize(0);
 //            jPnlDiagram.setTranslateX(jPnlDiagram.getTranslateX() + jSplitPane.getLastDividerLocation());
-
             flowchartCrashRecovery.stopPolling();
         }
         layout.setEditMode(editMode);
@@ -1770,7 +1769,7 @@ public final class MainWindow extends javax.swing.JFrame
     }
 
     /**
-     * Nastaví animační režim aplikace do požadovaného stavu.<br />
+     * Nastaví animační režim aplikace do požadovaného stavu.
      * Tato metoda by měla být synchronizována s FlowchartAnimationManagerem.
      *
      * @param animationMode požadovaný stav animačního režimu
@@ -2197,8 +2196,8 @@ public final class MainWindow extends javax.swing.JFrame
                     try {
                         java.util.List<File> fileList = GlobalFunctions.unsafeCast(
                                 ts.getTransferable().getTransferData(DataFlavor.javaFileListFlavor));
-                        if (fileList != null && fileList.size() == 1 && fileList.get(0).getName().endsWith(
-                                ".xml") || fileList.get(0).getName().endsWith(".psdiagram")) {
+                        if (fileList != null && fileList.size() == 1 && (fileList.get(0).getName().endsWith(
+                                ".xml") || fileList.get(0).getName().endsWith(".psdiagram"))) {
                             return true;
                         }
                     } catch (InvalidDnDOperationException ex) {
@@ -2264,7 +2263,7 @@ public final class MainWindow extends javax.swing.JFrame
                     MyExceptionHandler.handle(ex);
                 }
             }
-            
+
             if (Boolean.TRUE.equals(userWantedToSave)) {
                 saved = true;
             }
@@ -2278,7 +2277,7 @@ public final class MainWindow extends javax.swing.JFrame
                     MyExceptionHandler.handle(ex);
                 }
             }
-            
+
             return saved || userWantedToSave != null;
         } else {
             return true;
@@ -2287,7 +2286,7 @@ public final class MainWindow extends javax.swing.JFrame
 
     private Boolean askAboutSavingAndSave()
     {
-        int n = JOptionPane.showConfirmDialog(
+        int n = MyJOptionPane.showConfirmDialog(
                 this,
                 "<html>Diagram není uložen. Pokud jej neuložíte před jeho zavřením,<br />veškeré změny budou ztraceny.<br />Uložit nyní?</html>",
                 "Diagram není uložen",
@@ -2304,7 +2303,7 @@ public final class MainWindow extends javax.swing.JFrame
 
     /**
      * Načte právě vygenerovaný diagram.
-     * <p/>
+     * 
      * @param flowchart diagram, který má být načten
      * @return true, když se načtení podařilo
      */
@@ -2347,7 +2346,7 @@ public final class MainWindow extends javax.swing.JFrame
             super.setTitle(WINDOW_TITLE);
         } else {
             String fileName = SettingsHolder.settings.getActualFlowchartFile().getName();
-            super.setTitle(fileName.substring(0, fileName.lastIndexOf(".")) + " - " + WINDOW_TITLE);
+            super.setTitle(fileName.substring(0, fileName.lastIndexOf('.')) + " - " + WINDOW_TITLE);
         }
     }
 
@@ -2367,7 +2366,7 @@ public final class MainWindow extends javax.swing.JFrame
             openDiagram(flowchart, file);
         } catch (JAXBException | FileNotFoundException ex) {
             MyExceptionHandler.handle(ex);
-            JOptionPane.showMessageDialog(this, "Při načítání diagramu nastala chyba!",
+            MyJOptionPane.showMessageDialog(this, "Při načítání diagramu nastala chyba!",
                     "Diagram se nepodařilo otevřít", JOptionPane.ERROR_MESSAGE);
             if (SettingsHolder.settings.getActualFlowchartFile() != null
                     && SettingsHolder.settings.getActualFlowchartFile().equals(file)) {
@@ -2381,7 +2380,7 @@ public final class MainWindow extends javax.swing.JFrame
     private void openDiagram(Flowchart<LayoutSegment, LayoutElement> flowchart, File file)
     {
         SettingsHolder.settings.setDontSaveDirectly(false);
-        
+
         this.setJScrollPaneFunctionViewportView(null); // resetuje formulář pro nastavení funkce symbolu
         // prepnu do nahledoveho modu
         if (editMode) {

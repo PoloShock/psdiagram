@@ -20,7 +20,8 @@ import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Switch;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
 import cz.miroslavbartyzal.psdiagram.app.global.MyExceptionHandler;
 import cz.miroslavbartyzal.psdiagram.app.global.RegexFunctions;
-import cz.miroslavbartyzal.psdiagram.app.gui.EnhancedJOptionPane;
+import cz.miroslavbartyzal.psdiagram.app.gui.dialog.EnhancedJOptionPane;
+import cz.miroslavbartyzal.psdiagram.app.gui.dialog.MyJOptionPane;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.AbstractSymbolFunctionForm;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.ConstantFilter;
 import cz.miroslavbartyzal.psdiagram.app.parser.antlr.ANTLRParser;
@@ -115,14 +116,14 @@ public final class ElementFunctionBed
 
         if (!EnumSymbol.getEnumSymbol(actualElement.getSymbol().getClass()).areAllCommandsPresent(
                 actualElement)) {
-            JOptionPane.showMessageDialog(null,
+            MyJOptionPane.showMessageDialog(null,
                     "<html>Nelze pokračovat v procházení, protože není zcela nastavena funkce aktuálně zpracovávaného symbolu.<br />"
                     + "Funkci symbolu lze nastavit v editačním režimu, po kliknutí na symbol v záložce \"Funkce\" vlevo.<html>",
                     "Chybí funkce symbolu",
                     JOptionPane.ERROR_MESSAGE);
             return result;
         } else if (!actualElement.getSymbol().areCommandsValid()) {
-            JOptionPane.showMessageDialog(null,
+            MyJOptionPane.showMessageDialog(null,
                     "<html>Nelze pokračovat v procházení, protože funkce aktuálně procházeného symbolu obsahuje chybu.<br />"
                     + "Funkci symbolu lze upravit v editačním režimu, po kliknutí na symbol v záložce \"Funkce\" vlevo.<html>",
                     "Funkce symbolu obsahuje chybu",
@@ -140,7 +141,7 @@ public final class ElementFunctionBed
 
         if ((symbol instanceof Goto || symbol instanceof GotoLabel)
                 && (symbol.getValue() == null || symbol.getValue().matches("\\s*"))) {
-            JOptionPane.showMessageDialog(null,
+            MyJOptionPane.showMessageDialog(null,
                     "<html>Nelze pokračovat v procházení, protože symbol Spojky musí mít vyplněnou svou textovou hodnotu.<br />Textovou hodnotu symbolu lze nastavit v editačním režimu, po kliknutí na symbol v záložce \"Text\" vlevo.<html>",
                     "Chybí textová hodnota symbolu", JOptionPane.ERROR_MESSAGE);
             return result;
@@ -205,7 +206,7 @@ public final class ElementFunctionBed
                 do {
                     parentLoop = parentLoop.getParentSegment().getParentElement();
                     if (parentLoop == null) {
-                        JOptionPane.showMessageDialog(null,
+                        MyJOptionPane.showMessageDialog(null,
                                 "<html>Symbol spojky ve funkci příkazu " + commandsProcessed.get("mode") + " musí být umístěn<br />přímo uvnitř těla cyklu, který má být přerušen!</html>",
                                 "Rodičovský cyklus nenalezen", JOptionPane.ERROR_MESSAGE);
                         return result;
@@ -248,7 +249,7 @@ public final class ElementFunctionBed
                         } else if (element.getSymbol() instanceof GotoLabel && element.getSymbol().getValue().equals(
                                 actualElement.getSymbol().getValue())) {
                             if (myGotoLabel != null) {
-                                JOptionPane.showMessageDialog(null,
+                                MyJOptionPane.showMessageDialog(null,
                                         "<html>Nelze určit, kam symbol Spojky odkazuje.<br />Korespondujících Spojek-návěští je více než jedna.</html>",
                                         "Duplicita hodnot Spojky", JOptionPane.ERROR_MESSAGE);
                                 return result;
@@ -259,7 +260,7 @@ public final class ElementFunctionBed
                     }
                 }
                 if (myGotoLabel == null) {
-                    JOptionPane.showMessageDialog(null,
+                    MyJOptionPane.showMessageDialog(null,
                             "<html>Nelze určit, kam symbol Spojky odkazuje.<br />Nebyla nalezena žádná Spojka-návěští s korespondující hodnotou .</html>",
                             "Duplicita hodnot Spojky", JOptionPane.ERROR_MESSAGE);
                     return result;
@@ -307,7 +308,7 @@ public final class ElementFunctionBed
             fct.call(context, scope, scope, new Object[]{variables, updatedVariables, extraReturn});
         } catch (RuntimeException ex) {
             if (!silently) {
-                JOptionPane.showMessageDialog(null, ex.getMessage(), "Chyba!",
+                MyJOptionPane.showMessageDialog(null, ex.getMessage(), "Chyba!",
                         JOptionPane.ERROR_MESSAGE);
                 throw ex;
             }
@@ -692,7 +693,7 @@ public final class ElementFunctionBed
                 result.haltDebug = true;
             }
             
-            int dialogResult = JOptionPane.showOptionDialog(null, extraRet[1], "Výstup", JOptionPane.OK_CANCEL_OPTION,
+            int dialogResult = MyJOptionPane.showOptionDialog(null, extraRet[1], "Výstup", JOptionPane.OK_CANCEL_OPTION,
                     JOptionPane.INFORMATION_MESSAGE, null, new Object[]{"OK", "Přerušit"}, "OK");
             if (!result.haltDebug && dialogResult != JOptionPane.CLOSED_OPTION && dialogResult != JOptionPane.OK_OPTION) {
                 result.haltDebug = true;

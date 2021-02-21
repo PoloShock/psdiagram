@@ -21,6 +21,7 @@ import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.StartEnd;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.SubRoutine;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Switch;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
+import cz.miroslavbartyzal.psdiagram.app.gui.dialog.MyJOptionPane;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.BooleanValueFilter;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.ConstantFilter;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.NoArrayVariableFilter;
@@ -510,7 +511,7 @@ public final class Pascal
                 }
             } catch (Exception e) {
                 if (!errored) {
-                    JOptionPane.showMessageDialog(null,
+                    MyJOptionPane.showMessageDialog(null,
                             "<html>Diagram se nepodařilo vytvořit!<br />Problémový prvek:<br />" + command + "</html>",
                             "Chyba při generování diagramu", JOptionPane.ERROR_MESSAGE);
                     errored = true;
@@ -1135,7 +1136,7 @@ public final class Pascal
         if (errored) {
             sourceCode = null;
         } else if (missingCommandWarning) {
-            JOptionPane.showMessageDialog(null,
+            MyJOptionPane.showMessageDialog(null,
                     "<html>Zdrojový kód byl vygenerován s následujícím upozorněním:<br />Některý symbol nemá vyplněnu svou funkci!</html>",
                     "Nevyplněná funkce symbolu", JOptionPane.WARNING_MESSAGE);
         }
@@ -1282,7 +1283,7 @@ public final class Pascal
                         if (symbol.getCommands().containsKey("inc")) {
                             int increment = Integer.valueOf(symbol.getCommands().get("inc"));
                             if (increment != 1 && increment != -1) {
-                                JOptionPane.showMessageDialog(null,
+                                MyJOptionPane.showMessageDialog(null,
                                         "<html>Zdrojový kód nelze vytvořit, protože programovací jazyk Pascal<br />nepodporuje u For cyklu jiný inkrement než 1 nebo -1!</html>",
                                         "Chyba při generování zdrojového kódu",
                                         JOptionPane.ERROR_MESSAGE);
@@ -1437,7 +1438,7 @@ public final class Pascal
                     }
                 }
             } catch (NumberFormatException | HeadlessException e) {
-                JOptionPane.showMessageDialog(null,
+                MyJOptionPane.showMessageDialog(null,
                         "<html>Zdrojový kód se nepodařilo vytvořit!<br />problémový symbol vlastní popisek: \"" + symbol.getValue() + "\".</html>",
                         "Chyba při generování zdrojového kódu", JOptionPane.ERROR_MESSAGE);
                 errored = true;

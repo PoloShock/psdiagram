@@ -7,6 +7,7 @@ package cz.miroslavbartyzal.psdiagram.app.gui;
 import cz.miroslavbartyzal.psdiagram.app.global.GlobalFunctions;
 import cz.miroslavbartyzal.psdiagram.app.global.MyExceptionHandler;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
+import cz.miroslavbartyzal.psdiagram.app.gui.dialog.MyJOptionPane;
 import cz.miroslavbartyzal.psdiagram.app.update.ChangesCondenser;
 import cz.miroslavbartyzal.psdiagram.app.update.Updater;
 import java.awt.Color;
@@ -436,7 +437,7 @@ public class JFrameUpdate extends javax.swing.JFrame implements PropertyChangeLi
             ep.setEditable(false);
             ep.setBackground(new Color(0, 0, 0, 0));
             // show
-            JOptionPane.showMessageDialog(null, ep, "Nepodporovaný oprerační systém", JOptionPane.WARNING_MESSAGE);
+            MyJOptionPane.showMessageDialog(null, ep, "Nepodporovaný oprerační systém", JOptionPane.WARNING_MESSAGE);
             
             return;
         }

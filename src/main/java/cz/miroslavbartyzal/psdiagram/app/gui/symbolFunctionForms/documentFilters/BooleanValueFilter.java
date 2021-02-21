@@ -10,13 +10,7 @@ import cz.miroslavbartyzal.psdiagram.app.parser.EnumRule;
 import javax.swing.JTextField;
 
 /**
- * <p>
- * Tato třída představuje filtr obecné hodnoty.</p>
- *
- * <p>
- * Může se jednat o hodnotu dosazovanou do proměnné, či o hodnotu použitou
- * jako vyhodnocovací podmíněný výraz. Tento filtr je v porovnání s ostatními
- * nejkomplexnější.</p>
+ * Tato třída představuje filtr hodnoty typu boolean.
  *
  * @author Miroslav Bartyzal (miroslavbartyzal@gmail.com)
  */

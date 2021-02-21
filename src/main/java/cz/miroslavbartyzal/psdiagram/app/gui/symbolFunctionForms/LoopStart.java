@@ -69,8 +69,7 @@ public final class LoopStart extends AbstractSymbolFunctionForm
             jTextFieldCondition.setText(element.getSymbol().getCommands().get("condition"));
         }
 
-        ((AbstractDocument) jTextFieldCondition.getDocument()).setDocumentFilter(
-                new BooleanValueFilter(jTextFieldCondition, validationListener,
+        ((AbstractDocument) jTextFieldCondition.getDocument()).setDocumentFilter(new BooleanValueFilter(jTextFieldCondition, validationListener,
                         maxBalloonSizeCallback));
         AbstractSymbolFunctionForm.enhanceWithUndoRedoCapability(jTextFieldCondition);
         addDocumentListeners();

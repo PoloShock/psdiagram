@@ -8,12 +8,12 @@
                     <shapeDownColor>230,230,230,255</shapeDownColor>
                     <hasShadow>true</hasShadow>
                     <customValue>Algoritmus pro obrácení pořadí cifer 
-zadaného čísla, nemůžeme-li použít 
-převod do textového řetězce.</customValue>
+zadaného čísla, bez použití převodu 
+do textového řetězce.</customValue>
                     <commandsValid>true</commandsValid>
                     <value>Algoritmus pro obrácení pořadí cifer 
-zadaného čísla, nemůžeme-li použít 
-převod do textového řetězce.</value>
+zadaného čísla, bez použití převodu 
+do textového řetězce.</value>
                     <alwaysLeftAlign>false</alwaysLeftAlign>
                     <relativeX>64.0</relativeX>
                     <relativeY>0.0</relativeY>

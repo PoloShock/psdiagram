@@ -48,32 +48,4 @@ public final class NoArrayVariableFilter extends AbstractFilter
         return AbstractFilter.parseInput(input, RULE);
     }
 
-//    /**
-//     * Pokusí se daný textový řeťezec porovnat vůči tomuto filtru.
-//     *
-//     * @param input text, který chceme prověřit
-//     * @return
-//     */
-//    public static ValidityCheckResult isValid(String input)
-//    {
-//        if (input.length() == 0) {
-//            return ValidityCheckResult.createValidRes(false);
-//        }
-//
-//        if (!input.matches("^[a-zA-Z\\_\\$][\\w\\$]{0,29}")) {
-//            if (input.matches("^[a-zA-Z\\_\\$].*")) {
-//                return ValidityCheckResult.createInvalidRes(
-//                        "Proměnná může obsahovat jen písmena bez diakritiky, číslice, podtržítka nebo znaky dolaru.");
-//            } else {
-//                return ValidityCheckResult.createInvalidRes(
-//                        "Proměnná může začínat jen písmenem bez diakritiky, podtržítkem nebo znakem dolaru.");
-//            }
-//        } else if (input.toLowerCase().matches(
-//                "^true$|^false$|^arguments$|^this$|^break$|^case$|^catch$|^continue$|^debugger$|^default$|^delete$|^do$|^else$|^finally$|^for$|^function$|^if$|^in$|^instanceof$|^new$|^return$|^switch$|^this$|^throw$|^try$|^typeof$|^var$|^void$|^while$|^with$")) {
-//            return ValidityCheckResult.createInvalidRes(
-//                    "\"" + input.toLowerCase() + "\" je rezervované klíčové slovo a nemůže být použito jako název proměnné.");
-//        } else {
-//            return ValidityCheckResult.createValidRes(true);
-//        }
-//    }
 }

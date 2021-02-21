@@ -5,6 +5,7 @@
 package cz.miroslavbartyzal.psdiagram.app.gui;
 
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
+import cz.miroslavbartyzal.psdiagram.app.gui.dialog.MyJOptionPane;
 import java.io.File;
 import java.util.Iterator;
 import java.util.TreeSet;
@@ -173,7 +174,7 @@ public final class MyFileChooser
                 File f = checkExtension(getSelectedFile(),
                         ((FileNameExtensionFilter) this.getFileFilter()).getExtensions()[0]);
                 if (getDialogType() == SAVE_DIALOG && f.exists()) {
-                    int result = JOptionPane.showConfirmDialog(this, "Soubor již existuje, přepsat?",
+                    int result = MyJOptionPane.showConfirmDialog(this, "Soubor již existuje, přepsat?",
                             "Přepsat soubor?", JOptionPane.YES_NO_CANCEL_OPTION,
                             JOptionPane.WARNING_MESSAGE);
                     switch (result) {

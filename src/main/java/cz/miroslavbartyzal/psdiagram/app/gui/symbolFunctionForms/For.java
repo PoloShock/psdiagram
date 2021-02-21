@@ -86,8 +86,7 @@ public final class For extends AbstractSymbolFunctionForm
             setForVisible();
         }
 
-        ((AbstractDocument) jTextFieldVar.getDocument()).setDocumentFilter(
-                new NoArrayVariableFilter(jTextFieldVar, validationListener,
+        ((AbstractDocument) jTextFieldVar.getDocument()).setDocumentFilter(new NoArrayVariableFilter(jTextFieldVar, validationListener,
                         maxBalloonSizeCallback));
         ((AbstractDocument) jTextFieldFrom.getDocument()).setDocumentFilter(new NumericValueFilter(
                 jTextFieldFrom, validationListener,
@@ -95,8 +94,7 @@ public final class For extends AbstractSymbolFunctionForm
         ((AbstractDocument) jTextFieldForTo.getDocument()).setDocumentFilter(new NumericValueFilter(
                 jTextFieldForTo, validationListener,
                 maxBalloonSizeCallback));
-        ((AbstractDocument) jTextFieldIncrement.getDocument()).setDocumentFilter(
-                new NumericValueFilter(jTextFieldIncrement, validationListener,
+        ((AbstractDocument) jTextFieldIncrement.getDocument()).setDocumentFilter(new NumericValueFilter(jTextFieldIncrement, validationListener,
                         maxBalloonSizeCallback));
         ((AbstractDocument) jTextFieldForeach.getDocument()).setDocumentFilter(new VariableFilter(
                 jTextFieldForeach, validationListener,

@@ -83,7 +83,7 @@ public abstract class FlowchartElement<S extends FlowchartSegment<S, E>, E exten
                     lInnerSegments.add(null);
                 }
             } else if (innerOutCount == 0) {
-                //JOptionPane.showMessageDialog(null, "You must specify number of inner outs for this symbol!", "Error", JOptionPane.ERROR_MESSAGE);
+                //MyJOptionPane.showMessageDialog(null, "You must specify number of inner outs for this symbol!", "Error", JOptionPane.ERROR_MESSAGE);
                 throw new Error("You must specify number of inner outs for this symbol!");
             } else {
                 throw new Error("Specified number of inner outs is incorrect!");

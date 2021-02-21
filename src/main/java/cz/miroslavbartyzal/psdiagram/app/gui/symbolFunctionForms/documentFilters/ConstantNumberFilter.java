@@ -48,39 +48,4 @@ public final class ConstantNumberFilter extends AbstractFilter
         return AbstractFilter.parseInput(input, RULE);
     }
 
-//    public static ValidityCheckResult isValid(String input)
-//    {
-//        String textToVerifyOn = input.replaceFirst("^\\,|\\,$|\\,(?=\\,)", ""); // let's tolerate single empty slot (with inclusion of ",") -> example: ,1 |  1, | 1,,1
-//        if (textToVerifyOn.length() == 0) {
-//            return ValidityCheckResult.createValidRes(false);
-//        }
-//        if (textToVerifyOn.matches("^\\,.*|.*\\,\\,.*")) {
-//            return ValidityCheckResult.createInvalidRes(
-//                    "Detekováno příliš mnoho prázdných míst ve výčtu kontant.");
-//        }
-//
-//        String allowedMatch = "("
-//                + "((\\+(\\-\\+)*\\-?)|(\\-(\\+\\-)*\\+?))|"
-//                + "(((\\+(\\-\\+)*\\-?)|(\\-(\\+\\-)*\\+?))?([1-9]|0(?=[\\.\\,]|$))[0-9]*(\\.[0-9]*)?)"
-//                + ")"; // with editing convenience taken into account
-//
-//        boolean result = textToVerifyOn.matches(allowedMatch + "(\\," + allowedMatch + ")*\\,?"); // with editing convenience taken into account
-//        if (result) {
-//            return ValidityCheckResult.createValidRes(canBeLeftAsIs(input));
-//        } else {
-//            if (textToVerifyOn.contains("--") || textToVerifyOn.contains("++")) {
-//                return ValidityCheckResult.createInvalidRes(
-//                        "Zdvojené znaménko není povoleno.");
-//            } else {
-//                return ValidityCheckResult.createInvalidRes(
-//                        "Neplatná konstantní hodnota.");
-//            }
-//        }
-//    }
-//
-//    private static boolean canBeLeftAsIs(String input)
-//    {
-//        String allowedMatch = "(((\\+(\\-\\+)*\\-?)|(\\-(\\+\\-)*\\+?))?([1-9]|0(?=[\\.\\,]|$))[0-9]*(\\.[0-9]+)?)"; // without editing convenience
-//        return input.matches(allowedMatch + "(\\," + allowedMatch + ")*"); // without editing convenience
-//    }
 }

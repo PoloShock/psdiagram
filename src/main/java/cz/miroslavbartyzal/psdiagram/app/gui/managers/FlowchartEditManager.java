@@ -18,6 +18,7 @@ import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
 import cz.miroslavbartyzal.psdiagram.app.global.GlobalFunctions;
 import cz.miroslavbartyzal.psdiagram.app.global.MyExceptionHandler;
 import cz.miroslavbartyzal.psdiagram.app.gui.MainWindow;
+import cz.miroslavbartyzal.psdiagram.app.gui.dialog.MyJOptionPane;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.AbstractSymbolFunctionForm;
 import jakarta.xml.bind.JAXBException;
 import java.awt.Component;
@@ -1263,7 +1264,7 @@ public final class FlowchartEditManager implements ActionListener, MouseListener
 
     private String askForNumber(int min, int max, String defaultString)
     {
-        return (String) JOptionPane.showInputDialog(mainWindow,
+        return (String) MyJOptionPane.showInputDialog(mainWindow,
                 "Zadej, kolik má tento symbol mít větví (else větev se nepočítá):\n" + "(minimálně " + min + ", maximálně " + max + ")",
                 "Počet větví", JOptionPane.QUESTION_MESSAGE, null, null, defaultString);
     }

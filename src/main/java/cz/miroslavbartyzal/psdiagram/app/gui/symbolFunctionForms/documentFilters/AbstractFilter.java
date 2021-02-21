@@ -34,14 +34,9 @@ import javax.swing.text.DocumentFilter;
  * Tato abstraktní třída představuje obecný filtr textového pole pro editaci
  * funkce symbolu.</p>
  *
- * <p>
  * Filtry jsou aplikovány za účelem zabránění nechtěnné syntaktické chyby z
  * uživatelovi strany. Měli by zpříjemnit a zároveň zpřesnit uživatelovu práci
  * při nastavování funkce symbolu.<br />
- * Vznikla-li by vložením/smazáním znaku syntaktická chyba, je tomuto vložení či
- * smazání znaku zabráněno. Uživatel je o této události spraven pomocí obecné
- * informační lišty v hlavním okně aplikace.</p>
- * <p/>
  * <p>
  * Filtry jsou řešeny pomocí gramatiky.</p>
  *

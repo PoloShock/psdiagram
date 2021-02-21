@@ -10,7 +10,7 @@ import cz.miroslavbartyzal.psdiagram.app.parser.EnumRule;
 import javax.swing.JTextField;
 
 /**
- * Tato třída představuje filtr numerické hodnoty.
+ * Tato třída představuje filtr řetězcové hodnoty.
  *
  * @author Miroslav Bartyzal (miroslavbartyzal@gmail.com)
  */

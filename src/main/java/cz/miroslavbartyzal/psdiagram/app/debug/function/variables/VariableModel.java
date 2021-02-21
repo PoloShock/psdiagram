@@ -95,7 +95,7 @@ public final class VariableModel extends AbstractTreeTableModel
     public Object getValueAt(Object node, int column)
     {
         if (column == 0) {
-            return ((VariableNode) node).getName();
+            return ((VariableNode) node).getNameFormated();
         } else {
             return ((VariableNode) node).getValue();
         }

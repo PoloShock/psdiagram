@@ -4,8 +4,9 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.debug.function.variables;
 
-import cz.miroslavbartyzal.psdiagram.app.gui.treeTable.AbstractTreeTableModel;
+import cz.miroslavbartyzal.psdiagram.app.global.AlphanumComparator;
 import cz.miroslavbartyzal.psdiagram.app.global.RegexFunctions;
+import cz.miroslavbartyzal.psdiagram.app.gui.treeTable.AbstractTreeTableModel;
 import java.util.*;
 
 /**
@@ -26,7 +27,7 @@ public final class VariableNode implements Comparable<VariableNode>
     private String name;
     private String value;
     private VariableNode[] path;
-    private TreeSet<VariableNode> children = new TreeSet<>();
+    private TreeSet<VariableNode> children = new TreeSet<>(new AlphanumComparator());
     private boolean highlighted = true;
 
     protected VariableNode(VariableNode[] path, String name, String value)
@@ -259,17 +260,27 @@ public final class VariableNode implements Comparable<VariableNode>
     }
 
     /**
-     * Vrací název proměnné.
+     * Vrací název proměnné včetně formátování.
      *
-     * @return název proměnné
+     * @return název proměnné včetně formátování
      */
-    public String getName()
+    public String getNameFormated()
     {
         if (highlighted) {
             return highlightStart + name + highlightEnd;
         } else {
             return name;
         }
+    }
+
+    /**
+     * Vrací název proměnné.
+     *
+     * @return název proměnné
+     */
+    public String getName()
+    {
+        return name;
     }
 
     /**
@@ -289,7 +300,7 @@ public final class VariableNode implements Comparable<VariableNode>
     @Override
     public String toString()
     {
-        return getName();
+        return getNameFormated();
     }
 
     @Override

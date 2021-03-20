@@ -4,7 +4,7 @@
 
     <groupId>cz.miroslavbartyzal</groupId>
     <artifactId>psdiagram</artifactId>
-    <version>1.4.4.2-SNAPSHOT</version>
+    <version>1.4.4.2</version>
     <packaging>jar</packaging>
     <name>PS Diagram</name>
     <url>http://www.psdiagram.cz</url>
@@ -84,7 +84,7 @@
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
-            <version>4.9.1</version>
+            <version>4.9.2</version>
         </dependency>
 
         <dependency>
@@ -136,11 +136,11 @@
                                     <changelogurl>http://www.psdiagram.cz/changelog</changelogurl>
                                     <releaseurl></releaseurl>
 
-                                    <headline>Drobné opravy nejen pro 4K</headline>
+                                    <headline>Důležitá oprava for-each cyklu</headline>
                                     <description>
                                         <![CDATA[
                                         <html>
-                                            <p align="justify">Na základě zpětné vazby se ukázalo, že na 4K rozlišení občas pozlobí vyskakovací dialog, kterému se nevykreslí spodní polovina. A tak přináším opravu. Snad zabere. :)</p>
+                                            <p align="justify">Zacyklený cyklus. To není nadávka. Je to jen přesně to, co se stalo, když jste v PS Diagramu použili for-each cyklus pro procházení pole s určitou konstelací prvků. Konkrétně stačilo, aby pole obsahovalo alespoň jednu dvojici prvků o stejné hodnotě. Nevěřil jsem, dokud jsem to sám nezkusil.</p>
                                         </html>
                                         ]]>
                                     </description>
@@ -154,9 +154,8 @@
                                     <changes>
                                     </changes>
                                     <fixes>
-                                        <fix>vyskakovací dialogy byly na některých 4K systémech vykresleny jen zčásti</fix>
-                                        <fix>řazení prvků pole ve výpisu proměnných již korektně umisťuje 10. prvek pole pod 9., nikoliv pod 1.</fix>
-                                        <fix>zodolněn proces aktualizace tak, aby nemohlo v případě chyby dojít k poškození stávající verze PS Diagramu</fix>
+                                        <fix>opraveno chování for-each cyklu v případě procházení pole obsahující prvky o opakujících se hodnotách</fix>
+                                        <fix>opraven proces aktualizace na některých systémech s Windows 7</fix>
                                     </fixes>
                                     <others>
                                     </others>

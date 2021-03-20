@@ -39,6 +39,7 @@ import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditManager;
 import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditUndoManager;
 import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartOverlookManager;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.AbstractSymbolFunctionForm;
+import cz.miroslavbartyzal.psdiagram.app.network.TimeCollector;
 import cz.miroslavbartyzal.psdiagram.app.persistence.FlowchartSaveContainer;
 import cz.miroslavbartyzal.psdiagram.app.persistence.collector.FlowchartCollector;
 import cz.miroslavbartyzal.psdiagram.app.persistence.recovery.FlowchartCrashRecovery;
@@ -233,6 +234,9 @@ public final class MainWindow extends javax.swing.JFrame
         // (I'm using platform default location after all)
         jPnlDiagram = (JPanelDiagram) jPanelDiagram;
 
+        // ping PS Diagram web server
+        TimeCollector.getTimeAndDate(SettingsHolder.PSDIAGRAM_SERVER);
+        
         /*
          * affineTransform = new AffineTransform();
          * affineTransform.setToTranslation(getTranslateX(), getTranslateY());

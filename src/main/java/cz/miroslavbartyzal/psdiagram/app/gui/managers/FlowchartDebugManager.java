@@ -235,7 +235,9 @@ public final class FlowchartDebugManager implements KeyListener, ActionListener,
      */
     public HashMap<String, String> updateVariables(HashMap<String, String> updatedVariables)
     {
-        return variableModel.updateVariables(updatedVariables);
+        HashMap<String, String> updatedVarsWithoutAdditionalInfo = removeAdditionalInfoFromVariables(
+                updatedVariables);
+        return variableModel.updateVariables(updatedVarsWithoutAdditionalInfo);
     }
 
     // **********************MouseListener**********************
@@ -401,6 +403,19 @@ public final class FlowchartDebugManager implements KeyListener, ActionListener,
     // ***********************************************************
     // **********************PRIVATE METHODS**********************
     // ***********************************************************
+    private HashMap<String, String> removeAdditionalInfoFromVariables(HashMap<String, String> updatedVariables)
+    {
+        HashMap<String, String> varsWithoutAdditionalInfo = new HashMap<>(updatedVariables);
+        for (String varName : varsWithoutAdditionalInfo.keySet()) {
+            String varValue = varsWithoutAdditionalInfo.get(varName);
+            if (varValue.matches("^\\d+\\|.*$")) {
+                int idx = varValue.indexOf('|');
+                varsWithoutAdditionalInfo.put(varName, varValue.substring(idx + 1));
+            }
+        }
+        return varsWithoutAdditionalInfo;
+    }
+
     private Symbol getNoCommentSymbolContaining(Flowchart<LayoutSegment, LayoutElement> flowchart,
             Point2D p)
     {

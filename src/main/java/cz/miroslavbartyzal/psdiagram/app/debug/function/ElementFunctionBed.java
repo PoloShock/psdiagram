@@ -61,7 +61,7 @@ public final class ElementFunctionBed
             + "_updatedVars_.put(_i, myUneval(_locals[_i]));"
             + "}"
             + "}\";"
-            + "function script(_variables_, _updatedVars_, _extraRet_) {" // ve fci vyuzivam pro vedlejsi vypocty jen globalni promenne, lokalni promenne jdou totiz na vystup
+            + "function script(_variables_, _updatedVars_, _extraRet_) {" // v JS fci vyuzivam pro vedlejsi vypocty jen globalni promenne (bez 'var'), lokalni promenne jdou totiz na vystup (s 'var')
             + "entries = _variables_.entrySet().toArray();"
             + "for (entry in entries) {"
             + "eval(\"var \" + entries[entry].getKey() + \" = \" + entries[entry].getValue() + \";\");"
@@ -70,15 +70,11 @@ public final class ElementFunctionBed
             + "eval(updateVariables);"
             + "}"
             + "function myUneval(s) {" // solution found on http://stackoverflow.com/questions/7885096/how-do-i-decode-a-string-with-escaped-unicode
-            + "return uneval(s)"
-            + ".replace(/\\\\u([\\d\\w]{4})/gi, function (match, grp) {"
-            + "return String.fromCharCode(parseInt(grp, 16));"
-            + "}"
-            + ").replace("
-            + "/\\\\x([\\d\\w]{2})/gi, function (match, grp) {return String.fromCharCode(parseInt(grp, 16));"
-            + "}"
-            + ")"
-            + ";"
+            + "return uneval(s).replace(/\\\\u([\\d\\w]{4})/gi, function (match, grp) {"
+            + "  return String.fromCharCode(parseInt(grp, 16));"
+            + "}).replace(/\\\\x([\\d\\w]{2})/gi, function (match, grp) {"
+            + "  return String.fromCharCode(parseInt(grp, 16));"
+            + "});"
             + "}";
 
 // ***vyrazeno kvuli antiviru***
@@ -98,6 +94,20 @@ public final class ElementFunctionBed
 //            return null;
 //        }
 //    }
+    private static HashMap<String, String> extractAdditionalInfoFromVariables(HashMap<String, String> variables)
+    {
+        HashMap<String, String> additionalInfos = new HashMap<>();
+        for (String varName : variables.keySet()) {
+            String varValue = variables.get(varName);
+            if (varValue.matches("^\\d+\\|.*$")) {
+                int idx = varValue.indexOf('|');
+                additionalInfos.put(varName, varValue.substring(0, idx));
+                variables.put(varName, varValue.substring(idx + 1));
+            }
+        }
+        return additionalInfos;
+    }
+
     /**
      * Provede zpracování funkce symbolu a vrátí instaci FunctionResult,
      * reprezentující její výsledek.
@@ -113,6 +123,7 @@ public final class ElementFunctionBed
             HashMap<String, String> variables)
     {
         FunctionResult result = new FunctionResult();
+        HashMap<String, String> additionalInfos = extractAdditionalInfoFromVariables(variables);
 
         if (!EnumSymbol.getEnumSymbol(actualElement.getSymbol().getClass()).areAllCommandsPresent(
                 actualElement)) {
@@ -163,7 +174,7 @@ public final class ElementFunctionBed
         } else if (symbol instanceof Decision) {
             innerSegment = decisionSetProgAndUpVars(result, commandsProcessed, commandsOriginal, variables);
         } else if (symbol instanceof For) {
-            innerSegment = forSetProgAndUpVars(result, commandsProcessed, variables);
+            innerSegment = forSetProgAndUpVars(result, commandsProcessed, variables, additionalInfos);
         } else if (symbol instanceof IO) {
             innerSegment = ioSetProgAndUpVars(result, commandsProcessed, variables);
         } else if (symbol instanceof cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Process) {
@@ -547,63 +558,67 @@ public final class ElementFunctionBed
     }
 
     private static int forSetProgAndUpVars(FunctionResult result, HashMap<String, String> commands,
-            HashMap<String, String> variables)
+            HashMap<String, String> variables, HashMap<String, String> additionalInfos)
     {
+        String varName = commands.get("var");
+        String arrayName = commands.get("array");
+
         String[] extraRet = new String[]{null, "-1"};
-        String script = "if ((" + commands.get("inc") + " > 0 && " + commands.get("var") + " > " + commands.get(
-                "to") + ") || (" + commands.get("inc") + " < 0 && " + commands.get("var") + " < " + commands.get(
+        String script = "if ((" + commands.get("inc") + " > 0 && " + varName + " > " + commands.get(
+                "to") + ") || (" + commands.get("inc") + " < 0 && " + varName + " < " + commands.get(
                 "to") + ")) {";
-        if (variables.containsKey(commands.get("var"))) {
+        if (variables.containsKey(varName)) {
             // inicializace jiz probehla
             if (commands.containsKey("array")) {
                 script = ""
-                        + "idx = " + commands.get("array") + ".indexOf(" + commands.get("var") + ") + 1;"
-                        + "if (idx < " + commands.get("array") + ".length) {"
-                        + "var " + commands.get("var") + " = " + commands.get("array") + "[idx];"
+                        + "idx = " + additionalInfos.get(varName) + " + 1;"
+                        + "if (idx < " + arrayName + ".length) {"
+                        + "var " + varName + " = " + arrayName + "[idx];"
+                        + "_extraRet_[0] = myUneval(" + varName + ");"
                         + "_extraRet_[1] = 1;"
-                        + "_extraRet_[0] = myUneval(" + commands.get("var") + ");"
                         + "} else {"
                         + "_extraRet_[1] = -1;"
                         + "}";
             } else {
                 script = ""
-                        + "var " + commands.get("var") + " = " + commands.get("var") + " + " + commands.get(
-                        "inc") + ";"
+                        + "var " + varName + " = " + varName + " + " + commands.get(
+                                "inc") + ";"
                         + script
                         + "_extraRet_[1] = -1;"
                         + "} else {"
                         + "_extraRet_[1] = 1;"
                         + "}"
-                        + "_extraRet_[0] = myUneval(" + commands.get("var") + ");";
+                        + "_extraRet_[0] = myUneval(" + varName + ");";
             }
-        } // nutna inicializace
-        else {
-            if (variables.containsKey("0" + commands.get("var"))) {
+        } else {
+            // nutna inicializace
+            if (variables.containsKey("0" + varName)) {
                 /*
                  * smluveny signal pro inicializaci cyklu (drive provadeno smazanim promenne cyklu, ale zjistil
                  * jsem, ze ji vlastne potrebuji, bude-li pomoci ni nekdo inicializovat)
                  */
-                variables.put(commands.get("var"), variables.remove("0" + commands.get("var")));
+                variables.put(varName, variables.remove("0" + varName));
             }
 
             if (commands.containsKey("array")) {
+                additionalInfos.put(varName, "-1");
                 script = ""
-                        + "if (" + commands.get("array") + ".length > 0) {"
-                        + "var " + commands.get("var") + " = " + commands.get("array") + "[0];"
+                        + "if (" + arrayName + ".length > 0) {"
+                        + "var " + varName + " = " + arrayName + "[0];"
+                        + "_extraRet_[0] = myUneval(" + varName + ");"
                         + "_extraRet_[1] = 1;"
-                        + "_extraRet_[0] = myUneval(" + commands.get("var") + ");"
                         + "} else {"
                         + "_extraRet_[1] = -1;"
                         + "}";
             } else {
                 script = ""
-                        + "var " + commands.get("var") + " = " + commands.get("from") + ";"
+                        + "var " + varName + " = " + commands.get("from") + ";"
                         + script
                         + "_extraRet_[1] = -1;"
                         + "} else {"
                         + "_extraRet_[1] = 1;"
                         + "}"
-                        + "_extraRet_[0] = myUneval(" + commands.get("var") + ");";
+                        + "_extraRet_[0] = myUneval(" + varName + ");";
             }
         }
 
@@ -612,13 +627,19 @@ public final class ElementFunctionBed
         } catch (ScriptException ex) {
             result.haltDebug = true;
         }
+
         if (!commands.containsKey("array") || !extraRet[1].equals("-1")) {
             // v pripade inicializace je treba upozornit (zvyrazneni ve vypisu promennych) na inicializacni promennou
-            addVarToResultIfNotPresent(commands.get("var").split("\\[.*")[0], variables,
-                    result.updatedVariables);
+            addVarToResultIfNotPresent(varName.split("\\[.*")[0], variables, result.updatedVariables);
         }
+        if (commands.containsKey("array") && result.updatedVariables.containsKey(varName)) {
+            // in case of for-each loop, prepend the current index
+            int idx = Integer.valueOf(additionalInfos.get(varName)) + 1;
+            result.updatedVariables.put(varName, idx + "|" + result.updatedVariables.get(varName));
+        }
+
         if (extraRet[0] != null) {
-            result.progressDesc = commands.get("var") + " ← " + extraRet[0];
+            result.progressDesc = varName + " ← " + extraRet[0];
         }
         return Integer.parseInt(extraRet[1]);
     }
@@ -692,7 +713,7 @@ public final class ElementFunctionBed
             } catch (ScriptException ex) {
                 result.haltDebug = true;
             }
-            
+
             int dialogResult = MyJOptionPane.showOptionDialog(null, extraRet[1], "Výstup", JOptionPane.OK_CANCEL_OPTION,
                     JOptionPane.INFORMATION_MESSAGE, null, new Object[]{"OK", "Přerušit"}, "OK");
             if (!result.haltDebug && dialogResult != JOptionPane.CLOSED_OPTION && dialogResult != JOptionPane.OK_OPTION) {

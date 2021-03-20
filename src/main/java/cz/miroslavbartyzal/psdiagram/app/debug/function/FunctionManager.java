@@ -281,19 +281,19 @@ public final class FunctionManager
         HashMap<String, String> allVars = variables.getAllVariables();
 
         if (actualElement.getSymbol() instanceof For && actualElement.getSymbol().getCommands() != null) {
-            if (!forVarValue.containsKey(actualElement.getSymbol())) { // prvni inicializace for symbolu
+            if (!forVarValue.containsKey(actualElement.getSymbol())) {
+                // prvni inicializace for symbolu
                 if (allVars.containsKey(actualElement.getSymbol().getCommands().get("var"))) {
                     /*
                      * Prejmenuji promennou cyklu, aby se inicializovala (je to signal pro tridu ElementFunctionBed,
-                     * ktery ocekava promennou zacinajici znakem "0") - ikdyz se neinicializuje (for-each kdyz je nulova
-                     * delka pole), ve skutecnosti zustane.
+                     * ktery ocekava promennou zacinajici znakem "0") - po zavolani ElementFunctionBed zustane uz jen 
+                     * puvodni nazev (ikdyz se neinicializuje - for-each kdyz je nulova delka pole).
                      */
                     allVars.put("0" + actualElement.getSymbol().getCommands().get("var"),
                             allVars.remove(actualElement.getSymbol().getCommands().get("var")));
                 }
 
-                stepBack.prevForValues.put(actualElement.getSymbol(), forVarValue.get(
-                        actualElement.getSymbol()));
+                stepBack.prevForValues.put(actualElement.getSymbol(), null);
                 forVarValue.put(actualElement.getSymbol(), "");
             } else {
                 // jednorazove pridani jiz inicializovane For promenne

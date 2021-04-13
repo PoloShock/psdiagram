@@ -69,33 +69,6 @@ public enum EnumSourceCode
         {
             return "vlozte len telo jednej funckie !! od '{' po '}' !!";
         }
-    },
-	
-	PYTHON
-    {
-        @Override
-        public Flowchart<LayoutSegment, LayoutElement> getFlowchart(String code)
-        {
-            return Python.getFlowchart(code);
-        }
-
-        @Override
-        public String getSourceCode(Flowchart<LayoutSegment, LayoutElement> flowchart, String name)
-        {
-            return Python.getSourceCode(flowchart, name);
-        }
-
-        @Override
-        public String getUniqueTextValue()
-        {
-            return "Python";
-        }
-
-        @Override
-        public String getGuideText()
-        {
-            return "vlozte len telo jednej funckie  ";
-        }
     };
 
     /**

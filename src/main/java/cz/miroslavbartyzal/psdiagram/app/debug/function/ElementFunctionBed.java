@@ -151,8 +151,6 @@ public final class ElementFunctionBed
             commandsOriginal = new HashMap<>(symbol.getCommands());
             setRandoms(commandsOriginal);
             commandsProcessed = new HashMap<>(commandsOriginal);
-            System.out.println("comands proccessed: ");
-            commandsProcessed.forEach((k,v)-> System.out.println("key: "+k+" value: "+v));
             translateToJavaScript(commandsProcessed);
         }
 

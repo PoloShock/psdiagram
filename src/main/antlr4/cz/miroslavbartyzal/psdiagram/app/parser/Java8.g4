@@ -724,7 +724,13 @@ blockStatement
 	:	localVariableDeclarationStatement
 	|	classDeclaration
 	|	statement
+	|   comment
 	;
+
+comment 
+    : COMMENT
+    | LINE_COMMENT
+    ;
 
 localVariableDeclarationStatement
 	:	localVariableDeclaration ';'
@@ -826,9 +832,9 @@ switchLabels
 	;
 
 switchLabel
-	:	'case' constantExpression ':'
-	|	'case' enumConstantName ':'
-	|	'default' ':'
+	:	'case' WS* constantExpression WS* ':'
+	|	'case' WS* enumConstantName WS* ':'
+	|	'default' WS* ':'
 	;
 
 enumConstantName
@@ -1767,13 +1773,13 @@ ELLIPSIS : '...';
 // Whitespace and comments
 //
 
-WS  :  [ \t\r\n\u000C]+ -> channel(HIDDEN)
+WS  :  [ \t\r\n\u000C]+ -> skip
     ;
 
 COMMENT
-    :   '/*' .*? '*/' -> channel(HIDDEN)
+    :   '/*' .*? '*/'
     ;
 
 LINE_COMMENT
-    :   '//' ~[\r\n]* -> channel(HIDDEN)
+    :   '//' ~[\r\n]*
     ;

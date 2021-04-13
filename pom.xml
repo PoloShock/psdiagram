@@ -67,7 +67,6 @@
             <artifactId>balloontip</artifactId>
             <version>1.2.4.1</version>
         </dependency>
-
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>

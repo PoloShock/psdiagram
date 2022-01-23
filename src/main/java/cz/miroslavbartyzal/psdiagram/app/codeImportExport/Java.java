@@ -16,87 +16,48 @@ import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.StartEnd;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.SubRoutine;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Switch;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
-import cz.miroslavbartyzal.psdiagram.app.parser.Java8Lexer;
-import cz.miroslavbartyzal.psdiagram.app.parser.Java8Parser;
-import cz.miroslavbartyzal.psdiagram.app.parser.antlr.JavaToPSDVisitor;
+import cz.miroslavbartyzal.psdiagram.app.gui.dialog.MyJOptionPane;
+import cz.miroslavbartyzal.psdiagram.app.parser.ConversionResult;
+
 import java.awt.HeadlessException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+
 import javax.swing.JOptionPane;
-import org.antlr.v4.runtime.BufferedTokenStream;
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.ListTokenSource;
-import org.antlr.v4.runtime.RecognitionException;
-import org.antlr.v4.runtime.tree.ParseTree;
 
 public final class Java
 {
 
     private static final String LINE_SEP = System.lineSeparator();
-    private static boolean errored = false;
-    private static boolean gotoUsage = false;
-    private static boolean missingCommandWarning = false;
-    private static Set<String> variableNames = new HashSet<>();
-    private static HashMap<String, String> dataTypes = new HashMap<>();
-    private static Boolean scannerNeeded = false;
-    private static String sourceCode;
-
+    private boolean errored = false;
+    private boolean gotoUsage = false;
+    private boolean missingCommandWarning = false;
+    private Set<String> variableNames = new HashSet<>();
+    private HashMap<String, String> dataTypes = new HashMap<>();
+    private Boolean scannerNeeded = false;
+    private String sourceCode;
+    
     public static Flowchart<LayoutSegment, LayoutElement> getFlowchart(String code)
     {
-        CharStream chars = CharStreams.fromString(codeFormat(code));
-        Java8Lexer lexer = new Java8Lexer(chars);
-        BufferedTokenStream tokenStream = new BufferedTokenStream(new ListTokenSource(lexer.getAllTokens()));
-
-        Java8Parser parser = new Java8Parser(tokenStream);
-        ParseTree tree = null;
-        try {
-            tree = parser.methodBody();
-        } catch (RecognitionException rex) {
-            JOptionPane.showMessageDialog(null,
-                    "<html>Zdrojový kód se nepodařilo vytvořit!<br />Telo metódy musí začínať znakom '{' a končiť znakom '}'",
-                    "Chyba při generování zdrojového kódu", JOptionPane.ERROR_MESSAGE);
+        JavaToFlowchartConvertor javaToPsdConvertor = new JavaToFlowchartConvertor(5);
+        ConversionResult conversionResult = javaToPsdConvertor.convertToPsd(code);
+        if (conversionResult.isInputValid()) {
+            return conversionResult.getFlowchart();
         }
-        if (tree != null) {
-            JavaToPSDVisitor visitor = new JavaToPSDVisitor();
-
-            return visitor.visit(tree);
-        }
+    
+        MyJOptionPane.showMessageDialog(null, conversionResult.getErrorMessage(), "Chyba při generování diagramu",
+                JOptionPane.ERROR_MESSAGE);
         return null;
     }
-
-    private static String codeFormat(String code)
-    {
-        code = code.replaceAll("\r\n", "");
-        code = code.trim();
-        code = code.replaceAll("\t", "");
-        if (!(code.startsWith("{") && code.endsWith("}"))) {
-            code = "{" + code + "}";
-        }
-        code = code.replaceAll("  ", " ");
-        code = code.replaceAll("  ", " ");
-        code = code.replaceAll("\t", "");
-        code = code.replaceAll(" =", "=");
-        code = code.replaceAll("= ", "=");
-        code = code.replaceAll(" ;", ";");
-        code = code.replaceAll("; ", ";");
-        code = code.replaceAll("\\{ ", "\\{");
-        code = code.replaceAll(" \\{", "\\{");
-        code = code.replaceAll("\\} ", "\\}");
-        code = code.replaceAll(" \\}", "\\}");
-        code = code.replaceAll("\\) ", "\\)");
-        code = code.replaceAll(" \\)", "\\)");
-        code = code.replaceAll("\\( ", "\\(");
-        code = code.replaceAll(" \\(", "\\(");
-        code = code.replaceAll(": ", ":");
-        code = code.replaceAll(" :", ":");
-        return code;
+    
+    public static String getSourceCode(Flowchart<LayoutSegment, LayoutElement> flowchart, String name) {
+        Java instance = new Java();
+        return instance.generateSourceCode(flowchart, name);
     }
 
-    public static String getSourceCode(Flowchart<LayoutSegment, LayoutElement> flowchart,
-            String name)
+    private String generateSourceCode(Flowchart<LayoutSegment, LayoutElement> flowchart, String name)
     {
         errored = false;
         missingCommandWarning = false;
@@ -132,7 +93,7 @@ public final class Java
         return sourceCode;
     }
 
-    private static HashMap<String, String> setVariableTypes(HashMap<String, String> vars)
+    private HashMap<String, String> setVariableTypes(HashMap<String, String> vars)
     {
         HashMap<String, String> modifiedVars = new HashMap<>();
 
@@ -166,7 +127,7 @@ public final class Java
         return modifiedVars;
     }
 
-    private static String setVariableType(String key, String value, boolean iterating)
+    private String setVariableType(String key, String value, boolean iterating)
     {
         if (!iterating) {
             if (value.startsWith("[") && value.endsWith("]")) {
@@ -201,7 +162,7 @@ public final class Java
         return key;
     }
 
-    private static void findAndSetVariables(Flowchart<LayoutSegment, LayoutElement> flowchart,
+    private void findAndSetVariables(Flowchart<LayoutSegment, LayoutElement> flowchart,
             HashMap<String, String> vars, HashMap<String, String> arrayVars)
     {
         for (LayoutSegment segment : flowchart) {
@@ -244,7 +205,7 @@ public final class Java
 
     }
 
-    private static String generateSourceCode(LayoutSegment segment, String tabsDepth)
+    private String generateSourceCode(LayoutSegment segment, String tabsDepth)
     {
         String pairedCommentText = null;
         boolean lastWasPairedComment = false;
@@ -518,7 +479,7 @@ public final class Java
         return sourceCode;
     }
 
-    private static String readLineToVariable(String variableName)
+    private String readLineToVariable(String variableName)
     {
         if (variableName == null || variableName.equals("")) {
             return "{data type of variable} {variable name} = scanner.next{variable type}();";
@@ -535,7 +496,7 @@ public final class Java
         return variableName;
     }
 
-    private static boolean isElseIf(LayoutSegment segment)
+    private boolean isElseIf(LayoutSegment segment)
     {
         if (segment.getParentElement() != null
                 && segment.getParentElement().getSymbol() instanceof Decision && !(segment.getParentElement().getSymbol() instanceof Switch)
@@ -550,12 +511,12 @@ public final class Java
         return false;
     }
 
-    private static String insertSemicolon()
+    private String insertSemicolon()
     {
         return ";" + LINE_SEP;
     }
 
-    private static boolean containsFunctionalSymbols(LayoutSegment segment, int actualElementIndex)
+    private boolean containsFunctionalSymbols(LayoutSegment segment, int actualElementIndex)
     {
         for (int i = actualElementIndex + 1; i < segment.size(); i++) {
             Symbol symbol = segment.getElement(i).getSymbol();
@@ -567,7 +528,7 @@ public final class Java
         return false;
     }
 
-    private static String getSourceCommentText(String commentText, String tabsDepth)
+    private String getSourceCommentText(String commentText, String tabsDepth)
     {
         commentText = commentText.replaceAll("\r|[^\r]\n", LINE_SEP + tabsDepth + "\t");
         if (commentText.contains("\n") || commentText.contains("\r")) {

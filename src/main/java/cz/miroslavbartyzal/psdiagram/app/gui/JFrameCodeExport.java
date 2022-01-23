@@ -93,7 +93,7 @@ public class JFrameCodeExport extends javax.swing.JFrame
         setAlwaysOnTop(true);
         setType(java.awt.Window.Type.UTILITY);
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Výstupní zdrojový kód"));
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("<html>Výstupní zdrojový kód</html>"));
 
         jTextAreaCode.setColumns(20);
         jTextAreaCode.setRows(5);
@@ -125,7 +125,7 @@ public class JFrameCodeExport extends javax.swing.JFrame
         });
         jPanel5.add(jButtonGenerate);
 
-        jPanelDescription.setBorder(javax.swing.BorderFactory.createTitledBorder("Popis funkce"));
+        jPanelDescription.setBorder(javax.swing.BorderFactory.createTitledBorder("<html>Popis funkce</html>"));
 
         jLabel1.setText("<html>\nTato funkce slouží k vygenerování zdrojového kódu některého z podporovaných programovacích jazyků z vytvořeného vývojového diagramu.<br /><br />\nSprávnost vygenerovaného zdrojového kódu není vždy stoprocentní, je proto doporučeno výsledný kód ještě překontrolovat.\n</html>");
         jLabel1.setVerticalAlignment(javax.swing.SwingConstants.TOP);
@@ -141,7 +141,7 @@ public class JFrameCodeExport extends javax.swing.JFrame
             .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
-        jPanelCodes.setBorder(javax.swing.BorderFactory.createTitledBorder("<html>\nVolba programovacího jazyka\n</html>"));
+        jPanelCodes.setBorder(javax.swing.BorderFactory.createTitledBorder("<html>Volba programovacího jazyka</html>"));
         jPanelCodes.setMinimumSize(new java.awt.Dimension(150, 0));
         jPanelCodes.setPreferredSize(new java.awt.Dimension(150, 42));
         jPanelCodes.setLayout(new javax.swing.BoxLayout(jPanelCodes, javax.swing.BoxLayout.PAGE_AXIS));

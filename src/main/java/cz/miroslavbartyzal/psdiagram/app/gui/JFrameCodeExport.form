@@ -79,7 +79,7 @@
           <Properties>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                <TitledBorder title="V&#xfd;stupn&#xed; zdrojov&#xfd; k&#xf3;d"/>
+                <TitledBorder title="&lt;html&gt;V&#xfd;stupn&#xed; zdrojov&#xfd; k&#xf3;d&lt;/html&gt;"/>
               </Border>
             </Property>
           </Properties>
@@ -163,7 +163,7 @@
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                    <TitledBorder title="Popis funkce"/>
+                    <TitledBorder title="&lt;html&gt;Popis funkce&lt;/html&gt;"/>
                   </Border>
                 </Property>
               </Properties>
@@ -193,7 +193,7 @@
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                    <TitledBorder title="&lt;html&gt;&#xa;Volba programovac&#xed;ho jazyka&#xa;&lt;/html&gt;"/>
+                    <TitledBorder title="&lt;html&gt;Volba programovac&#xed;ho jazyka&lt;/html&gt;"/>
                   </Border>
                 </Property>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">

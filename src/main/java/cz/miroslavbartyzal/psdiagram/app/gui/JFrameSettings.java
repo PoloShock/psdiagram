@@ -215,7 +215,7 @@ public final class JFrameSettings extends javax.swing.JFrame
 
         jPanel9.setPreferredSize(new java.awt.Dimension(0, 0));
 
-        jPanel10.setBorder(javax.swing.BorderFactory.createTitledBorder("Při spuštění"));
+        jPanel10.setBorder(javax.swing.BorderFactory.createTitledBorder("<html>Při spuštění</html>"));
 
         jCheckBoxLoadLast.setText("Načítat předchozí uložený diagram");
         jCheckBoxLoadLast.addActionListener(new java.awt.event.ActionListener()
@@ -300,7 +300,7 @@ public final class JFrameSettings extends javax.swing.JFrame
 
         jPanel3.setPreferredSize(new java.awt.Dimension(0, 0));
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Nakládání s proměnnými"));
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("<html>Nakládání s proměnnými</html>"));
 
         buttonGroupScopes.add(jRadioButtonGlobalScope);
         jRadioButtonGlobalScope.setText("Globální přístup");
@@ -355,7 +355,7 @@ public final class JFrameSettings extends javax.swing.JFrame
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
-        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Animace"));
+        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("<html>Animace</html>"));
 
         jCheckBoxBallShine.setText("Záře průchozí kuličky");
         jCheckBoxBallShine.addActionListener(new java.awt.event.ActionListener()
@@ -471,7 +471,7 @@ public final class JFrameSettings extends javax.swing.JFrame
 
         jPanel6.setPreferredSize(new java.awt.Dimension(0, 0));
 
-        jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder("Export do obrázku"));
+        jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder("<html>Export do obrázku</html>"));
 
         jCheckBoxExportTransparency.setText("Používat transparentní pozadí");
         jCheckBoxExportTransparency.addActionListener(new java.awt.event.ActionListener()
@@ -502,7 +502,7 @@ public final class JFrameSettings extends javax.swing.JFrame
                 .addContainerGap(114, Short.MAX_VALUE))
         );
 
-        jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder("Export obecné"));
+        jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder("<html>Export obecné</html>"));
 
         jLabel6.setText("Okraje exportovaného diagramu: ");
 

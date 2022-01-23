@@ -158,7 +158,7 @@ public final class Goto extends AbstractSymbolFunctionForm
         jRadioButtonContinue = new javax.swing.JRadioButton();
         jRadioButtonGoto = new javax.swing.JRadioButton();
 
-        setBorder(javax.swing.BorderFactory.createTitledBorder("<html>\nSpojka - goto, break, nebo continue\n</html>"));
+        setBorder(javax.swing.BorderFactory.createTitledBorder("<html>Spojka - goto, break, nebo continue</html>"));
         setPreferredSize(new java.awt.Dimension(187, 493));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);

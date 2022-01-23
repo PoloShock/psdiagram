@@ -28,6 +28,8 @@ import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.NumericValueFilter;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.ValueFilter;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.VariableFilter;
+import cz.miroslavbartyzal.psdiagram.app.parser.FlowchartGenerator;
+
 import java.awt.HeadlessException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -43,17 +45,15 @@ import javax.swing.JOptionPane;
  *
  * @author Miroslav Bartyzal (miroslavbartyzal@gmail.com)
  */
-public final class Pascal
+public final class Pascal implements FlowchartGenerator
 {
 
     // TODO nepozadovat jen cast mezi begin a end.
     // TODO více try, catch
     // TODO Pascal prevest do lowercase rovnou cely, protoze jinak by nemuseli souhlasit promenne - diagramy jsou casesensitive
     private static final int FLAGS = Pattern.CASE_INSENSITIVE | Pattern.MULTILINE;
-    private static final String INVALID_COMMAND = "Příkaz\nneprošel\nfiltrem";
-    private static final String LINE_SEP = System.lineSeparator();
-    private static boolean errored = false;
-    private static boolean missingCommandWarning = false;
+    private boolean errored = false;
+    private boolean missingCommandWarning = false;
 
     /**
      * Metoda pro získání instance Flowchart, tedy vývojového diagramu, ze
@@ -64,12 +64,18 @@ public final class Pascal
      */
     public static Flowchart<LayoutSegment, LayoutElement> getFlowchart(String code)
     {
+        Pascal instance = new Pascal();
+        return instance.generateFlowchart(code);
+    }
+    
+    private Flowchart<LayoutSegment, LayoutElement> generateFlowchart(String code)
+    {
         errored = false;
         LayoutSegment actualSegment = new LayoutSegment(null);
         Flowchart<LayoutSegment, LayoutElement> flowchart = new Flowchart<>(actualSegment);
 
         LayoutElement lastElement = actualSegment.addSymbol(null, EnumSymbol.STARTEND.getInstance(
-                "Start"));
+                "Začátek"));
         actualSegment.addSymbol(lastElement, EnumSymbol.STARTEND.getInstance("Konec"));
 
         generateFlowchart(parseCommands(code), actualSegment, actualSegment.getElement(0), false);
@@ -79,7 +85,7 @@ public final class Pascal
         return flowchart;
     }
 
-    private static void generateFlowchart(ArrayList<String> commands, LayoutSegment actualSegment,
+    private void generateFlowchart(ArrayList<String> commands, LayoutSegment actualSegment,
             LayoutElement actualElement, boolean onlyOneCommand)
     {
         while (!commands.isEmpty() && !errored) {
@@ -131,7 +137,8 @@ public final class Pascal
                     if (!VariableFilter.isValid(var) || !ValueFilter.isValid(value)) {
                         // udaje neprosli filtrem
                         actualElement.getSymbol().setValueAndSize(INVALID_COMMAND);
-                        actualElement = AddComment(actualSegment, actualElement, command, true);
+                        actualElement = FlowchartGenerator.super.addComment(actualSegment, actualElement, command, 
+                                true);
                         var = "";
                     }
 
@@ -157,7 +164,7 @@ public final class Pascal
                         if (!VariableFilter.isValid(var)) {
                             // udaje neprosli filtrem
                             actualElement.getSymbol().setValueAndSize(INVALID_COMMAND);
-                            actualElement = AddComment(actualSegment, actualElement, command,
+                            actualElement = FlowchartGenerator.super.addComment(actualSegment, actualElement, command,
                                     true);
                             command = "";
                         }
@@ -177,7 +184,7 @@ public final class Pascal
                         if (!ValueFilter.isValid(value)) {
                             // udaje neprosli filtrem
                             actualElement.getSymbol().setValueAndSize(INVALID_COMMAND);
-                            actualElement = AddComment(actualSegment, actualElement, command,
+                            actualElement = FlowchartGenerator.super.addComment(actualSegment, actualElement, command,
                                     true);
                             command = "";
                         }
@@ -217,7 +224,7 @@ public final class Pascal
                                         inc)) {
                             // udaje neprosli filtrem
                             actualElement.getSymbol().setValueAndSize(INVALID_COMMAND);
-                            AddComment(actualSegment, actualElement, command, true); // neni sance ze by bylo obsazeno, proto ani neupravuji actual element
+                            FlowchartGenerator.super.addComment(actualSegment, actualElement, command, true); // neni sance ze by bylo obsazeno, proto ani neupravuji actual element
                             command = "";
                         }
 
@@ -236,7 +243,7 @@ public final class Pascal
                                 array)) {
                             // udaje neprosli filtrem
                             actualElement.getSymbol().setValueAndSize(INVALID_COMMAND);
-                            AddComment(actualSegment, actualElement, command, true); // neni sance ze by bylo obsazeno, proto ani neupravuji actual element
+                            FlowchartGenerator.super.addComment(actualSegment, actualElement, command, true); // neni sance ze by bylo obsazeno, proto ani neupravuji actual element
                             command = "";
                         }
 
@@ -265,7 +272,7 @@ public final class Pascal
                         if (!BooleanValueFilter.isValid(condition)) {
                             // udaje neprosli filtrem
                             actualElement.getSymbol().setValueAndSize(INVALID_COMMAND);
-                            AddComment(actualSegment, actualElement, command, true); // neni sance ze by bylo obsazeno, proto ani neupravuji actual element
+                            FlowchartGenerator.super.addComment(actualSegment, actualElement, command, true); // neni sance ze by bylo obsazeno, proto ani neupravuji actual element
                             condition = "";
                         }
                     } else {
@@ -293,11 +300,11 @@ public final class Pascal
                         // udaje neprosli filtrem
                         actualNoCommentElement.getSymbol().setValueAndSize(INVALID_COMMAND);
                         if (actualElement.equals(actualNoCommentElement)) {
-                            actualElement = AddComment(actualSegment, actualElement, condition,
+                            actualElement = FlowchartGenerator.super.addComment(actualSegment, actualElement, condition,
                                     true);
                         } else {
                             // neni-li actualNoCommentElement actualElement, musim zachovat aktualni element aktualnim elementem (tento komentar ma byt co nejblize parent symbolu)
-                            AddComment(actualSegment, actualNoCommentElement, condition, true);
+                            FlowchartGenerator.super.addComment(actualSegment, actualNoCommentElement, condition, true);
                         }
                         condition = "";
                     }
@@ -319,7 +326,7 @@ public final class Pascal
                     if (!VariableFilter.isValid(conditionVar)) {
                         // udaje neprosli filtrem
                         actualElement.getSymbol().setValueAndSize(INVALID_COMMAND);
-                        actualElement = AddComment(actualSegment, actualElement, command, true);
+                        actualElement = addComment(actualSegment, actualElement, command, true);
                         conditionVar = "";
                     }
 
@@ -341,7 +348,7 @@ public final class Pascal
                     if (!BooleanValueFilter.isValid(condition)) {
                         // udaje neprosli filtrem
                         actualElement.getSymbol().setValueAndSize(INVALID_COMMAND);
-                        AddComment(actualSegment, actualElement, command, true); // neni sance ze by bylo obsazeno, proto ani neupravuji actual element
+                        FlowchartGenerator.super.addComment(actualSegment, actualElement, command, true); // neni sance ze by bylo obsazeno, proto ani neupravuji actual element
                         condition = "";
                     }
 
@@ -371,7 +378,7 @@ public final class Pascal
                     //                        break;
                     //                    }
                     //                }
-                    actualElement = AddComment(actualSegment, actualElement, getCommentCommand(
+                    actualElement = addComment(actualSegment, actualElement, getCommentCommand(
                             command), paired);
                 } else if (Pattern.compile("^\\s*goto [\\S\\s]+", FLAGS).matcher(command).matches() || Pattern.compile(
                         "^\\s*break[\\S\\s]*", FLAGS).matcher(command).matches() || Pattern.compile(
@@ -426,11 +433,12 @@ public final class Pascal
                             // udaje neprosli filtrem
                             actualNoCommentElement.getSymbol().setValueAndSize(INVALID_COMMAND);
                             if (actualElement.equals(actualNoCommentElement)) {
-                                actualElement = AddComment(actualSegment, actualElement, command,
-                                        true);
+                                actualElement = FlowchartGenerator.super.addComment(actualSegment, actualElement, 
+                                        command, true);
                             } else {
                                 // neni-li actualNoCommentElement actualElement, musim zachovat aktualni element aktulanim elementem (tento komentar ma byt co nejblize parent symbolu)
-                                AddComment(actualSegment, actualNoCommentElement, command, true);
+                                FlowchartGenerator.super.addComment(actualSegment, actualNoCommentElement, command, 
+                                        true);
                             }
                             constant = "";
                         }
@@ -451,10 +459,9 @@ public final class Pascal
                                 segmentConstants);
                         if (!constant.equals("")) {
                             // value napsat jen do aktualniho segmentu, v ostatnich uz je
-                            actualNoCommentElement.getInnerSegment(
-                                    actualNoCommentElement.getInnerSegmentsCount() - 1).setDescription(
-                                            actualNoCommentElement.getInnerSegment(
-                                                    actualNoCommentElement.getInnerSegmentsCount() - 1).getDefaultDescription());
+                            LayoutSegment lastInnerSegment = actualNoCommentElement.getInnerSegment(
+                                    actualNoCommentElement.getInnerSegmentsCount() - 1);
+                            lastInnerSegment.setDescription(lastInnerSegment.getDefaultDescription());
                         } else {
                             for (int i = 0; i < segmentConstants.length - 1; i++) {
                                 actualNoCommentElement.getInnerSegment(i + 1).setDescription(null);
@@ -483,7 +490,7 @@ public final class Pascal
                                     break;
                                 }
                             } else {
-                                actualElement = AddComment(actualSegment, actualElement,
+                                actualElement = FlowchartGenerator.super.addComment(actualSegment, actualElement,
                                         getCommentCommand(commands.get(i)), commands.get(i).matches(
                                                 "[ \\t]*[^\\s][\\s\\S]+"));
                                 commands.remove(i);
@@ -525,7 +532,7 @@ public final class Pascal
 //
 //        return onElement;
 //    }
-    private static boolean isComment(String command)
+    private boolean isComment(String command)
     {
         if (command.matches("^\\s*\\{[\\S\\s]+") || command.matches("^\\s*\\(\\*[\\S\\s]+") || command.matches(
                 "^\\s*\\/\\/[\\S\\s]+")) {
@@ -534,7 +541,7 @@ public final class Pascal
         return false;
     }
 
-    private static String getCommentCommand(String command)
+    private String getCommentCommand(String command)
     {
         command = command.trim();
         if (command.startsWith("{")) {
@@ -547,7 +554,7 @@ public final class Pascal
         return null;
     }
 
-    private static boolean oneCommandOnly(ArrayList<String> commands)
+    private boolean oneCommandOnly(ArrayList<String> commands)
     {
         for (int i = 0; i < commands.size(); i++) {
             String command = commands.get(i);
@@ -563,7 +570,7 @@ public final class Pascal
         return true;
     }
 
-    private static String checkConstantForRanges(String constant)
+    private String checkConstantForRanges(String constant)
     {
         String[] split = constant.split(",");
         String retConst = "";
@@ -607,7 +614,7 @@ public final class Pascal
         return retConst.substring(1);
     }
 
-    private static String checkForMultidimArray(String sourceCode)
+    private String checkForMultidimArray(String sourceCode)
     {
 //        return var.replaceAll("\\,", "]["); - nemohu pouzit, zkonvertovali by se i carky oddelujici parametry metod
 
@@ -667,47 +674,7 @@ public final class Pascal
         return sourceCode;
     }
 
-    private static LayoutElement AddComment(LayoutSegment actualSegment, LayoutElement actualElement,
-            String commentText, boolean pair)
-    {
-        LayoutElement beforeElement = null;
-        if (pair && !(actualElement.getSymbol() instanceof Comment)) {
-            int index = actualSegment.indexOfElement(actualElement);
-            if (index == -1) {
-                if (actualSegment.getParentElement().indexOfInnerSegment(actualSegment) == 1 && !(actualSegment.getParentElement().getSymbol() instanceof Switch)) { // jen pri prvnim innersegmentu v neswitch.. protoze podle kodu se komentar ocekava v jeho vetvi, ne v symbolu
-                    // jedna se o parovy komentar, ktery by mel nalezet rodici actualsegmentu
-                    int indx = actualElement.getParentSegment().indexOfElement(actualElement);
-                    if (indx != -1 && (indx == 0 || !(actualElement.getParentSegment().getElement(
-                            indx - 1).getSymbol() instanceof Comment) || !actualElement.getParentSegment().getElement(
-                                    indx - 1).getSymbol().hasPairSymbol())) {
-                        // jestli rodic uz nema parovy komentar, pridelim mu ho ted, protoze tim nezmenim actual element
-                        actualSegment = actualElement.getParentSegment();
-                        if (indx == 0) {
-                            beforeElement = actualSegment.getParentElement();
-                        } else {
-                            beforeElement = actualSegment.getElement(indx - 1);
-                        }
-                    }
-                }
-            } else if (index == 0) {
-                beforeElement = actualSegment.getParentElement();
-            } else if (!(actualSegment.getElement(index - 1).getSymbol() instanceof Comment) || !actualSegment.getElement(
-                    index - 1).getSymbol().hasPairSymbol()) {
-                beforeElement = actualSegment.getElement(index - 1);
-            }
-        }
-
-        Symbol comment = EnumSymbol.COMMENT.getInstance(commentText);
-        if (beforeElement != null) {
-            comment.setHasPairSymbol(true);
-            actualSegment.addSymbol(beforeElement, comment);
-            return actualElement;
-        } else {
-            return actualSegment.addSymbol(actualElement, comment);
-        }
-    }
-
-    private static ArrayList<String> parseCommands(String code)
+    private ArrayList<String> parseCommands(String code)
     {
         ArrayDeque<String> quotes = new ArrayDeque<>();
         ArrayDeque<String> comments = new ArrayDeque<>();
@@ -833,7 +800,7 @@ public final class Pascal
         return commands;
     }
 
-    private static String parseQuotes(String code, ArrayDeque<String> arrayToSaveQuotes)
+    private String parseQuotes(String code, ArrayDeque<String> arrayToSaveQuotes)
     {
 //        Matcher matcher = Pattern.compile("\'[^\']*\'", FLAGS).matcher(code);
 //        StringBuffer sb = new StringBuffer();
@@ -971,7 +938,7 @@ public final class Pascal
         return newCode;
     }
 
-    private static String parseComments(String code, ArrayDeque<String> arrayToSaveComments)
+    private String parseComments(String code, ArrayDeque<String> arrayToSaveComments)
     {
         // nested jobs are too much for regex :(
         boolean lineStart = false;
@@ -1100,6 +1067,13 @@ public final class Pascal
     public static String getSourceCode(Flowchart<LayoutSegment, LayoutElement> flowchart,
             String name)
     {
+        Pascal instance = new Pascal();
+        return instance.generateSourceCode(flowchart, name);
+    }
+    
+    private String generateSourceCode(Flowchart<LayoutSegment, LayoutElement> flowchart,
+            String name)
+    {
         errored = false;
         missingCommandWarning = false;
         // generovani hlavicky
@@ -1144,7 +1118,7 @@ public final class Pascal
         return sourceCode;
     }
 
-    private static void findAndSetVariables(Flowchart<LayoutSegment, LayoutElement> flowchart,
+    private void findAndSetVariables(Flowchart<LayoutSegment, LayoutElement> flowchart,
             TreeSet<String> vars, TreeSet<String> arrayVars)
     {
         for (LayoutSegment segment : flowchart) {
@@ -1175,7 +1149,7 @@ public final class Pascal
         }
     }
 
-    private static String generateSourceCode(LayoutSegment segment, String tabsDepth)
+    private String generateSourceCode(LayoutSegment segment, String tabsDepth)
     {
         String pairedCommentText = null;
         boolean lastWasPairedComment = false;
@@ -1451,7 +1425,7 @@ public final class Pascal
         return sourceCode;
     }
 
-    private static boolean isElseIf(LayoutSegment segment)
+    private boolean isElseIf(LayoutSegment segment)
     {
         if (segment.getParentElement() != null
                 && segment.getParentElement().getSymbol() instanceof Decision && !(segment.getParentElement().getSymbol() instanceof Switch)
@@ -1466,7 +1440,7 @@ public final class Pascal
         return false;
     }
 
-    private static String getNegatedCondition(String condition)
+    private String getNegatedCondition(String condition)
     {
         condition = condition.trim();
 
@@ -1500,7 +1474,7 @@ public final class Pascal
         return "!(" + condition + ")";
     }
 
-    private static String maybeInsSemicolon(LayoutSegment segment, int actualElementIndex)
+    private String maybeInsSemicolon(LayoutSegment segment, int actualElementIndex)
     {
         if (containsFunctionalSymbols(segment, actualElementIndex)) {
             return ";";
@@ -1509,7 +1483,7 @@ public final class Pascal
         }
     }
 
-    private static boolean containsFunctionalSymbols(LayoutSegment segment, int actualElementIndex)
+    private boolean containsFunctionalSymbols(LayoutSegment segment, int actualElementIndex)
     {
         for (int i = actualElementIndex + 1; i < segment.size(); i++) {
             Symbol symbol = segment.getElement(i).getSymbol();
@@ -1521,7 +1495,7 @@ public final class Pascal
         return false;
     }
 
-    private static String getSourceCommentText(String commentText, String tabsDepth)
+    private String getSourceCommentText(String commentText, String tabsDepth)
     {
         commentText = commentText.replaceAll("\r|[^\r]\n", LINE_SEP + tabsDepth + "\t");
         if (commentText.contains("\n") || commentText.contains("\r")) {
@@ -1532,7 +1506,7 @@ public final class Pascal
     }
 
     // + u stringu nahradit ,
-    private static String convertCodeToPascal(String code)
+    private String convertCodeToPascal(String code)
     {
         code = code.replaceAll("\\]\\[", ","); // multidim. pole
         code = code.replaceAll("\\\\?\\'", "''") // v pascalu je nutne escapovat znak ' (v jave se escapuje volitelne)

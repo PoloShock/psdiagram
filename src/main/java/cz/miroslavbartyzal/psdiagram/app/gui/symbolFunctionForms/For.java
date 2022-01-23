@@ -222,6 +222,19 @@ public final class For extends AbstractSymbolFunctionForm
         commands.put("array", array);
         symbol.setCommands(commands);
     }
+    
+    public static boolean areValuesValid(String var, String from, String to, String inc)
+    {
+        return NoArrayVariableFilter.isValid(var) 
+                && NumericValueFilter.isValid(from) 
+                && NumericValueFilter.isValid(to)
+                && NumericValueFilter.isValid(inc);
+    }
+    
+    public static boolean areValuesValid(String var, String array) {
+        return NoArrayVariableFilter.isValid(var) 
+                && VariableFilter.isValid(array);
+    }
 
     private void setForVisible()
     {
@@ -268,7 +281,7 @@ public final class For extends AbstractSymbolFunctionForm
         jLabelExampleLabel2 = new javax.swing.JLabel();
         jLabelExamples2 = new javax.swing.JLabel();
 
-        setBorder(javax.swing.BorderFactory.createTitledBorder("<html>\nCyklus s pevným počtem opakování\n</html>"));
+        setBorder(javax.swing.BorderFactory.createTitledBorder("<html>Cyklus s pevným počtem opakování</html>"));
         setPreferredSize(new java.awt.Dimension(187, 493));
 
         jLabelVar.setText("Proměnná cyklu:");

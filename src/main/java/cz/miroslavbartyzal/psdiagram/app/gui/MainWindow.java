@@ -887,7 +887,7 @@ public final class MainWindow extends javax.swing.JFrame
     jCheckBoxDefaultText.setToolTipText("Nastaví text symbolu, resp. jeho větví, na základě vyplněné funkce");
     jCheckBoxDefaultText.setActionCommand("edit/defaultText");
 
-    jPanelTextSymbol.setBorder(javax.swing.BorderFactory.createTitledBorder("Text symbolu"));
+    jPanelTextSymbol.setBorder(javax.swing.BorderFactory.createTitledBorder("<html>Text symbolu</html>"));
 
     jScrollPane1.setViewportView(jTextAreaTextSymbol);
 
@@ -904,7 +904,7 @@ public final class MainWindow extends javax.swing.JFrame
             .addContainerGap())
     );
 
-    jPanelTextSegment.setBorder(javax.swing.BorderFactory.createTitledBorder("Text větví symbolu"));
+    jPanelTextSegment.setBorder(javax.swing.BorderFactory.createTitledBorder("<html>Text větví symbolu</html>"));
 
     jComboBoxSegment.setActionCommand("edit/segmentText");
 
@@ -985,7 +985,7 @@ public final class MainWindow extends javax.swing.JFrame
         jPanelEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
         .addGroup(jPanelEditLayout.createSequentialGroup()
             .addGap(0, 0, 0)
-            .addComponent(jPanelDetails, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanelDetails, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
             .addGap(0, 0, 0)
             .addComponent(jToolBarSymbols, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addGap(0, 0, 0))

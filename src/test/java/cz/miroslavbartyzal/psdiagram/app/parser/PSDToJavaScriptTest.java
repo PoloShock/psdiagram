@@ -5,7 +5,7 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.parser;
 
-import cz.miroslavbartyzal.psdiagram.app.parser.antlr.ANTLRParser;
+import cz.miroslavbartyzal.psdiagram.app.parser.psd.AntlrPsdParser;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -16,7 +16,7 @@ import org.junit.Test;
 public class PSDToJavaScriptTest
 {
     
-    private final ANTLRParser parser = new ANTLRParser();
+    private final AntlrPsdParser parser = new AntlrPsdParser();
     
     @Test
     public void visitorTest1()

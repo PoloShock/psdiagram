@@ -14,7 +14,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 
 /**
- * Tato třída představuje fromulář s grafickou reprezentací symbolu, jehož
+ * Tato třída představuje formulář s grafickou reprezentací symbolu, jehož
  * funkce má být editována. Zároveň poskytuje možnost přidání informativního
  * textu.
  *
@@ -34,7 +34,7 @@ public final class JPanelSymbol extends javax.swing.JPanel
         this.symbol = symbol;
         this.jLabelDescription = jLabelDescription;
 
-        super.setBorder(javax.swing.BorderFactory.createTitledBorder("Symbol"));
+        super.setBorder(javax.swing.BorderFactory.createTitledBorder("<html>Symbol</html>"));
         super.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         Insets ins = super.getInsets();
 

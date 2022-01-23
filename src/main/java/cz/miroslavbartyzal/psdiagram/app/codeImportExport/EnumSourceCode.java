@@ -67,7 +67,7 @@ public enum EnumSourceCode
         @Override
         public String getGuideText()
         {
-            return "vlozte len telo jednej funckie !! od '{' po '}' !!";
+            return "vložte jen tělo jedné funkce mezi složenými závorkami";
         }
     };
 

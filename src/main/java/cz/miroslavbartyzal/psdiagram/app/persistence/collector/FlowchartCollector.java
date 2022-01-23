@@ -37,6 +37,10 @@ public class FlowchartCollector
 
     public void uploadFlowchart(String flowchartToSend, File file)
     {
+        if (file == null) {
+            return;
+        }
+        
         uploading = true;
 
         String fileName = file.getName();

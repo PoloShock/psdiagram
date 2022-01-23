@@ -116,6 +116,10 @@ public final class LoopEnd extends AbstractSymbolFunctionForm
         commands.put("condition", condition);
         symbol.setCommands(commands);
     }
+    
+    public static boolean isConditionValid(String condition) {
+        return BooleanValueFilter.isValid(condition);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -134,7 +138,7 @@ public final class LoopEnd extends AbstractSymbolFunctionForm
         jLabel3 = new javax.swing.JLabel();
         jLabelExamples = new javax.swing.JLabel();
 
-        setBorder(javax.swing.BorderFactory.createTitledBorder("<html>\nCyklus s podmínkou na konci\n</html>"));
+        setBorder(javax.swing.BorderFactory.createTitledBorder("<html>Cyklus s podmínkou na konci</html>"));
         setPreferredSize(new java.awt.Dimension(187, 493));
 
         jLabel1.setText("Rozhodovací výraz:");

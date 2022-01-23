@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters;
 
 import cz.miroslavbartyzal.psdiagram.app.global.MyExceptionHandler;
@@ -12,12 +8,12 @@ import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.BadSyntaxJTextF
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.SquiggleHighlighter;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.UnknownSyntaxJTextFieldBorder;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.ValidationListener;
-import cz.miroslavbartyzal.psdiagram.app.parser.EnumRule;
-import cz.miroslavbartyzal.psdiagram.app.parser.PSDParseError;
-import cz.miroslavbartyzal.psdiagram.app.parser.PSDParseResult;
-import cz.miroslavbartyzal.psdiagram.app.parser.PSDParser;
-import cz.miroslavbartyzal.psdiagram.app.parser.PSDParserListener;
-import cz.miroslavbartyzal.psdiagram.app.parser.antlr.ANTLRParser;
+import cz.miroslavbartyzal.psdiagram.app.parser.psd.EnumRule;
+import cz.miroslavbartyzal.psdiagram.app.parser.ParseError;
+import cz.miroslavbartyzal.psdiagram.app.parser.ParseResult;
+import cz.miroslavbartyzal.psdiagram.app.parser.psd.PsdParser;
+import cz.miroslavbartyzal.psdiagram.app.parser.psd.PsdParserListener;
+import cz.miroslavbartyzal.psdiagram.app.parser.psd.AntlrPsdParser;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -34,9 +30,9 @@ import javax.swing.text.DocumentFilter;
  * Tato abstraktní třída představuje obecný filtr textového pole pro editaci
  * funkce symbolu.</p>
  *
- * Filtry jsou aplikovány za účelem zabránění nechtěnné syntaktické chyby z
+ * Filtry jsou aplikovány za účelem zabránění nechtěné syntaktické chyby z
  * uživatelovi strany. Měli by zpříjemnit a zároveň zpřesnit uživatelovu práci
- * při nastavování funkce symbolu.<br />
+ * při nastavování funkce symbolu.
  * <p>
  * Filtry jsou řešeny pomocí gramatiky.</p>
  *
@@ -54,9 +50,8 @@ public abstract class AbstractFilter extends DocumentFilter
     private final UnknownSyntaxJTextFieldBorder unknownSyntaxBorder;
     private Border currentBorder;
     private final List<Object> highlighterTags = new ArrayList<>();
-    private final PSDParserListener syntaxErrorListener = new SyntaxErrorListener();
-//    private final PSDParser PARSER = new ParboiledParser();
-    private final PSDParser PARSER = new ANTLRParser();
+    private final PsdParserListener syntaxErrorListener = new SyntaxErrorListener();
+    private final PsdParser PARSER = new AntlrPsdParser();
 
     public AbstractFilter(JTextField parentJTextField, ValidationListener validationListener,
             MaxBalloonSizeCallback maxBalloonSizeCallback)
@@ -78,7 +73,7 @@ public abstract class AbstractFilter extends DocumentFilter
             return true;
         }
 
-        return rule.parse(new ANTLRParser(), input);
+        return rule.parse(new AntlrPsdParser(), input);
     }
 
     public void parseInputAndUpdateGUI()
@@ -99,7 +94,7 @@ public abstract class AbstractFilter extends DocumentFilter
         }
     }
 
-    private class SyntaxErrorListener implements PSDParserListener
+    private class SyntaxErrorListener implements PsdParserListener
     {
 
         @Override
@@ -113,7 +108,7 @@ public abstract class AbstractFilter extends DocumentFilter
         }
 
         @Override
-        public void onRecoveryFinished(PSDParseResult parseResult)
+        public void onRecoveryFinished(ParseResult parseResult)
         {
             refreshSyntaxInfo(false, false);
             underlineParseErrors(parseResult);
@@ -243,7 +238,7 @@ public abstract class AbstractFilter extends DocumentFilter
         }
     }
 
-    private void underlineParseErrors(PSDParseResult parseResult)
+    private void underlineParseErrors(ParseResult parseResult)
     {
         if (!highlighterTags.isEmpty()) {
             for (Object highlighterTag : highlighterTags) {
@@ -252,7 +247,7 @@ public abstract class AbstractFilter extends DocumentFilter
             highlighterTags.clear();
         }
         if (parseResult != null) {
-            for (PSDParseError errorInfo : parseResult.getParseErrors()) {
+            for (ParseError errorInfo : parseResult.getParseErrors()) {
                 if (errorInfo.getStartIndex() >= 0 && errorInfo.getEndIndex() >= errorInfo.getStartIndex()) {
                     try {
                         SquiggleHighlighter squiggler = new SquiggleHighlighter(Color.RED,
@@ -268,7 +263,7 @@ public abstract class AbstractFilter extends DocumentFilter
 
     }
 
-    private void showParseErrorsAsBalloonInfo(PSDParseResult parseResult)
+    private void showParseErrorsAsBalloonInfo(ParseResult parseResult)
     {
         balloonToolTip.dismiss();
         if (parseResult == null || parseResult.isInputValid()) {
@@ -277,8 +272,8 @@ public abstract class AbstractFilter extends DocumentFilter
         }
 
         List<String> messagesAndCommands = new ArrayList<>();
-        for (Iterator<PSDParseError> it = parseResult.getParseErrors().iterator(); it.hasNext();) {
-            PSDParseError errorInfo = it.next();
+        for (Iterator<ParseError> it = parseResult.getParseErrors().iterator(); it.hasNext();) {
+            ParseError errorInfo = it.next();
             String message = "<html>";
             if (errorInfo.getErrorMessage() == null || errorInfo.getErrorMessage().length() == 0) {
                 message += "Detekována syntaktická chyba!";

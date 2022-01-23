@@ -3,13 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.miroslavbartyzal.psdiagram.app.parser.antlr;
+package cz.miroslavbartyzal.psdiagram.app.parser.javascript;
 
-import cz.miroslavbartyzal.psdiagram.app.parser.PSDGrammarParser;
-import cz.miroslavbartyzal.psdiagram.app.parser.PSDGrammarParserBaseVisitor;
+import cz.miroslavbartyzal.psdiagram.app.parser.psd.PSDGrammarParser;
+import cz.miroslavbartyzal.psdiagram.app.parser.psd.PSDGrammarParserBaseVisitor;
+
 import java.util.ArrayList;
 import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
@@ -17,12 +19,12 @@ import org.antlr.v4.runtime.tree.TerminalNode;
  *
  * @author Miroslav Bartyzal (miroslavbartyzal@gmail.com)
  */
-public class PSDToJavaScriptVisitor extends PSDGrammarParserBaseVisitor<String>
+public class PsdToJavaScriptVisitor extends PSDGrammarParserBaseVisitor<String>
 {
 
     private final String input;
 
-    public PSDToJavaScriptVisitor(String input)
+    public PsdToJavaScriptVisitor(String input)
     {
         this.input = input;
     }
@@ -98,7 +100,7 @@ public class PSDToJavaScriptVisitor extends PSDGrammarParserBaseVisitor<String>
         String rightOperandTrimmed = nodeText;
         String spaceRight = "";
         while (rightOperandTrimmed.matches(".*\\s$")) {
-            spaceRight = rightOperandTrimmed.substring(rightOperandTrimmed.length() - 1, rightOperandTrimmed.length()) + spaceRight;
+            spaceRight = rightOperandTrimmed.substring(rightOperandTrimmed.length() - 1) + spaceRight;
             rightOperandTrimmed = rightOperandTrimmed.substring(0, rightOperandTrimmed.length() - 1);
         }
         return new String[]{rightOperandTrimmed, spaceRight};
@@ -107,7 +109,7 @@ public class PSDToJavaScriptVisitor extends PSDGrammarParserBaseVisitor<String>
     @Override
     public String visitTerminal(TerminalNode node)
     {
-        if (node.getSymbol().getType() == PSDGrammarParser.EOF) {
+        if (node.getSymbol().getType() == Recognizer.EOF) {
             return "";
         }
         

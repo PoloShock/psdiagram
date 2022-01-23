@@ -275,7 +275,7 @@ public interface Symbol
     public void setHasPairSymbol(boolean hasPairSymbol);
 
     /**
-     * Metoda pro získání iformace, zda symbol má svůj párový symbol.
+     * Metoda pro získání informace, zda symbol má svůj párový symbol.
      *
      * @return true když symbol má svůj párový symbol
      */

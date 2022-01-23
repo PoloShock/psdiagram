@@ -1,12 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package cz.miroslavbartyzal.psdiagram.app.parser.antlr;
+package cz.miroslavbartyzal.psdiagram.app.parser;
 
-import cz.miroslavbartyzal.psdiagram.app.parser.PSDGrammarParser;
-import java.util.List;
+import cz.miroslavbartyzal.psdiagram.app.parser.psd.PSDGrammarParser;
+
 import org.antlr.v4.runtime.DefaultErrorStrategy;
 import org.antlr.v4.runtime.FailedPredicateException;
 import org.antlr.v4.runtime.InputMismatchException;
@@ -18,15 +13,29 @@ import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.Vocabulary;
 import org.antlr.v4.runtime.misc.IntervalSet;
 
+import java.util.List;
+
 /**
  * This class does only translation of ANTLR error messages.
  * The rest is the same. Needs to be checked on every ANTLR update!
  *
  * @author Miroslav Bartyzal (miroslavbartyzal@gmail.com)
  */
-public class ANTLRErrorStrategyTranslated extends DefaultErrorStrategy
+public class AntlrErrorStrategyTranslated extends DefaultErrorStrategy
 {
 
+    private final boolean includeMessageForNoViableAlternative;
+    
+    public AntlrErrorStrategyTranslated()
+    {
+        this(true);
+    }
+    
+    public AntlrErrorStrategyTranslated(boolean includeMessageForNoViableAlternative)
+    {
+        this.includeMessageForNoViableAlternative = includeMessageForNoViableAlternative;
+    }
+    
     @Override
     public void reportError(Parser recognizer, RecognitionException e)
     {
@@ -53,6 +62,11 @@ public class ANTLRErrorStrategyTranslated extends DefaultErrorStrategy
     @Override
     protected void reportNoViableAlternative(Parser recognizer, NoViableAltException e)
     {
+        if (!includeMessageForNoViableAlternative) {
+            recognizer.notifyErrorListeners(e.getOffendingToken(), null, e);
+            return;
+        }
+        
         String msg = "Nalezena syntaktická chyba.";
 
         TokenStream tokens = recognizer.getInputStream();
@@ -131,13 +145,16 @@ public class ANTLRErrorStrategyTranslated extends DefaultErrorStrategy
         if (t == null) {
             return "<null>";
         }
+        if (t.getType() == Token.EOF) {
+            return "<konec řádku>";
+        }
+        if (t.getType() == Token.EPSILON) {
+            return "<prázdný řetěz>";
+        }
+        
         String s = getSymbolText(t);
         if (s == null) {
-            if (getSymbolType(t) == Token.EOF) {
-                s = "<konec řádku>";
-            } else {
-                s = "<" + getSymbolType(t) + ">";
-            }
+            s = "<" + getSymbolType(t) + ">";
         }
         return escapeWSAndQuote(s);
     }
@@ -145,9 +162,6 @@ public class ANTLRErrorStrategyTranslated extends DefaultErrorStrategy
     @Override
     protected String escapeWSAndQuote(String s)
     {
-//        if (s == null) {
-//            return s;
-//        }
         s = s.replace("\n", "<konec řádku>");
         s = s.replace("\r", "<nový řádek>");
         s = s.replace("\t", "<tabulátor>");
@@ -166,7 +180,7 @@ public class ANTLRErrorStrategyTranslated extends DefaultErrorStrategy
         for (Integer tokenInt : tokenInts) {
 ////            if (tokenInt != PSDGrammarParser.INC && tokenInt != PSDGrammarParser.DEC) {
             String tokenName;
-            if (tokenInt == PSDGrammarParser.EOF) {
+            if (tokenInt == Token.EOF) {
                 tokenName = "<konec řádku>";
             } else if (tokenInt == Token.EPSILON) {
                 tokenName = "<prázdný řetěz>";

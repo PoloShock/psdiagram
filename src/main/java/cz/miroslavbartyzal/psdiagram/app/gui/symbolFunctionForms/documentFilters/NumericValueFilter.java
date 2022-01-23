@@ -6,7 +6,7 @@ package cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilter
 
 import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.MaxBalloonSizeCallback;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.ValidationListener;
-import cz.miroslavbartyzal.psdiagram.app.parser.EnumRule;
+import cz.miroslavbartyzal.psdiagram.app.parser.psd.EnumRule;
 import javax.swing.JTextField;
 
 /**
@@ -36,7 +36,7 @@ public final class NumericValueFilter extends AbstractFilter
     }
 
     /**
-     * Pokusí se daný textový řeťezec porovnat vůči tomuto filtru.
+     * Pokusí se daný textový řetězec porovnat vůči tomuto filtru.
      *
      * @param input text, který chceme prověřit
      * @return

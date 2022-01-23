@@ -4,6 +4,8 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.flowchart;
 
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Comment;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import java.awt.font.TextLayout;
 import java.util.ArrayList;
@@ -105,7 +107,11 @@ public abstract class FlowchartSegment<S extends FlowchartSegment<S, E>, E exten
             element.checkIDUniqueness();
             return lElements.get(0);
         }
+        
         int destIndex = lElements.indexOf(beforeElement) + 1;
+        if (destIndex < lElements.size()) {
+            offsetPairedCommentIfAdded(lElements.get(destIndex), element);
+        }
         lElements.add(destIndex, element);
         element.setParentSegment(getThis());
         element.checkIDUniqueness();
@@ -406,6 +412,18 @@ public abstract class FlowchartSegment<S extends FlowchartSegment<S, E>, E exten
     protected String getXmlID()
     {
         return xmlID;
+    }
+    
+    private void offsetPairedCommentIfAdded(E afterElement, E element) {
+        Symbol symbol = element.getSymbol();
+        if (symbol.hasPairSymbol() && symbol instanceof Comment) {
+            double afterElementWidth = afterElement.getSymbol().getWidth();
+            afterElementWidth = Math.floor(afterElementWidth / 2);
+            
+            Comment comment = (Comment) symbol;
+            comment.setCenterX(comment.getCenterX() + afterElementWidth);
+            comment.setRelativeX(comment.getRelativeX() + afterElementWidth);
+        }
     }
 
 }

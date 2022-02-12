@@ -1515,6 +1515,7 @@ public final class Pascal implements FlowchartGenerator
         code = code.replaceAll("\\!\\=", "<>");
         code = code.replaceAll("\\s*\\!\\s*", " not ");
         code = code.replaceAll("\\s*\\%\\s*", " mod ");
+        code = code.replaceAll("\\s*\\/\\/\\s*", " div ");
         code = code.replaceAll("\\s*\\&\\&\\s*", " and ");
         code = code.replaceAll("\\s*\\|\\|\\s*", " or ");
         return code;

@@ -205,9 +205,9 @@ public class JFrameCodeExport extends javax.swing.JFrame
 
     private void jButtonGenerateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGenerateActionPerformed
         String name;
-        if (SettingsHolder.settings.getActualFlowchartFile() != null) {
-            name = SettingsHolder.settings.getActualFlowchartFile().getName().substring(0,
-                    SettingsHolder.settings.getActualFlowchartFile().getName().length() - 4);
+        File actualFlowchartFile = SettingsHolder.settings.getActualFlowchartFile();
+        if (actualFlowchartFile != null) {
+            name = actualFlowchartFile.getName().substring(0, actualFlowchartFile.getName().lastIndexOf('.'));
         } else {
             name = "Bez_nazvu";
         }

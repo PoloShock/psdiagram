@@ -31,6 +31,7 @@ import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters
 import cz.miroslavbartyzal.psdiagram.app.parser.FlowchartGenerator;
 
 import java.awt.HeadlessException;
+import java.text.Normalizer;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -1068,7 +1069,14 @@ public final class Pascal implements FlowchartGenerator
             String name)
     {
         Pascal instance = new Pascal();
-        return instance.generateSourceCode(flowchart, name);
+        return instance.generateSourceCode(flowchart, normalizeAsVariable(name));
+    }
+    
+    private static String normalizeAsVariable(String name)
+    {
+        return Normalizer.normalize(name, Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "")
+                .replaceAll(" ", "_");
     }
     
     private String generateSourceCode(Flowchart<LayoutSegment, LayoutElement> flowchart,

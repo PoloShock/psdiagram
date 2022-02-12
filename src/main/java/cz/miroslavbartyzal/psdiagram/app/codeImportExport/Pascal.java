@@ -29,15 +29,16 @@ import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.ValueFilter;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.VariableFilter;
 import cz.miroslavbartyzal.psdiagram.app.parser.FlowchartGenerator;
+import cz.miroslavbartyzal.psdiagram.app.parser.SourceCodeGenerator;
 
 import java.awt.HeadlessException;
-import java.text.Normalizer;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import javax.swing.JOptionPane;
 
 /**
@@ -46,13 +47,13 @@ import javax.swing.JOptionPane;
  *
  * @author Miroslav Bartyzal (miroslavbartyzal@gmail.com)
  */
-public final class Pascal implements FlowchartGenerator
+public final class Pascal implements FlowchartGenerator, SourceCodeGenerator
 {
 
     // TODO nepozadovat jen cast mezi begin a end.
     // TODO více try, catch
-    // TODO Pascal prevest do lowercase rovnou cely, protoze jinak by nemuseli souhlasit promenne - diagramy jsou casesensitive
     private static final int FLAGS = Pattern.CASE_INSENSITIVE | Pattern.MULTILINE;
+    private static final String COMMENT_MARKER = "--komentář--";
     private boolean errored = false;
     private boolean missingCommandWarning = false;
 
@@ -696,6 +697,7 @@ public final class Pascal implements FlowchartGenerator
 
         // prizpusobeni odlisnosti pascalu
         code = Pattern.compile("(?<![\\w])mod(?![\\w])", FLAGS).matcher(code).replaceAll("%");
+        code = Pattern.compile("(?<![\\w])div(?![\\w])", FLAGS).matcher(code).replaceAll("//");
         code = Pattern.compile("(?<![\\w])not\\s+", FLAGS).matcher(code).replaceAll("!");
         code = code.replaceAll("\\<\\>", "!=");
 
@@ -705,9 +707,9 @@ public final class Pascal implements FlowchartGenerator
 
         ArrayList<String> commands = new ArrayList<>();
 
-        // zalamovat pred a za "repeat" "else" "begin" "\\s*//" "\\s*{}" "\\s*(**)"
+        // zalamovat pred a za "repeat" "else" "begin" a komentari
         Matcher matcher = Pattern.compile(
-                "(?<![\\w])repeat(?![\\w])|(?<![\\w])begin(?![\\w])|(?<![\\w])else(?![\\w])|\\s*\\/\\/|\\s*\\{\\}|\\s*\\(\\*\\*\\)",
+                "(?<![\\w])repeat(?![\\w])|(?<![\\w])begin(?![\\w])|(?<![\\w])else(?![\\w])|\\s*" + COMMENT_MARKER,
                 FLAGS).matcher(code);
         int lastEndIndex = 0;
         if (matcher.find()) {
@@ -771,7 +773,7 @@ public final class Pascal implements FlowchartGenerator
 
         // navraceni komentaru
         for (int i = 0; i < commands.size(); i++) {
-            matcher = Pattern.compile("\\(\\*\\*\\)|\\{\\}|\\/\\/", FLAGS).matcher(commands.get(i));
+            matcher = Pattern.compile(COMMENT_MARKER, FLAGS).matcher(commands.get(i));
             StringBuffer sb = new StringBuffer();
             while (matcher.find()) {
                 matcher.appendReplacement(sb, comments.poll());
@@ -958,7 +960,7 @@ public final class Pascal implements FlowchartGenerator
                     if (lineStart) {
                         lineStart = false;
                         lineC = true;
-                        newCode += code.substring(lastEndIndex, i);
+                        newCode += code.substring(lastEndIndex, i-2) + COMMENT_MARKER;
                         lastEndIndex = i - 2;
                     } else if (bracketStarC == 0 && bracketC == 0 && !lineC) {
                         lineStart = true;
@@ -980,7 +982,7 @@ public final class Pascal implements FlowchartGenerator
                         bracketStarEnd = true;
                     } else if (bracketStarStart && bracketC == 0 && !lineC) {
                         if (bracketStarC == 0) {
-                            newCode += code.substring(lastEndIndex, i);
+                            newCode += code.substring(lastEndIndex, i - 2) + COMMENT_MARKER;
                             lastEndIndex = i - 2;
                         }
                         bracketStarC++;
@@ -995,7 +997,7 @@ public final class Pascal implements FlowchartGenerator
                         if (bracketStarC == 0) {
                             arrayToSaveComments.add(
                                     code.substring(lastEndIndex, i).replaceAll("\\$", "\\\\\\$"));
-                            lastEndIndex = i - 2;
+                            lastEndIndex = i;
                         }
                     }
                     lineStart = false;
@@ -1006,7 +1008,7 @@ public final class Pascal implements FlowchartGenerator
                 case "{": {
                     if (!lineC && bracketStarC == 0) {
                         if (bracketC == 0) {
-                            newCode += code.substring(lastEndIndex, i);
+                            newCode += code.substring(lastEndIndex, i - 1) + COMMENT_MARKER;
                             lastEndIndex = i - 1;
                         }
                         bracketC++;
@@ -1022,7 +1024,7 @@ public final class Pascal implements FlowchartGenerator
                         if (bracketC == 0) {
                             arrayToSaveComments.add(
                                     code.substring(lastEndIndex, i).replaceAll("\\$", "\\\\\\$"));
-                            lastEndIndex = i - 1;
+                            lastEndIndex = i;
                         }
                     }
                     lineStart = false;
@@ -1046,7 +1048,7 @@ public final class Pascal implements FlowchartGenerator
             }
         }
         if (lastEndIndex < code.length()) {
-            newCode += code.substring(lastEndIndex, code.length());
+            newCode += code.substring(lastEndIndex);
         }
         return newCode;
     }
@@ -1069,14 +1071,7 @@ public final class Pascal implements FlowchartGenerator
             String name)
     {
         Pascal instance = new Pascal();
-        return instance.generateSourceCode(flowchart, normalizeAsVariable(name));
-    }
-    
-    private static String normalizeAsVariable(String name)
-    {
-        return Normalizer.normalize(name, Normalizer.Form.NFD)
-                .replaceAll("\\p{M}", "")
-                .replaceAll(" ", "_");
+        return instance.generateSourceCode(flowchart, name);
     }
     
     private String generateSourceCode(Flowchart<LayoutSegment, LayoutElement> flowchart,
@@ -1085,7 +1080,7 @@ public final class Pascal implements FlowchartGenerator
         errored = false;
         missingCommandWarning = false;
         // generovani hlavicky
-        String sourceCode = "program " + name + ";" + LINE_SEP + LINE_SEP;
+        String sourceCode = "program " + normalizeAsVariable(name) + ";" + LINE_SEP + LINE_SEP;
 
         // vyhledani vsech pouzitych identifikatoru promennych
         TreeSet<String> vars = new TreeSet<>();

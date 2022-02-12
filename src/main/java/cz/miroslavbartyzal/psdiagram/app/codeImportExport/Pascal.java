@@ -1497,7 +1497,7 @@ public final class Pascal implements FlowchartGenerator
 
     private String getSourceCommentText(String commentText, String tabsDepth)
     {
-        commentText = commentText.replaceAll("\r|[^\r]\n", LINE_SEP + tabsDepth + "\t");
+        commentText = commentText.replaceAll("\r?\n", LINE_SEP + tabsDepth + "\t");
         if (commentText.contains("\n") || commentText.contains("\r")) {
             return "{" + commentText + "}";
         } else {

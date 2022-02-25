@@ -92,7 +92,7 @@
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jScrollPane1" alignment="0" pref="200" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" alignment="0" pref="248" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>
@@ -151,7 +151,7 @@
                   <Group type="102" attributes="0">
                       <EmptySpace max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="jPanelDescription" max="32767" attributes="0"/>
+                          <Component id="jPanelDescription" pref="90" max="32767" attributes="0"/>
                           <Component id="jPanelCodes" max="32767" attributes="0"/>
                       </Group>
                   </Group>
@@ -183,7 +183,7 @@
               <SubComponents>
                 <Component class="javax.swing.JLabel" name="jLabel1">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;Tato funkce slou&#x17e;&#xed; k vygenerov&#xe1;n&#xed; zdrojov&#xe9;ho k&#xf3;du n&#x11b;kter&#xe9;ho z podporovan&#xfd;ch programovac&#xed;ch jazyk&#x16f; z vytvo&#x159;en&#xe9;ho v&#xfd;vojov&#xe9;ho diagramu.&lt;br /&gt;&lt;br /&gt;&#xa;Spr&#xe1;vnost vygenerovan&#xe9;ho zdrojov&#xe9;ho k&#xf3;du nen&#xed; v&#x17e;dy stoprocentn&#xed;, je proto doporu&#x10d;eno v&#xfd;sledn&#xfd; k&#xf3;d je&#x161;t&#x11b; p&#x159;ekontrolovat.&#xa;&lt;/html&gt;"/>
+                    <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;Tato funkce slou&#x17e;&#xed; k p&#x159;episu v&#xfd;vojov&#xe9;ho diagramu do zdrojov&#xe9;ho k&#xf3;du vybran&#xe9;ho programovac&#xed;ho jazyka.&lt;br /&gt;&lt;br /&gt;&#xa;Spr&#xe1;vnost vygenerovan&#xe9;ho zdrojov&#xe9;ho k&#xf3;du nen&#xed; v&#x17e;dy stoprocentn&#xed;, je proto doporu&#x10d;eno v&#xfd;sledn&#xfd; k&#xf3;d je&#x161;t&#x11b; p&#x159;ekontrolovat.&#xa;&lt;/html&gt;"/>
                     <Property name="verticalAlignment" type="int" value="1"/>
                   </Properties>
                 </Component>

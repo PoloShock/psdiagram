@@ -5,7 +5,6 @@ import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutElement;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.layouts.LayoutSegment;
 import cz.miroslavbartyzal.psdiagram.app.global.StringFunctions;
 
-import org.antlr.v4.gui.TreeViewer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -14,11 +13,7 @@ import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.antlr.v4.runtime.tree.ParseTree;
 
-import java.util.Arrays;
 import java.util.List;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 public abstract class CodeToFlowchartConvertor<P extends Parser, L extends Lexer>
 {
@@ -103,12 +98,7 @@ public abstract class CodeToFlowchartConvertor<P extends Parser, L extends Lexer
             
             ParseTree tree = createParseTree(parser);
 
-//            <dependency>
-//                <groupId>org.antlr</groupId>
-//                <artifactId>antlr4</artifactId>
-//                <version>4.9.3</version>
-//            </dependency>
-//    
+            // Note: for code below to work, uncomment the necessary dependency in pom.xml
 //            //show AST in GUI
 //            JFrame frame = new JFrame("Antlr AST");
 //            JPanel panel = new JPanel();

@@ -12,32 +12,33 @@ import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.GotoLabel;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.IO;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.LoopEnd;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.LoopStart;
+import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Process;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.StartEnd;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.SubRoutine;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Switch;
 import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
 import cz.miroslavbartyzal.psdiagram.app.gui.dialog.MyJOptionPane;
 import cz.miroslavbartyzal.psdiagram.app.parser.ConversionResult;
+import cz.miroslavbartyzal.psdiagram.app.parser.SourceCodeGenerator;
+import cz.miroslavbartyzal.psdiagram.app.parser.psd.AntlrPsdParser;
+import cz.miroslavbartyzal.psdiagram.app.parser.psd.PSDGrammarParser;
 
 import java.awt.HeadlessException;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.swing.JOptionPane;
 
-public final class Java
+public final class Java implements SourceCodeGenerator
 {
 
     private static final String LINE_SEP = System.lineSeparator();
-    private boolean errored = false;
-    private boolean gotoUsage = false;
-    private boolean missingCommandWarning = false;
-    private Set<String> variableNames = new HashSet<>();
-    private HashMap<String, String> dataTypes = new HashMap<>();
+    private final AntlrPsdParser psdToJavaParser = new AntlrPsdParser();
+    private boolean errored;
+    private boolean gotoUsage;
+    private boolean missingCommandWarning;
     private Boolean scannerNeeded = false;
-    private String sourceCode;
     
     public static Flowchart<LayoutSegment, LayoutElement> getFlowchart(String code)
     {
@@ -52,185 +53,153 @@ public final class Java
         return null;
     }
     
-    public static String getSourceCode(Flowchart<LayoutSegment, LayoutElement> flowchart, String name) {
+    public static String getSourceCode(Flowchart<LayoutSegment, LayoutElement> flowchart, String name,
+            boolean blockScopeVariables)
+    {
         Java instance = new Java();
-        return instance.generateSourceCode(flowchart, name);
+        return instance.generateSourceCode(flowchart, name, blockScopeVariables);
     }
-
-    private String generateSourceCode(Flowchart<LayoutSegment, LayoutElement> flowchart, String name)
+    
+    private String generateSourceCode(Flowchart<LayoutSegment, LayoutElement> flowchart, String name,
+            boolean blockScopeVariables)
     {
         errored = false;
         missingCommandWarning = false;
-        variableNames = new HashSet<>();
-        dataTypes = new HashMap<>();
         scannerNeeded = false;
         gotoUsage = false;
         // generovani hlavicky
-        sourceCode = "public void " + name + "() {" + LINE_SEP + LINE_SEP;
-
-        // vyhledani vsech pouzitych identifikatoru promennych
-        HashMap<String, String> vars = new HashMap<>();
-        HashMap<String, String> arrayVars = new HashMap<>();
-        findAndSetVariables(flowchart, vars, arrayVars);
-        sourceCode += generateSourceCode(flowchart.getMainSegment(), "    ");
+        String sourceCode = "public class " + normalizeAsVariable(name) + LINE_SEP + "{" + LINE_SEP;
+        sourceCode += "\t" + "public static void main(String[] args)" + LINE_SEP + "\t" + "{";
+        
+        Set<String> alreadyDeclaredVariables = new HashSet<>();
+        if (!blockScopeVariables) {
+            // vyhledani vsech pouzitych identifikatoru promennych
+            Set<String> vars = new TreeSet<>();
+            Set<String> arrayVars = new TreeSet<>();
+            findAndSetVariables(flowchart, vars, arrayVars);
+            sourceCode = addVariableDeclarations(sourceCode, vars, arrayVars, "\t\t", alreadyDeclaredVariables);
+        }
+        
+        String mainSourceCode = generateSourceCode(flowchart.getMainSegment(), "\t\t", alreadyDeclaredVariables);
+        
         if (scannerNeeded) {
-            sourceCode = "// tento import je potrebne pridat pre fungovanie Scanneru"
-                    + "//import java.util.Scanner;" + System.lineSeparator() + sourceCode;
+            sourceCode = "import java.util.Scanner;" + LINE_SEP + LINE_SEP + sourceCode;
+            sourceCode += LINE_SEP + "\t\t" + "Scanner scanner = new Scanner(System.in);" + LINE_SEP + "\t\t";
         }
-        if (gotoUsage) {
-            JOptionPane.showMessageDialog(null,
-                    "<html>Zdrojový kód byl vygenerován s následujícím upozorněním:<br />Použitý goto příkaz v Jave není definován!</html>",
-                    "Goto v jazyce Java!", JOptionPane.WARNING_MESSAGE);
-        }
+        
+        sourceCode += mainSourceCode;
 
         if (errored) {
             sourceCode = null;
-        } else if (missingCommandWarning) {
+        } else if (missingCommandWarning || gotoUsage) {
+            String warnings = "<ul>";
+            if (missingCommandWarning) {
+                warnings += "<li>Některý symbol nemá vyplněnu svou funkci!</li>";
+            }
+            if (gotoUsage) {
+                warnings += "<li>Goto příkaz není v Javě podporován!</li>";
+            }
+            warnings += "</ul>";
+            
             JOptionPane.showMessageDialog(null,
-                    "<html>Zdrojový kód byl vygenerován s následujícím upozorněním:<br />Některý symbol nemá vyplněnu svou funkci!</html>",
+                    "<html>Zdrojový kód byl vygenerován s následujícím upozorněním:" + warnings + "</html>",
                     "Nevyplněná funkce symbolu", JOptionPane.WARNING_MESSAGE);
         }
+        
+        sourceCode += LINE_SEP + "}";
+        
         return sourceCode;
     }
 
-    private HashMap<String, String> setVariableTypes(HashMap<String, String> vars)
+    private String addVariableDeclarations(String sourceCode, Set<String> vars, Set<String> arrayVars, String tabsDepth,
+            Set<String> declaredVariables)
     {
-        HashMap<String, String> modifiedVars = new HashMap<>();
-
-        for (String key : vars.keySet()) {
-            String[] variableDeclaration = key.split(" ");
-            String variableName = variableDeclaration[variableDeclaration.length - 1];
-            if (variableNames.contains(variableName)) {
-                continue;
-            }
-            variableNames.add(variableName);
-            String value = vars.get(key);
-            if (value == null) {
-                continue;
-            }
-            value = value.replaceAll("=", "==");
-
-            if (value.contains(".")) {
-                String[] valueParts = value.split(".");
-
-                for (String valuePart : valueParts) {
-                    key = setVariableType(key, valuePart, true);
+        if (!vars.isEmpty() || !arrayVars.isEmpty()) {
+            sourceCode += LINE_SEP + tabsDepth + "// zde je nutne doplnit typy promennych (diagramy jsou netypove)";
+            if (!vars.isEmpty()) {
+                for (String variable : vars) {
+                    sourceCode += LINE_SEP + tabsDepth;
+                    sourceCode += "{typ_promenne} " + variable + ";";
+                    addToDeclared(variable, declaredVariables);
                 }
             }
 
-            key = setVariableType(key, value, false);
-            if (!(modifiedVars.containsKey(key))) {
-                modifiedVars.put(key, value);
+            if (!arrayVars.isEmpty()) {
+                for (String arrayVar : arrayVars) {
+                    sourceCode += LINE_SEP + tabsDepth;
+                    sourceCode += "{typ_promenne_pole}[] " + arrayVar + ";";
+                    addToDeclared(arrayVar, declaredVariables);
+                }
             }
-
+            sourceCode += LINE_SEP + tabsDepth;
         }
-        return modifiedVars;
+        
+        return sourceCode;
     }
 
-    private String setVariableType(String key, String value, boolean iterating)
-    {
-        if (!iterating) {
-            if (value.startsWith("[") && value.endsWith("]")) {
-                key = "[] " + key;
-            }
-            if (value.contains("\"")) {
-                key = "String " + key;
-                return key;
-            }
-            if (!value.matches("^[^\\n0-9]*$")) {
-                if (value.contains(".")) {
-                    key = "Double " + key;
-                } else {
-                    key = "Integer " + key;
-                }
-            } else if (value.matches("^[^\\n0-9]*$")) {
-                if (value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false")
-                        || value.contains("==") || value.contains("!=") || value.contains(">")
-                        || value.contains("<")) {
-                    key = "Boolean " + key;
-                } else {
-                    key = "String " + key;
-                }
-            }
-        }
-        if (key.contains("[]")) {
-            dataTypes.put(key.split(" ")[2], key.split(" ")[0] + " []");
-        } else {
-            dataTypes.put(key.split(" ")[1], key.split(" ")[0]);
-        }
-        sourceCode += key + ";" + LINE_SEP;
-        return key;
-    }
-
-    private void findAndSetVariables(Flowchart<LayoutSegment, LayoutElement> flowchart,
-            HashMap<String, String> vars, HashMap<String, String> arrayVars)
+    private void findAndSetVariables(Flowchart<LayoutSegment, LayoutElement> flowchart, Set<String> vars,
+            Set<String> arrayVars)
     {
         for (LayoutSegment segment : flowchart) {
             if (segment != null) {
-                for (FlowchartElement<LayoutSegment, LayoutElement> element : segment) {
+                for (FlowchartElement<?, ?> element : segment) {
                     Symbol symbol = element.getSymbol();
-
                     if (symbol.getCommands() != null) {
-
-                        if (symbol instanceof cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Process
+                        if (symbol instanceof Process 
                                 || (symbol instanceof IO && symbol.getCommands().containsKey("var"))) {
-                            if (symbol.getCommands().get("var").contains("[")) {
-                                String var = symbol.getCommands().get("var");
-                                arrayVars.put(var.substring(0, var.indexOf("[")), symbol.getCommands().get("value"));
-                            } else if (symbol.getCommands().containsKey("value") && symbol.getCommands().get(
-                                    "value").startsWith("[")) {
-                                if (!(arrayVars.containsKey(symbol.getCommands().get("var")))) {
-                                    arrayVars.put(symbol.getCommands().get("var"), symbol.getCommands().get("value"));
-                                }
+                            if (symbol.getCommands().get("var").contains("[") 
+                                    || (symbol.getCommands().containsKey("value") && symbol.getCommands().get(
+                                    "value").startsWith("["))) {
+                                String variable = symbol.getCommands().get("var");
+                                addToDeclared(variable, arrayVars);
                             } else {
-                                if (symbol.getCommands().get("value") != null) {
-                                    vars.put(symbol.getCommands().get("var"), symbol.getCommands().get("value"));
-                                }
-
+                                String variable = symbol.getCommands().get("var");
+                                addToDeclared(variable, vars);
                             }
                         } else if (symbol instanceof For) {
-                            vars.put(symbol.getCommands().get("var"), symbol.getCommands().get("value"));
+                            addToDeclared(symbol.getCommands().get("var"), vars);
                             if (symbol.getCommands().containsKey("array")) {
-                                arrayVars.put(symbol.getCommands().get("array"), symbol.getCommands().get("value"));
+                                addToDeclared(symbol.getCommands().get("array"), arrayVars);
                             }
-                        } else if (symbol instanceof cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Decision) {
-//	                        	extractDecisionVariable(symbol, vars);
                         }
                     }
-                    vars = setVariableTypes(vars);
-                    arrayVars = setVariableTypes(arrayVars);
                 }
             }
         }
-
     }
 
-    private String generateSourceCode(LayoutSegment segment, String tabsDepth)
+    private String generateSourceCode(LayoutSegment segment, String tabsDepth, Set<String> alreadyDeclaredVariables)
     {
+        Set<String> declaredVariables = new HashSet<>(alreadyDeclaredVariables);
+        
         String pairedCommentText = null;
         boolean lastWasPairedComment = false;
         String sourceCode = "";
 
         int index = -1;
-        for (Iterator<LayoutElement> it = segment.iterator(); it.hasNext();) {
-            LayoutElement element = it.next();
+        for (LayoutElement element : segment) {
             index++;
             Symbol symbol = element.getSymbol();
             try {
                 boolean isElseIf = isElseIf(segment);
                 if (!isElseIf) {
-                    // odsadit na tento symbol
+                    // odsadit pro nasledujici symbol
                     sourceCode += LINE_SEP + tabsDepth;
                 }
 //#####################################PROCESS############################################################################
 
-                if (symbol instanceof cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Process) {
+                if (symbol instanceof Process) {
                     if (symbol.getCommands() != null) {
+                        String variable = symbol.getCommands().get("var");
+                        variable = psdToJavaParser.translatePSDToJava(variable, PSDGrammarParser::solo_Expression);
                         String processValue = symbol.getCommands().get("value");
-                        if (processValue.contains("//")) {
-                            processValue = processValue.replaceAll("//", "/");
+                        processValue =
+                                psdToJavaParser.translatePSDToJava(processValue, PSDGrammarParser::solo_Expression);
+                        if (isNotDeclaredYet(variable, declaredVariables)) {
+                            sourceCode += "var ";
+                            addToDeclared(variable, declaredVariables);
                         }
-                        sourceCode += symbol.getCommands().get("var") + " = " + processValue + insertSemicolon();
+                        sourceCode += variable + " = " + processValue + ";";
                     } else {
                         sourceCode += "{symbol Zpracování bez vyplnene funkce!}";
                         missingCommandWarning = true;
@@ -240,16 +209,19 @@ public final class Java
                     if (symbol.getCommands() != null) {
 //####################################INPUT#################################################################################
                         if (symbol.getCommands().containsKey("var")) {
-
                             scannerNeeded = true;
-                            sourceCode += "//Scanner has to be imported from java.util" + System.lineSeparator();
-                            sourceCode += "Scanner scanner = new Scanner(System.in);" + System.lineSeparator();
-
-                            sourceCode += readLineToVariable(symbol.getCommands().get("var"));
+                            String variable = symbol.getCommands().get("var");
+                            variable = psdToJavaParser.translatePSDToJava(variable, PSDGrammarParser::solo_Expression);
+                            if (isNotDeclaredYet(variable, declaredVariables)) {
+                                sourceCode += "var ";
+                                addToDeclared(variable, declaredVariables);
+                            }
+                            sourceCode += variable + " = scanner.next/*{data type}*/();";
 //##################################OUTPUT#################################################################################
                         } else {
-                            sourceCode += "System.out.println(" + symbol.getCommands().get(
-                                    "value") + ")" + insertSemicolon();
+                            String value = symbol.getCommands().get("value");
+                            value = psdToJavaParser.translatePSDToJava(value, PSDGrammarParser::solo_Expression);
+                            sourceCode += "System.out.println(" + value + ");";
                         }
                     } else {
                         sourceCode += "{symbol Vstup/Vystup bez vyplnene funkce!}";
@@ -258,10 +230,12 @@ public final class Java
 //##################################SWITCH####################################################################################
                 } else if (symbol instanceof Switch) {
                     if (symbol.getCommands() != null) {
-                        sourceCode += "switch( " + symbol.getCommands().get(
-                                "conditionVar") + "){";
+                        String conditionVar = symbol.getCommands().get("conditionVar");
+                        conditionVar =
+                                psdToJavaParser.translatePSDToJava(conditionVar, PSDGrammarParser::solo_Expression);
+                        sourceCode += "switch (" + conditionVar + ") {";
                     } else {
-                        sourceCode += "switch {nevyplnena funkce!} of";
+                        sourceCode += "switch ({nevyplnena funkce!}) {";
                         missingCommandWarning = true;
                     }
                     if (pairedCommentText != null) {
@@ -270,47 +244,51 @@ public final class Java
                     }
                     for (int i = 1; i < element.getInnerSegmentsCount(); i++) {
                         if (symbol.getCommands() != null) {
-                            sourceCode += tabsDepth + "case "
-                                    + symbol.getCommands().get(String.valueOf(i)) + ":" + System.lineSeparator();
+                            String switchCase = symbol.getCommands().get(String.valueOf(i));
+                            switchCase = psdToJavaParser.translatePSDToJava(switchCase,
+                                    PSDGrammarParser::solo_ListOf_Constants);
+                            switchCase = switchCase.replaceAll(LINE_SEP, LINE_SEP + tabsDepth + "\t");
+                            sourceCode += LINE_SEP + tabsDepth + "\t" + switchCase;
                         } else {
-                            sourceCode += tabsDepth + "\t{nevyplnena funkce vetve Switch symbolu!}:";
+                            sourceCode +=
+                                    LINE_SEP + tabsDepth + "\t" + "case {nevyplnena funkce vetve Switch symbolu!}:";
                         }
 
-                        sourceCode += generateSourceCode(element.getInnerSegment(i), insertSemicolon());
-                        sourceCode += "break" + insertSemicolon();
+                        sourceCode +=
+                                generateSourceCode(element.getInnerSegment(i), tabsDepth + "\t\t", declaredVariables);
+                        sourceCode += LINE_SEP + tabsDepth + "\t\t" + "break;";
                     }
                     if (containsFunctionalSymbols(element.getInnerSegment(0), -1)) {
-
-                        sourceCode += "default: " + generateSourceCode(element.getInnerSegment(0),
-                                tabsDepth + "\t\t");
+                        sourceCode += LINE_SEP + tabsDepth + "\t" + "default:";
+                        sourceCode +=
+                                generateSourceCode(element.getInnerSegment(0), tabsDepth + "\t\t", declaredVariables);
+                        sourceCode += LINE_SEP + tabsDepth + "\t\t" + "break;";
                     }
-                    sourceCode += tabsDepth + "}";
+                    sourceCode += LINE_SEP + tabsDepth + "}";
 
 //####################################DECISION########################################################################
                 } else if (symbol instanceof Decision) {
                     if (symbol.getCommands() != null) {
-                        sourceCode += "if (" + symbol.getCommands().get(
-                                "condition") + ") {";
+                        String condition = symbol.getCommands().get("condition");
+                        condition = psdToJavaParser.translatePSDToJava(condition, PSDGrammarParser::solo_Expression);
+                        sourceCode += "if (" + condition + ") {";
                     } else {
-                        sourceCode += "if {nevyplnena funkce!} ";
+                        sourceCode += "if ({nevyplnena funkce!}) {";
                         missingCommandWarning = true;
                     }
                     if (pairedCommentText != null) {
                         sourceCode += pairedCommentText; // prirazeni paroveho komentare
                         pairedCommentText = null;
                     }
-                    sourceCode += LINE_SEP + tabsDepth;
-                    sourceCode += generateSourceCode(element.getInnerSegment(1), tabsDepth + "\t");
+                    sourceCode += generateSourceCode(element.getInnerSegment(1), tabsDepth + "\t", declaredVariables);
                     sourceCode += LINE_SEP + tabsDepth + "}";
                     if (containsFunctionalSymbols(element.getInnerSegment(0), -1)) {
-                        sourceCode += " else {";
+                        sourceCode += " else ";
                         if (isElseIf(element.getInnerSegment(0))) {
-                            sourceCode += " " + generateSourceCode(element.getInnerSegment(0),
-                                    tabsDepth);
+                            sourceCode += generateSourceCode(element.getInnerSegment(0), tabsDepth, declaredVariables);
                         } else {
-                            sourceCode += LINE_SEP + tabsDepth;
-                            sourceCode += generateSourceCode(element.getInnerSegment(0),
-                                    tabsDepth + "\t");
+                            sourceCode += "{" + generateSourceCode(element.getInnerSegment(0), tabsDepth + "\t",
+                                    declaredVariables);
                             sourceCode += LINE_SEP + tabsDepth + "}";
                         }
                     }
@@ -318,48 +296,60 @@ public final class Java
 //############################################FOR#######################################################################################
                 } else if (symbol instanceof For) {
                     if (symbol.getCommands() != null) {
+                        String variable = symbol.getCommands().get("var");
+                        variable = psdToJavaParser.translatePSDToJava(variable, PSDGrammarParser::solo_Expression);
                         if (symbol.getCommands().containsKey("inc")) {
-                            int increment = Integer.valueOf(symbol.getCommands().get("inc"));
-                            //TODO allow also another types of increment (/ * etc)
-                            if (increment > 0) {
-                                sourceCode += "for (int " + symbol.getCommands().get("var") + " = " + symbol.getCommands().get(
-                                        "from") + ";" + symbol.getCommands().get(
-                                                "var") + "<=" + symbol.getCommands().get(
-                                                "to") + ";" + symbol.getCommands().get("var") + "++) {";
+                            String from = symbol.getCommands().get("from");
+                            from = psdToJavaParser.translatePSDToJava(from, PSDGrammarParser::solo_Expression);
+                            String to = symbol.getCommands().get("to");
+                            to = psdToJavaParser.translatePSDToJava(to, PSDGrammarParser::solo_Expression);
+                            String inc = symbol.getCommands().get("inc");
+                            inc = psdToJavaParser.translatePSDToJava(inc, PSDGrammarParser::solo_Expression);
+                        
+                            if (isNumeric(inc)) {
+                                if (Double.parseDouble(inc) < 0) {
+                                    sourceCode += makeForHeader(variable, from, to, inc, ">=", declaredVariables);
+                                } else {
+                                    sourceCode += makeForHeader(variable, from, to, inc, "<=", declaredVariables);
+                                }
+                            } else if (isNumeric(from) && isNumeric(to)) {
+                                if (Double.parseDouble(from) > Double.parseDouble(to)) {
+                                    sourceCode += makeForHeader(variable, from, to, inc, ">=", declaredVariables);
+                                } else {
+                                    sourceCode += makeForHeader(variable, from, to, inc, "<=", declaredVariables);
+                                }
                             } else {
-                                sourceCode += "for (int " + symbol.getCommands().get("var") + " = " + symbol.getCommands().get(
-                                        "from") + ";" + symbol.getCommands().get(
-                                                "var") + ">=" + symbol.getCommands().get(
-                                                "to") + ";" + symbol.getCommands().get("var") + "--) {";
+                                // everything is set via variables, so we know nothing. Let's just make it as `<=`
+                                sourceCode += makeForHeader(variable, from, to, inc, "<=", declaredVariables);
                             }
                         } else {
-                            String typeOfArray = dataTypes.get(symbol.getCommands().get("array"));
-                            sourceCode += "for (" + typeOfArray.replaceAll("\\[\\]", "") + " " + symbol.getCommands().get(
-                                    "var") + " : " + symbol.getCommands().get("array") + ") {";
+                            String array = symbol.getCommands().get("array");
+                            array = psdToJavaParser.translatePSDToJava(array, PSDGrammarParser::solo_Expression);
+                            sourceCode += String.format("for (var %s : %s) {", variable, array);
                         }
+                        addToDeclared(variable, declaredVariables);
                     } else {
-                        sourceCode += "for {nevyplnena funkce!} {";
+                        sourceCode += "for ({nevyplnena funkce!}) {";
                         missingCommandWarning = true;
                     }
                     if (pairedCommentText != null) {
                         sourceCode += pairedCommentText; // prirazeni paroveho komentare
                         pairedCommentText = null;
                     }
-                    if (element.getInnerSegment(1) != null) {
-                        sourceCode += generateSourceCode(element.getInnerSegment(1), tabsDepth + "\t");
-                    }
-                    sourceCode += LINE_SEP + tabsDepth + "}" + insertSemicolon();
+                    sourceCode += generateSourceCode(element.getInnerSegment(1), tabsDepth + "\t", declaredVariables);
+                    sourceCode += LINE_SEP + tabsDepth + "}";
 
 //#########################################WHILE################################################################################# 
                 } else if (symbol instanceof LoopStart) {
                     if (symbol.isOverHang()) {
                         // while
                         if (symbol.getCommands() != null) {
-                            sourceCode += "while(" + symbol.getCommands().get(
-                                    "condition") + ") { ";
-                            sourceCode += System.lineSeparator();
+                            String condition = symbol.getCommands().get("condition");
+                            condition =
+                                    psdToJavaParser.translatePSDToJava(condition, PSDGrammarParser::solo_Expression);
+                            sourceCode += "while (" + condition + ") { ";
                         } else {
-                            sourceCode += "while {nevyplnena funkce!} do";
+                            sourceCode += "while ({nevyplnena funkce!}) {";
                             missingCommandWarning = true;
                         }
                         if (pairedCommentText != null) {
@@ -367,17 +357,18 @@ public final class Java
                             pairedCommentText = null;
                         }
 
-                        sourceCode += generateSourceCode(element.getInnerSegment(1),
-                                tabsDepth + "\t ");
-                        sourceCode += tabsDepth + "} ";
+                        sourceCode +=
+                                generateSourceCode(element.getInnerSegment(1), tabsDepth + "\t ", declaredVariables);
+                        sourceCode += LINE_SEP + tabsDepth + "} ";
                     } else {
                         // repeat
                         String condition = null;
                         for (int i = index + 1; i < segment.size(); i++) {
                             if (segment.getElement(i).getSymbol() instanceof LoopEnd) {
                                 if (segment.getElement(i).getSymbol().getCommands() != null) {
-                                    condition = segment.getElement(i).getSymbol().getCommands().get(
-                                            "condition");
+                                    condition = segment.getElement(i).getSymbol().getCommands().get("condition");
+                                    condition = psdToJavaParser.translatePSDToJava(condition,
+                                            PSDGrammarParser::solo_Expression);
                                 } else {
                                     condition = "{nevyplnena funkce!}";
                                     missingCommandWarning = true;
@@ -391,33 +382,32 @@ public final class Java
                                 sourceCode += pairedCommentText; // prirazeni paroveho komentare
                                 pairedCommentText = null;
                             }
-                            sourceCode += generateSourceCode(element.getInnerSegment(1),
-                                    tabsDepth + "\t");
-                            sourceCode += LINE_SEP + tabsDepth
-                                    + "} while ( " + condition + ") " + insertSemicolon();
+                            sourceCode +=
+                                    generateSourceCode(element.getInnerSegment(1), tabsDepth + "\t", declaredVariables);
+                            sourceCode += LINE_SEP + tabsDepth + "} while ( " + condition + ");";
                         }
                     }
                 } else if (symbol instanceof Comment) {
-                    if (symbol.hasPairSymbol()) {
-                        pairedCommentText = " " + getSourceCommentText(symbol.getValue(), tabsDepth);
+                    if (symbol.hasPairSymbol() && !(segment.getElement(index + 1).getSymbol() instanceof StartEnd)) {
+                        pairedCommentText = " " + getSourceCommentText(symbol.getValue(), tabsDepth, true);
                         lastWasPairedComment = true;
                         if (!isElseIf) {
-                            sourceCode = sourceCode.substring(0,
-                                    sourceCode.length() - (LINE_SEP + tabsDepth).length());
+                            sourceCode = removeLastNewLine(tabsDepth, sourceCode);
                         }
                     } else {
-                        sourceCode += getSourceCommentText(symbol.getValue(), tabsDepth);
+                        sourceCode += getSourceCommentText(symbol.getValue(), tabsDepth, false);
                     }
                 } else if (symbol instanceof Goto) {
                     if (symbol.getCommands() != null) {
                         switch (symbol.getCommands().get("mode")) {
                             case "break":
-                                sourceCode += "break" + insertSemicolon();
+                                sourceCode += "break;";
                                 break;
                             case "continue":
-                                sourceCode += "continue" + insertSemicolon();
+                                sourceCode += "continue;";
                                 break;
                             case "goto":
+                                sourceCode += "// {goto " + symbol.getValue() + "}";
                                 gotoUsage = true;
                                 break;
                         }
@@ -426,34 +416,34 @@ public final class Java
                         missingCommandWarning = true;
                     }
                 } else if (symbol instanceof GotoLabel) {
+                    sourceCode += "// {label " + symbol.getValue() + "}";
                     gotoUsage = true;
                 } else if (symbol instanceof SubRoutine) {
-                    if (symbol.getValue() != null && !symbol.getValue().equals("")) {
-                        sourceCode += symbol.getValue() + insertSemicolon();
+                    if (symbol.getValue() != null && !symbol.getValue().isEmpty()) {
+                        String subroutine = symbol.getValue();
+                        subroutine = psdToJavaParser.translatePSDToJava(subroutine, PSDGrammarParser::solo_Expression);
+                        sourceCode += subroutine + ";";
                     } else {
-                        sourceCode += "// {symbol Předdefinované zpracování bez vyplnene funkce!}";
+                        sourceCode += "{symbol Předdefinované zpracování bez vyplnene funkce!}";
                         missingCommandWarning = true;
                     }
                 } else if (symbol instanceof StartEnd) {
                     if (segment.getParentElement() == null && (index == 0 || (index == 1 && segment.getElement(
                             0).getSymbol() instanceof Comment))) {
                         // prvni begin
-                        sourceCode += "";
-                        tabsDepth = "\t";
+                        sourceCode = removeLastNewLine(tabsDepth, sourceCode);
                     } else if (segment.getParentElement() == null && index == segment.size() - 1) {
                         //posledni symbol - end.
                         if (scannerNeeded) {
-                            sourceCode += tabsDepth + "scanner.close();" + System.lineSeparator();
+                            sourceCode += LINE_SEP + tabsDepth + "scanner.close();" + LINE_SEP + tabsDepth;
                         }
-                        sourceCode += System.lineSeparator();
-                        sourceCode = sourceCode.substring(0,
-                                sourceCode.length() - tabsDepth.length()) + "}";
-                    } else {
-                        sourceCode += "System.exit(0);" + insertSemicolon();
+                        sourceCode = sourceCode.substring(0, sourceCode.length() - 1) + "}";
+                    } else if (segment.getParentElement() != null || index > 1 || index == 1 && !(segment.getElement(0)
+                            .getSymbol() instanceof Comment)) {
+                        sourceCode += "System.exit(0);";
                     }
                 } else {
-                    sourceCode = sourceCode.substring(0,
-                            sourceCode.length() - (LINE_SEP + tabsDepth).length());
+                    sourceCode = removeLastNewLine(tabsDepth, sourceCode);
                 }
 
                 if (pairedCommentText != null) {
@@ -467,7 +457,8 @@ public final class Java
                 }
             } catch (NumberFormatException | HeadlessException e) {
                 JOptionPane.showMessageDialog(null,
-                        "<html>Zdrojový kód se nepodařilo vytvořit!<br />problémový symbol vlastní popisek: \"" + symbol.getValue() + "\".</html>",
+                        "<html>Zdrojový kód se nepodařilo vytvořit!<br />problémový symbol vlastní popisek: \""
+                                + symbol.getValue() + "\".</html>",
                         "Chyba při generování zdrojového kódu", JOptionPane.ERROR_MESSAGE);
                 errored = true;
             }
@@ -479,48 +470,77 @@ public final class Java
         return sourceCode;
     }
 
-    private String readLineToVariable(String variableName)
+    private boolean isNotDeclaredYet(String variable, Set<String> declaredVariables) {
+        String variableWithoutArrayIndexing = stripVariableOfArrayIndexing(variable);
+        return !declaredVariables.contains(variableWithoutArrayIndexing);
+    }
+    
+    private void addToDeclared(String variable, Set<String> declaredVariables) {
+        String variableWithoutArrayIndexing = stripVariableOfArrayIndexing(variable);
+        declaredVariables.add(stripVariableOfArrayIndexing(variableWithoutArrayIndexing));
+    }
+    
+    private String stripVariableOfArrayIndexing(String variable) {
+        if (variable.contains("[")) {
+            return variable.substring(0, variable.indexOf('['));
+        } else {
+            return variable;
+        }
+    }
+
+    private String removeLastNewLine(String tabsDepth, String sourceCode)
     {
-        if (variableName == null || variableName.equals("")) {
-            return "{data type of variable} {variable name} = scanner.next{variable type}();";
+        return sourceCode.replaceFirst("\\s*$", "");
+    }
+    
+    private String makeForHeader(String variable, String from, String to, String inc, String conditionOperator, Set<String> alreadyDeclaredVariables) {
+        String result;
+        if (isNotDeclaredYet(variable, alreadyDeclaredVariables)) {
+            result = String.format("for (%s = %s; %s %s %s; %s += %s) {", variable, from, variable, conditionOperator,
+                    to, variable, inc);
+        } else {
+            String initVariableType;
+            if (isNumeric(from) && isNumeric(inc)) {
+                if (isInteger(from) && isInteger(inc)) {
+                    initVariableType = "int";
+                } else {
+                    initVariableType = "double";
+                }
+            } else {
+                initVariableType = "var";
+            }
+            result = String.format("for (%s %s = %s; %s %s %s; %s += %s) {", initVariableType, variable, from, variable,
+                    conditionOperator, to, variable, inc);
         }
-        if (dataTypes.get(variableName) == null) {
-            return "{data type of variable} " + variableName + " = scanner.next{data type}();";
-        }
-        if (dataTypes.get(variableName).equals("Double")) {
-            return variableName + " = scanner.nextDouble();";
-        }
-        if (dataTypes.get(variableName).equals("Integer")) {
-            return variableName + " = scanner.nextInt();";
-        }
-        return variableName;
+        return result;
     }
 
     private boolean isElseIf(LayoutSegment segment)
     {
         if (segment.getParentElement() != null
-                && segment.getParentElement().getSymbol() instanceof Decision && !(segment.getParentElement().getSymbol() instanceof Switch)
+                && isDecisionAndNotSwitch(segment.getParentElement())
                 && segment.getParentElement().indexOfInnerSegment(segment) == 0
-                && ((segment.size() == 1 && segment.getElement(0).getSymbol() instanceof Decision && !(segment.getElement(
-                0).getSymbol() instanceof Switch))
-                || (segment.size() == 2 && segment.getElement(0).getSymbol() instanceof Comment && segment.getElement(
-                0).getSymbol().hasPairSymbol() && segment.getElement(1).getSymbol() instanceof Decision && !(segment.getElement(
-                1).getSymbol() instanceof Switch)))) {
+                && ((segment.size() == 1 && isDecisionAndNotSwitch(segment.getElement(0)))
+                || (segment.size() == 2 && isPairedComment(segment.getElement(0)) && isDecisionAndNotSwitch(
+                segment.getElement(1))))) {
             return true;
         }
         return false;
     }
 
-    private String insertSemicolon()
-    {
-        return ";" + LINE_SEP;
+    private boolean isDecisionAndNotSwitch(LayoutElement element) {
+        return element.getSymbol() instanceof Decision && !(element.getSymbol() instanceof Switch);
+    }
+    
+    private boolean isPairedComment(LayoutElement element) {
+        return element.getSymbol() instanceof Comment && element.getSymbol().hasPairSymbol();
     }
 
     private boolean containsFunctionalSymbols(LayoutSegment segment, int actualElementIndex)
     {
         for (int i = actualElementIndex + 1; i < segment.size(); i++) {
             Symbol symbol = segment.getElement(i).getSymbol();
-            if (symbol instanceof cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Process || symbol instanceof IO || symbol instanceof Decision || symbol instanceof For || symbol instanceof LoopStart || symbol instanceof Comment || symbol instanceof SubRoutine || symbol instanceof Goto || symbol instanceof GotoLabel
+            if (symbol instanceof Process || symbol instanceof IO || symbol instanceof Decision || symbol instanceof For || symbol instanceof LoopStart || symbol instanceof Comment || symbol instanceof SubRoutine || symbol instanceof Goto || symbol instanceof GotoLabel
                     || (symbol instanceof StartEnd && (segment.getParentElement() != null || i < segment.size() - 1))) {
                 return true;
             }
@@ -528,13 +548,46 @@ public final class Java
         return false;
     }
 
-    private String getSourceCommentText(String commentText, String tabsDepth)
+    private String getSourceCommentText(String commentText, String tabsDepth, boolean isPaired)
     {
-        commentText = commentText.replaceAll("\r|[^\r]\n", LINE_SEP + tabsDepth + "\t");
+        String additionalTabs = "";
+        if (isPaired) {
+            additionalTabs = "\t";
+        }
+        commentText = commentText.replaceAll("\r?\n", LINE_SEP + tabsDepth + additionalTabs);
         if (commentText.contains("\n") || commentText.contains("\r")) {
-            return "/*" + commentText + "*/";
+            if (isPaired) {
+                return "/*" + commentText + "*/";
+            } else {
+                return "/*" + LINE_SEP + tabsDepth + commentText + LINE_SEP + tabsDepth + "*/";
+            }
         } else {
             return "//" + commentText;
+        }
+    }
+    
+    private boolean isNumeric(String str)
+    {
+        return isDouble(str);
+    }
+    
+    private boolean isDouble(String str)
+    {
+        try {
+            Double.parseDouble(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+    
+    private boolean isInteger(String str)
+    {
+        try {
+            Integer.parseInt(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
         }
     }
 

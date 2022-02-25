@@ -26,9 +26,9 @@ public enum EnumSourceCode
         }
 
         @Override
-        public String getSourceCode(Flowchart<LayoutSegment, LayoutElement> flowchart, String name)
+        public String getSourceCode(Flowchart<LayoutSegment, LayoutElement> flowchart, String programName, boolean blockScopeVariables)
         {
-            return Pascal.getSourceCode(flowchart, name);
+            return Pascal.getSourceCode(flowchart, programName);
         }
 
         @Override
@@ -53,9 +53,9 @@ public enum EnumSourceCode
         }
 
         @Override
-        public String getSourceCode(Flowchart<LayoutSegment, LayoutElement> flowchart, String name)
+        public String getSourceCode(Flowchart<LayoutSegment, LayoutElement> flowchart, String programName, boolean blockScopeVariables)
         {
-            return Java.getSourceCode(flowchart, name);
+            return Java.getSourceCode(flowchart, programName, blockScopeVariables);
         }
 
         @Override
@@ -103,10 +103,10 @@ public enum EnumSourceCode
      *
      * @param flowchart vývojový diagram, ze kterého má být zdrojový kód
      * vygenerován
-     * @param name název programu, který má vygenerovaný zdrojový kód nést.
+     * @param programName název programu, který má vygenerovaný zdrojový kód nést.
      * @return vygenerovaný zdrojový kód
      */
     public abstract String getSourceCode(Flowchart<LayoutSegment, LayoutElement> flowchart,
-            String name);
+            String programName, boolean blockScopeVariables);
 
 }

@@ -40,7 +40,7 @@ public class PsdToJavaScriptVisitor extends PSDGrammarParserBaseVisitor<String>
             }
         }
 
-        String result = ctx.multiplicative_Expression_LeftPart().accept(this);
+        String result = visit(ctx.multiplicative_Expression_LeftPart());
 
         List<PSDGrammarParser.Multiplicative_Expression_OperatorContext> operators = new ArrayList<>(
                 ctx.multiplicative_Expression_Operator());
@@ -49,9 +49,9 @@ public class PsdToJavaScriptVisitor extends PSDGrammarParserBaseVisitor<String>
         for (int i = 0; i < operators.size(); i++) {
             PSDGrammarParser.Multiplicative_Expression_OperatorContext operator = operators.get(i);
             if (operator.operator.getType() == PSDGrammarParser.FLOORDIV) {
-                result = transformToMathFloor(result, operator.accept(this), rightSideOperands.get(i).accept(this));
+                result = transformToMathFloor(result, visit(operator), visit(rightSideOperands.get(i)));
             } else {
-                result += operator.accept(this) + rightSideOperands.get(i).accept(this);
+                result += visit(operator) + visit(rightSideOperands.get(i));
             }
         }
 
@@ -68,9 +68,9 @@ public class PsdToJavaScriptVisitor extends PSDGrammarParserBaseVisitor<String>
             return super.visitMultiplicative_Expression_LeftPart(ctx);
         }
       
-        String leftOperand = ctx.multiplicative_Expression_LeftPart_ValidLeft().accept(this);
-        String operator = ctx.multiplicative_Expression_Operator().accept(this);
-        String rightOperand = ctx.multiplicative_Expression_LeftPart_ValidRight().accept(this);
+        String leftOperand = visit(ctx.multiplicative_Expression_LeftPart_ValidLeft());
+        String operator = visit(ctx.multiplicative_Expression_Operator());
+        String rightOperand = visit(ctx.multiplicative_Expression_LeftPart_ValidRight());
         return transformToMathFloor(leftOperand, operator, rightOperand);
     }
 

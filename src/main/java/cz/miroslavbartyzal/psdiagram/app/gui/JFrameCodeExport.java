@@ -8,6 +8,8 @@ import cz.miroslavbartyzal.psdiagram.app.codeImportExport.EnumSourceCode;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+
 import javax.swing.JRadioButton;
 import javax.swing.JViewport;
 
@@ -109,7 +111,7 @@ public class JFrameCodeExport extends javax.swing.JFrame
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE)
         );
 
         jPanel5.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 0));
@@ -118,7 +120,7 @@ public class JFrameCodeExport extends javax.swing.JFrame
         jButtonGenerate.setEnabled(false);
         jButtonGenerate.addActionListener(new java.awt.event.ActionListener()
         {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
+            public void actionPerformed(ActionEvent evt)
             {
                 jButtonGenerateActionPerformed(evt);
             }
@@ -127,7 +129,7 @@ public class JFrameCodeExport extends javax.swing.JFrame
 
         jPanelDescription.setBorder(javax.swing.BorderFactory.createTitledBorder("<html>Popis funkce</html>"));
 
-        jLabel1.setText("<html>\nTato funkce slouží k vygenerování zdrojového kódu některého z podporovaných programovacích jazyků z vytvořeného vývojového diagramu.<br /><br />\nSprávnost vygenerovaného zdrojového kódu není vždy stoprocentní, je proto doporučeno výsledný kód ještě překontrolovat.\n</html>");
+        jLabel1.setText("<html>\nTato funkce slouží k přepisu vývojového diagramu do zdrojového kódu vybraného programovacího jazyka.<br /><br />\nSprávnost vygenerovaného zdrojového kódu není vždy stoprocentní, je proto doporučeno výsledný kód ještě překontrolovat.\n</html>");
         jLabel1.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
         javax.swing.GroupLayout jPanelDescriptionLayout = new javax.swing.GroupLayout(jPanelDescription);
@@ -160,7 +162,7 @@ public class JFrameCodeExport extends javax.swing.JFrame
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanelDescription, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanelDescription, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
                     .addComponent(jPanelCodes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
@@ -203,7 +205,7 @@ public class JFrameCodeExport extends javax.swing.JFrame
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButtonGenerateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGenerateActionPerformed
+    private void jButtonGenerateActionPerformed(ActionEvent evt) {//GEN-FIRST:event_jButtonGenerateActionPerformed
         String name;
         File actualFlowchartFile = SettingsHolder.settings.getActualFlowchartFile();
         if (actualFlowchartFile != null) {
@@ -211,11 +213,11 @@ public class JFrameCodeExport extends javax.swing.JFrame
         } else {
             name = "Bez_nazvu";
         }
-        super.setAlwaysOnTop(false); // kdyby generovani diagramu hodilo warningmessage
+        super.setAlwaysOnTop(false); // kdyby generovani diagramu hodilo warning message
         String sourceCode = EnumSourceCode.valueOf(buttonGroup.getSelection().getActionCommand()).getSourceCode(
-                mainwindow.getFlowchartLayout().getFlowchart(), name);
+                mainwindow.getFlowchartLayout().getFlowchart(), name, SettingsHolder.settings.isBlockScopeVariables());
         super.setAlwaysOnTop(true);
-        if (sourceCode != null && !sourceCode.equals("")) {
+        if (sourceCode != null && !sourceCode.isEmpty()) {
             jTextAreaCode.setEnabled(true);
             jTextAreaCode.setText(sourceCode);
         }

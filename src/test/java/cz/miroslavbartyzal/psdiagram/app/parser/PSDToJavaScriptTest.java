@@ -6,6 +6,8 @@
 package cz.miroslavbartyzal.psdiagram.app.parser;
 
 import cz.miroslavbartyzal.psdiagram.app.parser.psd.AntlrPsdParser;
+import cz.miroslavbartyzal.psdiagram.app.parser.psd.PSDGrammarParser;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -22,7 +24,7 @@ public class PSDToJavaScriptTest
     public void visitorTest1()
     {
         String input = "19 // 1 // ((21 // 2) // 5)";
-        String result = parser.translatePSDToJavaScript(input);
+        String result = parser.translatePSDToJavaScript(input, PSDGrammarParser::solo_Expression);
         Assert.assertEquals("Math.trunc(Math.trunc(19 / 1) / (Math.trunc((Math.trunc(21 / 2)) / 5)))", result);
     }
     
@@ -30,7 +32,7 @@ public class PSDToJavaScriptTest
     public void visitorTest1b()
     {
         String input = "a // b // ((c // d) // e)";
-        String result = parser.translatePSDToJavaScript(input);
+        String result = parser.translatePSDToJavaScript(input, PSDGrammarParser::solo_Expression);
         Assert.assertEquals("Math.trunc(Math.trunc(a / b) / (Math.trunc((Math.trunc(c / d)) / e)))", result);
     }
     
@@ -38,7 +40,7 @@ public class PSDToJavaScriptTest
     public void visitorTest2()
     {
         String input = "5 * 5 // 2 * 2";
-        String result = parser.translatePSDToJavaScript(input);
+        String result = parser.translatePSDToJavaScript(input, PSDGrammarParser::solo_Expression);
         Assert.assertEquals("Math.trunc(5 * 5 / 2) * 2", result);
     }
     
@@ -46,7 +48,7 @@ public class PSDToJavaScriptTest
     public void visitorTest3()
     {
         String input = "2 + -5 * 5 // 2 * 2";
-        String result = parser.translatePSDToJavaScript(input);
+        String result = parser.translatePSDToJavaScript(input, PSDGrammarParser::solo_Expression);
         Assert.assertEquals("2 + Math.trunc(-5 * 5 / 2) * 2", result);
     }
     
@@ -54,7 +56,7 @@ public class PSDToJavaScriptTest
     public void visitorTest3b()
     {
         String input = "2 + -b * c // d * 2";
-        String result = parser.translatePSDToJavaScript(input);
+        String result = parser.translatePSDToJavaScript(input, PSDGrammarParser::solo_Expression);
         Assert.assertEquals("2 + Math.trunc(-b * c / d) * 2", result);
     }
     
@@ -62,7 +64,7 @@ public class PSDToJavaScriptTest
     public void visitorTest4()
     {
         String input = "2 + -5 * func(5 // 2) * 2";
-        String result = parser.translatePSDToJavaScript(input);
+        String result = parser.translatePSDToJavaScript(input, PSDGrammarParser::solo_Expression);
         Assert.assertEquals("2 + -5 * func(Math.trunc(5 / 2)) * 2", result);
     }
     
@@ -70,7 +72,7 @@ public class PSDToJavaScriptTest
     public void visitorTest5()
     {
         String input = "2 + -5 * func(5 // 2) // 2";
-        String result = parser.translatePSDToJavaScript(input);
+        String result = parser.translatePSDToJavaScript(input, PSDGrammarParser::solo_Expression);
         Assert.assertEquals("2 + Math.trunc(-5 * func(Math.trunc(5 / 2)) / 2)", result);
     }
     
@@ -78,7 +80,7 @@ public class PSDToJavaScriptTest
     public void visitorTest6()
     {
         String input = "Math.random() + 1 = 1";
-        String result = parser.translatePSDToJavaScript(input);
+        String result = parser.translatePSDToJavaScript(input, PSDGrammarParser::solo_Expression);
         Assert.assertEquals("Math.random() + 1 == 1", result);
     }
     
@@ -86,21 +88,21 @@ public class PSDToJavaScriptTest
     public void visitorSpacesTest()
     {
         String input = " 2 + -5 * 5 //  2   *     2\t";
-        String result = parser.translatePSDToJavaScript(input);
+        String result = parser.translatePSDToJavaScript(input, PSDGrammarParser::solo_Expression);
         Assert.assertEquals(" 2 + Math.trunc(-5 * 5 /  2)   *     2\t", result);
     }
     
     @Test
     public void visitorSyntaxErrorTest() {
         String input = "š3čřž č65 0š";
-        String result = parser.translatePSDToJavaScript(input);
+        String result = parser.translatePSDToJavaScript(input, PSDGrammarParser::solo_Expression);
         Assert.assertEquals(input, result);
     }
     
     @Test
     public void visitorSyntaxErrorTest2() {
         String input = "1,2";
-        String result = parser.translatePSDToJavaScript(input);
+        String result = parser.translatePSDToJavaScript(input, PSDGrammarParser::solo_Expression);
         Assert.assertEquals(input, result);
     }
     

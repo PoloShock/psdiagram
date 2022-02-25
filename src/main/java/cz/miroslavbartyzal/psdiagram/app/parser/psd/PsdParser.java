@@ -1,5 +1,9 @@
 package cz.miroslavbartyzal.psdiagram.app.parser.psd;
 
+import org.antlr.v4.runtime.tree.ParseTree;
+
+import java.util.function.Function;
+
 /**
  * @author Miroslav Bartyzal (miroslavbartyzal@gmail.com)
  */
@@ -8,7 +12,9 @@ public interface PsdParser
     
     void stopParsing();
     
-    String translatePSDToJavaScript(String input);
+    String translatePSDToJavaScript(String input, Function<PSDGrammarParser, ParseTree> parserRuleChoice);
+    
+    String translatePSDToJava(String input, Function<PSDGrammarParser, ParseTree> parserRuleChoice);
     
     boolean parseExpression(String input);
     

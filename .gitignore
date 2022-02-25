@@ -1,6 +1,7 @@
 #ignore thumbnails created by windows
 Thumbs.db
 [Tt]arget/
+gen/
 .idea/
 
 dependency-reduced-pom.xml

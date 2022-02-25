@@ -5,15 +5,19 @@
  */
 package cz.miroslavbartyzal.psdiagram.app.parser;
 
+import java.text.Normalizer;
+
 /**
- *
  * @author Miroslav Bartyzal (miroslavbartyzal@gmail.com)
  */
-public interface PSDParserListener
+public interface SourceCodeGenerator
 {
-
-    public void onValidationComplete(boolean isValid);
-
-    public void onRecoveryFinished(PSDParseResult parseResult);
-
+    
+    default String normalizeAsVariable(String name)
+    {
+        return Normalizer.normalize(name, Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "")
+                .replaceAll(" ", "_");
+    }
+    
 }

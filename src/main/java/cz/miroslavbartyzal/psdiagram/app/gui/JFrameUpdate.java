@@ -282,7 +282,7 @@ public class JFrameUpdate extends javax.swing.JFrame implements PropertyChangeLi
         jLabelHeading.setFont(new java.awt.Font("sansserif", 0, 18)); // NOI18N
         jLabelHeading.setText("Ať žijí aktualizace!");
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Další informace"));
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("<html>Další informace</html>"));
 
         jTextPaneNews.setEditable(false);
         jTextPaneNews.setBorder(null);

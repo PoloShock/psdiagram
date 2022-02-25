@@ -4,7 +4,7 @@
 
     <groupId>cz.miroslavbartyzal</groupId>
     <artifactId>psdiagram</artifactId>
-    <version>1.4.4.2</version>
+    <version>1.4.5</version>
     <packaging>jar</packaging>
     <name>PS Diagram</name>
     <url>http://www.psdiagram.cz</url>
@@ -48,20 +48,20 @@
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
-            <version>3.0.0</version>
+            <version>3.0.1</version>
         </dependency>
         
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
-            <version>3.0.0</version>
+            <version>3.0.2</version>
             <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>org.eclipse.persistence.core</artifactId>
-            <version>3.0.0</version>
+            <version>3.0.2</version>
         </dependency>
 
         <dependency>
@@ -80,23 +80,30 @@
             <artifactId>balloontip</artifactId>
             <version>1.2.4.1</version>
         </dependency>
-
+        
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
-            <version>4.9.2</version>
+            <version>4.9.3</version>
         </dependency>
+        
+        <!-- used only for debugging antlr parse tree -->
+<!--        <dependency>-->
+<!--            <groupId>org.antlr</groupId>-->
+<!--            <artifactId>antlr4</artifactId>-->
+<!--            <version>4.9.3</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna-platform</artifactId>
-            <version>5.7.0</version>
+            <version>5.10.0</version>
         </dependency>
         
         <dependency>
             <groupId>org.mozilla</groupId>
             <artifactId>rhino-runtime</artifactId>
-            <version>1.7.13</version>
+            <version>1.7.14</version>
         </dependency>
         
     </dependencies>
@@ -136,26 +143,32 @@
                                     <changelogurl>http://www.psdiagram.cz/changelog</changelogurl>
                                     <releaseurl></releaseurl>
 
-                                    <headline>Důležitá oprava for-each cyklu</headline>
+                                    <headline>Hello Java</headline>
                                     <description>
                                         <![CDATA[
                                         <html>
-                                            <p align="justify">Zacyklený cyklus. To není nadávka. Je to jen přesně to, co se stalo, když jste v PS Diagramu použili for-each cyklus pro procházení pole s určitou konstelací prvků. Konkrétně stačilo, aby pole obsahovalo alespoň jednu dvojici prvků o stejné hodnotě. Nevěřil jsem, dokud jsem to sám nezkusil.</p>
+                                            <p align="justify">Odteď už ne jen Pascal, ale i Java. Java je teď totiž další programovací jazyk, který můžete použít k automatickému vytvoření diagramu. A jde to samozřejmě i obráceně, čili diagram převést do Java kódu. :)</p>
+                                            <p align="justify">Za pomoc s podporou Javy děkuji Jozefovi Š. ze Slovenska, který se tomuto tématu věnoval v rámci své bakalářské práce.</p>
+                                            <p align="justify">Velké díky patří také Václavovi M., který věnoval pro podporu vývoje PS Diagramu štědrý finanční dar.</p>
                                         </html>
                                         ]]>
                                     </description>
 
                                     <features>
+                                        <feature>přidána podpora importu a exportu programovacího jazyka Java</feature>
                                     </features>
                                     <enhancements>
+                                        <enhancement>u převodu diagram &lt;-&gt; Pascal byla přidána podpora operátoru celočíselného dělení</enhancement>
                                     </enhancements>
                                     <extensions>
                                     </extensions>
                                     <changes>
                                     </changes>
                                     <fixes>
-                                        <fix>opraveno chování for-each cyklu v případě procházení pole obsahující prvky o opakujících se hodnotách</fix>
-                                        <fix>opraven proces aktualizace na některých systémech s Windows 7</fix>
+                                        <fix>opraveno oříznuté zobrazení titulků některých formulářů</fix>
+                                        <fix>v popisu syntaktické chyby se občas namísto '&lt;konec řádku&gt;' objevoval text 'EOF'</fix>
+                                        <fix>při převodu diagramu do Pascalu se stávalo, že se ve vzniklém kódu ztrácela poslední písmena víceřádkových komentářů</fix>
+                                        <fix>při převodu diagramu do Pascalu se název programu nyní ošetřuje tak, aby byl pro jazyk Pascal validní</fix>
                                     </fixes>
                                     <others>
                                     </others>
@@ -195,7 +208,7 @@
                                             <fileset dir="${basedir}/src/main/resources/intozip"/>
                                         </copy>
                                         <copy todir="${project.build.directory}/zip/PS Diagram/jre">
-                                            <fileset dir="c:/Program Files (x86)/AdoptOpenJDK/jre-11.0.10.9-hotspot"/>
+                                            <fileset dir="c:\Program Files (x86)\Eclipse Adoptium\jre-11.0.14.101-hotspot"/>
                                         </copy>
                                         <copy file="c:/Zaloha/Programovani/Moje/Visual Studio 2013/PS Diagram Launcher/PS Diagram Launcher/bin/Release/PS Diagram.exe" todir="${project.build.directory}/zip/PS Diagram"/>
                                         <zip destfile="${project.build.directory}/OPENSHIFT_DATA/PS_Diagram_${project.version}.zip"
@@ -438,7 +451,7 @@
             <plugin>
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr4-maven-plugin</artifactId>
-                <version>4.9.1</version>
+                <version>4.9.3</version>
                 <executions>
                     <execution>
                         <id>antlr</id>

@@ -153,6 +153,14 @@ public final class IO extends AbstractSymbolFunctionForm
         commands.put("value", value);
         symbol.setCommands(commands);
     }
+    
+    public static boolean isIVarValid(String var) {
+        return VariableFilter.isValid(var);
+    }
+    
+    public static boolean isOValueValid(String value) {
+        return ValueFilter.isValid(value);
+    }
 
     private void setInputVisible()
     {
@@ -195,7 +203,7 @@ public final class IO extends AbstractSymbolFunctionForm
         jRadioButtonInput = new javax.swing.JRadioButton();
         jRadioButtonOutput = new javax.swing.JRadioButton();
 
-        setBorder(javax.swing.BorderFactory.createTitledBorder("Vstup/Výstup"));
+        setBorder(javax.swing.BorderFactory.createTitledBorder("<html>Vstup/Výstup</html>"));
         setPreferredSize(new java.awt.Dimension(187, 493));
 
         jLabelVar.setText("Do proměnné:");

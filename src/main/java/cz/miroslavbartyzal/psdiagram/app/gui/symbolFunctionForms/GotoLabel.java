@@ -75,7 +75,7 @@ public final class GotoLabel extends AbstractSymbolFunctionForm
 
         jPanel1 = new cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.JPanelSymbol(mySymbol, jLabelDescription);
 
-        setBorder(javax.swing.BorderFactory.createTitledBorder("<html>\nSpojka - návěští\n</html>"));
+        setBorder(javax.swing.BorderFactory.createTitledBorder("<html>Spojka - návěští</html>"));
         setPreferredSize(new java.awt.Dimension(187, 493));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);

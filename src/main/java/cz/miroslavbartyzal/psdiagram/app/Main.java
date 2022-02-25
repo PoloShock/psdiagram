@@ -35,14 +35,14 @@ public final class Main
      */
     public static void main(String[] args)
     {
-        // lets not use exlusive file loging when in development mode.. (in such case, console is better)
+        // let's not use exclusive file logging when in development mode.. (in such case, console is better)
         if (SettingsHolder.IS_DEPLOYMENT_MODE) {
             initFileLogging();
         }
 
         initLookAndFeel();
 
-        ToolTipManager.sharedInstance().setDismissDelay(12000); // nastavení tooltipů tak, aby zůstali 12 sekund
+        ToolTipManager.sharedInstance().setDismissDelay(12000); // nastavení tooltipů tak, aby zůstaly 12 sekund
         UIManager.put("info", Color.WHITE);
 
         MainWindow.main(args);

@@ -24,7 +24,9 @@ import cz.miroslavbartyzal.psdiagram.app.gui.dialog.EnhancedJOptionPane;
 import cz.miroslavbartyzal.psdiagram.app.gui.dialog.MyJOptionPane;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.AbstractSymbolFunctionForm;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.ConstantFilter;
-import cz.miroslavbartyzal.psdiagram.app.parser.antlr.ANTLRParser;
+import cz.miroslavbartyzal.psdiagram.app.parser.psd.AntlrPsdParser;
+import cz.miroslavbartyzal.psdiagram.app.parser.psd.PSDGrammarParser;
+
 import java.awt.geom.Path2D;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,7 +52,7 @@ import org.mozilla.javascript.ScriptableObject;
 public final class ElementFunctionBed
 {
 
-    private static final ANTLRParser parser = new ANTLRParser();
+    private static final AntlrPsdParser parser = new AntlrPsdParser();
 
     private static final String scriptStart = ""
             + "var updateVariables = \"{"
@@ -400,7 +402,7 @@ public final class ElementFunctionBed
     private static void translateToJavaScript(HashMap<String, String> commands)
     {
         for (String key : commands.keySet()) {
-            String value = parser.translatePSDToJavaScript(commands.get(key));
+            String value = parser.translatePSDToJavaScript(commands.get(key), PSDGrammarParser::solo_Expression);
             commands.put(key, value);
         }
     }

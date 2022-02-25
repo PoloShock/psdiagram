@@ -3,13 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.miroslavbartyzal.psdiagram.app.parser.antlr;
+package cz.miroslavbartyzal.psdiagram.app.parser.javascript;
 
-import cz.miroslavbartyzal.psdiagram.app.parser.PSDGrammarParser;
-import cz.miroslavbartyzal.psdiagram.app.parser.PSDGrammarParserBaseVisitor;
+import cz.miroslavbartyzal.psdiagram.app.parser.psd.PSDGrammarParser;
+import cz.miroslavbartyzal.psdiagram.app.parser.psd.PSDGrammarParserBaseVisitor;
+
 import java.util.ArrayList;
 import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
@@ -17,12 +19,12 @@ import org.antlr.v4.runtime.tree.TerminalNode;
  *
  * @author Miroslav Bartyzal (miroslavbartyzal@gmail.com)
  */
-public class PSDToJavaScriptVisitor extends PSDGrammarParserBaseVisitor<String>
+public class PsdToJavaScriptVisitor extends PSDGrammarParserBaseVisitor<String>
 {
 
     private final String input;
 
-    public PSDToJavaScriptVisitor(String input)
+    public PsdToJavaScriptVisitor(String input)
     {
         this.input = input;
     }
@@ -38,7 +40,7 @@ public class PSDToJavaScriptVisitor extends PSDGrammarParserBaseVisitor<String>
             }
         }
 
-        String result = ctx.multiplicative_Expression_LeftPart().accept(this);
+        String result = visit(ctx.multiplicative_Expression_LeftPart());
 
         List<PSDGrammarParser.Multiplicative_Expression_OperatorContext> operators = new ArrayList<>(
                 ctx.multiplicative_Expression_Operator());
@@ -47,9 +49,9 @@ public class PSDToJavaScriptVisitor extends PSDGrammarParserBaseVisitor<String>
         for (int i = 0; i < operators.size(); i++) {
             PSDGrammarParser.Multiplicative_Expression_OperatorContext operator = operators.get(i);
             if (operator.operator.getType() == PSDGrammarParser.FLOORDIV) {
-                result = transformToMathFloor(result, operator.accept(this), rightSideOperands.get(i).accept(this));
+                result = transformToMathFloor(result, visit(operator), visit(rightSideOperands.get(i)));
             } else {
-                result += operator.accept(this) + rightSideOperands.get(i).accept(this);
+                result += visit(operator) + visit(rightSideOperands.get(i));
             }
         }
 
@@ -66,9 +68,9 @@ public class PSDToJavaScriptVisitor extends PSDGrammarParserBaseVisitor<String>
             return super.visitMultiplicative_Expression_LeftPart(ctx);
         }
       
-        String leftOperand = ctx.multiplicative_Expression_LeftPart_ValidLeft().accept(this);
-        String operator = ctx.multiplicative_Expression_Operator().accept(this);
-        String rightOperand = ctx.multiplicative_Expression_LeftPart_ValidRight().accept(this);
+        String leftOperand = visit(ctx.multiplicative_Expression_LeftPart_ValidLeft());
+        String operator = visit(ctx.multiplicative_Expression_Operator());
+        String rightOperand = visit(ctx.multiplicative_Expression_LeftPart_ValidRight());
         return transformToMathFloor(leftOperand, operator, rightOperand);
     }
 
@@ -98,7 +100,7 @@ public class PSDToJavaScriptVisitor extends PSDGrammarParserBaseVisitor<String>
         String rightOperandTrimmed = nodeText;
         String spaceRight = "";
         while (rightOperandTrimmed.matches(".*\\s$")) {
-            spaceRight = rightOperandTrimmed.substring(rightOperandTrimmed.length() - 1, rightOperandTrimmed.length()) + spaceRight;
+            spaceRight = rightOperandTrimmed.substring(rightOperandTrimmed.length() - 1) + spaceRight;
             rightOperandTrimmed = rightOperandTrimmed.substring(0, rightOperandTrimmed.length() - 1);
         }
         return new String[]{rightOperandTrimmed, spaceRight};
@@ -107,7 +109,7 @@ public class PSDToJavaScriptVisitor extends PSDGrammarParserBaseVisitor<String>
     @Override
     public String visitTerminal(TerminalNode node)
     {
-        if (node.getSymbol().getType() == PSDGrammarParser.EOF) {
+        if (node.getSymbol().getType() == Recognizer.EOF) {
             return "";
         }
         

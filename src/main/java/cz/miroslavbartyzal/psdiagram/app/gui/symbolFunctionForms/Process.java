@@ -10,6 +10,7 @@ import cz.miroslavbartyzal.psdiagram.app.flowchart.symbols.Symbol;
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.MaxBalloonSizeCallback;
 import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditManager;
+import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.NoArrayVariableFilter;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.ValueFilter;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.VariableFilter;
 import java.util.LinkedHashMap;
@@ -100,7 +101,7 @@ public final class Process extends AbstractSymbolFunctionForm
     /**
      * Vygeneruje danému symbolu dané funkční příkazy a zároveň nastaví
      * defaultní text symbolu.
-     * <p/>
+     * 
      * @param symbol symbol, kterého se má generování hodnot týkat
      * @param var proměnná, se kterou se má operovat
      * @param value hodnota, která má bý do proměnné uložena
@@ -119,6 +120,11 @@ public final class Process extends AbstractSymbolFunctionForm
         commands.put("var", var);
         commands.put("value", value);
         symbol.setCommands(commands);
+    }
+    
+    public static boolean areValuesValid(String var, String value) {
+        return VariableFilter.isValid(var) 
+                && ValueFilter.isValid(value);
     }
 
     /**
@@ -139,7 +145,7 @@ public final class Process extends AbstractSymbolFunctionForm
         jLabel3 = new javax.swing.JLabel();
         jLabelExamples = new javax.swing.JLabel();
 
-        setBorder(javax.swing.BorderFactory.createTitledBorder("Zpracování"));
+        setBorder(javax.swing.BorderFactory.createTitledBorder("<html>Zpracování</html>"));
         setPreferredSize(new java.awt.Dimension(187, 493));
 
         jLabel1.setText("Proměnná:");

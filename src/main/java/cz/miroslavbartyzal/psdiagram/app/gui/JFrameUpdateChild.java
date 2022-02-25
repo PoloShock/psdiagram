@@ -108,7 +108,7 @@ public class JFrameUpdateChild extends javax.swing.JFrame implements PropertyCha
 
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Kontroluji aktualizace"));
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("<html>Kontroluji aktualizace</html>"));
 
         jLabelState.setText("stavová hlášení");
 

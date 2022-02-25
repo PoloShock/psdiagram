@@ -1,29 +1,30 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package cz.miroslavbartyzal.psdiagram.app.parser.antlr;
+package cz.miroslavbartyzal.psdiagram.app.parser.psd;
 
 import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
-import cz.miroslavbartyzal.psdiagram.app.parser.PSDGrammarParser;
-import cz.miroslavbartyzal.psdiagram.app.parser.PSDParseResult;
-import cz.miroslavbartyzal.psdiagram.app.parser.PSDParser;
-import cz.miroslavbartyzal.psdiagram.app.parser.PSDParserListener;
-import javax.swing.SwingUtilities;
-import org.antlr.v4.runtime.ANTLRInputStream;
+import cz.miroslavbartyzal.psdiagram.app.parser.AntlrErrorStrategyTranslated;
+import cz.miroslavbartyzal.psdiagram.app.parser.MyAntlrSyntaxErrorListener;
+import cz.miroslavbartyzal.psdiagram.app.parser.ParseResult;
+import cz.miroslavbartyzal.psdiagram.app.parser.java.PsdToJavaVisitor;
+import cz.miroslavbartyzal.psdiagram.app.parser.javascript.PsdToJavaScriptVisitor;
+
 import org.antlr.v4.runtime.BailErrorStrategy;
 import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.LexerNoViableAltException;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.atn.PredictionMode;
+import org.antlr.v4.runtime.tree.ParseTree;
+
+import java.util.function.Function;
+
+import javax.swing.SwingUtilities;
 
 /**
  *
  * @author Miroslav Bartyzal (miroslavbartyzal@gmail.com)
  */
-public class ANTLRParser implements PSDParser
+public class AntlrPsdParser implements PsdParser
 {
 
     private Thread recoveryParseThread = null;
@@ -35,10 +36,10 @@ public class ANTLRParser implements PSDParser
 
     }
 
-    private class PSDGrammarBailLexer extends PSDGrammarLexerTranslated
+    private class PsdGrammarBailLexer extends PsdGrammarLexerTranslated
     {
 
-        public PSDGrammarBailLexer(CharStream input)
+        public PsdGrammarBailLexer(CharStream input)
         {
             super(input);
         }
@@ -72,9 +73,9 @@ public class ANTLRParser implements PSDParser
 
     private PSDGrammarParser createBailOutParser(String input, boolean buildParseTree)
     {
-        PSDGrammarBailLexer lexer = new PSDGrammarBailLexer(new ANTLRInputStream(input));
+        PsdGrammarBailLexer lexer = new PsdGrammarBailLexer(CharStreams.fromString(input));
         lexer.removeErrorListeners();
-        lexer.addErrorListener(new ANTLRMySyntaxErrorListener()
+        lexer.addErrorListener(new MyAntlrSyntaxErrorListener()
         {
             @Override
             public void onSyntaxError(String errorMessage, int beginIndex, int endIndex)
@@ -87,7 +88,7 @@ public class ANTLRParser implements PSDParser
         PSDGrammarParser parser = new PSDGrammarParser(new CommonTokenStream(lexer));
         parser.setBuildParseTree(buildParseTree);
         parser.removeErrorListeners();
-        parser.addErrorListener(new ANTLRMySyntaxErrorListener()
+        parser.addErrorListener(new MyAntlrSyntaxErrorListener()
         {
             @Override
             public void onSyntaxError(String errorMessage, int beginIndex, int endIndex)
@@ -113,7 +114,7 @@ public class ANTLRParser implements PSDParser
     }
 
     private void parseReportErrors(String input, RuleCallback ruleCallback,
-            PSDParserListener listener)
+            PsdParserListener listener)
     {
         stopParsing();
         recoveryParseThread = new RecoveryParseThread(input, ruleCallback, listener);
@@ -121,12 +122,24 @@ public class ANTLRParser implements PSDParser
     }
 
     @Override
-    public String translatePSDToJavaScript(String input)
+    public String translatePSDToJavaScript(String input, Function<PSDGrammarParser, ParseTree> parserRuleChoice)
     {
         try {
             PSDGrammarParser parser = createBailOutParser(input, true);
-            PSDToJavaScriptVisitor visitor = new PSDToJavaScriptVisitor(input);
-            return visitor.visit(parser.solo_Expression());
+            PsdToJavaScriptVisitor visitor = new PsdToJavaScriptVisitor(input);
+            return visitor.visit(parserRuleChoice.apply(parser));
+        } catch (RuntimeException ex) {
+            return input;
+        }
+    }
+
+    @Override
+    public String translatePSDToJava(String input, Function<PSDGrammarParser, ParseTree> parserRuleChoice)
+    {
+        try {
+            PSDGrammarParser parser = createBailOutParser(input, true);
+            PsdToJavaVisitor visitor = new PsdToJavaVisitor(input);
+            return visitor.visit(parserRuleChoice.apply(parser));
         } catch (RuntimeException ex) {
             return input;
         }
@@ -135,210 +148,98 @@ public class ANTLRParser implements PSDParser
     @Override
     public boolean parseExpression(String input)
     {
-        return parse(input, new RuleCallback()
-        {
-            @Override
-            public void ruleCall(PSDGrammarParser parser)
-            {
-                parser.solo_Expression();
-            }
-        });
+        return parse(input, PSDGrammarParser::solo_Expression);
     }
 
     @Override
     public boolean parseBooleanExpression(String input)
     {
-        return parse(input, new RuleCallback()
-        {
-            @Override
-            public void ruleCall(PSDGrammarParser parser)
-            {
-                parser.solo_BooleanExpression();
-            }
-        });
+        return parse(input, PSDGrammarParser::solo_BooleanExpression);
     }
 
     @Override
     public boolean parseListOfConstants(String input)
     {
-        return parse(input, new RuleCallback()
-        {
-            @Override
-            public void ruleCall(PSDGrammarParser parser)
-            {
-                parser.solo_ListOf_Constants();
-            }
-        });
+        return parse(input, PSDGrammarParser::solo_ListOf_Constants);
     }
 
     @Override
     public boolean parseListOfNumericConstants(String input)
     {
-        return parse(input, new RuleCallback()
-        {
-            @Override
-            public void ruleCall(PSDGrammarParser parser)
-            {
-                parser.solo_ListOf_NumberConstants();
-            }
-        });
+        return parse(input, PSDGrammarParser::solo_ListOf_NumberConstants);
     }
 
     @Override
     public boolean parseNumericExpression(String input)
     {
-        return parse(input, new RuleCallback()
-        {
-            @Override
-            public void ruleCall(PSDGrammarParser parser)
-            {
-                parser.solo_NumericExpression();
-            }
-        });
+        return parse(input, PSDGrammarParser::solo_NumericExpression);
     }
 
     @Override
     public boolean parseStringExpression(String input)
     {
-        return parse(input, new RuleCallback()
-        {
-            @Override
-            public void ruleCall(PSDGrammarParser parser)
-            {
-                parser.solo_StringExpression();
-            }
-        });
+        return parse(input, PSDGrammarParser::solo_StringExpression);
     }
 
     @Override
     public boolean parseNoArrayVariableToAssignTo(String input)
     {
-        return parse(input, new RuleCallback()
-        {
-            @Override
-            public void ruleCall(PSDGrammarParser parser)
-            {
-                parser.solo_NoArrayVariableToAssignTo();
-            }
-        });
+        return parse(input, PSDGrammarParser::solo_NoArrayVariableToAssignTo);
     }
 
     @Override
     public boolean parseVariableToAssignTo(String input)
     {
-        return parse(input, new RuleCallback()
-        {
-            @Override
-            public void ruleCall(PSDGrammarParser parser)
-            {
-                parser.solo_VariableToAssignTo();
-            }
-        });
+        return parse(input, PSDGrammarParser::solo_VariableToAssignTo);
     }
 
     @Override
-    public void parseExpressionReportErrors(String input, PSDParserListener listener)
+    public void parseExpressionReportErrors(String input, PsdParserListener listener)
     {
-        parseReportErrors(input, new RuleCallback()
-        {
-            @Override
-            public void ruleCall(PSDGrammarParser parser)
-            {
-                parser.solo_Expression();
-            }
-        }, listener);
+        parseReportErrors(input, PSDGrammarParser::solo_Expression, listener);
     }
 
     @Override
-    public void parseBooleanExpressionReportErrors(String input, PSDParserListener listener)
+    public void parseBooleanExpressionReportErrors(String input, PsdParserListener listener)
     {
-        parseReportErrors(input, new RuleCallback()
-        {
-            @Override
-            public void ruleCall(PSDGrammarParser parser)
-            {
-                parser.solo_BooleanExpression();
-            }
-        }, listener);
+        parseReportErrors(input, PSDGrammarParser::solo_BooleanExpression, listener);
     }
 
     @Override
-    public void parseListOfConstantsReportErrors(String input, PSDParserListener listener)
+    public void parseListOfConstantsReportErrors(String input, PsdParserListener listener)
     {
-        parseReportErrors(input, new RuleCallback()
-        {
-            @Override
-            public void ruleCall(PSDGrammarParser parser)
-            {
-                parser.solo_ListOf_Constants();
-            }
-        }, listener);
+        parseReportErrors(input, PSDGrammarParser::solo_ListOf_Constants, listener);
     }
 
     @Override
     public void parseListOfNumericConstantsExpressionReportErrors(String input,
-            PSDParserListener listener)
+            PsdParserListener listener)
     {
-        parseReportErrors(input, new RuleCallback()
-        {
-            @Override
-            public void ruleCall(PSDGrammarParser parser)
-            {
-                parser.solo_ListOf_NumberConstants();
-            }
-        }, listener);
+        parseReportErrors(input, PSDGrammarParser::solo_ListOf_NumberConstants, listener);
     }
 
     @Override
-    public void parseNumericExpressionReportErrors(String input, PSDParserListener listener)
+    public void parseNumericExpressionReportErrors(String input, PsdParserListener listener)
     {
-        parseReportErrors(input, new RuleCallback()
-        {
-            @Override
-            public void ruleCall(PSDGrammarParser parser)
-            {
-                parser.solo_NumericExpression();
-            }
-        }, listener);
+        parseReportErrors(input, PSDGrammarParser::solo_NumericExpression, listener);
     }
 
     @Override
-    public void parseStringExpressionReportErrors(String input, PSDParserListener listener)
+    public void parseStringExpressionReportErrors(String input, PsdParserListener listener)
     {
-        parseReportErrors(input, new RuleCallback()
-        {
-            @Override
-            public void ruleCall(PSDGrammarParser parser)
-            {
-                parser.solo_StringExpression();
-            }
-        }, listener);
+        parseReportErrors(input, PSDGrammarParser::solo_StringExpression, listener);
     }
 
     @Override
-    public void parseNoArrayVariableToAssignToReportErrors(String input, PSDParserListener listener)
+    public void parseNoArrayVariableToAssignToReportErrors(String input, PsdParserListener listener)
     {
-        parseReportErrors(input, new RuleCallback()
-        {
-            @Override
-            public void ruleCall(PSDGrammarParser parser)
-            {
-                parser.solo_NoArrayVariableToAssignTo();
-            }
-        }, listener);
+        parseReportErrors(input, PSDGrammarParser::solo_NoArrayVariableToAssignTo, listener);
     }
 
     @Override
-    public void parseVariableToAssignToReportErrors(String input, PSDParserListener listener)
+    public void parseVariableToAssignToReportErrors(String input, PsdParserListener listener)
     {
-        parseReportErrors(input, new RuleCallback()
-        {
-            @Override
-            public void ruleCall(PSDGrammarParser parser)
-            {
-                parser.solo_VariableToAssignTo();
-            }
-        }, listener);
+        parseReportErrors(input, PSDGrammarParser::solo_VariableToAssignTo, listener);
     }
 
     private static class RecoveryParseThread extends Thread
@@ -346,11 +247,11 @@ public class ANTLRParser implements PSDParser
 
         private final String input;
         private final RuleCallback ruleCallback;
-        private final PSDParserListener listener;
+        private final PsdParserListener listener;
         private boolean interrupted = false;
 
         public RecoveryParseThread(String input, RuleCallback ruleCallback,
-                PSDParserListener listener)
+                PsdParserListener listener)
         {
             this.input = input;
             this.ruleCallback = ruleCallback;
@@ -358,12 +259,11 @@ public class ANTLRParser implements PSDParser
         }
 
         private PSDGrammarParser createRecoveryParser(String input,
-                final PSDParseResult parseResultToSaveTo)
+                final ParseResult parseResultToSaveTo)
         {
-            PSDGrammarLexerTranslated lexer = new PSDGrammarLexerTranslated(new ANTLRInputStream(
-                    input));
+            PsdGrammarLexerTranslated lexer = new PsdGrammarLexerTranslated(CharStreams.fromString(input));
             lexer.removeErrorListeners();
-            lexer.addErrorListener(new ANTLRMySyntaxErrorListener()
+            lexer.addErrorListener(new MyAntlrSyntaxErrorListener()
             {
                 @Override
                 public void onSyntaxError(String errorMessage, int beginIndex, int endIndex)
@@ -375,7 +275,7 @@ public class ANTLRParser implements PSDParser
             PSDGrammarParser parser = new PSDGrammarParser(new CommonTokenStream(lexer));
             parser.setBuildParseTree(false);
             parser.removeErrorListeners();
-            parser.addErrorListener(new ANTLRMySyntaxErrorListener()
+            parser.addErrorListener(new MyAntlrSyntaxErrorListener()
             {
                 @Override
                 public void onSyntaxError(String errorMessage, int beginIndex, int endIndex)
@@ -384,7 +284,7 @@ public class ANTLRParser implements PSDParser
                 }
             });
 
-            parser.setErrorHandler(new ANTLRErrorStrategyTranslated());
+            parser.setErrorHandler(new AntlrErrorStrategyTranslated());
 
             if (!SettingsHolder.IS_DEPLOYMENT_MODE) {
                 parser.getInterpreter().setPredictionMode(PredictionMode.LL_EXACT_AMBIG_DETECTION); // for debugging -> detect every ambiguosity
@@ -401,7 +301,7 @@ public class ANTLRParser implements PSDParser
 
         private void runSingleStageParse()
         {
-            final PSDParseResult parseResult = new PSDParseResult(input);
+            final ParseResult parseResult = new ParseResult(input);
             ruleCallback.ruleCall(createRecoveryParser(input, parseResult));
             if (!interrupted) {
                 SwingUtilities.invokeLater(new Runnable()
@@ -421,7 +321,7 @@ public class ANTLRParser implements PSDParser
 
         private void runTwoStageParse()
         {
-            final PSDParseResult parseResult = new PSDParseResult(input);
+            final ParseResult parseResult = new ParseResult(input);
             PSDGrammarParser parser = createRecoveryParser(input, parseResult);
             parser.getInterpreter().setPredictionMode(PredictionMode.SLL);
 

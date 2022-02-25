@@ -11,9 +11,11 @@ import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.MaxBalloonSizeCallback;
 import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditManager;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.ConstantFilter;
+import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.NoArrayVariableFilter;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.VariableFilter;
 import java.awt.Dimension;
 import java.awt.LayoutManager;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -150,6 +152,15 @@ public final class Switch extends AbstractSymbolFunctionForm
         }
         element.getSymbol().setCommands(commands);
     }
+    
+    public static boolean areValuesValid(String conditionVar, Collection<String> segmentConstants) {
+        for (String segmentConstant : segmentConstants) {
+            if (!ConstantFilter.isValid(segmentConstant)) {
+                return false;
+            }
+        }
+        return VariableFilter.isValid(conditionVar);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -168,7 +179,7 @@ public final class Switch extends AbstractSymbolFunctionForm
         jLabelExamples = new javax.swing.JLabel();
         jPanelSegments = new JPanelSegments(super.getElement());
 
-        setBorder(javax.swing.BorderFactory.createTitledBorder("<html>\nRozhodování - vícecestné (switch)\n</html>"));
+        setBorder(javax.swing.BorderFactory.createTitledBorder("<html>Rozhodování - vícecestné (switch)</html>"));
         setPreferredSize(new java.awt.Dimension(187, 493));
 
         jLabel1.setText("Vstupní proměnná:");

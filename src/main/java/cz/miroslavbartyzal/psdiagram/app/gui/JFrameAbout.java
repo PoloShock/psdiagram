@@ -202,7 +202,7 @@ public class JFrameAbout extends javax.swing.JFrame
 
         jPanel3.add(jPanel4);
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Další informace"));
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("<html>Další informace</html>"));
 
         jTextPane1.setEditable(false);
         jTextPane1.setBorder(null);

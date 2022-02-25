@@ -117,7 +117,7 @@
                       <Properties>
                         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                            <TitledBorder title="P&#x159;i spu&#x161;t&#x11b;n&#xed;"/>
+                            <TitledBorder title="&lt;html&gt;P&#x159;i spu&#x161;t&#x11b;n&#xed;&lt;/html&gt;"/>
                           </Border>
                         </Property>
                       </Properties>
@@ -254,7 +254,7 @@
                       <Properties>
                         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                            <TitledBorder title="Nakl&#xe1;d&#xe1;n&#xed; s prom&#x11b;nn&#xfd;mi"/>
+                            <TitledBorder title="&lt;html&gt;Nakl&#xe1;d&#xe1;n&#xed; s prom&#x11b;nn&#xfd;mi&lt;/html&gt;"/>
                           </Border>
                         </Property>
                       </Properties>
@@ -335,7 +335,7 @@
                       <Properties>
                         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                            <TitledBorder title="Animace"/>
+                            <TitledBorder title="&lt;html&gt;Animace&lt;/html&gt;"/>
                           </Border>
                         </Property>
                       </Properties>
@@ -509,7 +509,7 @@
                       <Properties>
                         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                            <TitledBorder title="Export do obr&#xe1;zku"/>
+                            <TitledBorder title="&lt;html&gt;Export do obr&#xe1;zku&lt;/html&gt;"/>
                           </Border>
                         </Property>
                       </Properties>
@@ -555,7 +555,7 @@
                       <Properties>
                         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                            <TitledBorder title="Export obecn&#xe9;"/>
+                            <TitledBorder title="&lt;html&gt;Export obecn&#xe9;&lt;/html&gt;"/>
                           </Border>
                         </Property>
                       </Properties>

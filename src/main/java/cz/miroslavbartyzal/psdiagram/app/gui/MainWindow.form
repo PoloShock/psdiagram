@@ -703,7 +703,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
                           <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
-                          <Component id="jPanelDetails" max="32767" attributes="0"/>
+                          <Component id="jPanelDetails" pref="262" max="32767" attributes="0"/>
                           <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
                           <Component id="jToolBarSymbols" min="-2" pref="43" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
@@ -888,7 +888,7 @@
                                       <Properties>
                                         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                                           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                                            <TitledBorder title="Text symbolu"/>
+                                            <TitledBorder title="&lt;html&gt;Text symbolu&lt;/html&gt;"/>
                                           </Border>
                                         </Property>
                                       </Properties>
@@ -926,7 +926,7 @@
                                       <Properties>
                                         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                                           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                                            <TitledBorder title="Text v&#x11b;tv&#xed; symbolu"/>
+                                            <TitledBorder title="&lt;html&gt;Text v&#x11b;tv&#xed; symbolu&lt;/html&gt;"/>
                                           </Border>
                                         </Property>
                                       </Properties>

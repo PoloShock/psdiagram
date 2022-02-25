@@ -3,9 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.miroslavbartyzal.psdiagram.app.parser.antlr;
+package cz.miroslavbartyzal.psdiagram.app.parser.psd;
 
-import cz.miroslavbartyzal.psdiagram.app.parser.PSDGrammarLexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
 
@@ -13,10 +12,10 @@ import org.antlr.v4.runtime.Token;
  *
  * @author Miroslav Bartyzal (miroslavbartyzal@gmail.com)
  */
-public class PSDGrammarLexerTranslated extends PSDGrammarLexer
+public class PsdGrammarLexerTranslated extends PSDGrammarLexer
 {
 
-    public PSDGrammarLexerTranslated(CharStream input)
+    public PsdGrammarLexerTranslated(CharStream input)
     {
         super(input);
     }

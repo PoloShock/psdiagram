@@ -26,9 +26,9 @@ public enum EnumSourceCode
         }
 
         @Override
-        public String getSourceCode(Flowchart<LayoutSegment, LayoutElement> flowchart, String name)
+        public String getSourceCode(Flowchart<LayoutSegment, LayoutElement> flowchart, String programName, boolean blockScopeVariables)
         {
-            return Pascal.getSourceCode(flowchart, name);
+            return Pascal.getSourceCode(flowchart, programName);
         }
 
         @Override
@@ -41,6 +41,33 @@ public enum EnumSourceCode
         public String getGuideText()
         {
             return "vložte jen část mezi Begin a End.";
+        }
+    },
+	
+	JAVA
+    {
+        @Override
+        public Flowchart<LayoutSegment, LayoutElement> getFlowchart(String code)
+        {
+            return Java.getFlowchart(code);
+        }
+
+        @Override
+        public String getSourceCode(Flowchart<LayoutSegment, LayoutElement> flowchart, String programName, boolean blockScopeVariables)
+        {
+            return Java.getSourceCode(flowchart, programName, blockScopeVariables);
+        }
+
+        @Override
+        public String getUniqueTextValue()
+        {
+            return "Java";
+        }
+
+        @Override
+        public String getGuideText()
+        {
+            return "vložte jen tělo jedné funkce mezi složenými závorkami";
         }
     };
 
@@ -76,10 +103,10 @@ public enum EnumSourceCode
      *
      * @param flowchart vývojový diagram, ze kterého má být zdrojový kód
      * vygenerován
-     * @param name název programu, který má vygenerovaný zdrojový kód nést.
+     * @param programName název programu, který má vygenerovaný zdrojový kód nést.
      * @return vygenerovaný zdrojový kód
      */
     public abstract String getSourceCode(Flowchart<LayoutSegment, LayoutElement> flowchart,
-            String name);
+            String programName, boolean blockScopeVariables);
 
 }

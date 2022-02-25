@@ -11,7 +11,9 @@ import cz.miroslavbartyzal.psdiagram.app.global.SettingsHolder;
 import cz.miroslavbartyzal.psdiagram.app.gui.balloonToolTip.MaxBalloonSizeCallback;
 import cz.miroslavbartyzal.psdiagram.app.gui.managers.FlowchartEditManager;
 import cz.miroslavbartyzal.psdiagram.app.gui.symbolFunctionForms.documentFilters.BooleanValueFilter;
+
 import java.util.LinkedHashMap;
+
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
@@ -115,6 +117,10 @@ public final class Decision extends AbstractSymbolFunctionForm
         commands.put("condition", condition);
         symbol.setCommands(commands);
     }
+    
+    public static boolean isConditionValid(String condition) {
+        return BooleanValueFilter.isValid(condition);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -133,7 +139,7 @@ public final class Decision extends AbstractSymbolFunctionForm
         jLabel3 = new javax.swing.JLabel();
         jLabelExamples = new javax.swing.JLabel();
 
-        setBorder(javax.swing.BorderFactory.createTitledBorder("<html>\nRozhodování - podmínka\n</html>"));
+        setBorder(javax.swing.BorderFactory.createTitledBorder("<html>Rozhodování - podmínka</html>"));
         setPreferredSize(new java.awt.Dimension(187, 493));
 
         jLabel1.setText("Podmíněný výraz:");

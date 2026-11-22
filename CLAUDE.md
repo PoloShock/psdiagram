@@ -36,12 +36,35 @@ It builds the shaded `-with_dependencies` jar with Main-Class and Build-Number (
 `buildNumber.properties`). Using `versioninfo-maven-plugin` (the author's own plugin), it merges the release notes from the pom
 into `$PSD_DATA_DIR/versioninfo.xml`. Antrun then packages `target/PSD_DATA/` from these parts:
 - `PS_Diagram_<ver>.zip`, which bundles the JRE from a hard-coded `c:\Program Files (x86)\Eclipse Adoptium\...` path, plus
-  `PS Diagram.exe` (a separate C# launcher)
+  the launcher `tools/launcher/dist/PS Diagram.exe`
 - `PSD-update_<ver>.zip`, which contains `psdiagram.updater` from the local Maven repo (built from `../ps-diagram-updater`, which must be `mvn install`ed with the same version)
 - the user manual PDF
 
-Neither these plugins nor the installed updater artifact are available here, so this profile cannot run in the container. The release notes for the next
+Before a release build, `mvn -B -f tools install` the plugins (see "Build tools" below) and `mvn install` the updater. The
+hard-coded Windows JRE path is the only part that still ties the release build to Windows. The release notes for the next
 version are edited in the `versioninfo-maven-plugin` `<configuration>` in `pom.xml` (Czech HTML).
+
+## Build tools (`tools/`)
+Separate builds, not modules of the root pom, so the default build ignores them. They were imported in 2026-11 from the
+author's old plain folders (no earlier git history).
+- `versioninfo-maven-plugin` (1.2) and `directoryfootprint-maven-plugin` (1.3): the author's own Maven plugins used by the
+  release profile. `mvn -B -f tools install` builds both and installs them into `~/.m2`. CI builds them too.
+  `versioninfo-maven-plugin` has its own copy of the `ChangesCondenser` JAXB classes, which must stay compatible with
+  `update/` here and with the web repo.
+- `launcher/`: `PS Diagram.exe`, a small native Win32 C program (it replaced a C# .NET 2.0 launcher, which made users install
+  .NET 3.5; that version is in the git history).
+  - It finds `psdiagram.jar` in the current dir, then next to the exe, and starts it with `jre\bin\javaw.exe`, else
+    `%JAVA_HOME%\bin\javaw.exe`, else (after a warning) through the shell's `.jar` association. The arguments are passed
+    through as the raw command line. Keep this behaviour and the Czech messages.
+  - Keep the exe name: `JFrameSettings` file associations point at `PS Diagram.exe`.
+  - `tools/launcher/build.sh` builds it with MinGW-w64 i686 (installed in the devcontainer). The build is deterministic, and
+    `dist/PS Diagram.exe` is committed. Rebuild and commit the exe **only when its source changes**, so the hash stays the
+    same and keeps its antivirus/SmartScreen reputation. The CI `launcher` job rebuilds it on `debian:bookworm` and fails if
+    the result differs (`build.sh --check`).
+  - The exe is **not code-signed**, by the user's decision (no budget for paid signing; free SignPath Foundation signing
+    would need an OSI license for the repo). Keep it plain to avoid false positives: no packer/UPX, keep the version
+    resource and manifest. Ask the user before uploading the exe to VirusTotal, because that publishes it.
+  - The container can't run the exe. Windows tests are done by the host-side Claude or the user.
 
 ## Architecture (package `cz.miroslavbartyzal.psdiagram.app`)
 

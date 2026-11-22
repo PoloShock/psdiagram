@@ -236,7 +236,7 @@
                                         <copy todir="${project.build.directory}/zip/PS Diagram/jre">
                                             <fileset dir="c:\Program Files (x86)\Eclipse Adoptium\jre-11.0.14.101-hotspot"/>
                                         </copy>
-                                        <copy file="c:/Zaloha/Programovani/Moje/Visual Studio 2013/PS Diagram Launcher/PS Diagram Launcher/bin/Release/PS Diagram.exe" todir="${project.build.directory}/zip/PS Diagram"/>
+                                        <copy file="${basedir}/tools/launcher/dist/PS Diagram.exe" todir="${project.build.directory}/zip/PS Diagram"/>
                                         <zip destfile="${project.build.directory}/PSD_DATA/PS_Diagram_${project.version}.zip"
                                              encoding="UTF-8"
                                              useLanguageEncodingFlag="true"

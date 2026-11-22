@@ -3,7 +3,7 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 PS Diagram is a Czech desktop app (Java 11 / Swing) for drawing, animating and debugging flowcharts, with conversion between
-flowcharts and Pascal / Java source code. The working branch is `develop`, and releases are merged to `master`.
+flowcharts and Pascal / Java source code. Development is trunk-based on `master` (protected), and releases are tags `vX.Y.Z` on `master`.
 The website and update server live in the sibling repo `../ps-diagram-web` (see `../CLAUDE.md`).
 
 ## Build & test
@@ -69,8 +69,12 @@ version are edited in the `versioninfo-maven-plugin` `<configuration>` in `pom.x
 
 ## Conventions
 
-- Work on `feature/<name>` branches and open PRs into `develop` (ask before pushing). Always use the `feature/` prefix,
-  because branches without it are protected.
+- Work on short-lived `feature/<name>` branches and open PRs into `master` (ask before pushing). Always use the `feature/`
+  prefix, because branches without it are protected. Outside contributors open PRs from their forks.
+- Releases: one commit sets the release version (`RELEASING new version X.Y.Z`), it gets the tag `vX.Y.Z` on `master`, and the
+  next commit bumps the version back to `-SNAPSHOT`. Older tags are named `version_X.Y.Z`. If an already released version needs
+  a hotfix while `master` holds unreleased work, branch `release/X.Y.x` from its tag at that point, tag the fix there, and
+  cherry-pick it to `master`.
 - UI texts, comments and many identifiers are in Czech, and the commit messages use the prefixes `ADDED` / `CHANGED` / `FIXED` / `ENHANCED` /
   `RELEASING`.
 - The client talks to `http://www.psdiagram.cz` over **plain HTTP**. Its HTTP client doesn't follow http→https redirects, so the

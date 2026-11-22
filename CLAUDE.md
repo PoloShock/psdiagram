@@ -63,8 +63,20 @@ author's old plain folders (no earlier git history).
     the result differs (`build.sh --check`).
   - The exe is **not code-signed**, by the user's decision (no budget for paid signing; free SignPath Foundation signing
     would need an OSI license for the repo). Keep it plain to avoid false positives: no packer/UPX, keep the version
-    resource and manifest. Ask the user before uploading the exe to VirusTotal, because that publishes it.
+    resource and manifest.
   - The container can't run the exe. Windows tests are done by the host-side Claude or the user.
+  - **After building a new exe** (whenever `dist/PS Diagram.exe` changes), before it goes into a release:
+    1. Windows test (host Claude or the user): put it into an unpacked release zip and check these cases: bundled JRE,
+       `JAVA_HOME` only, no JRE (warning), no jar (error, exit code 1), a file argument with spaces/diacritics. Also run a
+       Microsoft Defender scan.
+    2. Upload the exe to [VirusTotal](https://www.virustotal.com/gui/home/upload) (the user agreed this is a standard
+       step; uploading publishes the file, which is in this public repo anyway). Check that the SHA-256 matches the build.
+    3. For every engine that flags it, report a false positive to that vendor (Kaspersky:
+       https://opentip.kaspersky.com/). Once whitelisted, the hash stays clean across releases until the source changes.
+    4. Note the result (hash, detections, reports sent) in the commit message or PR description.
+  - History: the 2026-11-22 exe `3e9adfe7…e031` scored 1/71 on VirusTotal: only Kaspersky flagged it, with the heuristic
+    `VHO:Trojan-Downloader.Win32.Upatre.gen` (a tiny exe that starts another program), and a false positive was reported.
+    The old C# exe scored 1/69 (SecureAge).
 
 ## Architecture (package `cz.miroslavbartyzal.psdiagram.app`)
 

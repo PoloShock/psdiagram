@@ -36,7 +36,7 @@ public final class Main
     public static void main(String[] args)
     {
         // let's not use exclusive file logging when in development mode.. (in such case, console is better)
-        if (SettingsHolder.IS_DEPLOYMENT_MODE) {
+        if (!SettingsHolder.IS_DEVELOPMENT_BUILD) {
             initFileLogging();
         }
 

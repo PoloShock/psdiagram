@@ -29,6 +29,8 @@ public class XMLtoHTMLConversionTest
     @Test
     public void conversionTestGlobal() throws TransformerConfigurationException, JAXBException, TransformerException
     {
+        Assume.assumeNotNull(System.getProperty("build.versioninfo")); // if we are in release profile, proceed
+
         // Source
         JAXBContext jc = JAXBUpdateContext.getJAXBContext();
         ChangesCondenser condenser = (ChangesCondenser) JAXBUpdateContext.getUnmarshaller().unmarshal(

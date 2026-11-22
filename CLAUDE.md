@@ -14,13 +14,14 @@ mvn -B test -Dtest=PSDToJavaScriptTest    # single test class
 mvn -B test -Dtest=PSDToJavaScriptTest#methodName
 ```
 
-Known build blockers (as of Nov 2026, not fixed in the pom):
-- `versions-maven-plugin` 2.8.1 is bound to `validate`. Its `display-plugin-updates` goal throws an NPE on Maven 3.9.x, so
-  **every** `mvn` invocation that goes through the lifecycle fails before compiling. It has no skip property. The fix is to bump
-  the plugin version or remove the execution. Ask the user before you change the pom.
-- `XMLtoHTMLConversionTest.conversionTestGlobal` reads `$PSD_DATA_DIR + "versioninfo.xml"`. The env var must end with `/`.
-  It fails when the directory isn't available (e.g. in the devcontainer, where PSD_data on the NAS isn't reachable).
-  `conversionTestBuild` runs only when `-Dbuild.versioninfo` is set.
+Notes:
+- CI (`.github/workflows/build.yml`) runs `mvn -B clean package` on Java 11 for pushes and PRs to `master`.
+- Release-only checks live in the `release` profile, and the default build doesn't run them:
+  - the `versions-maven-plugin` update reports (run them manually with e.g. `mvn versions:display-dependency-updates`)
+  - the versioninfo tests (`XMLtoHTMLConversionTest`, `CurrentCondenserParseTest`). They run only when the system property
+    `build.versioninfo` is set, which the release profile does via surefire. The `...Global` tests read
+    `$PSD_DATA_DIR + "versioninfo.xml"` (the env var must end with `/`).
+- If tests fail with `NoClassDefFoundError` for classes that exist, the IDE probably rebuilt `target/` during the run. Rerun.
 
 The default build produces only a thin `target/psdiagram-<ver>.jar` with no Main-Class. To run the app:
 ```
@@ -30,10 +31,10 @@ java -cp "target/psdiagram-<ver>.jar:$(cat cp.txt)" cz.miroslavbartyzal.psdiagra
 At startup `MainWindow` pings the server (`TimeCollector`). When the network is blocked this logs a handled
 `NoRouteToHostException`, which is harmless.
 
-### Release profile (`-P deployment`): Windows only
+### Release profile (`-P release`): Windows only
 It builds the shaded `-with_dependencies` jar with Main-Class and Build-Number (`buildnumber-maven-plugin` increments
 `buildNumber.properties`). Using `versioninfo-maven-plugin` (the author's own plugin), it merges the release notes from the pom
-into `$PSD_DATA_DIR/versioninfo.xml`. Antrun then packages `target/OPENSHIFT_DATA/` from these parts:
+into `$PSD_DATA_DIR/versioninfo.xml`. Antrun then packages `target/PSD_DATA/` from these parts:
 - `PS_Diagram_<ver>.zip`, which bundles the JRE from a hard-coded `c:\Program Files (x86)\Eclipse Adoptium\...` path, plus
   `PS Diagram.exe` (a separate C# launcher)
 - `PSD-update_<ver>.zip`, which contains `psdiagram.updater` from the local Maven repo (built from `../ps-diagram-updater`, which must be `mvn install`ed with the same version)

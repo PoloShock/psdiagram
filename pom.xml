@@ -117,14 +117,40 @@
 
     <profiles>
         <profile>
-            <id>deployment</id>
+            <id>release</id>
             <properties>
                 <psdiagram.web.url>http://www.psdiagram.cz</psdiagram.web.url>
-                <build.profile>deployment</build.profile>
+                <build.profile>release</build.profile>
             </properties>
             
             <build>
                 <plugins>
+                    <plugin> <!-- dependency/plugin update reports, only when releasing -->
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>versions-maven-plugin</artifactId>
+                        <version>2.25.2</version>
+                        <executions>
+                            <execution>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>display-dependency-updates</goal>
+                                    <goal>display-plugin-updates</goal>
+                                    <goal>display-property-updates</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin> <!-- enables the release-only versioninfo tests (they read the versioninfo.xml built below) -->
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <build.versioninfo>${project.build.directory}/PSD_DATA/</build.versioninfo>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+
                     <plugin>
                         <groupId>cz.miroslavbartyzal</groupId>
                         <artifactId>versioninfo-maven-plugin</artifactId>
@@ -137,7 +163,7 @@
                                 </goals>
                                 <configuration>
                                     <inputFileToMerge>${env.PSD_DATA_DIR}versioninfo.xml</inputFileToMerge>
-                                    <outputFile>${project.build.directory}/OPENSHIFT_DATA/versioninfo.xml</outputFile>
+                                    <outputFile>${project.build.directory}/PSD_DATA/versioninfo.xml</outputFile>
 
                                     <version>${project.version}</version>
                                     <changelogurl>http://www.psdiagram.cz/changelog</changelogurl>
@@ -183,14 +209,14 @@
                         <version>1.8</version>
                         <executions>
                             <execution>
-                                <id>mktemp-OPENSHIFTdir</id>
+                                <id>mktemp-PSD_DATAdir</id>
                                 <phase>initialize</phase>
                                 <goals>
                                     <goal>run</goal>
                                 </goals>
                                 <configuration>
-                                    <target name="mktemp-OPENSHIFTdir">
-                                        <mkdir dir="${project.build.directory}/OPENSHIFT_DATA"/>
+                                    <target name="mktemp-PSD_DATAdir">
+                                        <mkdir dir="${project.build.directory}/PSD_DATA"/>
                                     </target>
                                 </configuration>
                             </execution>
@@ -211,7 +237,7 @@
                                             <fileset dir="c:\Program Files (x86)\Eclipse Adoptium\jre-11.0.14.101-hotspot"/>
                                         </copy>
                                         <copy file="c:/Zaloha/Programovani/Moje/Visual Studio 2013/PS Diagram Launcher/PS Diagram Launcher/bin/Release/PS Diagram.exe" todir="${project.build.directory}/zip/PS Diagram"/>
-                                        <zip destfile="${project.build.directory}/OPENSHIFT_DATA/PS_Diagram_${project.version}.zip"
+                                        <zip destfile="${project.build.directory}/PSD_DATA/PS_Diagram_${project.version}.zip"
                                              encoding="UTF-8"
                                              useLanguageEncodingFlag="true"
                                              createUnicodeExtraFields="always"
@@ -219,10 +245,10 @@
                                              update="true"
                                              level="9"
                                         />
-                                        <move todir="${project.build.directory}/OPENSHIFT_DATA/PS_Diagram_${project.version}">
+                                        <move todir="${project.build.directory}/PSD_DATA/PS_Diagram_${project.version}">
                                             <fileset dir="${project.build.directory}/zip/PS Diagram"/>
                                         </move>
-                                        <copy file="${basedir}/src/main/resources/intozip/Uživatelská příručka.pdf" todir="${project.build.directory}/OPENSHIFT_DATA"/>
+                                        <copy file="${basedir}/src/main/resources/intozip/Uživatelská příručka.pdf" todir="${project.build.directory}/PSD_DATA"/>
                                     </target>
                                 </configuration>
                             </execution>
@@ -235,7 +261,7 @@
                                 <configuration>
                                     <target name="prepare-updater">
                                         <copy file="${settings.localRepository}/cz/miroslavbartyzal/psdiagram.updater/${project.version}/psdiagram.updater-${project.version}-with_dependencies.jar" tofile="${project.build.directory}/zip/updater.jar"/>
-                                        <zip destfile="${project.build.directory}/OPENSHIFT_DATA/PSD-update_${project.version}.zip"
+                                        <zip destfile="${project.build.directory}/PSD_DATA/PSD-update_${project.version}.zip"
                                              encoding="UTF-8"
                                              useLanguageEncodingFlag="true"
                                              createUnicodeExtraFields="always"
@@ -261,7 +287,7 @@
                                     <goal>dirfootprint</goal>
                                 </goals>
                                 <configuration>
-                                    <inputDirectory>${project.build.directory}/OPENSHIFT_DATA/PS_Diagram_${project.version}</inputDirectory>
+                                    <inputDirectory>${project.build.directory}/PSD_DATA/PS_Diagram_${project.version}</inputDirectory>
                                     <version>${project.version}</version>
                                     <outputFile>${project.build.directory}/zip/dirfootprint.xml</outputFile>
                                     <zipIt>true</zipIt>
@@ -418,22 +444,6 @@
         </testResources>
 
         <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>versions-maven-plugin</artifactId>
-                <version>2.8.1</version>
-                <executions>
-                    <execution>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>display-dependency-updates</goal>
-                            <goal>display-plugin-updates</goal>
-                            <goal>display-property-updates</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

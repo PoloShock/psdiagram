@@ -37,7 +37,7 @@ public abstract class MyAntlrSyntaxErrorListener extends DiagnosticErrorListener
             String msg, RecognitionException e)
     {
         if (e instanceof FailedPredicateException) {
-            if (!SettingsHolder.IS_DEPLOYMENT_MODE) {
+            if (SettingsHolder.IS_DEVELOPMENT_BUILD) {
                 System.err.println("Recieved FailedPredicateException.");
             }
             return;
@@ -68,7 +68,7 @@ public abstract class MyAntlrSyntaxErrorListener extends DiagnosticErrorListener
     public void reportAmbiguity(Parser recognizer, DFA dfa, int startIndex, int stopIndex,
             boolean exact, BitSet ambigAlts, ATNConfigSet configs)
     {
-        if (!logWarnings || SettingsHolder.IS_DEPLOYMENT_MODE) {
+        if (!logWarnings || !SettingsHolder.IS_DEVELOPMENT_BUILD) {
             return;
         }
 
@@ -86,7 +86,7 @@ public abstract class MyAntlrSyntaxErrorListener extends DiagnosticErrorListener
     public void reportAttemptingFullContext(Parser recognizer, DFA dfa, int startIndex,
             int stopIndex, BitSet conflictingAlts, ATNConfigSet configs)
     {
-        if (!logWarnings || SettingsHolder.IS_DEPLOYMENT_MODE) {
+        if (!logWarnings || !SettingsHolder.IS_DEVELOPMENT_BUILD) {
             return;
         }
 
@@ -103,7 +103,7 @@ public abstract class MyAntlrSyntaxErrorListener extends DiagnosticErrorListener
     public void reportContextSensitivity(Parser recognizer, DFA dfa, int startIndex, int stopIndex,
             int prediction, ATNConfigSet configs)
     {
-        if (!logWarnings || SettingsHolder.IS_DEPLOYMENT_MODE) {
+        if (!logWarnings || !SettingsHolder.IS_DEVELOPMENT_BUILD) {
             return;
         }
 

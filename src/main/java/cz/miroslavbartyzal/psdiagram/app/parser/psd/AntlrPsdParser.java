@@ -286,7 +286,7 @@ public class AntlrPsdParser implements PsdParser
 
             parser.setErrorHandler(new AntlrErrorStrategyTranslated());
 
-            if (!SettingsHolder.IS_DEPLOYMENT_MODE) {
+            if (SettingsHolder.IS_DEVELOPMENT_BUILD) {
                 parser.getInterpreter().setPredictionMode(PredictionMode.LL_EXACT_AMBIG_DETECTION); // for debugging -> detect every ambiguosity
             }
 
@@ -348,7 +348,7 @@ public class AntlrPsdParser implements PsdParser
 
                     ((CommonTokenStream) parser.getTokenStream()).reset(); // rewind input stream
                     parser.reset();
-                    if (!SettingsHolder.IS_DEPLOYMENT_MODE) {
+                    if (SettingsHolder.IS_DEVELOPMENT_BUILD) {
                         parser.getInterpreter().setPredictionMode(
                                 PredictionMode.LL_EXACT_AMBIG_DETECTION); // for debugging -> detect every ambiguosity
                     } else {
@@ -364,7 +364,7 @@ public class AntlrPsdParser implements PsdParser
 //                    parser.setErrorHandler(errorStrategy);
                     parseResult.getParseErrors().clear(); // reset parseResult
                     ruleCallback.ruleCall(parser); // STAGE 2
-                    if (!SettingsHolder.IS_DEPLOYMENT_MODE) {
+                    if (SettingsHolder.IS_DEVELOPMENT_BUILD) {
                         System.out.println("STAGE2 was needed for input '" + input + "'");
                     }
                     // if we parse ok, it's LL not SLL

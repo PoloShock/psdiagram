@@ -36,10 +36,10 @@ It builds the shaded `-with_dependencies` jar with Main-Class and Build-Number (
 into `$PSD_DATA_DIR/versioninfo.xml`. Antrun then packages `target/OPENSHIFT_DATA/` from these parts:
 - `PS_Diagram_<ver>.zip`, which bundles the JRE from a hard-coded `c:\Program Files (x86)\Eclipse Adoptium\...` path, plus
   `PS Diagram.exe` (a separate C# launcher)
-- `PSD-update_<ver>.zip`, which contains `psdiagram.updater` from the local Maven repo (a separate project, not in this workspace)
+- `PSD-update_<ver>.zip`, which contains `psdiagram.updater` from the local Maven repo (built from `../ps-diagram-updater`, which must be `mvn install`ed with the same version)
 - the user manual PDF
 
-Neither these plugins nor the updater are available here, so this profile cannot run in the container. The release notes for the next
+Neither these plugins nor the installed updater artifact are available here, so this profile cannot run in the container. The release notes for the next
 version are edited in the `versioninfo-maven-plugin` `<configuration>` in `pom.xml` (Czech HTML).
 
 ## Architecture (package `cz.miroslavbartyzal.psdiagram.app`)

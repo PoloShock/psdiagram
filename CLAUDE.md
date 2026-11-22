@@ -71,11 +71,16 @@ author's old plain folders (no earlier git history).
        Microsoft Defender scan.
     2. Upload the exe to [VirusTotal](https://www.virustotal.com/gui/home/upload) (the user agreed this is a standard
        step; uploading publishes the file, which is in this public repo anyway). Check that the SHA-256 matches the build.
-    3. For every engine that flags it, report a false positive to that vendor (Kaspersky:
-       https://opentip.kaspersky.com/). Once whitelisted, the hash stays clean across releases until the source changes.
+    3. For every engine that flags it, check the vendor's own scanner first. For Kaspersky that's
+       https://opentip.kaspersky.com/: upload the exe and wait for the dynamic analysis (~3 min). If the vendor says it's
+       clean, the hit is only from that engine's VirusTotal configuration: re-run "Reanalyze" on VirusTotal after a few
+       days. If the vendor's own scanner detects it, send a false-positive report through it (Kaspersky shows a "send
+       for research" option with an e-mail field, which the user fills in). Once whitelisted, the hash stays clean
+       across releases until the source changes.
     4. Note the result (hash, detections, reports sent) in the commit message or PR description.
   - History: the 2026-11-22 exe `3e9adfe7…e031` scored 1/71 on VirusTotal: only Kaspersky flagged it, with the heuristic
-    `VHO:Trojan-Downloader.Win32.Upatre.gen` (a tiny exe that starts another program), and a false positive was reported.
+    `VHO:Trojan-Downloader.Win32.Upatre.gen` (a tiny exe that starts another program). Kaspersky's own OpenTIP rated it
+    Clean the same day (0 detections, no suspicious activity), so no report was needed.
     The old C# exe scored 1/69 (SecureAge).
 
 ## Architecture (package `cz.miroslavbartyzal.psdiagram.app`)

@@ -1,8 +1,9 @@
 #!/bin/sh
 # Builds dist/PS Diagram.exe (32-bit, runs on any Windows from 7 up, no .NET or other runtime needed).
-# Needs MinGW-w64 i686 (Debian: gcc-mingw-w64-i686 binutils-mingw-w64-i686), as in the devcontainer.
+# Needs MinGW-w64 i686 from Debian bookworm (gcc-mingw-w64-i686 binutils-mingw-w64-i686); on Windows run it in a
+# debian:bookworm Docker container (see the repo CLAUDE.md).
 # The build is deterministic for one toolchain (no timestamps, no paths, no compiler ident), so a rebuild of
-# unchanged sources gives the same bytes. CI rebuilds it on debian:bookworm (the devcontainer's base) and
+# unchanged sources gives the same bytes. CI rebuilds it on debian:bookworm and
 # fails if the result differs from the committed exe. Rebuild and commit the exe only when the source changes,
 # so the hash, and the reputation it builds with antivirus/SmartScreen, stays the same across releases.
 # Usage: ./build.sh [--check]   (--check: build into build/ and compare with dist/, don't overwrite)

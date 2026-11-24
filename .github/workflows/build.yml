@@ -20,9 +20,9 @@ jobs:
           java-version: '11'
           cache: maven
       - name: Build and test
-        run: mvn -B clean package
+        run: ./mvnw -B clean package
       - name: Build the release Maven plugins (tools/)
-        run: mvn -B -f tools install
+        run: ./mvnw -B -f tools install
 
   launcher:
     # Same toolchain as the devcontainer (Debian bookworm MinGW), so the rebuild must match the committed exe

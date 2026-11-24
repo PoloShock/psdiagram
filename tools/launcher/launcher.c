@@ -140,7 +140,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
         } else {
             /* just try to launch it anyway */
             HINSTANCE result;
-            MessageBoxW(NULL, L"Nepodařilo se lokalizovat Java Runtime Environment. PS Diagram pravděpodobně\nnebude možné spustit.",
+            /* break between the sentences; "PS Diagram" = non-breaking space, so Windows' auto-wrap never splits it */
+            MessageBoxW(NULL, L"Nepodařilo se lokalizovat Java Runtime Environment.\nPS Diagram pravděpodobně nebude možné spustit.",
                     L"Chyba: JRE nebylo nalezeno", MB_OK | MB_ICONWARNING);
             result = ShellExecuteW(NULL, NULL, jarPath, *args ? args : NULL, NULL, SW_SHOWNORMAL);
             if ((INT_PTR) result <= 32) {

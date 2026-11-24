@@ -14,7 +14,8 @@ mvn -B test -Dtest=PSDToJavaScriptTest    # single test class
 mvn -B test -Dtest=PSDToJavaScriptTest#methodName
 ```
 Maven comes from the Maven Wrapper (`mvnw` / `mvnw.cmd`, pinned to 3.9.9 with a SHA-256). On the dev PC, `mvn` means
-`..\tools\bin\mvn.cmd` (JDK 11 + the repo's `mvnw.cmd`; see `../CLAUDE.md`). Elsewhere, use `./mvnw` with a JDK 11.
+`..\tools\bin\mvn.cmd` (JDK 11 + the repo's `mvnw.cmd`; see `../CLAUDE.md`). Elsewhere, use `./mvnw` with a JDK 11
+and `unzip` (without `unzip`, `mvnw` fetches the `.tar.gz`, which fails the SHA-256 pinned for the `.zip`).
 
 Notes:
 - CI (`.github/workflows/build.yml`) runs `./mvnw -B clean package` on Java 11 for pushes and PRs to `master`.

@@ -96,7 +96,7 @@ author's old plain folders (no earlier git history).
     The old C# exe scored 1/69 (SecureAge). On 2026-11-24 the reference toolchain moved from Debian bookworm MinGW to
     WinLibs on Windows (same flags), and the JRE warning's line break was fixed (break between the sentences, a
     non-breaking space in "PS Diagram"). The new exe is `af16e289…8b78` (Windows test cases and Defender passed the same
-    day; VirusTotal still to do). Neither the old exe nor this one had been released yet. Its
+    day; VirusTotal 2026-11-24: 0/69, Kaspersky included). Neither the old exe nor this one had been released yet. Its
     imports are the same DLLs as before (KERNEL32, msvcrt, SHELL32, USER32); a few msvcrt entry points changed, all of
     which exist on Windows 7.
 

@@ -39,14 +39,17 @@ At startup `MainWindow` pings the server (`TimeCollector`). When the network is 
 It builds the shaded `-with_dependencies` jar with Main-Class and Build-Number (`buildnumber-maven-plugin` increments
 `buildNumber.properties`). Using `versioninfo-maven-plugin` (the author's own plugin), it merges the release notes from the pom
 into `$PSD_DATA_DIR/versioninfo.xml`. Antrun then packages `target/PSD_DATA/` from these parts:
-- `PS_Diagram_<ver>.zip`, which bundles the JRE from a hard-coded `c:\Program Files (x86)\Eclipse Adoptium\...` path, plus
-  the launcher `tools/launcher/dist/PS Diagram.exe`
+- `PS_Diagram_<ver>.zip`, which bundles the JRE given by `-Dpsd.jre.dir=<unpacked JRE>` (the build fails without it),
+  plus the launcher `tools/launcher/dist/PS Diagram.exe`. The bundled JRE is a 32-bit Java 11 (so it also runs on 32-bit
+  Windows); since Temurin has no 32-bit Windows builds after 11.0.29, it is Azul Zulu (pinned on the dev PC, see
+  `../CLAUDE.md`)
 - `PSD-update_<ver>.zip`, which contains `psdiagram.updater` from the local Maven repo (built from `../ps-diagram-updater`, which must be `mvn install`ed with the same version)
 - the user manual PDF
 
 Before a release build, `mvn -B -f tools install` the plugins (see "Build tools" below) and `mvn install` the updater. The
-hard-coded Windows JRE path is the only part that still ties the release build to Windows. The release notes for the next
-version are edited in the `versioninfo-maven-plugin` `<configuration>` in `pom.xml` (Czech HTML).
+release notes for the next version are edited in the `versioninfo-maven-plugin` `<configuration>` in `pom.xml` (Czech
+HTML), written only at release time. On the dev PC the whole release (build, local rehearsal, publishing) is scripted:
+see `../RELEASING.md`.
 
 ## Build tools (`tools/`)
 Separate builds, not modules of the root pom, so the default build ignores them. They were imported in 2026-11 from the

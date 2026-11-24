@@ -228,13 +228,20 @@
                                 </goals>
                                 <configuration>
                                     <target name="prepare-for-deploy">
+                                        <!-- the JRE bundled into the release zip: -Dpsd.jre.dir=<unpacked 32-bit JRE 11> -->
+                                        <fail unless="psd.jre.dir" message="Set -Dpsd.jre.dir to the unpacked JRE to bundle (see CLAUDE.md, Release profile)."/>
+                                        <fail message="psd.jre.dir has no bin/javaw.exe: ${psd.jre.dir}">
+                                            <condition>
+                                                <not><available file="${psd.jre.dir}/bin/javaw.exe"/></not>
+                                            </condition>
+                                        </fail>
                                         <mkdir dir="${project.build.directory}/zip/PS Diagram"/>
                                         <copy file="${project.build.directory}/${project.build.finalName}-with_dependencies.jar" tofile="${project.build.directory}/zip/PS Diagram/${psdiagramfinalname}"/>
                                         <copy todir="${project.build.directory}/zip/PS Diagram">
                                             <fileset dir="${basedir}/src/main/resources/intozip"/>
                                         </copy>
                                         <copy todir="${project.build.directory}/zip/PS Diagram/jre">
-                                            <fileset dir="c:\Program Files (x86)\Eclipse Adoptium\jre-11.0.14.101-hotspot"/>
+                                            <fileset dir="${psd.jre.dir}" excludes=".psd-version"/> <!-- the dev setup's version marker -->
                                         </copy>
                                         <copy file="${basedir}/tools/launcher/dist/PS Diagram.exe" todir="${project.build.directory}/zip/PS Diagram"/>
                                         <zip destfile="${project.build.directory}/PSD_DATA/PS_Diagram_${project.version}.zip"

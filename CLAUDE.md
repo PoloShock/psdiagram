@@ -77,7 +77,10 @@ author's old plain folders (no earlier git history).
   - **After building a new exe** (whenever `dist/PS Diagram.exe` changes), before it goes into a release:
     1. Windows test (Claude on the dev PC, or the user): put it into an unpacked release zip and check these cases: bundled JRE,
        `JAVA_HOME` only, no JRE (warning), no jar (error, exit code 1), a file argument with spaces/diacritics. Also run a
-       Microsoft Defender scan.
+       Microsoft Defender scan. Run the cases with `JAVA_TOOL_OPTIONS=-Duser.home=<a temp dir>` set (the launcher passes
+       the environment on to javaw). Otherwise the app writes to the real `%USERPROFILE%\.psdiagram`: `settings.xml`
+       remembers the test file as the last flowchart. Each force-killed instance also leaves a crash-recovery
+       `backup_N.xml`, which the next start reopens in an extra "(zotaveno)" window (seen 2026-11-24).
     2. Upload the exe to [VirusTotal](https://www.virustotal.com/gui/home/upload) (the user agreed this is a standard
        step; uploading publishes the file, which is in this public repo anyway). Check that the SHA-256 matches the build.
     3. For every engine that flags it, check the vendor's own scanner first. For Kaspersky that's

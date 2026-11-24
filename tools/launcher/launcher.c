@@ -8,7 +8,7 @@
  * 3. the command-line arguments are passed through unchanged (file associations use "%1").
  * Exit codes: 0 = started, 1 = psdiagram.jar not found, 2 = start failed.
  *
- * Build: ./build.sh (MinGW-w64 i686), output dist/PS Diagram.exe.
+ * Build: build.ps1 (pinned WinLibs MinGW-w64 i686), output dist/PS Diagram.exe.
  */
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>

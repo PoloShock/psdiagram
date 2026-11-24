@@ -61,13 +61,16 @@ author's old plain folders (no earlier git history).
     `%JAVA_HOME%\bin\javaw.exe`, else (after a warning) through the shell's `.jar` association. The arguments are passed
     through as the raw command line. Keep this behaviour and the Czech messages.
   - Keep the exe name: `JFrameSettings` file associations point at `PS Diagram.exe`.
-  - `tools/launcher/build.sh` builds it with the Debian bookworm MinGW-w64 i686, the same toolchain as the CI job. The
-    Windows dev PC doesn't have it, so build in WSL Docker from the repo folder (`/mnt/c/...`):
-    `docker run --rm -v "$PWD":/src -w /src debian:bookworm sh -c "apt-get update -qq && apt-get install -y -qq --no-install-recommends gcc-mingw-w64-i686 binutils-mingw-w64-i686 && sh tools/launcher/build.sh"`.
-    The build is deterministic, and
-    `dist/PS Diagram.exe` is committed. Rebuild and commit the exe **only when its source changes**, so the hash stays the
-    same and keeps its antivirus/SmartScreen reputation. The CI `launcher` job rebuilds it on `debian:bookworm` and fails if
-    the result differs (`build.sh --check`).
+  - `tools/launcher/build.ps1` builds it on Windows with the pinned WinLibs MinGW-w64 i686 (gcc 16.2.0, mingw-w64 14.0.0,
+    msvcrt; version, URL and SHA-256 in the script header). On the dev PC, `setup.ps1` installs it to `..\tools\mingw32`,
+    the script's default; elsewhere pass `-MingwBin` or set `PSD_MINGW_BIN`. The build is deterministic (same bytes in
+    any folder, checked 2026-11-24), and `dist/PS Diagram.exe` is committed. Rebuild and commit the exe **only when its
+    source changes**, so the hash stays the same and keeps its antivirus/SmartScreen reputation. `build.ps1 -Check`
+    rebuilds into `build\` and fails if the result differs from `dist\`; run it after any change under `launcher/` or a
+    toolchain change. There is no CI check (by the user's decision, the exe doesn't depend on GitHub).
+  - The toolchain is part of the exe's identity: upgrading WinLibs changes the bytes, so do it only together with a
+    launcher change, and repeat the checks below. WinLibs adds a default manifest (`default-manifest.o`) to every exe;
+    `build.ps1` replaces it with an empty object (`-B build/nomanifest/`), so only `launcher.manifest` is embedded.
   - The exe is **not code-signed**, by the user's decision (no budget for paid signing; free SignPath Foundation signing
     would need an OSI license for the repo). Keep it plain to avoid false positives: no packer/UPX, keep the version
     resource and manifest.
@@ -87,7 +90,10 @@ author's old plain folders (no earlier git history).
   - History: the 2026-11-22 exe `3e9adfe7…e031` scored 1/71 on VirusTotal: only Kaspersky flagged it, with the heuristic
     `VHO:Trojan-Downloader.Win32.Upatre.gen` (a tiny exe that starts another program). Kaspersky's own OpenTIP rated it
     Clean the same day (0 detections, no suspicious activity), so no report was needed.
-    The old C# exe scored 1/69 (SecureAge).
+    The old C# exe scored 1/69 (SecureAge). On 2026-11-24 the reference toolchain moved from Debian bookworm MinGW to
+    WinLibs on Windows (same source and flags), which gave a new exe `095e56aa…e77f`. It had not been released yet. Its
+    imports are the same DLLs as before (KERNEL32, msvcrt, SHELL32, USER32); a few msvcrt entry points changed, all of
+    which exist on Windows 7.
 
 ## Architecture (package `cz.miroslavbartyzal.psdiagram.app`)
 

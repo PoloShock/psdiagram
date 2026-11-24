@@ -13,9 +13,11 @@ mvn -B clean package                      # default profile = "development"
 mvn -B test -Dtest=PSDToJavaScriptTest    # single test class
 mvn -B test -Dtest=PSDToJavaScriptTest#methodName
 ```
+Maven comes from the Maven Wrapper (`mvnw` / `mvnw.cmd`, pinned to 3.9.9 with a SHA-256). On the dev PC, `mvn` means
+`..\tools\bin\mvn.cmd` (JDK 11 + the repo's `mvnw.cmd`; see `../CLAUDE.md`). Elsewhere, use `./mvnw` with a JDK 11.
 
 Notes:
-- CI (`.github/workflows/build.yml`) runs `mvn -B clean package` on Java 11 for pushes and PRs to `master`.
+- CI (`.github/workflows/build.yml`) runs `./mvnw -B clean package` on Java 11 for pushes and PRs to `master`.
 - Release-only checks live in the `release` profile, and the default build doesn't run them:
   - the `versions-maven-plugin` update reports (run them manually with e.g. `mvn versions:display-dependency-updates`)
   - the versioninfo tests (`XMLtoHTMLConversionTest`, `CurrentCondenserParseTest`). They run only when the system property
@@ -26,8 +28,9 @@ Notes:
 The default build produces only a thin `target/psdiagram-<ver>.jar` with no Main-Class. To run the app:
 ```
 mvn -B -q dependency:build-classpath -Dmdep.outputFile=cp.txt
-java -cp "target/psdiagram-<ver>.jar:$(cat cp.txt)" cz.miroslavbartyzal.psdiagram.app.Main
+java -cp "target/psdiagram-<ver>.jar;$(Get-Content cp.txt)" cz.miroslavbartyzal.psdiagram.app.Main   # PowerShell
 ```
+(On Linux, use `:` as the separator and `$(cat cp.txt)`.)
 At startup `MainWindow` pings the server (`TimeCollector`). When the network is blocked this logs a handled
 `NoRouteToHostException`, which is harmless.
 
@@ -57,16 +60,18 @@ author's old plain folders (no earlier git history).
     `%JAVA_HOME%\bin\javaw.exe`, else (after a warning) through the shell's `.jar` association. The arguments are passed
     through as the raw command line. Keep this behaviour and the Czech messages.
   - Keep the exe name: `JFrameSettings` file associations point at `PS Diagram.exe`.
-  - `tools/launcher/build.sh` builds it with MinGW-w64 i686 (installed in the devcontainer). The build is deterministic, and
+  - `tools/launcher/build.sh` builds it with the Debian bookworm MinGW-w64 i686, the same toolchain as the CI job. The
+    Windows dev PC doesn't have it, so build in WSL Docker from the repo folder (`/mnt/c/...`):
+    `docker run --rm -v "$PWD":/src -w /src debian:bookworm sh -c "apt-get update -qq && apt-get install -y -qq --no-install-recommends gcc-mingw-w64-i686 binutils-mingw-w64-i686 && sh tools/launcher/build.sh"`.
+    The build is deterministic, and
     `dist/PS Diagram.exe` is committed. Rebuild and commit the exe **only when its source changes**, so the hash stays the
     same and keeps its antivirus/SmartScreen reputation. The CI `launcher` job rebuilds it on `debian:bookworm` and fails if
     the result differs (`build.sh --check`).
   - The exe is **not code-signed**, by the user's decision (no budget for paid signing; free SignPath Foundation signing
     would need an OSI license for the repo). Keep it plain to avoid false positives: no packer/UPX, keep the version
     resource and manifest.
-  - The container can't run the exe. Windows tests are done by the host-side Claude or the user.
   - **After building a new exe** (whenever `dist/PS Diagram.exe` changes), before it goes into a release:
-    1. Windows test (host Claude or the user): put it into an unpacked release zip and check these cases: bundled JRE,
+    1. Windows test (Claude on the dev PC, or the user): put it into an unpacked release zip and check these cases: bundled JRE,
        `JAVA_HOME` only, no JRE (warning), no jar (error, exit code 1), a file argument with spaces/diacritics. Also run a
        Microsoft Defender scan.
     2. Upload the exe to [VirusTotal](https://www.virustotal.com/gui/home/upload) (the user agreed this is a standard
